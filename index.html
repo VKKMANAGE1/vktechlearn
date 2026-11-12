@@ -26,7 +26,23 @@
       --lime: #b6ff2e;
       --violet: #8b5cf6;
       --amber: #ffb020;
-      --grad: linear-gradient(100deg, #00f0ff, #8b5cf6 45%, #ff2d95);
+      
+
+     /* Night mode variables */
+     --night-bg: #1a1a2e;
+     --night-bg-soft: #151525;
+     --night-panel: rgba(26, 26, 46, .85);
+     --night-panel-solid: #1e1e2f;
+     --night-text: #e0e7ff;
+     --night-muted: #7d8da8;
+     --night-line: rgba(125, 141, 168, .3);
+     --night-neon: #00d4aa;
+     --night-pink: #ff5858;
+     --night-cyan: #00d4aa;
+
+     /* Night gradient */
+     --night-gradient: linear-gradient(135deg, #1a1a2e 0%, #151525 100%);
+--grad: linear-gradient(100deg, #00f0ff, #8b5cf6 45%, #ff2d95);
       --cut: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
       --shadow: 0 24px 60px -34px rgba(0, 240, 255, .55);
     }
@@ -903,7 +919,7 @@
         const link = document.createElement("a");
         link.className = "tool-cta";
         link.href = tool.url;
-        link.target = "_blank";
+        // no target — opens in same tab
         link.rel = "noopener noreferrer";
         link.append(document.createTextNode(T("Open Tool", "टूल खोलें")), arrow());
         card.append(link);
@@ -979,7 +995,7 @@
         const link = document.createElement("a");
         link.className = "tool-item";
         link.href = tool.link;
-        link.target = "_blank";
+        // no target — opens in same tab
         link.rel = "noopener noreferrer";
 
         const icon = document.createElement("span");
@@ -1051,7 +1067,7 @@
         const link = document.createElement("a");
         link.className = "trend-item";
         link.href = post.url;
-        link.target = "_blank";
+        // no target — opens in same tab
         link.rel = "noopener noreferrer";
         const num = document.createElement("span");
         num.className = "trend-num";
@@ -1076,7 +1092,7 @@
         const item = document.createElement("li");
         const link = document.createElement("a");
         link.href = post.url;
-        link.target = "_blank";
+        // no target — opens in same tab
         link.rel = "noopener noreferrer";
         const idx = document.createElement("span");
         idx.className = "idx";
@@ -1195,7 +1211,7 @@
       const title = document.createElement("h3");
       const link = document.createElement("a");
       link.href = post.url;
-      link.target = "_blank";
+      // no target — opens in same tab
       link.rel = "noopener noreferrer";
       link.textContent = post.title;
       title.append(link);
@@ -1206,7 +1222,7 @@
       const read = document.createElement("a");
       read.className = "read-more";
       read.href = post.url;
-      read.target = "_blank";
+      // no target — opens in same tab
       read.rel = "noopener noreferrer";
       read.append(document.createTextNode(T("Read More", "पोस्ट पढ़ें")), arrow());
 
@@ -1603,5 +1619,52 @@
       setLanguage(lang);
     })();
   </script>
-</body>
+<!-- Theme toggle button -->
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: block;">
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/>
+    <line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/>
+    <line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+  <span class="sun">☀</span>
+  <span class="moon" style="display: none;">🌙</span>
+</button><script>
+// Theme toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  
+  // Check for saved theme preference or system preference
+  const savedTheme = localStorage.getItem('theme');
+  const systemPreferredDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  // Set initial theme
+  if (savedTheme === 'dark' || (!savedTheme && systemPreferredDark)) {
+    html.setAttribute('data-theme', 'night');
+    themeToggle.querySelector('.sun').style.display = 'none';
+    themeToggle.querySelector('.moon').style.display = 'block';
+  }
+  
+  // Toggle theme on click
+  themeToggle.addEventListener('click', function() {
+    if (html.getAttribute('data-theme') === 'night') {
+      html.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeToggle.querySelector('.sun').style.display = 'block';
+      themeToggle.querySelector('.moon').style.display = 'none';
+    } else {
+      html.setAttribute('data-theme', 'night');
+      localStorage.setItem('theme', 'dark');
+      themeToggle.querySelector('.sun').style.display = 'none';
+      themeToggle.querySelector('.moon').style.display = 'block';
+    }
+  });
+});
+</script></body>
 </html>
