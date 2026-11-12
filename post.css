@@ -1,0 +1,118 @@
+/* VK Tech Learn - single post page */
+:root {
+  --bg: #05070d;
+  --panel: #0b1020;
+  --panel-2: #0e1526;
+  --line: rgba(0, 229, 255, .22);
+  --cyan: #00e5ff;
+  --pink: #ff2d95;
+  --text: #dbe6f5;
+  --muted: #8ea0b8;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(0, 229, 255, .14), transparent 60%),
+    radial-gradient(700px 420px at 90% 0%, rgba(255, 45, 149, .12), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Rajdhani", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+a { color: var(--cyan); }
+a:hover { color: #7cf3ff; }
+.wrap { width: min(860px, 100% - 2rem); margin: 0 auto; }
+header.post-head {
+  position: sticky; top: 0; z-index: 5;
+  backdrop-filter: blur(14px);
+  background: rgba(5, 7, 13, .82);
+  border-bottom: 1px solid var(--line);
+}
+.post-head .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: .8rem 0;
+}
+.brand {
+  font-family: "Orbitron", "Rajdhani", sans-serif;
+  font-weight: 700; letter-spacing: .12em; text-decoration: none;
+  font-size: .95rem; color: #fff;
+  text-shadow: 0 0 14px rgba(0, 229, 255, .55);
+}
+.brand span { color: var(--cyan); }
+.back {
+  font-size: .82rem; text-decoration: none; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: .3rem .8rem;
+  white-space: nowrap;
+}
+.back:hover { color: var(--cyan); border-color: var(--cyan); }
+main.post { padding: 2.2rem 0 3rem; }
+.meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .7rem;
+  font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: .9rem;
+}
+.tag {
+  color: var(--pink); border: 1px solid rgba(255, 45, 149, .4);
+  border-radius: 6px; padding: .12rem .5rem;
+}
+h1.post-title {
+  font-family: "Orbitron", "Noto Sans Devanagari", sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.3rem);
+  line-height: 1.3; margin: 0 0 1.1rem; color: #f4f8ff;
+}
+.hero-img {
+  width: 100%; border-radius: 14px; margin: 0 0 1.6rem;
+  border: 1px solid var(--line); display: block;
+}
+.post-body {
+  background: linear-gradient(180deg, rgba(11, 16, 32, .92), rgba(8, 12, 24, .92));
+  border: 1px solid var(--line); border-radius: 16px;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  box-shadow: 0 0 40px rgba(0, 229, 255, .07);
+  overflow-wrap: anywhere;
+}
+.post-body h1, .post-body h2, .post-body h3, .post-body h4 {
+  font-family: "Orbitron", "Noto Sans Devanagari", sans-serif;
+  color: #eaf7ff; line-height: 1.35; margin: 1.7rem 0 .6rem;
+}
+.post-body h1 { font-size: 1.32rem; }
+.post-body h2 { font-size: 1.28rem; }
+.post-body h3 { font-size: 1.1rem; }
+.post-body p { margin: .85rem 0; }
+.post-body ul, .post-body ol { padding-left: 1.4rem; margin: .9rem 0; }
+.post-body li { margin: .35rem 0; }
+.post-body img { max-width: 100%; height: auto; border-radius: 10px; display: block; margin: 1rem auto; }
+.post-body a { text-decoration: underline; text-underline-offset: 2px; }
+.post-body blockquote {
+  margin: 1.2rem 0; padding: .6rem 1rem; border-left: 3px solid var(--cyan);
+  background: rgba(0, 229, 255, .06); color: #cfe6f5; border-radius: 0 10px 10px 0;
+}
+.post-body code {
+  background: rgba(0, 229, 255, .1); padding: .1rem .35rem; border-radius: 5px;
+  font-size: .92em;
+}
+.post-body pre {
+  background: #050a14; border: 1px solid var(--line); border-radius: 10px;
+  padding: 1rem; overflow-x: auto;
+}
+.post-body table { width: 100%; display: block; overflow-x: auto; border-collapse: collapse; margin: 1rem 0; }
+.post-body th, .post-body td { border: 1px solid var(--line); padding: .5rem .7rem; text-align: left; }
+.post-body iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; border-radius: 12px; margin: 1rem 0; }
+.post-foot { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: .8rem; }
+.post-foot a {
+  text-decoration: none; border: 1px solid var(--line); border-radius: 999px;
+  padding: .5rem 1rem; font-size: .85rem; color: var(--text);
+}
+.post-foot a:hover { border-color: var(--cyan); color: var(--cyan); }
+footer.site-foot {
+  border-top: 1px solid var(--line); padding: 1.4rem 0 2.2rem;
+  font-size: .8rem; color: var(--muted); text-align: center;
+}
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .post-head .wrap { padding: .65rem 0; }
+}

@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VK Tech Learn — Tech News, easy computer guides and free online tools (PDF, Estimate, AI) for everyone.">
+  <meta name="theme-color" content="#05060d">
+  <title>VK Tech Learn — Tech News, Computer Guides & Free Tools</title>
+  <link rel="canonical" href="https://vktechlearn.online/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='27' font-weight='bold' fill='%2300e5ff' text-anchor='middle'%3EVK%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;family=Rajdhani:wght@500;600;700&amp;family=Noto+Sans+Devanagari:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05060d;
+      --bg-soft: #0a0e1c;
+      --panel: rgba(11, 16, 33, .78);
+      --panel-solid: #0b1021;
+      --line: rgba(0, 240, 255, .22);
+      --line-strong: rgba(0, 240, 255, .55);
+      --text: #e8f4ff;
+      --muted: #8fa3c0;
+      --neon: #00f0ff;
+      --pink: #ff2d95;
+      --lime: #b6ff2e;
+      --violet: #8b5cf6;
+      --amber: #ffb020;
+      --grad: linear-gradient(100deg, #00f0ff, #8b5cf6 45%, #ff2d95);
+      --cut: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+      --shadow: 0 24px 60px -34px rgba(0, 240, 255, .55);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans Devanagari', 'Rajdhani', system-ui, sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    h1, h2, h3, h4, p { margin: 0; }
+    :is(a, button, input, summary):focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .container { width: min(1200px, 100% - 2.2rem); margin-inline: auto; }
+
+    /* ---------- background layers ---------- */
+    .bg-grid, .bg-scan, .bg-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .bg-grid {
+      background-image:
+        linear-gradient(rgba(0, 240, 255, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, .07) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 78%);
+      -webkit-mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 78%);
+    }
+    .bg-glow {
+      background:
+        radial-gradient(620px 380px at 12% -5%, rgba(255, 45, 149, .22), transparent 70%),
+        radial-gradient(700px 420px at 88% 4%, rgba(0, 240, 255, .2), transparent 72%),
+        radial-gradient(900px 500px at 50% 108%, rgba(139, 92, 246, .18), transparent 72%);
+    }
+    .bg-scan {
+      background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .028) 0 1px, transparent 1px 4px);
+      opacity: .7;
+    }
+    .page { position: relative; z-index: 1; }
+
+    .skip-link { position: fixed; top: -5rem; left: 1rem; z-index: 200; background: var(--neon); color: #04121a; font-weight: 800; padding: .6rem 1rem; transition: top .2s ease; }
+    .skip-link:focus { top: .6rem; }
+
+    /* ---------- type ---------- */
+    .display { font-family: 'Orbitron', 'Rajdhani', sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+    .neon-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .section-head { display: flex; align-items: center; gap: .8rem; margin: 0 0 1.1rem; }
+    .section-head .chipbar { width: 6px; height: 26px; background: var(--grad); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+    .section-head h1, .section-head h2 { font-family: 'Orbitron', 'Rajdhani', sans-serif; font-size: clamp(1.05rem, 2.4vw, 1.35rem); font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .section-head h1 .hl, .section-head h2 .hl { color: var(--neon); }
+
+    /* ---------- ticker ---------- */
+    .ticker { position: relative; z-index: 2; border-bottom: 1px solid var(--line); background: linear-gradient(90deg, rgba(255, 45, 149, .18), rgba(0, 240, 255, .16), rgba(139, 92, 246, .18)); backdrop-filter: blur(6px); }
+    .ticker .container { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; overflow: hidden; font-size: .82rem; }
+    .ticker-badge { flex: none; font-family: 'Orbitron', sans-serif; font-size: .66rem; font-weight: 700; letter-spacing: .16em; color: #04121a; background: var(--neon); padding: .18rem .5rem; }
+    .ticker-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #d6e9ff; }
+
+    /* ---------- header ---------- */
+    .site-header { position: sticky; top: 0; z-index: 60; background: rgba(5, 6, 13, .86); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    .header-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; padding: .85rem 0 .5rem; }
+    .brand { grid-column: 2; display: flex; align-items: center; gap: .75rem; text-align: left; }
+    .brand-mark {
+      flex: none; width: 52px; height: 52px; display: grid; place-items: center;
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: .95rem; color: #04121a;
+      background: var(--grad); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+      box-shadow: 0 0 26px rgba(0, 240, 255, .55);
+    }
+    .brand-text { display: grid; }
+    .brand-name { font-family: 'Orbitron', sans-serif; font-size: clamp(1.1rem, 2.6vw, 1.55rem); font-weight: 900; letter-spacing: .1em; text-transform: uppercase; position: relative; display: inline-block; }
+    .brand-name::before, .brand-name::after {
+      content: attr(data-text); position: absolute; inset: 0;
+      background: none; -webkit-text-fill-color: currentColor; color: inherit;
+      opacity: 0; pointer-events: none;
+    }
+    .brand-name::before { color: var(--neon); animation: glitchA 5s infinite steps(1); }
+    .brand-name::after { color: var(--pink); animation: glitchB 5s infinite steps(1); }
+    @keyframes glitchA {
+      0%, 84%, 96%, 100% { opacity: 0; transform: none; clip-path: none; }
+      85% { opacity: .9; transform: translate(-4px, 1px); clip-path: inset(8% 0 58% 0); }
+      88% { opacity: .9; transform: translate(4px, -1px); clip-path: inset(62% 0 12% 0); }
+      91% { opacity: .9; transform: translate(-2px, 2px); clip-path: inset(34% 0 46% 0); }
+      94% { opacity: .9; transform: translate(2px, -2px); clip-path: inset(76% 0 4% 0); }
+    }
+    @keyframes glitchB {
+      0%, 85.5%, 96%, 100% { opacity: 0; transform: none; clip-path: none; }
+      86.5% { opacity: .9; transform: translate(3px, -1px); clip-path: inset(22% 0 54% 0); }
+      89.5% { opacity: .9; transform: translate(-3px, 1px); clip-path: inset(58% 0 22% 0); }
+      92.5% { opacity: .9; transform: translate(1px, -2px); clip-path: inset(40% 0 40% 0); }
+    }
+    .lang-btn { width: auto; min-width: 46px; padding: 0 .5rem; font-family: 'Orbitron', sans-serif; font-size: .68rem; font-weight: 700; letter-spacing: .06em; }
+    .brand-tag { font-family: 'Rajdhani', sans-serif; font-size: .74rem; letter-spacing: .22em; text-transform: uppercase; color: var(--neon); }
+    .header-side { display: flex; align-items: center; gap: .5rem; }
+    .header-side.left { justify-content: flex-start; }
+    .header-side.right { justify-content: flex-end; }
+    .icon-btn {
+      width: 42px; height: 42px; display: grid; place-items: center; color: var(--text);
+      background: rgba(0, 240, 255, .06); border: 1px solid var(--line); clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+      transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .icon-btn:hover { background: rgba(0, 240, 255, .18); color: #fff; box-shadow: 0 0 18px rgba(0, 240, 255, .45); }
+    .icon-btn svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .menu-btn { display: none; }
+
+    .main-nav { border-top: 1px solid rgba(0, 240, 255, .14); }
+    .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: .2rem; }
+    .main-nav a {
+      display: block; padding: .7rem .85rem; font-family: 'Rajdhani', sans-serif; font-weight: 600;
+      font-size: .92rem; letter-spacing: .1em; text-transform: uppercase; color: #cfe3f7;
+      border-bottom: 2px solid transparent; transition: color .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .main-nav a:hover, .main-nav a[aria-current="page"] { color: var(--neon); border-bottom-color: var(--neon); background: rgba(0, 240, 255, .06); }
+    .main-nav a.hot { color: var(--pink); }
+    .main-nav a.hot:hover { border-bottom-color: var(--pink); background: rgba(255, 45, 149, .08); }
+
+    .search-panel { display: none; border-top: 1px solid var(--line); background: rgba(5, 8, 18, .95); }
+    .search-panel.is-open { display: block; }
+    .search-form { display: flex; gap: .6rem; padding: .85rem 0; }
+    .search-form input {
+      flex: 1; min-width: 0; font: inherit; color: var(--text); background: rgba(0, 240, 255, .05);
+      border: 1px solid var(--line); padding: .7rem 1rem;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    }
+    .search-form input::placeholder { color: var(--muted); }
+
+    /* ---------- buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      font-size: .88rem; padding: .72rem 1.3rem; border: 0; color: #04121a; background: var(--neon);
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 0 26px rgba(0, 240, 255, .55); }
+    .btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-pink { background: var(--pink); color: #fff; }
+    .btn-pink:hover { box-shadow: 0 0 26px rgba(255, 45, 149, .6); }
+    .btn-ghost { background: transparent; color: var(--neon); border: 1px solid var(--line-strong); }
+    .btn-ghost:hover { background: rgba(0, 240, 255, .12); box-shadow: 0 0 22px rgba(0, 240, 255, .35); }
+
+    /* ---------- layout ---------- */
+    main { padding: 1.8rem 0 3rem; }
+    .panel {
+      position: relative; background: var(--panel); border: 1px solid var(--line);
+      clip-path: var(--cut); box-shadow: var(--shadow); backdrop-filter: blur(8px);
+    }
+    .panel-inner { padding: 1.25rem; }
+    .panel-title { display: flex; align-items: center; justify-content: space-between; gap: .6rem; font-family: 'Orbitron', sans-serif; font-size: .82rem; letter-spacing: .16em; text-transform: uppercase; color: var(--neon); border-bottom: 1px dashed var(--line); padding-bottom: .6rem; margin-bottom: .8rem; }
+
+    /* ---------- hero ---------- */
+    .hero-grid { display: grid; gap: 1.2rem; align-items: start; }
+    .featured {
+      position: relative; min-height: 430px; display: flex; align-items: flex-end; overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 14%, rgba(255, 45, 149, .38), transparent 46%),
+        radial-gradient(circle at 10% 90%, rgba(0, 240, 255, .32), transparent 52%),
+        linear-gradient(140deg, #070b18, #0c1230 58%, #140b26);
+    }
+    .featured::before {
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 240, 255, .16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, .16) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(0deg, transparent 0%, #000 70%);
+      -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 70%);
+    }
+    .featured img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .5; }
+    .featured::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(0deg, rgba(3, 5, 12, .96) 4%, rgba(3, 5, 12, .55) 52%, rgba(3, 5, 12, .2) 90%),
+        linear-gradient(120deg, rgba(0, 240, 255, .22), transparent 55%);
+    }
+    .featured-body { position: relative; z-index: 1; padding: clamp(1.3rem, 3.6vw, 2.4rem); max-width: 680px; }
+    .featured h2 { font-size: clamp(1.35rem, 3.6vw, 2.1rem); line-height: 1.35; margin: .8rem 0 .55rem; font-weight: 800; }
+    .featured p { color: #cfe0f5; font-size: .96rem; }
+    .featured-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; margin-top: 1.2rem; font-family: 'Rajdhani', sans-serif; letter-spacing: .1em; text-transform: uppercase; font-size: .78rem; color: #9fb6d4; }
+    .featured-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.1rem; }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: .35rem; font-family: 'Rajdhani', sans-serif;
+      font-size: .74rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      padding: .25rem .6rem; color: var(--cat, var(--neon));
+      border: 1px solid color-mix(in srgb, var(--cat, #00f0ff) 55%, transparent);
+      background: color-mix(in srgb, var(--cat, #00f0ff) 14%, transparent);
+    }
+
+    .side-stack { display: grid; gap: 1.2rem; align-content: start; }
+    .trend-list { list-style: none; margin: 0; padding: 0; display: grid; }
+    .trend-list li + li { border-top: 1px dashed var(--line); }
+    .trend-item { display: flex; gap: .8rem; padding: .7rem 0; align-items: flex-start; }
+    .trend-item:hover .trend-title { color: var(--neon); }
+    .trend-num { font-family: 'Orbitron', sans-serif; font-size: .92rem; font-weight: 800; color: var(--pink); }
+    .trend-title { display: block; font-size: .92rem; font-weight: 600; line-height: 1.5; transition: color .18s ease; }
+    .trend-meta { display: block; margin-top: .15rem; font-family: 'Rajdhani', sans-serif; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+    .quick-links { display: grid; gap: .5rem; }
+    .quick-links a {
+      display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+      padding: .6rem .8rem; font-size: .9rem; font-weight: 600;
+      border: 1px solid var(--line); background: rgba(0, 240, 255, .05);
+      transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .quick-links a:hover { background: rgba(0, 240, 255, .14); border-color: var(--line-strong); transform: translateX(3px); }
+    .quick-links span { font-family: 'Rajdhani', sans-serif; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--neon); }
+
+    /* ---------- tools ---------- */
+    .tools-section { margin-top: 2.4rem; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.1rem; }
+    .tool-card {
+      position: relative; display: flex; flex-direction: column; gap: .55rem; padding: 1.2rem;
+      background: linear-gradient(160deg, rgba(0, 240, 255, .1), rgba(139, 92, 246, .1) 60%, rgba(255, 45, 149, .08));
+      border: 1px solid var(--line); clip-path: var(--cut);
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+    .tool-card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: 0 0 34px rgba(0, 240, 255, .3); }
+    .tool-icon { font-size: 1.7rem; }
+    .tool-card h3 { font-size: 1.05rem; font-weight: 800; }
+    .tool-card p { font-size: .88rem; color: #b9cbe4; }
+    .tool-tag { align-self: flex-start; font-family: 'Rajdhani', sans-serif; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--lime); }
+    .tool-cta { margin-top: auto; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .82rem; color: var(--neon); display: inline-flex; align-items: center; gap: .35rem; }
+    .tool-features { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .2rem; }
+    .tool-features span { font-size: .74rem; padding: .16rem .45rem; border: 1px solid rgba(182, 255, 46, .35); color: #d8ff9c; background: rgba(182, 255, 46, .08); }
+
+    .tool-directory { margin-top: 1.2rem; }
+    .tool-filter { display: grid; gap: .7rem; margin-bottom: 1rem; }
+    .tool-search {
+      width: 100%; font: inherit; color: var(--text); background: rgba(0, 240, 255, .05);
+      border: 1px solid var(--line); padding: .65rem .9rem;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    }
+    .tool-search::placeholder { color: var(--muted); }
+    .tool-dir-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .7rem; }
+    .tool-item {
+      display: flex; gap: .7rem; align-items: center; padding: .7rem .8rem;
+      border: 1px solid var(--line); background: rgba(0, 240, 255, .04);
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .tool-item:hover { background: rgba(0, 240, 255, .12); border-color: var(--line-strong); transform: translateY(-2px); }
+    .tool-item-icon { flex: none; width: 38px; height: 38px; display: grid; place-items: center; font-size: 1.05rem; background: rgba(0, 240, 255, .08); border: 1px solid var(--line); }
+    .tool-item-text { min-width: 0; display: grid; }
+    .tool-item-text strong { font-size: .92rem; font-weight: 700; line-height: 1.35; }
+    .tool-item-text small { color: var(--muted); font-size: .76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tool-item-cat { margin-left: auto; font-family: 'Rajdhani', sans-serif; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--lime); white-space: nowrap; }
+    @media (max-width: 520px) { .tool-item-cat { display: none; } }
+
+    /* ---------- crypto ticker ---------- */
+    .crypto-bar { border-top: 1px solid rgba(0, 240, 255, .14); background: linear-gradient(90deg, rgba(0, 240, 255, .06), rgba(255, 45, 149, .06)); }
+    .crypto-inner { display: flex; align-items: center; gap: .6rem; padding: .35rem 0; }
+    .crypto-label { flex: none; font-family: 'Orbitron', sans-serif; font-size: .58rem; font-weight: 700; letter-spacing: .14em; color: var(--lime); border: 1px solid rgba(182, 255, 46, .45); padding: .16rem .42rem; }
+    .crypto-track { flex: 1; min-width: 0; display: flex; gap: 1rem; overflow-x: auto; scrollbar-width: none; }
+    .crypto-track::-webkit-scrollbar { display: none; }
+    .crypto-item { flex: none; display: inline-flex; align-items: baseline; gap: .35rem; font-family: 'Rajdhani', sans-serif; font-size: .8rem; letter-spacing: .03em; }
+    .crypto-sym { color: #a9c3de; font-weight: 700; }
+    .crypto-price { color: #fff; font-weight: 700; }
+    .crypto-change { font-size: .72rem; font-weight: 700; }
+    .crypto-change.up { color: var(--lime); }
+    .crypto-change.down { color: #ff6b9d; }
+    .crypto-loading { font-size: .76rem; color: var(--muted); white-space: nowrap; }
+    .crypto-refresh { flex: none; width: 28px; height: 28px; display: grid; place-items: center; color: var(--neon); background: transparent; border: 1px solid var(--line); font-size: .95rem; transition: background .2s ease; }
+    .crypto-refresh:hover { background: rgba(0, 240, 255, .14); }
+    @media (max-width: 520px) { .crypto-label { display: none; } }
+
+    /* ---------- weather ---------- */
+    .weather-card .panel-inner { padding: 1rem 1.1rem; }
+    .weather-card .panel-title { margin-bottom: .5rem; padding-bottom: .45rem; }
+    .weather-card .panel-title span:last-child { font-family: 'Rajdhani', sans-serif; font-size: .74rem; letter-spacing: .06em; color: var(--lime); text-transform: none; max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .weather-body { display: flex; align-items: center; gap: .55rem; margin: 0; }
+    .weather-visual { position: relative; flex: none; width: 62px; height: 50px; }
+    .w-sun { position: absolute; left: 50%; top: 44%; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%; background: radial-gradient(circle, #ffe981, #ffb020); box-shadow: 0 0 26px rgba(255, 176, 32, .65); animation: sunPulse 3.2s ease-in-out infinite; }
+    .w-sun::before { content: ""; position: absolute; inset: -12px; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255, 209, 102, .55) 0 5deg, transparent 5deg 30deg); animation: sunRays 14s linear infinite; }
+    .w-cloud { position: absolute; border-radius: 999px; background: linear-gradient(180deg, #e2f4ff, #93b4d4); box-shadow: 0 8px 16px rgba(0, 0, 0, .35); opacity: 0; transition: opacity .35s ease, background .35s ease; }
+    .w-cloud-a { width: 40px; height: 14px; left: 8px; bottom: 15px; animation: drift 6s ease-in-out infinite; }
+    .w-cloud-b { width: 28px; height: 10px; left: 31px; bottom: 25px; animation: drift 8s ease-in-out infinite reverse; }
+    .w-drops { position: absolute; left: 9px; right: 9px; bottom: 2px; height: 16px; opacity: 0; transition: opacity .3s ease; }
+    .w-drops i { position: absolute; top: 0; width: 2px; height: 12px; background: linear-gradient(#00f0ff, transparent); animation: rainFall .95s linear infinite; }
+    .w-drops i:nth-child(1) { left: 6%; }
+    .w-drops i:nth-child(2) { left: 34%; animation-delay: .24s; }
+    .w-drops i:nth-child(3) { left: 62%; animation-delay: .48s; }
+    .w-drops i:nth-child(4) { left: 88%; animation-delay: .72s; }
+    .weather-visual.is-clear .w-sun { animation-duration: 2.2s; }
+    .weather-visual.is-cloud .w-cloud, .weather-visual.is-rain .w-cloud, .weather-visual.is-thunder .w-cloud, .weather-visual.is-fog .w-cloud { opacity: 1; }
+    .weather-visual.is-cloud .w-sun { opacity: .35; filter: blur(1px); }
+    .weather-visual.is-rain .w-sun, .weather-visual.is-thunder .w-sun, .weather-visual.is-snow .w-sun { opacity: 0; }
+    .weather-visual.is-rain .w-cloud, .weather-visual.is-thunder .w-cloud { background: linear-gradient(180deg, #b8c8da, #5b7290); }
+    .weather-visual.is-rain .w-drops, .weather-visual.is-thunder .w-drops { opacity: 1; }
+    .weather-visual.is-snow .w-drops { opacity: 1; }
+    .weather-visual.is-snow .w-drops i { background: #fff; height: 6px; width: 6px; border-radius: 50%; animation: snowFall 3s linear infinite; }
+    .weather-visual.is-snow .w-drops i:nth-child(2) { animation-delay: .7s; }
+    .weather-visual.is-fog .w-sun { opacity: .2; filter: blur(3px); }
+    .weather-visual.is-fog .w-cloud { filter: blur(2px); }
+    .weather-visual.is-thunder::after { content: "⚡"; position: absolute; left: 25px; bottom: 12px; font-size: 1rem; animation: flash 2.4s steps(1) infinite; }
+    .weather-visual.is-loading { opacity: .45; }
+    .weather-temp { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 800; line-height: 1.15; }
+    .weather-cond { font-size: .78rem; color: #d3e4f7; line-height: 1.3; }
+    .weather-meta { font-family: 'Rajdhani', sans-serif; font-size: .68rem; letter-spacing: .03em; color: var(--muted); margin-top: .1rem; }
+    .weather-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-top: .45rem; }
+    .weather-btn { font-size: .64rem; padding: .32rem .5rem; }
+    .weather-status { font-size: .66rem; color: var(--muted); }
+    @keyframes sunPulse { 50% { transform: scale(1.08); box-shadow: 0 0 36px rgba(255, 176, 32, .85); } }
+    @keyframes sunRays { to { transform: rotate(360deg); } }
+    @keyframes drift { 50% { transform: translateX(6px); } }
+    @keyframes rainFall { 0% { transform: translateY(-6px); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(24px); opacity: 0; } }
+    @keyframes snowFall { 0% { transform: translateY(-4px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(24px); opacity: 0; } }
+    @keyframes flash { 0%, 88%, 100% { opacity: 0; } 90%, 94% { opacity: 1; } }
+
+    /* ---------- content ---------- */
+    .content-grid { display: grid; gap: 1.5rem; margin-top: 2.4rem; }
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .7rem; margin-bottom: 1rem; }
+    .chips { display: flex; gap: .45rem; overflow-x: auto; padding-bottom: .35rem; }
+    .chip {
+      flex: none; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      font-size: .78rem; padding: .4rem .75rem; color: #cfe3f7; background: rgba(0, 240, 255, .05);
+      border: 1px solid var(--line); transition: all .2s ease;
+    }
+    .chip:hover { color: #fff; border-color: var(--line-strong); }
+    .chip[aria-pressed="true"] { background: var(--neon); border-color: transparent; color: #04121a; box-shadow: 0 0 20px rgba(0, 240, 255, .5); }
+    .result-count { font-family: 'Rajdhani', sans-serif; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+    .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.05rem; }
+    .post-card {
+      display: flex; flex-direction: column; overflow: hidden; background: var(--panel-solid);
+      border: 1px solid var(--line); clip-path: var(--cut);
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+    .post-card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: 0 0 30px rgba(0, 240, 255, .28); }
+    .thumb { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #070b18; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .post-card:hover .thumb img { transform: scale(1.05); }
+    .thumb-art {
+      position: absolute; inset: 0; display: flex; align-items: flex-end; padding: .9rem;
+      background:
+        radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--cat, #00f0ff) 55%, transparent), transparent 45%),
+        linear-gradient(135deg, color-mix(in srgb, var(--cat, #00f0ff) 28%, #05060d), #05060d 78%);
+    }
+    .thumb-art::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 22px 22px; }
+    .thumb-art b { position: relative; z-index: 1; font-family: 'Orbitron', sans-serif; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: #fff; text-shadow: 0 0 14px rgba(0, 240, 255, .6); }
+    .card-body { display: flex; flex-direction: column; gap: .5rem; padding: 1rem 1.05rem 1.1rem; flex: 1; }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .card-meta time { font-family: 'Rajdhani', sans-serif; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .card-body h3 { font-size: 1rem; line-height: 1.5; font-weight: 700; }
+    .card-body h3 a:hover { color: var(--neon); }
+    .card-body p { font-size: .86rem; color: #a9bdd8; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .read-more { margin-top: auto; padding-top: .3rem; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .8rem; color: var(--neon); display: inline-flex; align-items: center; gap: .35rem; }
+    .read-more svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+    .post-card:hover .read-more svg { transform: translateX(3px); }
+
+    .empty-state { padding: 2.2rem 1.4rem; text-align: center; border: 1px dashed var(--line); background: var(--panel); }
+    .empty-state h3 { font-size: 1rem; font-weight: 800; }
+    .empty-state p { color: var(--muted); font-size: .9rem; margin: .3rem 0 1rem; }
+    .feed-status { margin-top: .9rem; font-family: 'Rajdhani', sans-serif; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); min-height: 1.2em; }
+    .load-more { margin-top: 1.4rem; display: flex; justify-content: center; }
+
+    /* ---------- sidebar ---------- */
+    .sidebar { display: grid; gap: 1.2rem; align-content: start; }
+    .popular-list { list-style: none; margin: 0; padding: 0; display: grid; }
+    .popular-list li + li { border-top: 1px dashed var(--line); }
+    .popular-list a { display: flex; gap: .7rem; padding: .65rem 0; font-size: .89rem; font-weight: 600; }
+    .popular-list a:hover { color: var(--neon); }
+    .popular-list .idx { font-family: 'Orbitron', sans-serif; font-size: .78rem; color: var(--pink); }
+    .cat-list { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .cat-chip {
+      display: inline-flex; align-items: center; gap: .4rem; font-family: 'Rajdhani', sans-serif;
+      font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: .35rem .65rem; color: #cfe3f7; background: rgba(0, 240, 255, .05); border: 1px solid var(--line);
+      transition: all .2s ease;
+    }
+    .cat-chip::before { content: ""; width: .45rem; height: .45rem; background: var(--cat, var(--neon)); box-shadow: 0 0 8px var(--cat, var(--neon)); }
+    .cat-chip[data-filter="all"]::before { display: none; }
+    .cat-chip:hover { color: #fff; border-color: var(--line-strong); }
+    .cat-chip[aria-pressed="true"] { background: var(--neon); color: #04121a; border-color: transparent; }
+    .cat-count { font-size: .7rem; opacity: .8; }
+
+    .subscribe-card { background: linear-gradient(150deg, rgba(139, 92, 246, .22), rgba(0, 240, 255, .14)); }
+    .subscribe-card p { font-size: .88rem; color: #d3e4f7; margin: .3rem 0 .9rem; }
+    .subscribe-actions { display: grid; gap: .5rem; }
+
+    .socials { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .socials a { font-family: 'Rajdhani', sans-serif; font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: .4rem .7rem; border: 1px solid var(--line); color: #d3e4f7; transition: all .2s ease; }
+    .socials a:hover { color: #04121a; background: var(--neon); border-color: transparent; }
+
+    /* ---------- footer ---------- */
+    .site-footer { position: relative; z-index: 1; margin-top: 2.5rem; border-top: 1px solid var(--line); background: rgba(6, 8, 18, .92); }
+    .footer-grid { display: grid; gap: 1.8rem; padding: 2.4rem 0 1.8rem; }
+    .site-footer h2 { font-family: 'Orbitron', sans-serif; font-size: .82rem; letter-spacing: .16em; text-transform: uppercase; color: var(--neon); margin-bottom: .8rem; }
+    .site-footer p { font-size: .88rem; color: #a9bdd8; }
+    .footer-links { display: grid; gap: .4rem; font-size: .88rem; }
+    .footer-links a:hover { color: var(--neon); }
+    .footer-bottom { border-top: 1px solid var(--line); padding: 1rem 0; display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; justify-content: space-between; font-family: 'Rajdhani', sans-serif; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+    .to-top {
+      position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 70; width: 46px; height: 46px;
+      display: grid; place-items: center; color: #04121a; background: var(--neon); border: 0;
+      clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+      box-shadow: 0 0 24px rgba(0, 240, 255, .5); opacity: 0; visibility: hidden; transform: translateY(8px);
+      transition: opacity .2s ease, transform .2s ease, visibility .2s;
+    }
+    .to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+    .to-top svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    @media (min-width: 700px) {
+      .hero-grid { grid-template-columns: minmax(0, 1fr) 330px; }
+      .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1.2fr; }
+    }
+    @media (min-width: 1024px) {
+      .content-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 2rem; }
+      .sidebar { position: sticky; top: 120px; }
+    }
+    @media (max-width: 899px) {
+      .header-top { grid-template-columns: auto 1fr auto; }
+      .brand { grid-column: 2; justify-content: center; text-align: center; }
+      .menu-btn { display: grid; }
+      .main-nav { display: none; border-top: 1px solid var(--line); background: rgba(5, 8, 18, .98); }
+      .main-nav.is-open { display: block; }
+      .main-nav ul { flex-direction: column; gap: 0; padding: .3rem 1.1rem .8rem; }
+      .main-nav a { border-bottom: 1px solid var(--line); border-left: 2px solid transparent; padding: .7rem .4rem; }
+      .main-nav a:hover { border-left-color: var(--neon); }
+      .brand-mark { width: 44px; height: 44px; font-size: .82rem; }
+      .brand-tag { letter-spacing: .14em; font-size: .68rem; }
+    }
+    @media (max-width: 420px) {
+      .brand-text { text-align: center; }
+      .brand-tag { display: none; }
+      .featured { min-height: 360px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+      .bg-scan { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-scan" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">मुख्य सामग्री पर जाएँ</a>
+
+  <div class="page">
+    <div class="ticker">
+      <div class="container">
+        <span class="ticker-badge">LIVE</span>
+        <span class="ticker-text">Tech News · Computer सीखें · Free PDF &amp; Estimate Tools — सब एक जगह, आसान हिंदी में</span>
+      </div>
+    </div>
+
+    <header class="site-header" id="site-header">
+      <div class="container header-top">
+        <div class="header-side left">
+          <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="मेन्यू खोलें" aria-expanded="false" aria-controls="main-nav">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          </button>
+        </div>
+
+        <a class="brand" href="./" aria-label="VK Tech Learn — home">
+          <span class="brand-mark" aria-hidden="true">VK</span>
+          <span class="brand-text">
+            <span class="brand-name neon-text" data-text="VK Tech Learn">VK Tech Learn</span>
+            <span class="brand-tag">Tech · Learn · Tools</span>
+          </span>
+        </a>
+
+        <div class="header-side right">
+          <button class="icon-btn lang-btn" id="lang-toggle" type="button" aria-label="Switch language" title="English / हिंदी"><span id="lang-label">EN</span></button>
+          <button class="icon-btn" id="search-toggle" type="button" aria-label="Search" aria-expanded="false" aria-controls="search-panel">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="crypto-bar" aria-label="लाइव क्रिप्टो कीमतें">
+        <div class="container crypto-inner">
+          <span class="crypto-label">LIVE CRYPTO</span>
+          <div class="crypto-track" id="crypto-track" role="status" aria-live="polite">
+            <span class="crypto-loading">लाइव क्रिप्टो कीमतें लोड हो रही हैं…</span>
+          </div>
+          <button class="crypto-refresh" id="crypto-refresh" type="button" aria-label="क्रिप्टो कीमतें रीफ़्रेश करें">↻</button>
+        </div>
+      </div>
+
+      <nav class="main-nav" id="main-nav" aria-label="मुख्य नेविगेशन">
+        <div class="container">
+          <ul>
+            <li><a href="#top" aria-current="page" data-en="Home" data-hi="होम">Home</a></li>
+            <li><a href="#latest" data-filter-link="Tech" data-en="Tech News" data-hi="टेक न्यूज़">Tech News</a></li>
+            <li><a href="#latest" data-filter-link="Learn" data-en="Learn Computer" data-hi="Computer सीखें">Learn Computer</a></li>
+            <li><a href="#latest" data-filter-link="AI" data-en="AI" data-hi="AI">AI</a></li>
+            <li><a href="#tools" data-en="Tools" data-hi="टूल्स">Tools</a></li>
+            <li><a class="hot" href="https://vkpdfeditingtools.blogspot.com/" target="_blank" rel="noopener noreferrer" data-en="PDF Tools" data-hi="PDF टूल्स">PDF Tools</a></li>
+            <li><a href="https://cpwdestimate.blogspot.com/" target="_blank" rel="noopener noreferrer" data-en="Estimate Tool" data-hi="एस्टिमेट टूल">Estimate Tool</a></li>
+            <li><a class="hot" href="https://shavi-ai.lovable.app" target="_blank" rel="noopener noreferrer" data-en="ShâVì AI" data-hi="ShâVì AI">ShâVì AI</a></li>
+            <li><a href="https://www.vktechlearn.site/p/about-us.html" target="_blank" rel="noopener noreferrer" data-en="About" data-hi="हमारे बारे में">About</a></li>
+            <li><a href="https://www.vktechlearn.site/p/contact-us.html" target="_blank" rel="noopener noreferrer" data-en="Contact" data-hi="संपर्क">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="search-panel" id="search-panel">
+        <div class="container">
+          <form class="search-form" id="search-form" role="search">
+            <label class="sr-only" for="post-search">पोस्ट खोजें</label>
+            <input id="post-search" type="search" autocomplete="off" placeholder="Search Windows, AI, PF, WhatsApp…" data-en-ph="Search Windows, AI, PF, WhatsApp…" data-hi-ph="Windows, AI, PF, WhatsApp… कुछ भी खोजें">
+            <button class="btn" type="submit" data-en="Search" data-hi="खोजें">Search</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="container" id="top">
+        <section aria-labelledby="featured-heading">
+          <div class="section-head">
+            <span class="chipbar" aria-hidden="true"></span>
+            <h1 id="featured-heading"><span data-en="Today's" data-hi="आज की">Today's</span> <span class="hl" data-en="Top Story" data-hi="खास खबर">Top Story</span></h1>
+          </div>
+
+          <div class="hero-grid">
+            <article class="featured panel reveal" aria-labelledby="featured-title">
+              <img id="featured-img" alt="" decoding="async">
+              <div class="featured-body">
+                <span class="tag" id="featured-cat">FEATURED</span>
+                <h2 id="featured-title">टेक्नोलॉजी बदल रही है — सीखने का सही समय अभी है</h2>
+                <p id="featured-excerpt">Tech news से लेकर practical computer guides और free tools तक, ज़रूरी बातें आसान हिंदी में।</p>
+                <div class="featured-meta">
+                  <time id="featured-date"></time>
+                  <span id="featured-labels"></span>
+                </div>
+                <div class="featured-actions">
+                  <a class="btn btn-pink" id="featured-link" href="#latest"><span data-en="Read Post" data-hi="पोस्ट पढ़ें">Read Post</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg>
+                  </a>
+                  <a class="btn btn-ghost" href="#tools" data-en="Explore Free Tools" data-hi="फ्री टूल्स देखें">Explore Free Tools</a>
+                </div>
+              </div>
+            </article>
+
+            <div class="side-stack">
+              <section class="panel reveal" aria-labelledby="trending-heading">
+                <div class="panel-inner">
+                  <div class="panel-title"><span id="trending-heading" data-en="Trending Now" data-hi="ट्रेंडिंग अभी">Trending Now</span><span aria-hidden="true">🔥</span></div>
+                  <ol class="trend-list" id="trending-list"></ol>
+                </div>
+              </section>
+
+              <section class="panel reveal" aria-labelledby="quick-heading">
+                <div class="panel-inner">
+                  <div class="panel-title"><span id="quick-heading" data-en="Quick Links" data-hi="क्विक लिंक्स">Quick Links</span><span aria-hidden="true">⚡</span></div>
+                  <div class="quick-links">
+                    <a href="https://vktechlearntoolkit.blogspot.com/" target="_blank" rel="noopener noreferrer">VK ToolBox <span>100+ Tools</span></a>
+                    <a href="https://vkpdfeditingtools.blogspot.com/" target="_blank" rel="noopener noreferrer">PDF Editing Toolbox <span>12 Tools</span></a>
+                    <a href="https://cpwdestimate.blogspot.com/" target="_blank" rel="noopener noreferrer">CPWD Estimate 2.0 <span>Estimate</span></a>
+                    <a href="https://shavi-ai.lovable.app" target="_blank" rel="noopener noreferrer">ShâVì AI <span>AI Assistant</span></a>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="tools-section" id="tools" aria-labelledby="tools-heading">
+          <div class="section-head">
+            <span class="chipbar" aria-hidden="true"></span>
+            <h2 id="tools-heading"><span data-en="Free" data-hi="फ्री">Free</span> <span class="hl" data-en="Tools" data-hi="टूल्स">Tools</span></h2>
+          </div>
+          <div class="tool-grid" id="tool-grid"></div>
+
+          <div class="panel tool-directory reveal">
+            <div class="panel-inner">
+              <div class="panel-title"><span><span data-en="All Tools" data-hi="सभी टूल्स">All Tools</span> <span id="tool-count"></span></span><span aria-hidden="true">⚙️</span></div>
+              <div class="tool-filter">
+                <label class="sr-only" for="tool-search">टूल खोजें</label>
+                <input class="tool-search" id="tool-search" type="search" autocomplete="off" placeholder="Search tools — PDF, image, AI, calculator…" data-en-ph="Search tools — PDF, image, AI, calculator…" data-hi-ph="PDF, image, AI, calculator… टूल खोजें">
+                <div class="chips" id="tool-chips" role="group" aria-label="टूल श्रेणी फ़िल्टर"></div>
+              </div>
+              <div class="tool-dir-grid" id="tool-dir-grid"></div>
+              <div class="load-more" id="tool-more-wrap" hidden>
+                <button class="btn btn-ghost" id="tool-more" type="button" data-en="Show more tools" data-hi="और टूल्स दिखाएँ">Show more tools</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="content-grid">
+          <section id="latest" aria-labelledby="latest-heading" style="min-width: 0; scroll-margin-top: 7rem;">
+            <div class="section-head">
+              <span class="chipbar" aria-hidden="true"></span>
+              <h2 id="latest-heading"><span data-en="Latest" data-hi="नवीनतम">Latest</span> <span class="hl" data-en="Posts" data-hi="पोस्ट">Posts</span></h2>
+            </div>
+
+            <div class="toolbar">
+              <div class="chips" id="chips" role="group" aria-label="पोस्ट श्रेणी फ़िल्टर"></div>
+              <p class="result-count" id="result-count" role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="post-grid" id="post-grid" aria-busy="true"></div>
+
+            <div class="empty-state" id="empty-state" hidden>
+              <h3 data-en="No posts found" data-hi="कोई पोस्ट नहीं मिली">No posts found</h3>
+              <p data-en="Try another keyword or category." data-hi="दूसरा शब्द या श्रेणी आज़माएँ।">Try another keyword or category.</p>
+              <button class="btn btn-ghost" id="reset-filters" type="button" data-en="Show all posts" data-hi="सभी पोस्ट दिखाएँ">Show all posts</button>
+            </div>
+
+            <div class="load-more" id="load-more-wrap" hidden>
+              <button class="btn" id="load-more" type="button" data-en="Load more posts" data-hi="और पोस्ट लोड करें">Load more posts</button>
+            </div>
+
+            <p class="feed-status" id="feed-status" role="status" aria-live="polite"></p>
+          </section>
+
+          <aside class="sidebar" aria-label="साइडबार">
+            <section class="panel weather-card reveal" aria-labelledby="weather-heading">
+              <div class="panel-inner">
+                <div class="panel-title"><span id="weather-heading" data-en="Live Weather" data-hi="लाइव मौसम">Live Weather</span><span id="weather-city">Locating…</span></div>
+                <div class="weather-body">
+                  <div class="weather-visual is-loading" id="weather-visual" aria-hidden="true">
+                    <span class="w-sun"></span>
+                    <span class="w-cloud w-cloud-a"></span>
+                    <span class="w-cloud w-cloud-b"></span>
+                    <span class="w-drops"><i></i><i></i><i></i><i></i></span>
+                  </div>
+                  <div class="weather-info">
+                    <p class="weather-temp" id="weather-temp">--°</p>
+                    <p class="weather-cond" id="weather-cond">Loading weather…</p>
+                    <p class="weather-meta" id="weather-meta"></p>
+                  </div>
+                </div>
+                <div class="weather-actions">
+                  <button class="btn btn-ghost weather-btn" id="weather-locate" type="button" data-en="Use my location" data-hi="मेरी लोकेशन से देखें">Use my location</button>
+                  <span class="weather-status" id="weather-status" role="status" aria-live="polite"></span>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel reveal" aria-labelledby="popular-heading">
+              <div class="panel-inner">
+                <div class="panel-title"><span id="popular-heading" data-en="Most Popular" data-hi="सबसे लोकप्रिय">Most Popular</span><span aria-hidden="true">📈</span></div>
+                <ul class="popular-list" id="popular-list"></ul>
+              </div>
+            </section>
+
+            <section class="panel reveal" aria-labelledby="category-heading">
+              <div class="panel-inner">
+                <div class="panel-title"><span id="category-heading" data-en="Categories" data-hi="श्रेणियाँ">Categories</span><span aria-hidden="true">🏷️</span></div>
+                <div class="cat-list" id="cat-list" role="group" aria-label="पोस्ट श्रेणी फ़िल्टर"></div>
+              </div>
+            </section>
+
+            <section class="panel subscribe-card reveal" aria-labelledby="subscribe-heading">
+              <div class="panel-inner">
+                <div class="panel-title"><span id="subscribe-heading" data-en="Subscribe" data-hi="सब्सक्राइब">Subscribe</span><span aria-hidden="true">📡</span></div>
+                <p data-en="Get the latest tech news, computer guides and new tools first." data-hi="नई Tech News, computer guides और नए tools की जानकारी सबसे पहले पाएँ।">Get the latest tech news, computer guides and new tools first.</p>
+                <div class="subscribe-actions">
+                  <a class="btn btn-pink" href="https://www.youtube.com/channel/UCxNF19OLq9Mcuzh4pcKOkXA?sub_confirmation=1" target="_blank" rel="noopener noreferrer" data-en="YouTube Subscribe" data-hi="YouTube सब्सक्राइब">YouTube Subscribe</a>
+                  <a class="btn btn-ghost" href="https://www.vktechlearn.site/feeds/posts/default" target="_blank" rel="noopener noreferrer" data-en="Follow RSS Feed" data-hi="RSS Feed फॉलो करें">Follow RSS Feed</a>
+                  <a class="btn btn-ghost" href="https://www.vktechlearn.site/p/contact-us.html" target="_blank" rel="noopener noreferrer" data-en="Contact Us" data-hi="संपर्क करें">Contact Us</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel reveal" aria-labelledby="social-heading">
+              <div class="panel-inner">
+                <div class="panel-title"><span id="social-heading" data-en="Follow Us" data-hi="हमसे जुड़ें">Follow Us</span><span aria-hidden="true">🌐</span></div>
+                <div class="socials">
+                  <a href="https://www.youtube.com/channel/UCxNF19OLq9Mcuzh4pcKOkXA" target="_blank" rel="noopener noreferrer">YouTube</a>
+                  <a href="https://www.instagram.com/vktechlearn/" target="_blank" rel="noopener noreferrer">Instagram</a>
+                  <a href="https://www.facebook.com/VK-TECH-LEARN-103280665790556" target="_blank" rel="noopener noreferrer">Facebook</a>
+                  <a href="https://twitter.com/VkLearn" target="_blank" rel="noopener noreferrer">X</a>
+                  <a href="https://in.pinterest.com/vkkmanage0678/" target="_blank" rel="noopener noreferrer">Pinterest</a>
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <h2>VK Tech Learn</h2>
+          <p data-en="VK Tech Learn is a trusted Hindi tech blog where you get Make Money Online, BlogSpot, WordPress, Internet Tips, Computer Tricks, EPF/Provident Fund and Tech News explained in simple language." data-hi="VK Tech Learn एक भरोसेमंद हिंदी टेक ब्लॉग है जहाँ Make Money Online, BlogSpot, WordPress, Internet Tips, Computer Tricks, EPF/Provident Fund और Tech News की जानकारी आसान भाषा में मिलती है।">VK Tech Learn is a trusted Hindi tech blog where you get Make Money Online, BlogSpot, WordPress, Internet Tips, Computer Tricks, EPF/Provident Fund and Tech News explained in simple language.</p>
+        </div>
+        <div>
+          <h2 data-en="Categories" data-hi="श्रेणियाँ">Categories</h2>
+          <div class="footer-links" id="footer-cats"></div>
+        </div>
+        <div>
+          <h2 data-en="Important Links" data-hi="महत्वपूर्ण लिंक">Important Links</h2>
+          <div class="footer-links">
+            <a href="https://www.vktechlearn.site/p/about-us.html" target="_blank" rel="noopener noreferrer" data-en="About Us" data-hi="हमारे बारे में">About Us</a>
+            <a href="https://www.vktechlearn.site/p/contact-us.html" target="_blank" rel="noopener noreferrer" data-en="Contact Us" data-hi="संपर्क करें">Contact Us</a>
+            <a href="https://www.vktechlearn.site/p/privacy-policy.html" target="_blank" rel="noopener noreferrer" data-en="Privacy Policy" data-hi="प्राइवेसी पॉलिसी">Privacy Policy</a>
+            <a href="https://www.vktechlearn.site/p/dmca-disclaimer.html" target="_blank" rel="noopener noreferrer" data-en="Disclaimer / DMCA" data-hi="डिस्क्लेमर / DMCA">Disclaimer / DMCA</a>
+            <a href="https://www.vktechlearn.site/p/terms-conditions.html" target="_blank" rel="noopener noreferrer" data-en="Terms &amp; Conditions" data-hi="नियम और शर्तें">Terms &amp; Conditions</a>
+            <a href="https://www.vktechlearn.site/sitemap.xml" target="_blank" rel="noopener noreferrer" data-en="Sitemap" data-hi="साइटमैप">Sitemap</a>
+          </div>
+        </div>
+        <div>
+          <h2 data-en="Free Tools" data-hi="फ्री टूल्स">Free Tools</h2>
+          <div class="footer-links">
+            <a href="https://vktechlearntoolkit.blogspot.com/" target="_blank" rel="noopener noreferrer">VK ToolBox</a>
+            <a href="https://vkpdfeditingtools.blogspot.com/" target="_blank" rel="noopener noreferrer">PDF Editing Toolbox</a>
+            <a href="https://cpwdestimate.blogspot.com/" target="_blank" rel="noopener noreferrer">CPWD Estimate 2.0</a>
+            <a href="https://shavi-ai.lovable.app" target="_blank" rel="noopener noreferrer">ShâVì AI Assistant</a>
+          </div>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p>© <span id="year">2026</span> VK Tech Learn — <span data-en="All rights reserved" data-hi="सभी अधिकार सुरक्षित">All rights reserved</span></p>
+        <p>DMCA Protected · Crafted by Vìñâý Kúshwâhå</p>
+      </div>
+    </footer>
+  </div>
+
+  <button class="to-top" id="to-top" type="button" aria-label="ऊपर जाएँ">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"></path></svg>
+  </button>
+
+  <noscript><div class="container" style="padding:1rem 0;color:#8fa3c0">पोस्ट और टूल्स दिखाने के लिए JavaScript चालू करें।</div></noscript>
+
+  <script>
+    /* साइट डेटा -----------------------------------------------------------
+       POSTS: आपकी live Blogger site से लिया गया (89 posts)।
+       नई पोस्ट जोड़नी हो तो नीचे एक object जोड़ें या posts.json भरें।
+    --------------------------------------------------------------------- */
+    const POSTS = [{"title":"इंटरनेट का महाजाल: फाइबर ऑप्टिक और सैटेलाइट नेटवर्क कैसे काम करते हैं?","url":"posts/blog-post.html","date":"2026-10-02","labels":["technology"],"image":"","excerpt":"इंटरनेट का महाजाल: फाइबर ऑप्टिक और सैटेलाइट नेटवर्क कैसे काम करते हैं? जब आप अपने फोन पर कोई वीडियो प्ले करते हैं या किसी वेबसाइट को खोलते हैं, तो डेट…"},{"title":"🎮 GTA 6 PC Requirements 2026: क्या आपका Laptop या PC GTA 6 चला पाएगा?","url":"posts/gta-6-pc-requirements-2026-laptop-pc.html","date":"2026-10-02","labels":["game"],"image":"","excerpt":"🎮 GTA 6 PC Requirements 2026: क्या आपका Laptop या PC GTA 6 चला पाएगा? 5 Grand Theft Auto VI यानी GTA 6 का इंतजार गेमिंग दुनिया में लंबे समय से हो रहा…"},{"title":"Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker, Slow Laptop और Printer की पूरी Guide","url":"posts/tv.html","date":"2026-06-27","labels":["Technology News"],"image":"https://images.openai.com/static-rsc-4/grDkgEGlSNiAcW_Yf_EibIkMf4fBvGtkkndrskOfI8JsJleWrKMtTRsvSantJG7u3_M9Y18VWUEN8-DybLNaD4jl5VzW8exy0gTx7K3X0mT61arnORpRkeO7lUrLQ7q7-mRobfXwvlFPNpMIuhcBj84jK36h5DF1UBe5Yfw8FSg?purpose=inline","excerpt":"Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker, Slow Laptop और Printer की पूरी Guide Windows 11 आज के समय में बहुत से desktop और la…"},{"title":"स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स","url":"posts/7.html","date":"2026-02-28","labels":["Learn"],"image":"https://img.jagranjosh.com/imported/images/E/Articles/computerskillsF.webp","excerpt":"स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स आज के समय में कंप्यूटर स्किल्स केवल एक अतिरिक्त योग्यता नहीं बल्कि बुनियादी आवश्यकता बन चुकी ह…"},{"title":"Artificial Intelligence (AI) Tools in Everyday Computing – Practical Use in Productivity, Coding & Automation","url":"posts/artificial-intelligence-ai-tools-in.html","date":"2026-02-11","labels":["Technology News"],"image":"https://images.unsplash.com/photo-1677442136019-21780ecad995","excerpt":"Artificial Intelligence (AI) Tools in Everyday Computing – AI ka Practical Use (Productivity, Coding Assistants, Automation) Artificial Intelligence y…"},{"title":"अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा","url":"posts/google-maps.html","date":"2026-01-22","labels":["Technology News"],"image":"https://i.gadgets360cdn.com/large/google_maps_main_1556884577436.jpg?downsize=950:*","excerpt":"अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा अगर आप रोज़ाना ऑफिस, कॉलेज, मीटिंग या किसी जरूरी जगह जाने के लिए…"},{"title":"ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में","url":"posts/blog-post-2.html","date":"2026-01-15","labels":["Learn"],"image":"https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=800","excerpt":"ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में आज के डिजिटल युग में ईमेल संचार का सबसे महत्वपूर्ण माध्यम बन गया है। चाहे आप किसी कंपनी में…"},{"title":"Network Device क्या है? (Network Device in Hindi)","url":"posts/network-device-network-device-in-hindi.html","date":"2026-01-13","labels":["Learn"],"image":"https://1.bp.blogspot.com/-vBS_apmaG8g/XJPGbNF1CMI/AAAAAAAABZ4/lujWm68qfm84oLhIrtgmUNXuzJWrmu6TwCLcBGAs/s1600/computer-Network-Device-in-.jpg","excerpt":"Network Device क्या है? (Network Device in Hindi) नमस्कार दोस्तों, VKTECHLEARN में आपका स्वागत है। आज के इस लेख में हम Network Device in Hindi को विस्…"},{"title":"Computer Network क्या है? (What is Computer Network in Hindi)","url":"posts/computer-network-what-is-computer.html","date":"2026-01-13","labels":["Learn"],"image":"https://1.bp.blogspot.com/-aQYDc-Ugclo/XJPIWQAmKxI/AAAAAAAABa4/7ulZTqpqcJccYnK_xoMEPABQoiloKxF1ACLcBGAs/s1600/computer%2BNetwork%2Bin%2BHindi%2B1.png","excerpt":"Computer Network क्या है? (What is Computer Network in Hindi) नमस्कार दोस्तों, Computervidya में आपका स्वागत है। आज के इस लेख में हम Computer Network…"},{"title":"Smart TV पर टाइपिंग का झंझट खत्म","url":"posts/smart-tv.html","date":"2026-01-12","labels":["Technology News"],"image":"https://images.weserv.nl/?url=https%3A%2F%2Fnwnews24.com%2Fwp-content%2Fuploads%2F2026%2F01%2FGemini_Generated_Image_61vy2d61vy2d61vy.jpeg&output=webp&q=85","excerpt":"Smart TV पर टाइपिंग का झंझट खत्म, अब मोबाइल बनेगा सबसे तेज TV कीबोर्ड Smart TV : स्मार्ट टीवी के रिमोट से सर्च बार में “San Francisco 49ers vs Kansas…"},{"title":"Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने वाई-फाई के ‘चोर’","url":"posts/wi-fi-speed.html","date":"2026-01-12","labels":["Technology News"],"image":"https://images.weserv.nl/?url=https%3A%2F%2Fnwnews24.com%2Fwp-content%2Fuploads%2F2026%2F01%2FGemini_Generated_Image_kzga2ckzga2ckzga.jpeg&output=webp&q=85","excerpt":"MERE NIYAMO PAR Wi-Fi Speed: क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने Wi-Fi के ‘चोर’ Wi-Fi Speed : फुल सिग्नल होने के बाद भी अगर वीडि…"},{"title":"कंप्यूटर को फॉर्मेट कैसे करें (Windows और Mac)","url":"posts/windows-mac.html","date":"2026-01-07","labels":["Learn"],"image":"IMAGE_URL_HERE","excerpt":"किसी भी कंप्यूटर को फॉर्मेट कैसे करें (PC, Mac और Chromebook) कंप्यूटर को फॉर्मेट करने का अर्थ है हार्ड ड्राइव में मौजूद पूरा डेटा मिटाकर ऑपरेटिंग सिस…"},{"title":"Win 11 में नया प्रिंटर कैसे सेट करें | कंप्यूटर बेसिक्स","url":"posts/win-11.html","date":"2026-01-05","labels":["Learn"],"image":"https://media.gcflearnfree.org/content/558d56a9607fc10e50038972_06_26_2015/med_printer_plug.png","excerpt":"नया प्रिंटर कैसे सेट करें क्या आप अपना नया प्रिंटर चालू करने का प्रयास कर रहे हैं? लगभग किसी भी प्रिंटर को सेट अप करने के लिए कुछ बुनियादी चरणों का पा…"},{"title":"Hindi Typing Practice","url":"posts/hindi-typing-practice.html","date":"2026-01-05","labels":["Learn"],"image":"","excerpt":"VK Tech Learn Hindi Typing Practice Book Remington Layout | Beginner to Advanced VK Tech Learn – Hindi Typing Practice Book Remington Layout | अभ्यास…"},{"title":"Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सबसे पावरफुल फोल्डेबल फोन पर साल की सबसे बड़ी गिरावट","url":"posts/samsung-galaxy-z-fold-7-discount.html","date":"2026-01-05","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2026/01/Untitled-54.jpeg","excerpt":"Samsung Galaxy Z Fold 7 Discount: लग्जरी अब पहुंच में, सैमसंग के सबसे पावरफुल फोल्डेबल फोन पर साल की सबसे बड़ी गिरावट Samsung Galaxy Z Fold 7 Discount…"},{"title":"Top Free AI Websites In Hindi (2026)","url":"posts/top-free-ai-websites-in-hindi-2026.html","date":"2026-01-03","labels":["Learn"],"image":"https://www.mybigguide.com/wp-content/uploads/2024/06/Top-Free-AI-Websites-In-Hindi-2024.png","excerpt":"Top Free AI Websites In Hindi (2026) आज के इस आधुनिक तकनीकी युग में Artificial Intelligence (AI) हमारे जीवन का एक अहम हिस्सा बन चुका है। AI का फुल फॉर…"},{"title":"Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)","url":"posts/best-remote-access-software-two.html","date":"2026-01-03","labels":["Learn"],"image":"https://www.mybigguide.com/wp-content/uploads/2024/08/Best-Remote-Access-Software-In-Hindi-1-1.png","excerpt":"Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026) आज के डिजिटल और रिमोट वर्क वाले दौर में Remote Access Software एक जरूरत बन चुका है…"},{"title":"2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें","url":"posts/2026.html","date":"2026-01-03","labels":["AI"],"image":"https://www.mybigguide.com/wp-content/uploads/2024/08/What-Is-Microsoft-Copilot-In-Hindi.png","excerpt":"माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें (2026) आज के इस तेजी से बदलते तकनीकी युग में आर्टिफिशियल इंटेलिजेंस ने हमारे काम करने के तर…"},{"title":"6 DeepSeek R1 AI Prompt to Make Money Online","url":"posts/6-deepseek-r1-ai-prompt-to-make-money.html","date":"2026-01-03","labels":["AI"],"image":"https://chat-deep.ai/wp-content/uploads/2025/10/DeepSeek-AI-Chat.png","excerpt":"आज के इस तकनीक युग में हर कोई घर बैठे ऑनलाइन पैसे कमाना चाहता है। पहले जहां इसके लिए ज्यादा समय, टीम और निवेश की जरूरत होती थी, वहीं आज AI ने इस पूरे…"},{"title":"Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति","url":"posts/bahubali-satellite-2026.html","date":"2026-01-03","labels":["Technology News"],"image":"https://www.mybigguide.com/wp-content/uploads/2025/12/bahubali-lvm3-satellite-internet-isro-1024x559.png","excerpt":"Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति भारत तेजी से डिजिटल भविष्य की ओर बढ़ रहा है और साल 2026 इस सफर में एक बड…"},{"title":"Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools","url":"posts/best-screen-recording-software-2025-pc.html","date":"2025-12-30","labels":["Technology News"],"image":"https://www.mybigguide.com/wp-content/uploads/2024/03/best-screen-recording-software.jpg","excerpt":"Best Screen Recording Software 2025 – PC & Laptop ke liye Top Options Aaj ke digital time me screen recording software sirf YouTubers ke liye hi nahi,…"},{"title":"Basic Computer Fundamentals in Hindi – Complete Notes for Beginners","url":"posts/basic-computer-fundamentals-in-hindi.html","date":"2025-12-30","labels":["Technology News"],"image":"https://www.mybigguide.com/wp-content/uploads/2013/02/what-is-computer-in-hindi-248097183.jpeg","excerpt":"Basic Computer Fundamentals – Complete Study Material यह पूरा अध्ययन सामग्री Basic Computer Fundamentals पर आधारित है। नीचे दिए गए Index से आप किसी भी…"},{"title":"Windows Me C Drive Space Kaise Increase Kare | Step by Step Complete Guide","url":"posts/windows-10.html","date":"2025-12-30","labels":["Technology News"],"image":"https://www.hdd-tool.com/images/windows-10/extend-c/increase-c-drive-free-space.jpg","excerpt":"Windows Me C Drive Space Kaise Increase Kare – Complete Step by Step Guide Aaj ke time me Windows PC users ki sabse common problem hoti hai C drive ka…"},{"title":"Android 16 के टॉप फीचर्स जो बदल देंगे स्मार्टफोन इस्तेमाल करने का तरीका","url":"posts/android-16-7.html","date":"2025-12-27","labels":["Technology News"],"image":"https://static.hub.91mobiles.com/multisite/wp-content/uploads/sites/7/2025/08/Android-16-QPR2-.jpg?tr=q-70,w-696","excerpt":"Google ने Android 16 के साथ यह साफ कर दिया है कि आने वाला समय AI-based स्मार्टफोन एक्सपीरियंस का है। यह अपडेट सिर्फ नए फीचर्स नहीं लाता, बल्कि यह हमार…"},{"title":"सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके","url":"posts/10.html","date":"2025-12-27","labels":["Technology News"],"image":"https://i0.wp.com/jetsettingfools.com/wp-content/uploads/2020/11/Top-Tips-on-Booking-Flights.jpg?w=1024&ssl=1","excerpt":"सस्ते फ्लाइट टिकट खरीदने के 10 आसान और कारगर तरीके यात्रा करना हम सभी को पसंद होता है। नई जगहें, नए अनुभव और रोमांच की भावना। लेकिन जैसे ही फ्लाइट टिक…"},{"title":"AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे","url":"posts/ai.html","date":"2025-12-16","labels":["Technology News"],"image":"https://hindi.cdn.zeenews.com/hindi/sites/default/files/2025/12/15/4282022-tech-2025-12-15t072104.137.png?im=FitAndFill=(600,450)","excerpt":"आर्टिफिशियल इंटेलिजेंस यानी AI अब सिर्फ भविष्य की तकनीक नहीं रही, बल्कि यह आज की ग्लोबल पावर का अहम हिस्सा बन चुकी है। इसी बीच भारत को लेकर एक बड़ी और…"},{"title":"बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका","url":"posts/whatsapp-call.html","date":"2025-12-16","labels":["Technology News"],"image":"https://hindi.cdn.zeenews.com/hindi/sites/default/files/2025/12/09/4273582-1.png?im=FitAndFill=(800,600)","excerpt":"How to record WhatsApp calls: WhatsApp अब सिर्फ मैसेज भेजने का ऐप नहीं रह गया है। यह आज के समय में वॉयस कॉल और वीडियो कॉल के लिए सबसे ज्यादा इस्तेमाल…"},{"title":"Amazon Black Friday Sale 2025 की शुरुआती डील्स भारत में लाइव।","url":"posts/amazon-black-friday-sale-2025.html","date":"2025-11-27","labels":["Technology News"],"image":"https://i.gadgets360cdn.com/large/ps5_1708502469648.jpg?downsize=950:*","excerpt":"Amazon Black Friday Sale 2025 — Early Deals भारत में लाइव Amazon ने Black Friday 2025 की शुरुआती डील्स चालू की हैं। नीचे आसान हिंदी में प्रमुख ऑफर्स,…"},{"title":"Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)","url":"posts/airtel-perplexity-pro-chatgpt-go-199.html","date":"2025-11-26","labels":["Technology News"],"image":"https://static.langimg.com/nbt/thumb/124009102/how-to-get-free-perplexity-pro-ai-with-airtel-199rs-prepaid-plan.jpg?imgsize=1288057&width=700&height=394&resizemode=75","excerpt":"इस गाइड में हम विस्तार से बताएँगे कि Airtel के ₹199 प्रीपेड प्लान के साथ Perplexity Pro सब्सक्रिप्शन कैसे क्लेम करें, किन स्टेप्स का पालन करना है और अ…"},{"title":"AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath","url":"posts/ai-tools-ki-wave-2025-top-free-ai-tools.html","date":"2025-11-26","labels":["Technology News"],"image":"https://chat.openai.com/favicon.ico","excerpt":"# # AI Tools क्या होते हैं? | 2025 के टॉप 20 AI टूल्स जो सबको जानने चाहिए AI Tools से आशय उन सॉफ्टवेयर और प्लेटफॉर्म्स से है जो Artificial Intelligenc…"},{"title":"WhatsApp से अब चेक करें PNR और लाइव ट्रेन स्टेटस — आसान तरीका विस्तार से","url":"posts/whatsapp-pnr.html","date":"2025-11-26","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/11/Untitled-114.png","excerpt":"भारतीय रेलवे की डिजिटल सेवाएं लगातार बेहतर हो रही हैं और अब यात्रियों के लिए एक और आसान सुविधा उपलब्ध है। अब आप WhatsApp के माध्यम से अपना PNR स्टेटस,…"},{"title":"Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड","url":"posts/browser-cache-dns.html","date":"2025-11-26","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/11/Untitle-2025-11-24T071156.736.jpeg","excerpt":"इंटरनेट स्पीड हर यूज़र के लिए सबसे महत्वपूर्ण चीज़ों में से एक है, खासकर तब जब ब्राउजिंग, स्ट्रीमिंग, ऑनलाइन गेमिंग और वर्क-फ्रॉम-होम जैसे काम रोज़मर्…"},{"title":"Google AI Risk : गूगल AI से नकली आधार–पैन तैयार, सुरक्षा पर उठे सवाल","url":"posts/google-ai-risk-ai.html","date":"2025-11-26","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/11/Untitle-2-3.jpeg","excerpt":"प्रकाशित: 2025 — विषय: साइबर सुरक्षा, डिजिटल पहचान, AI नीति डिजिटल तकनीक के बढ़ते दायरे में जनरेटिव AI टूल्स की क्षमताएँ तेज़ी से विकसित हो रही हैं। ह…"},{"title":"Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके","url":"posts/smartphone-slow-charging.html","date":"2025-11-15","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/11/Untitle-26-2.jpeg","excerpt":"Smartphone Slow Charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के आसान और असरदार तरीके स्मार्टफोन आज हर काम का आधार बन गया है…"},{"title":"PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत","url":"posts/pf-balance-pf.html","date":"2025-11-04","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/11/Untitle-55.jpeg","excerpt":"मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी जरूरत नहीं अगर आप नौकरीपेशा हैं तो हर महीने आपके सैलरी अकाउंट से एक तय राशि EPF (Employ…"},{"title":"WhatsApp : के फालतू फोटोज से नहीं भरेगी फोन की गैलरी, बस बंद कर दें ये एक फीचर — जानें आसान तरीका","url":"posts/whatsapp.html","date":"2025-11-03","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/11/Untitle-33.jpeg","excerpt":"WhatsApp में फालतू फोटो और वीडियो गैलरी में सेव होने से कैसे रोकें? अगर आप WhatsApp इस्तेमाल करते हैं, तो आपने जरूर देखा होगा कि जैसे ही कोई फोटो, वीड…"},{"title":"DeepSeek : कैसे चीन की सेना DeepSeek को बना रही अपना हथियार — क्या AI खुद ही टारगेट पहचानकर हमला करेगा?","url":"posts/deepseek-deepseek-ai.html","date":"2025-10-30","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/10/Untitled-159.png","excerpt":"कैसे चीन की सेना DeepSeek को बना रही अपना नया AI हथियार चीन की सेना अब आर्टिफिशियल इंटेलिजेंस को केवल एक तकनीकी प्रयोग नहीं, बल्कि अपने भविष्य के युद्…"},{"title":"WhatsApp Aadhaar : WhatsApp से ऐसे डाउनलोड करें अपना आधार कार्ड — स्टेप-बाय-स्टेप तरीका और सुरक्षा टिप्स","url":"posts/whatsapp-aadhaar-whatsapp.html","date":"2025-10-25","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/10/Untitle-56-2.jpeg","excerpt":"WhatsApp Aadhaar : WhatsApp से ऐसे डाउनलोड करें अपना आधार कार्ड — स्टेप-बाय-स्टेप तरीका और सुरक्षा टिप्स अगर आपके पास आधार कार्ड की फिजिकल कॉपी नहीं ह…"},{"title":"Tv Remote Broken : अपने स्मार्टफोन को बनाएं रिमोट और चैनल बदलें आसानी से","url":"posts/tv-remote-broken.html","date":"2025-10-25","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/10/Untitle-61-2.jpeg","excerpt":"TV Remote Broken : अपने स्मार्टफोन को बनाएं रिमोट और चैनल बदलें आसानी से टीवी या स्मार्ट टीवी यूजर्स के साथ अक्सर ऐसा होता है कि टीवी रिमोट अचानक काम…"},{"title":"UPI AutoPay : कैसे बंद करें: Paytm, PhonePe और Google Pay में आसान तरीका","url":"posts/upi-autopay-paytm-phonepe-google-pay.html","date":"2025-10-25","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/10/Untitle-59-4.jpeg","excerpt":"UPI AutoPay : कैसे बंद करें – Paytm, PhonePe और Google Pay में आसान तरीका UPI AutoPay फीचर ने ऑनलाइन पेमेंट्स को बेहद आसान बना दिया है। इससे यूजर्स को…"},{"title":"Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौती, सुरक्षा और प्राइवेसी पर जोर","url":"posts/made-in-india-apps.html","date":"2025-10-25","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/10/Untitled-131.png","excerpt":"Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौती, सुरक्षा और प्राइवेसी पर जोर आत्मनिर्भर भारत की सोच और डेटा प्राइवेसी की बढ़ती चि…"},{"title":"Gmail की स्टोरेज क्लीनअप — मिनटों में फ्री स्पेस वापस पाएं","url":"posts/gmail.html","date":"2025-10-21","labels":["Technology News"],"image":"","excerpt":"Gmail की स्टोरेज कैसे साफ करें और फ्री स्पेस वापस पाएं Google हर अकाउंट को मुफ्त में 15GB स्टोरेज देता है जो Gmail, Google Drive और Google Photos के ब…"},{"title":"Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें","url":"posts/link-voter-id-card-with-aadhaar-card-in.html","date":"2025-10-17","labels":["Technology News"],"image":"https://blogger.googleusercontent.com/img/a/AVvXsEgb_XtxnjOC-zX-vT3bKl6CZ_cDsi1NuzUs9-O0BW6C5vXTLxycm-oFWDSKhYcJ-oQKdQxln6eQRPN3n-i_SVZ0nu09FTFutKP36lONeLT3Sx1jR_m2ljAh5xLCgyNbAkOSCHVe6CTSfqBljNdLLA91VV6jGoR25urv3d-q3MU1th-qag0uuj-DdulDI3g=w609-h465","excerpt":"वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें आज के समय में वोटर आईडी और आधार कार्ड दोनों ही आपकी पहचान के जरूरी दस्तावेज हैं। यदि आपने अभी तक अपने…"},{"title":"How to Use The Same WhatsApp Number On Two Smartphone in Hindi","url":"posts/how-to-use-same-whatsapp-number-on-two.html","date":"2025-10-17","labels":["Technology News"],"image":"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhs9RKJSD-zJgWVRvniyamLpGGf31O8FvwLx5tMIRk5o4xIUJlvIg1e6J6hUYWJbDUQNfHcw2ajbGyaAkyhZs3AGmVSI9hr8db55UG2JM6eGbUX-v-mu4ekdG908zqpucf-pVP4xhbPNOMEIR44KrZOI1BtCVp2I_bH0wOjio-ZkD-WHJidFmqNIfVY12k/w650-h467/9bcba19f-99c9-4cd4-bb40-8cf72cfa1099.jpg","excerpt":"How to Use The Same WhatsApp Number On Two Smartphone in Hindi | एक WhatsApp नंबर को दो फोन में कैसे चलाएं आज के समय में WhatsApp हर व्यक्ति के जीवन क…"},{"title":"कम्प्यूटर क्या है — परिचय, परिभाषा, इतिहास, विशेषताएं, प्रकार और करियर","url":"posts/blog-post-3.html","date":"2025-10-08","labels":["Technology News"],"image":"https://www.mybigguide.com/wp-content/uploads/2013/02/what-is-computer-in-hindi-248097183.jpeg","excerpt":"कम्प्यूटर क्या है — परिचय, परिभाषा, इतिहास, विशेषताएँ, प्रकार और करियर कम्प्यूटर अब हमारी रोजमर्रा की ज़िन्दगी का एक अनिवार्य उपकरण बन चुका है। स्कूल,…"},{"title":"Top 10 Free Games Websites For Online Gaming in 2025","url":"posts/top-10-free-games-websites-for-online.html","date":"2025-10-04","labels":["Technology News"],"image":"https://fossbytes.com/wp-content/uploads/2019/04/free-online-gaming-sites.jpg","excerpt":"Top 10 Free Games Websites For Online Gaming in 2025 Free games websites are a fun and easy way to play online games without downloading anything. But…"},{"title":"OpenAI का ‘Sora 2’ मचाएगा सोशल मीडिया पर तहलका: TikTok और YouTube Shorts को सीधी टक्कर","url":"posts/openai-sora-2-tiktok-youtube-shorts.html","date":"2025-10-03","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/10/Untitle-2025-10-02T105557.414.jpeg","excerpt":"OpenAI का ‘Sora 2’ मचाएगा सोशल मीडिया पर तहलका: TikTok और YouTube Shorts को सीधी टक्कर आर्टिफिशियल इंटेलिजेंस (AI) की दुनिया में एक और बड़ा धमाका हुआ…"},{"title":"Apple : Apple ऐप स्टोर पर नंबर 1 बना ‘मेड-इन-इंडिया’ ऐप ‘अरट्टई’, WhatsApp के सामने बड़ी चुनौती!","url":"posts/apple-apple-1-whatsapp.html","date":"2025-09-30","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/09/Untitle-2025-09-29T171321.943.jpeg","excerpt":"Apple : Apple ऐप स्टोर पर नंबर 1 बना ‘मेड-इन-इंडिया’ ऐप ‘अरट्टई’, WhatsApp के सामने बड़ी चुनौती! Apple : भारत में स्वदेशी डिजिटल प्लेटफॉर्म को बढ़ावा द…"},{"title":"WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को कर रहे हैं बर्बाद, अभी करें दूर!","url":"posts/wifi-speed-boost-tips-slow-wi-fi-5.html","date":"2025-09-30","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/09/Untitle-2025-09-29T173342.726.jpeg","excerpt":"WiFi Speed Boost Tips: Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को बर्बाद कर रहे हैं — अभी हटाइए अगर आपके घर में हाई-स्पीड इंटरनेट प्लान होन…"},{"title":"MS Word में पेज डिलीट कैसे करें | How to Delete Page in Word","url":"posts/ms-word-how-to-delete-page-in-word.html","date":"2025-09-29","labels":["Technology News"],"image":"screenshot1.png","excerpt":"MS Word में पेज डिलीट कैसे करें | How to Delete Page in Word क्या आप MS Word में गलती से extra page डाल बैठे हैं और अब उसे delete करना चाहते हैं? Word…"},{"title":"iPhone 17: क्या अब अपग्रेड करने का सही समय है?","url":"posts/iphone-17.html","date":"2025-09-29","labels":["Technology News"],"image":"https://www.cnet.com/a/img/resize/f7aaf67b3f23066ec5213fac0236085a2bdae3dc/hub/2025/09/10/d5610cbc-ca12-47e3-9a19-06fcc503107d/blue-iphone-17.jpg?auto=webp&amp;fit=crop&amp;height=675&amp;width=1200","excerpt":"iPhone 17 लॉन्च: क्या अब अपग्रेड करने का सही समय है? Apple ने iPhone 17 को आधिकारिक रूप से पेश कर दिया है। डिज़ाइन में बड़े बदलाव नहीं दिखते, लेकिन अं…"},{"title":"OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5 और नया डिजाइन","url":"posts/oneplus-15-snapdragon-8-elite-gen-5.html","date":"2025-09-27","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/09/Untitled-112.png","excerpt":"OnePlus अपने नए फ्लैगशिप स्मार्टफोन OnePlus 15 को लेकर सुर्खियों में है। कंपनी ने आधिकारिक रूप से घोषणा की है कि यह स्मार्टफोन अक्टूबर 2025 में लॉन्च…"},{"title":"Perplexity AI ने India में Comet Browser और AI Email Assistant लॉन्च किया","url":"posts/perplexity-ai-india-comet-browser-ai.html","date":"2025-09-25","labels":["Technology News"],"image":"https://www.internetmatters.org/wp-content/uploads/2025/07/Perplexity-feature.webp","excerpt":"Perplexity AI ने India में Comet Browser और AI Email Assistant लॉन्च किया भारत के टेक्नोलॉजी मार्केट में एक और बड़ा कदम सामने आया है। Perplexity AI ने…"},{"title":"WhatsApp Real-time Message Translation फीचर: अब अलग-अलग भाषाओं में चैट करना हुआ आसान","url":"posts/whatsapp-real-time-message-translation.html","date":"2025-09-24","labels":["Technology News"],"image":"https://pplx-res.cloudinary.com/image/fetch/s--YdV9sjbK--/t_limit/https://techcrunch.com/wp-content/uploads/2024/12/whatsapp-logo.jpg","excerpt":"WhatsApp पर आया Real-time Message Translation फीचर दुनिया की सबसे लोकप्रिय मैसेजिंग ऐप WhatsApp ने अपने 3 अरब से ज्यादा यूजर्स के लिए Real-time Messag…"},{"title":"हैकिंग — परिभाषा, प्रकार, सुरक्षा और जरूरी जानकारी","url":"posts/blog-post-4.html","date":"2025-09-15","labels":["Technology News"],"image":"https://www.fortinet.com/content/dam/fortinet/images/cyberglossary/types-of-hackers.jpeg","excerpt":"हैकिंग — परिभाषा, प्रकार, इतिहास, सुरक्षा उपाय और विस्तृत जानकारी डिजिटल युग में हैकिंग (Hacking) एक ऐसा शब्द है जो लगभग हर व्यक्ति ने सुना है। हैकिंग…"},{"title":"जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉलिंग की सुविधा","url":"posts/vonr-5g.html","date":"2025-09-10","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/09/Untitle-2025-09-08T223025.039.jpeg","excerpt":"जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉलिंग की सुविधा रिलायंस जियो ने मोबाइल यूजर्स के लिए कॉलिंग अनुभव को और बेहतर बनाने…"},{"title":"Gpay-PhonePe : 15 सितंबर से बदल जाएंगे UPI ट्रांजैक्शन के नियम","url":"posts/gpay-phonepe-15-upi.html","date":"2025-09-09","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/09/Untitle-2025-09-08T150344.075.jpeg","excerpt":"Gpay-PhonePe : 15 सितंबर से बदल जाएंगे UPI ट्रांजैक्शन के नियम नेशनल पेमेंट्स कॉर्पोरेशन ऑफ इंडिया (NPCI) ने UPI से जुड़े नियमों में बड़ा बदलाव किया ह…"},{"title":"New Blog Ko Rank Kaise Kare: ब्लॉग को गूगल के पहले पेज पर लाने के 15 ज़रूरी टिप्","url":"posts/new-blog-ko-rank-kaise-kare-15.html","date":"2025-09-05","labels":["Technology News"],"image":"","excerpt":"New Blog Ko Rank Kaise Kare: ब्लॉग को गूगल के पहले पेज पर कैसे लाएं? क्या आप भी ब्लॉगिंग की शुरुआत कर चुके हैं लेकिन आपका ब्लॉग Google के पहले पेज पर…"},{"title":"Gmail : बार-बार फुल हो रहा है Gmail का स्टोरेज? इन आसान तरीकों से मिनटों में करें क्लियर, नहीं होगी परेशानी","url":"posts/gmail-gmail.html","date":"2025-09-03","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/08/Untitle-2025-08-31T180325.198.jpeg","excerpt":"Gmail का स्टोरेज बार-बार फुल हो रहा है? इन आसान तरीकों से मिनटों में करें क्लियर Gmail गूगल की सबसे ज़्यादा इस्तेमाल की जाने वाली सेवाओं में से एक है।…"},{"title":"आईफोन 17 से पहले सैमसंग का बड़ा दांव, 4 सितंबर को होगा ‘गैलेक्सी अनपैक्ड’ इवेंट, लॉन्च होंगे ये धांसू डिवाइस","url":"posts/17-4.html","date":"2025-09-03","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/08/Untitle-2025-08-30T155904.878.jpeg","excerpt":"iPhone 17 से पहले सैमसंग का बड़ा दांव: 4 सितंबर को होगा ‘Galaxy Unpacked’ इवेंट, लॉन्च होंगे नए डिवाइस Apple के iPhone 17 सीरीज लॉन्च से कुछ दिन पहले…"},{"title":"Pixel 10: पिक्सेल 10 में ‘रंगीन बर्फ’ डिस्प्ले समस्या | क्या है वजह और क्या करें","url":"posts/pixel-10-10.html","date":"2025-09-03","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/09/Untitled-12.png","excerpt":"Pixel 10: पिक्सेल 10 में आई बड़ी समस्या, स्क्रीन पर ‘रंगीन बर्फ’ देखकर यूजर्स परेशान Google ने हाल ही में Pixel 10 लॉन्च किया है, लेकिन लॉन्च के कुछ ह…"},{"title":"iPhone 17 और iPhone 17 Pro की भारतीय कीमतें और फीचर्स लॉन्च से पहले सामने आई। जानें iPhone 17 सीरीज की कीमत, फीचर्स और लॉन्च डेट।\"","url":"posts/iphone-17-iphone-17-pro-iphone-17.html","date":"2025-08-30","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/08/Untitle-2025-08-29T202237.415.jpeg","excerpt":"iPhone 17 Pro : लॉन्च से पहले भारतीय कीमत और फीचर्स एप्पल का ‘Awe Dropping’ इवेंट 9 सितंबर को आयोजित होने जा रहा है, जिसमें iPhone 17 सीरीज के नए मॉडल…"},{"title":"Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i","url":"posts/lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i.html","date":"2025-08-26","labels":["Technology News"],"image":"https://images.indianexpress.com/2025/08/Lenovo.jpg?w=640","excerpt":"Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i Lenovo ने 26 अगस्त 2025 को भारत में अपनी नई Legion Gen 10 गेमिंग लैपटॉप सीरीज़ पेश कर दी…"},{"title":"Google Pixel 10: WhatsApp पर सैटेलाइट कॉल करने वाला पहला फोन | हिंदी ब्लॉग","url":"posts/google-pixel-10-whatsapp.html","date":"2025-08-23","labels":["Technology News"],"image":"https://akm-img-a-in.tosshub.com/indiatoday/images/story/202508/pixel-10-series-204155896-16x9_0.png?VersionId=D3pHv6xPNC46I2Bs6YD_qp1zbrfC2_cj&size=690:388","excerpt":"गूगल पिक्सेल 10: अब व्हाट्सऐप कॉल भी सैटेलाइट से क्रेडिट: Unsplash पर एक प्रतिनिधि फ़ोटो गूगल ने एक बड़ी घोषणा करते हुए बताया है कि उनकी नई पिक्सेल 10…"},{"title":"Ayaneo Pocket DS: अब Android पर Nintendo DS जैसा अनुभव","url":"posts/ayaneo-pocket-ds-android-nintendo-ds.html","date":"2025-08-20","labels":["Technology News"],"image":"https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2025/08/ayaneo-ds.jpg?q=70&amp;fit=crop&amp;w=1100&amp;h=618&amp;dpr=1","excerpt":"Ayaneo Pocket DS: Android पर Nintendo DS जैसा अनुभव दो स्क्रीन, Android 13, Snapdragon G3x Gen 2. Indiegogo पर प्री-ऑर्डर उपलब्ध। मुख्य बातें Ayaneo P…"},{"title":"भारत का सेमीकंडक्टर रेवोल्यूशन: क्यों हर किसी को इसके बारे में जानना चाहिए","url":"posts/blog-post-5.html","date":"2025-08-18","labels":["Technology News"],"image":"https://placehold.co/800x450/4f46e5/ffffff?text=India+Semiconductor+Mission","excerpt":"भारत का सेमीकंडक्टर रेवोल्यूशन: क्यों हर किसी को इसके बारे में जानना चाहिए जब आप अपना स्मार्टफोन इस्तेमाल करते हैं या अपनी स्मार्ट कार चलाते हैं, तो क…"},{"title":"ChatGPT से AI Image कैसे बनाएं (Step-by-Step गाइड)","url":"posts/chatgpt-ai-image-step-by-step.html","date":"2025-08-15","labels":["Technology News"],"image":"https://sheknowsseo.co/wp-content/uploads/2024/04/selecting-dalle-3-chatgpt.webp?modified=1","excerpt":"ChatGPT से AI Image कैसे बनाएं – Step-by-Step गाइड आज के डिजिटल दौर में AI टूल्स की मदद से आप न सिर्फ कंटेंट, बल्कि शानदार विजुअल्स भी बना सकते हैं। C…"},{"title":"Infinix GT 30 5G+ – गेमिंग और पावरफुल परफॉर्मेंस का नया चैंपियन","url":"posts/infinix-gt-30-5g.html","date":"2025-08-14","labels":["Technology News"],"image":"https://infinixmobiles.in/cdn/shop/files/FSN-NORMAL.png?v=1754887782&width=1200","excerpt":"Infinix GT 30 5G+ – गेमिंग और पावरफुल परफॉर्मेंस का नया चैंपियन Infinix GT 30 5G+ खासतौर पर गेमिंग लवर्स और पावर यूज़र्स के लिए तैयार किया गया है। इसम…"},{"title":"Elon Musk vs Apple: ए‍प स्टोर एंट्री और AI की जंग","url":"posts/elon-musk-vs-apple-ai.html","date":"2025-08-12","labels":["Technology News"],"image":"https://placehold.co/800x450/e5e7eb/6b7280?text=Apple+vs+Musk+AI+Dispute","excerpt":"Elon Musk vs Apple: AI App Store विवाद की पूरी कहानी लेखक: एक आम भारतीय | 12 अगस्त 2025 हाल ही में Elon Musk और Apple के बीच AI App Store को लेकर विवा…"},{"title":"WhatsApp स्टेटस में अब सीधे फोटो कोलाज","url":"posts/whatsapp-2.html","date":"2025-08-11","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/08/Untitle-7-1.jpeg","excerpt":"WhatsApp स्टेटस में नया Layout फीचर: अब सीधे ऐप में फोटो कोलाज बनाएं WhatsApp ने एक बड़ा अपडेट जारी किया है, जो खासकर उन यूजर्स के लिए है जो अपने स्टे…"},{"title":"Namecheap पर ₹74 में .COM डोमेन कैसे रजिस्टर करें","url":"posts/namecheap-74-com.html","date":"2025-08-08","labels":["Tech"],"image":"https://i.ibb.co/TM0h3TZy/How-to-Buy-Domain-from-Namecheap.webp","excerpt":"Namecheap पर ₹74 में .COM डोमेन कैसे रजिस्टर करें अगर आप ब्लॉगिंग या वेबसाइट बनाना चाहते हैं, तो सबसे पहला और जरूरी कदम होता है — एक बेहतरीन डोमेन नाम…"},{"title":"VK Tech Learn AI Assistant: AI Chatbot Powered by Gemini","url":"posts/vk-tech-learn-ai-assistant-ai-chatbot.html","date":"2025-08-06","labels":["Tech"],"image":"https://blogger.googleusercontent.com/img/a/AVvXsEj-077xmBpuEjiaTAs1234WtF_9Gq5gDkooSccQJCXjc1PduLnpB9EIM6P3Nq5Q4X3t3S0_Ynr1dF005BGoXkD5X6bXpYn4IcTk3rRckX_vtYSTkngOaaHsa2yZX8luQVOhVOF_9FbklVLbbBNq_OlRI_fhyUhabHzz7vbef_JE44ec_9wv4-ZCRdCyf7On","excerpt":"VK Tech Learn AI Assistant – आपका Gemini‑powered Free AI Chatbot VK Tech Learn AI Assistant एक स्मार्ट और आधुनिक चैटबॉट है जो Google Gemini API पर आधा…"},{"title":"AI के बढ़ते प्रभाव से 80% नौकरियां खतरे में – क्या अब इंसानों की जगह लेगा आर्टिफिशियल इंटेलिजेंस?","url":"posts/ai-80.html","date":"2025-08-05","labels":["Tech"],"image":"https://nwnews24.com/wp-content/uploads/2025/08/Untitle-3.jpeg","excerpt":"‘AI से खतरे में 80% नौकरियां’ – इंसानों की जगह ले रहा आर्टिफिशियल इंटेलिजेंस आर्टिफिशियल इंटेलिजेंस (AI) के तेजी से बढ़ते प्रभाव को लेकर दुनिया भर में…"},{"title":"Blogging की शुरुआत कैसे करें – Step by Step पूरी जानकारी हिंदी में","url":"posts/blogging-step-by-step.html","date":"2025-08-04","labels":["Tech"],"image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgUQSk4Dre8KiCRGmxbtocscbQCiQBIPfZbA&s","excerpt":"Blogging की शुरुआत कैसे करें: एक स्टेप बाय स्टेप गाइड आज के डिजिटल युग में ब्लॉगिंग न केवल अभिव्यक्ति का माध्यम है, बल्कि एक कमाई का जरिया भी बन चुका…"},{"title":"AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!","url":"posts/ai-vs-gut-feeling-body-font-family.html","date":"2025-08-02","labels":["Tech"],"image":"https://readerfirst.com/wp-content/uploads/2025/08/114.jpg","excerpt":"AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी! गट फीलिंग या अंतरात्मा की आवाज के आधार पर हम सब…"},{"title":"ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?","url":"posts/bsod.html","date":"2025-07-31","labels":["Tech"],"image":"https://store.hp.com/app/assets/images/uploads/prod/what-is-blue-screen-of-death-windows-10-hero1563573354247616.jpg","excerpt":"अगर आप विंडोज यूजर हैं, तो आपने कभी न कभी 'ब्लू स्क्रीन ऑफ डेथ' (Blue Screen of Death) का नाम जरूर सुना होगा। यह वो डरावनी नीली स्क्रीन है जो अचानक आप…"},{"title":"SEO क्या है? पूरी जानकारी हिंदी में","url":"posts/seo.html","date":"2025-07-31","labels":["Computer Class"],"image":"https://chat.openai.com/mnt/data/A_2D_digital_illustration_infographic_features_the.png","excerpt":"SEO क्या है? पूरी जानकारी हिंदी में आज के डिजिटल युग में ऑनलाइन उपस्थिति और वेबसाइट की सफलता के लिए SEO एक अहम भूमिका निभाता है। ... SEO क्या है? पूरी…"},{"title":"1 अगस्त 2025 से बदल जाएंगे UPI के नियम – जानिए BHIM, GPay, PhonePe पर असर","url":"posts/computer-ki-puri-knowledge-kya-hai.html","date":"2025-07-28","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/07/Untitle-2025-07-28T092444.220.jpeg","excerpt":"1 अगस्त 2025 से बदल जाएंगे UPI से जुड़े कई नियम – BHIM, Google Pay और PhonePe यूजर्स जरूर पढ़ें अगर आप BHIM, Google Pay, PhonePe या किसी अन्य UPI ऐप क…"},{"title":"PAN 2.0 स्कैम से सावधान! सरकार ने जारी की चेतावनी, फर्जी ईमेल लिंक से ऐसे बचें","url":"posts/pan-20.html","date":"2025-07-24","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/07/Untitle-33.jpeg","excerpt":"PAN 2.0 को लेकर फैल रहा स्कैम, सरकार ने किया अलर्ट जारी – फर्जी ईमेल से बचें! PAN 2.0 स्कैम तेजी से पूरे देश में फैल रहा है। सरकार द्वारा हाल ही में ल…"},{"title":"टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए","url":"posts/honor.html","date":"2025-07-23","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/07/Untitle-47.jpeg","excerpt":"Snapdragon 8 Gen 3 के साथ लॉन्च हुआ Honor Pad GT 2 Pro, जानिए दमदार फीचर्स टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया…"},{"title":"WhatsApp का नया Windows लुक: अब वेब-जैसा इंटरफेस, नए फीचर्स और अपडेट की पूरी जानकारी!","url":"posts/whatsapp-windows.html","date":"2025-07-22","labels":["Technology News"],"image":"/mnt/data/A_digital_graphic_features_a_promotion_of_WhatsApp.png","excerpt":"WhatsApp के Windows वर्जन को मिला नया लुक: जानिए क्या बदला और इसका क्या असर होगा WhatsApp एक बार फिर सुर्खियों में है और इस बार कारण है इसका नया बदलाव…"},{"title":"अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स","url":"posts/iphone-iphone-16e-6300-ai.html","date":"2025-07-21","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/07/Untitled-77.png","excerpt":"AI फीचर्स वाला सबसे सस्ता iPhone! iPhone 16e पर मिल रहा ₹6,300 का डिस्काउंट, जानें ऑफर की डिटेल अगर आप लंबे समय से Apple का स्मार्टफोन खरीदने का सोच र…"},{"title":"2025 की ताज़ा टेक्नोलॉजी न्यूज़: AI सुपरकंप्यूटर, हाइड्रोजन ड्रोन, स्मार्ट खेती और EV बैटरी में धमाका!","url":"posts/2025-ai-ev.html","date":"2025-07-21","labels":["Technology News"],"image":"","excerpt":"🚀 आज की ताज़ा तकनीकी खबरें: AI, रोबोटिक्स, क्लीन बैटरी और बहुत कुछ तकनीक की दुनिया में हर दिन कुछ नया होता है। आज हम आपके लिए लेकर आए हैं पांच बड़ी तकन…"},{"title":"Google Pixel 9 Pro पर Flipkart GOAT सेल में तगड़ा डिस्काउंट, जानें नई कीमत और फीचर्स","url":"posts/google-pixel-9-pro-flipkart-goat.html","date":"2025-07-18","labels":["Technology News"],"image":"https://nwnews24.com/wp-content/uploads/2025/07/Untitled-62.png","excerpt":"Google Pixel 9 Pro पर Flipkart GOAT सेल में तगड़ा डिस्काउंट, जानें नई कीमत और फीचर्स अगर आप Google Pixel स्मार्टफोन के कैमरा क्वालिटी और AI फीचर्स के…"},{"title":"रील बनाइए और कमाइए ₹5000! सरकार का शानदार मौका","url":"posts/5000.html","date":"2025-07-18","labels":["News"],"image":"https://kirandoot.com/wp-content/uploads/2025/07/129.jpg","excerpt":"रील बनाओ, ₹5000 कमाओ: गांव की स्वच्छता दिखाओ, सरकार से इनाम पाओ! अगर आपको रील बनाना पसंद है और सोशल मीडिया पर एक्टिव रहते हैं, तो अब आपके शौक से हो सक…"},{"title":"सरकारी कर्मचारियों के लिए खुशखबरी! 8वें वेतन आयोग से 34% तक बढ़ सकती है सैलर","url":"posts/8-34.html","date":"2025-07-18","labels":["News"],"image":"https://readerfirst.com/wp-content/uploads/2025/07/130.jpg","excerpt":"सरकारी कर्मचारियों के लिए खुशखबरी! 8वें वेतन आयोग से 34% तक बढ़ सकती है सैलरी लाखों केंद्रीय कर्मचारियों और पेंशनर्स के लिए एक बड़ी राहत की खबर है। सर…"},{"title":"क्या है नीला आधार कार्ड और कैसे बनवाएं? जानिए पूरी प्रक्रिया","url":"posts/blog-post-6.html","date":"2025-07-18","labels":["Technology News"],"image":"https://readerfirst.com/wp-content/uploads/2025/07/146.jpg","excerpt":"5 साल से कम उम्र के बच्चों के लिए 'नीला आधार कार्ड' कैसे बनवाएं? आधार कार्ड आज हर भारतीय नागरिक के लिए एक महत्वपूर्ण पहचान दस्तावेज बन गया है। अब यह छ…"},{"title":"How to Transfer Your FASTag from One Bank to Another: A Complete Guide","url":"posts/how-to-transfer-your-fastag-from-one.html","date":"2025-07-18","labels":["Technology News"],"image":"https://readerfirst.com/wp-content/uploads/2025/07/144.jpg","excerpt":"FASTag को एक बैंक से दूसरे बैंक में कैसे ट्रांसफर करें? जानिए आसान तरीका FASTag ने टोल प्लाजा पर भुगतान को बेहद आसान और फास्ट बना दिया है। अब यह चार प…"},{"title":"Realme 15 Pro 5G भारत में 24 जुलाई को होगा लॉन्च: 7000mAh बैटरी, 80W फास्ट चार्जिंग और AI कैमरा के साथ आएगा ये धांसू फोन!","url":"posts/realme-15-pro-5g-24-7000mah-80w-ai.html","date":"2025-07-18","labels":["Technology News"],"image":"https://readerfirst.com/wp-content/uploads/2025/07/108MP-%E0%A4%95%E0%A4%BE-%E0%A4%95%E0%A5%88%E0%A4%AE%E0%A4%B0%E0%A4%BE_20250716_115908_0000-min.webp","excerpt":"Realme 15 Pro 5G भारत में 24 जुलाई को होगा लॉन्च, मिलेगा 7000mAh बैटरी, 80W चार्जिंग और दमदार AI कैमरा! लखनऊ: स्मार्टफोन निर्माता Realme ने अपनी बहुप्…"}];
+    const ALL_TOOLS = [{"name":"Aura AI","desc":"AI and Content Tools.","cat":"AI & Content","link":"https://vktechlearnai.blogspot.com/"},{"name":"Worksheet","desc":"Kids Worksheet Generator","cat":"Education","link":"https://mathssheetgenerate.blogspot.com/"},{"name":"Drawing App","desc":"A simple web-based drawing and painting tool.","cat":"Image Tools","link":"https://drawingvk.blogspot.com/"},{"name":"File Upload Manager","desc":"Upload files to a server and get a shareable link.","cat":"Misc","link":"https://fileuploadmanager.blogspot.com/"},{"name":"Currency Converter","desc":"Convert between different world currencies.","cat":"Financial Tools","link":"https://currencyvkconverter.blogspot.com/"},{"name":"Case Converter","desc":"Convert text to various case formats.","cat":"Text & Conversion","link":"https://casevkconverter.blogspot.com/"},{"name":"AI Story Writer","desc":"Generate short stories from prompts.","cat":"AI & Content","link":"https://vkaistorywriter.blogspot.com/"},{"name":"Image Resizer","desc":"Resize images by pixel or percentage.","cat":"Image Tools","link":"https://vkimageresizer.blogspot.com/"},{"name":"Meme Generator","desc":"Create memes with top and bottom text.","cat":"Image Tools","link":"https://vkmemegenerator.blogspot.com/"},{"name":"Image Compressor","desc":"Compress JPEG, PNG, and WEBP images.","cat":"Image Tools","link":"https://vkimagecompressor.blogspot.com/"},{"name":"Grammar Checker","desc":"Fix grammar, spelling and punctuation.","cat":"AI & Content","link":"https://vkgrammarchecker.blogspot.com/"},{"name":"Image PDF Export","desc":"Export images to a single PDF.","cat":"PDF & File","link":"https://imagetopdfexport.blogspot.com/"},{"name":"PDF Editing Toolbox","desc":"ast, private, and beautiful — all in your browser","cat":"PDF & File","link":"https://vkpdfeditingtools.blogspot.com/"},{"name":"AI Article Rewriter","desc":"Automatically rewrite articles using AI.","cat":"AI & Content","link":"https://vkaiarticlerewriter.blogspot.com/"},{"name":"Age Calculator","desc":"Calculate a person's age based on their birth date.","cat":"Misc","link":"https://vkagecalculator.blogspot.com/"},{"name":"Instagram Marketing Toolkit","desc":"6 Powerful Tools in One","cat":"Misc","link":"https://instagrammarketingtoolskit.blogspot.com/"},{"name":"IP Address Lookup","desc":"Find the geolocation of an IP address.","cat":"Misc","link":"https://ipaddresslookupvk.blogspot.com/"},{"name":"ASCII ART GENERATOR","desc":"Convert images to ASCII art.","cat":"Misc","link":"https://asciiartgenerator.blogspot.com/"},{"name":"Typing Master Pro","desc":"Master Your Typing Skills!","cat":"Misc","link":"https://vktypingtest.blogspot.com/"},{"name":"Gemini Cheat Code","desc":"Cheat","cat":"Gemini","link":"https://geminicheatcode.blogspot.com/"},{"name":"Photos to PDF","desc":"Convert Images to PDF","cat":"Tools","link":"https://photoss2pdf.blogspot.com/"}];
+
+    const TOOLS = [
+      {
+        name: "VK ToolBox",
+        tag: "All-in-one",
+        icon: "🧰",
+        desc: "100+ everyday web tools in one place — no install, completely free.",
+        descHi: "रोज़मर्रा के काम के 100+ web tools एक ही जगह — बिना install, बिल्कुल free.",
+        url: "https://vktechlearntoolkit.blogspot.com/",
+        features: ALL_TOOLS.slice(0, 8).map((tool) => tool.name)
+      },
+      {
+        name: "PDF Editing Toolbox",
+        tag: "PDF",
+        icon: "📄",
+        desc: "Merge, split, compress, watermark and sign PDFs — all in your browser.",
+        descHi: "PDF merge, split, compress, watermark और signature — सब browser में.",
+        url: "https://vkpdfeditingtools.blogspot.com/",
+        features: ["Merge PDF", "Split PDF", "Rotate PDF", "Compress PDF", "Watermark", "Protect PDF", "Sign PDF"]
+      },
+      {
+        name: "CPWD Estimate Creation 2.0",
+        tag: "Estimate",
+        icon: "🏗️",
+        desc: "Create accurate building estimates with CPWD rates in minutes.",
+        descHi: "सरकारी दरों (CPWD) पर building estimate जल्दी और सही तरीके से बनाएँ।",
+        url: "https://cpwdestimate.blogspot.com/",
+        features: []
+      },
+      {
+        name: "ShâVì AI",
+        tag: "AI",
+        icon: "🤖",
+        desc: "Ask questions, draft content and get coding help from an AI assistant.",
+        descHi: "सवाल पूछें, content लिखवाएँ और coding में मदद लें — AI assistant हिंदी में।",
+        url: "https://shavi-ai.lovable.app",
+        features: []
+      }
+    ];
+
+    const CAT_COLORS = {
+      "Technology News": "#00f0ff",
+      "Learn": "#b6ff2e",
+      "Tech": "#ff2d95",
+      "AI": "#8b5cf6",
+      "News": "#ffb020",
+      "technology": "#00e0b8",
+      "game": "#ff5c8a",
+      "Computer Class": "#4dd4ff"
+    };
+    const PAGE_SIZE = 9;
+
+    const els = {
+      grid: document.getElementById("post-grid"),
+      chips: document.getElementById("chips"),
+      catList: document.getElementById("cat-list"),
+      footerCats: document.getElementById("footer-cats"),
+      resultCount: document.getElementById("result-count"),
+      emptyState: document.getElementById("empty-state"),
+      loadWrap: document.getElementById("load-more-wrap"),
+      loadMore: document.getElementById("load-more"),
+      feedStatus: document.getElementById("feed-status"),
+      toolGrid: document.getElementById("tool-grid"),
+      featuredCat: document.getElementById("featured-cat"),
+      featuredTitle: document.getElementById("featured-title"),
+      featuredExcerpt: document.getElementById("featured-excerpt"),
+      featuredDate: document.getElementById("featured-date"),
+      featuredLabels: document.getElementById("featured-labels"),
+      featuredLink: document.getElementById("featured-link"),
+      featuredImg: document.getElementById("featured-img"),
+      trending: document.getElementById("trending-list"),
+      popular: document.getElementById("popular-list"),
+      searchPanel: document.getElementById("search-panel"),
+      searchInput: document.getElementById("post-search"),
+      searchToggle: document.getElementById("search-toggle"),
+      menuToggle: document.getElementById("menu-toggle"),
+      nav: document.getElementById("main-nav"),
+      toTop: document.getElementById("to-top")
+    };
+
+    const state = { category: "all", query: "", shown: PAGE_SIZE };
+    const LANG_KEY = "vk-lang";
+    let lang = "en";
+    try { lang = localStorage.getItem(LANG_KEY) === "hi" ? "hi" : "en"; } catch (error) { lang = "en"; }
+    const T = (en, hi) => (lang === "hi" ? hi : en);
+    const cardCache = new Map();
+    const dateFormats = {
+      en: new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+      hi: new Intl.DateTimeFormat("hi-IN", { day: "numeric", month: "long", year: "numeric" })
+    };
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const clean = (value) => (typeof value === "string" ? value.trim() : "");
+    const safeUrl = (value) => {
+      const raw = typeof value === "string" ? value.trim() : "";
+      if (/^posts\/[a-z0-9-]+\.html$/i.test(raw)) return raw;
+      try { const url = new URL(raw); return url.protocol === "https:" ? url.href : ""; }
+      catch (error) { return ""; }
+    };
+    const formatDate = (value) => {
+      const time = Date.parse(value);
+      return Number.isFinite(time) ? dateFormats[lang].format(new Date(time)) : "";
+    };
+    const colorFor = (name) => {
+      if (CAT_COLORS[name]) return CAT_COLORS[name];
+      let hash = 0;
+      for (let i = 0; i < name.length; i += 1) hash = (hash * 33 + name.charCodeAt(i)) % 360;
+      return "hsl(" + hash + " 85% 62%)";
+    };
+    const labelsOf = (post) => (Array.isArray(post.labels) ? post.labels.filter(Boolean) : []);
+    const primaryLabel = (post) => labelsOf(post)[0] || "Tech";
+    const arrow = () => {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("aria-hidden", "true");
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M5 12h14m-6-6 6 6-6 6");
+      svg.append(path);
+      return svg;
+    };
+    const uniqueCategories = (posts) => {
+      const list = [];
+      posts.forEach((post) => labelsOf(post).forEach((label) => {
+        if (!list.includes(label)) list.push(label);
+      }));
+      return list;
+    };
+    const inCategory = (post, category) => category === "all" || labelsOf(post).includes(category);
+
+    /* ---------- tools ---------- */
+    function renderTools() {
+      els.toolGrid.replaceChildren();
+      TOOLS.forEach((tool) => {
+        const card = document.createElement("article");
+        card.className = "tool-card reveal";
+        const icon = document.createElement("span");
+        icon.className = "tool-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = tool.icon;
+        const tag = document.createElement("span");
+        tag.className = "tool-tag";
+        tag.textContent = tool.tag;
+        const title = document.createElement("h3");
+        title.textContent = tool.name;
+        const desc = document.createElement("p");
+        desc.textContent = lang === "hi" && tool.descHi ? tool.descHi : tool.desc;
+        card.append(icon, tag, title, desc);
+        if (tool.features && tool.features.length) {
+          const wrap = document.createElement("div");
+          wrap.className = "tool-features";
+          tool.features.slice(0, 8).forEach((feature) => {
+            const span = document.createElement("span");
+            span.textContent = feature;
+            wrap.append(span);
+          });
+          card.append(wrap);
+        }
+        const link = document.createElement("a");
+        link.className = "tool-cta";
+        link.href = tool.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.append(document.createTextNode(T("Open Tool", "टूल खोलें")), arrow());
+        card.append(link);
+        els.toolGrid.append(card);
+      });
+    }
+
+    /* ---------- tools directory ---------- */
+    const TOOL_ICONS = {
+      "AI & Content": "🤖",
+      "Image Tools": "🖼️",
+      "Text & Conversion": "🔤",
+      "PDF & File": "📄",
+      "Developer Tools": "💻",
+      "Financial Tools": "💹",
+      "Misc": "🧩",
+      "Fun": "🎮",
+      "Education": "🎓",
+      "Gemini": "✨",
+      "Tools": "🛠️"
+    };
+    const toolState = { category: "all", query: "", shown: 12 };
+    const toolEls = {
+      grid: document.getElementById("tool-dir-grid"),
+      chips: document.getElementById("tool-chips"),
+      count: document.getElementById("tool-count"),
+      search: document.getElementById("tool-search"),
+      more: document.getElementById("tool-more"),
+      moreWrap: document.getElementById("tool-more-wrap")
+    };
+    const toolCategory = (tool) => tool.cat || "Misc";
+
+    function renderToolFilters() {
+      const cats = [];
+      ALL_TOOLS.forEach((tool) => {
+        if (!cats.includes(toolCategory(tool))) cats.push(toolCategory(tool));
+      });
+      const options = [{ name: "all", label: "सभी", count: ALL_TOOLS.length }].concat(
+        cats.map((cat) => ({ name: cat, label: cat, count: ALL_TOOLS.filter((tool) => toolCategory(tool) === cat).length }))
+      );
+      toolEls.chips.replaceChildren();
+      options.forEach((option) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.dataset.filter = option.name;
+        chip.setAttribute("aria-pressed", String(toolState.category === option.name));
+        chip.textContent = option.label + " (" + option.count + ")";
+        chip.addEventListener("click", () => {
+          toolState.category = option.name;
+          toolState.shown = 12;
+          renderToolFilters();
+          renderToolDirectory();
+        });
+        toolEls.chips.append(chip);
+      });
+    }
+
+    function filteredTools() {
+      return ALL_TOOLS.filter((tool) => {
+        if (toolState.category !== "all" && toolCategory(tool) !== toolState.category) return false;
+        if (!toolState.query) return true;
+        return (tool.name + " " + tool.desc + " " + toolCategory(tool))
+          .toLocaleLowerCase("hi").includes(toolState.query);
+      });
+    }
+
+    function renderToolDirectory() {
+      const visible = filteredTools();
+      const slice = visible.slice(0, toolState.shown);
+      toolEls.grid.replaceChildren();
+      slice.forEach((tool) => {
+        const link = document.createElement("a");
+        link.className = "tool-item";
+        link.href = tool.link;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        const icon = document.createElement("span");
+        icon.className = "tool-item-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = TOOL_ICONS[toolCategory(tool)] || "⚙️";
+
+        const text = document.createElement("span");
+        text.className = "tool-item-text";
+        const name = document.createElement("strong");
+        name.textContent = tool.name;
+        const desc = document.createElement("small");
+        desc.textContent = tool.desc || toolCategory(tool);
+        text.append(name, desc);
+
+        const cat = document.createElement("span");
+        cat.className = "tool-item-cat";
+        cat.textContent = toolCategory(tool);
+        link.append(icon, text, cat);
+        toolEls.grid.append(link);
+      });
+      toolEls.moreWrap.hidden = visible.length <= toolState.shown;
+      toolEls.count.textContent = "(" + ALL_TOOLS.length + ")";
+    }
+
+    toolEls.search.addEventListener("input", (event) => {
+      toolState.query = event.target.value.trim().toLocaleLowerCase("hi");
+      toolState.shown = 12;
+      renderToolDirectory();
+    });
+    toolEls.more.addEventListener("click", () => {
+      toolState.shown += 12;
+      renderToolDirectory();
+    });
+
+    /* ---------- featured / trending / popular ---------- */
+    function renderFeatured() {
+      const post = POSTS[0];
+      if (!post) return;
+      els.featuredCat.textContent = primaryLabel(post);
+      els.featuredCat.style.setProperty("--cat", colorFor(primaryLabel(post)));
+      els.featuredTitle.textContent = post.title;
+      els.featuredExcerpt.textContent = post.excerpt || "पूरी पोस्ट पढ़ने के लिए नीचे क्लिक करें।";
+      els.featuredDate.textContent = formatDate(post.date);
+      els.featuredDate.dateTime = post.date;
+      els.featuredLabels.textContent = labelsOf(post).join(" · ");
+      els.featuredLink.href = post.url;
+      if (safeUrl(post.url).startsWith("posts/")) {
+        els.featuredLink.target = "_blank";
+        els.featuredLink.rel = "noopener noreferrer";
+      }
+      const image = safeUrl(post.image);
+      if (image) {
+        els.featuredImg.hidden = false;
+        els.featuredImg.src = image;
+        els.featuredImg.alt = post.title;
+        els.featuredImg.addEventListener("error", () => { els.featuredImg.hidden = true; }, { once: true });
+      } else {
+        els.featuredImg.hidden = true;
+        els.featuredImg.removeAttribute("src");
+        els.featuredImg.alt = "";
+      }
+    }
+
+    function renderTrending() {
+      els.trending.replaceChildren();
+      POSTS.slice(1, 6).forEach((post, index) => {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.className = "trend-item";
+        link.href = post.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        const num = document.createElement("span");
+        num.className = "trend-num";
+        num.textContent = String(index + 1).padStart(2, "0");
+        const text = document.createElement("span");
+        const title = document.createElement("span");
+        title.className = "trend-title";
+        title.textContent = post.title;
+        const meta = document.createElement("span");
+        meta.className = "trend-meta";
+        meta.textContent = primaryLabel(post) + " · " + formatDate(post.date);
+        text.append(title, meta);
+        link.append(num, text);
+        item.append(link);
+        els.trending.append(item);
+      });
+    }
+
+    function renderPopular() {
+      els.popular.replaceChildren();
+      POSTS.slice(0, 6).forEach((post, index) => {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = post.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        const idx = document.createElement("span");
+        idx.className = "idx";
+        idx.textContent = String(index + 1).padStart(2, "0");
+        const title = document.createElement("span");
+        title.textContent = post.title;
+        link.append(idx, title);
+        item.append(link);
+        els.popular.append(item);
+      });
+    }
+
+    /* ---------- filters ---------- */
+    function setCategory(category) {
+      state.category = category;
+      state.shown = PAGE_SIZE;
+      renderFilters();
+      renderGrid();
+    }
+
+    function renderFilters() {
+      const categories = uniqueCategories(POSTS);
+      const options = [{ name: "all", label: T("All", "सभी"), count: POSTS.length }].concat(
+        categories.map((name) => ({
+          name,
+          label: name,
+          count: POSTS.filter((post) => labelsOf(post).includes(name)).length
+        }))
+      );
+      els.chips.replaceChildren();
+      els.catList.replaceChildren();
+      els.footerCats.replaceChildren();
+
+      options.forEach((option) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.dataset.filter = option.name;
+        chip.setAttribute("aria-pressed", String(state.category === option.name));
+        chip.textContent = option.label + " (" + option.count + ")";
+        chip.addEventListener("click", () => setCategory(option.name));
+        els.chips.append(chip);
+
+        const catChip = document.createElement("button");
+        catChip.type = "button";
+        catChip.className = "cat-chip";
+        catChip.dataset.filter = option.name;
+        catChip.setAttribute("aria-pressed", String(state.category === option.name));
+        if (option.name !== "all") catChip.style.setProperty("--cat", colorFor(option.name));
+        catChip.append(document.createTextNode(option.label));
+        const count = document.createElement("span");
+        count.className = "cat-count";
+        count.textContent = option.count;
+        catChip.append(count);
+        catChip.addEventListener("click", () => setCategory(option.name));
+        els.catList.append(catChip);
+
+        if (option.name !== "all") {
+          const footerLink = document.createElement("a");
+          footerLink.href = "#latest";
+          footerLink.textContent = option.label + " (" + option.count + ")";
+          footerLink.addEventListener("click", () => setCategory(option.name));
+          els.footerCats.append(footerLink);
+        }
+      });
+    }
+
+    /* ---------- grid ---------- */
+    function filteredPosts() {
+      return POSTS.filter((post) => {
+        if (!inCategory(post, state.category)) return false;
+        if (!state.query) return true;
+        return (post.title + " " + (post.excerpt || "") + " " + labelsOf(post).join(" "))
+          .toLocaleLowerCase("hi").includes(state.query);
+      });
+    }
+
+    function makeCard(post) {
+      const label = primaryLabel(post);
+      const card = document.createElement("article");
+      card.className = "post-card reveal";
+      card.style.setProperty("--cat", colorFor(label));
+
+      const thumb = document.createElement("a");
+      thumb.className = "thumb";
+      thumb.href = post.url;
+      thumb.target = "_blank";
+      thumb.rel = "noopener noreferrer";
+      thumb.setAttribute("aria-label", "पढ़ें: " + post.title);
+      const image = safeUrl(post.image);
+      if (image) {
+        const img = document.createElement("img");
+        img.src = image;
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.addEventListener("error", () => { img.remove(); fallback(thumb, label); });
+        thumb.append(img);
+      } else {
+        fallback(thumb, label);
+      }
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+      const meta = document.createElement("div");
+      meta.className = "card-meta";
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = label;
+      const time = document.createElement("time");
+      time.textContent = formatDate(post.date);
+      time.dateTime = post.date;
+      meta.append(tag, time);
+
+      const title = document.createElement("h3");
+      const link = document.createElement("a");
+      link.href = post.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = post.title;
+      title.append(link);
+
+      const excerpt = document.createElement("p");
+      excerpt.textContent = post.excerpt || "पूरी पोस्ट पढ़ें…";
+
+      const read = document.createElement("a");
+      read.className = "read-more";
+      read.href = post.url;
+      read.target = "_blank";
+      read.rel = "noopener noreferrer";
+      read.append(document.createTextNode(T("Read More", "पोस्ट पढ़ें")), arrow());
+
+      body.append(meta, title, excerpt, read);
+      card.append(thumb, body);
+      return card;
+    }
+
+    function fallback(thumb, label) {
+      const art = document.createElement("span");
+      art.className = "thumb-art";
+      const text = document.createElement("b");
+      text.textContent = label;
+      art.append(text);
+      thumb.append(art);
+    }
+
+    function observeReveals() {
+      const nodes = document.querySelectorAll(".reveal:not(.is-visible)");
+      if (reduceMotion.matches || !("IntersectionObserver" in window)) {
+        nodes.forEach((node) => node.classList.add("is-visible"));
+        return;
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .06 });
+      nodes.forEach((node) => observer.observe(node));
+    }
+
+    function renderGrid() {
+      const visible = filteredPosts();
+      const slice = visible.slice(0, state.shown);
+      const keys = new Set();
+
+      slice.forEach((post, index) => {
+        const key = post.url + "|" + post.title;
+        keys.add(key);
+        let card = cardCache.get(key);
+        if (!card) {
+          card = makeCard(post);
+          cardCache.set(key, card);
+        }
+        if (els.grid.children[index] !== card) els.grid.insertBefore(card, els.grid.children[index] || null);
+      });
+      cardCache.forEach((card, key) => {
+        if (!keys.has(key)) { card.remove(); cardCache.delete(key); }
+      });
+
+      els.grid.setAttribute("aria-busy", "false");
+      els.emptyState.hidden = visible.length !== 0;
+      els.loadWrap.hidden = visible.length <= state.shown;
+      els.resultCount.textContent = visible.length
+        ? T(slice.length + " of " + visible.length + " posts shown", visible.length + " में से " + slice.length + " पोस्ट दिख रही हैं")
+        : T("No posts found", "कोई पोस्ट नहीं मिली");
+      observeReveals();
+    }
+
+    /* ---------- live crypto ---------- */
+    const COINS = [
+      { id: "bitcoin", sym: "BTC" },
+      { id: "ethereum", sym: "ETH" },
+      { id: "solana", sym: "SOL" },
+      { id: "ripple", sym: "XRP" },
+      { id: "dogecoin", sym: "DOGE" }
+    ];
+    const cryptoEls = {
+      track: document.getElementById("crypto-track"),
+      refresh: document.getElementById("crypto-refresh")
+    };
+    let cryptoLoading = false;
+
+    const formatInr = (value) => {
+      if (!Number.isFinite(value)) return "—";
+      return "₹" + (value >= 1000
+        ? Math.round(value).toLocaleString("en-IN")
+        : value.toLocaleString("en-IN", { maximumFractionDigits: 2 }));
+    };
+
+    function cryptoMessage(text) {
+      cryptoEls.track.replaceChildren();
+      const span = document.createElement("span");
+      span.className = "crypto-loading";
+      span.textContent = text;
+      cryptoEls.track.append(span);
+    }
+
+    async function loadCrypto() {
+      if (cryptoLoading) return;
+      cryptoLoading = true;
+      cryptoMessage(T("Loading live crypto prices…", "लाइव क्रिप्टो कीमतें लोड हो रही हैं…"));
+      try {
+        const url = "https://api.coingecko.com/api/v3/simple/price?ids="
+          + COINS.map((coin) => coin.id).join(",")
+          + "&vs_currencies=inr&include_24hr_change=true";
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const data = await response.json();
+        cryptoEls.track.replaceChildren();
+        let rendered = 0;
+        COINS.forEach((coin) => {
+          const row = data[coin.id];
+          if (!row || !Number.isFinite(row.inr)) return;
+          rendered += 1;
+          const item = document.createElement("span");
+          item.className = "crypto-item";
+
+          const sym = document.createElement("span");
+          sym.className = "crypto-sym";
+          sym.textContent = coin.sym;
+
+          const price = document.createElement("span");
+          price.className = "crypto-price";
+          price.textContent = formatInr(row.inr);
+
+          const change = document.createElement("span");
+          const delta = Number(row.inr_24h_change);
+          change.className = "crypto-change " + (delta >= 0 ? "up" : "down");
+          change.textContent = Number.isFinite(delta)
+            ? (delta >= 0 ? "▲ " : "▼ ") + Math.abs(delta).toFixed(2) + "%"
+            : "";
+
+          item.append(sym, price, change);
+          cryptoEls.track.append(item);
+        });
+        if (!rendered) cryptoMessage(T("Crypto data unavailable — press ↻.", "क्रिप्टो डेटा अभी उपलब्ध नहीं है — ↻ दबाएँ।"));
+      } catch (error) {
+        cryptoMessage(T("Could not load crypto prices — press ↻.", "क्रिप्टो कीमतें अभी नहीं मिलीं — ↻ दबाएँ।"));
+      } finally {
+        cryptoLoading = false;
+      }
+    }
+
+    cryptoEls.refresh.addEventListener("click", loadCrypto);
+
+    /* ---------- live weather ---------- */
+    const weatherEls = {
+      visual: document.getElementById("weather-visual"),
+      city: document.getElementById("weather-city"),
+      temp: document.getElementById("weather-temp"),
+      cond: document.getElementById("weather-cond"),
+      meta: document.getElementById("weather-meta"),
+      status: document.getElementById("weather-status"),
+      button: document.getElementById("weather-locate")
+    };
+    const WEATHER_HI = {
+      0: "साफ़ आसमान", 1: "लगभग साफ़", 2: "थोड़े बादल", 3: "बादल छाए हैं",
+      45: "कोहरा", 48: "ठंडा कोहरा", 51: "हल्की फुहार", 53: "फुहार", 55: "तेज़ फुहार",
+      56: "जमती फुहार", 57: "तेज़ जमती फुहार", 61: "हल्की बारिश", 63: "बारिश", 65: "तेज़ बारिश",
+      66: "जमती बारिश", 67: "तेज़ जमती बारिश", 71: "हल्की बर्फ़", 73: "बर्फ़बारी", 75: "तेज़ बर्फ़बारी",
+      77: "बर्फ़ के कण", 80: "बौछारें", 81: "तेज़ बौछारें", 82: "मूसलाधार बौछारें",
+      85: "बर्फ़ की बौछारें", 86: "तेज़ बर्फ़ीली बौछारें", 95: "आंधी-तूफ़ान", 96: "ओलावृष्टि", 99: "भारी ओलावृष्टि"
+    };
+    const WEATHER_EN = {
+      0: "Clear sky", 1: "Mostly clear", 2: "Partly cloudy", 3: "Cloudy",
+      45: "Fog", 48: "Freezing fog", 51: "Light drizzle", 53: "Drizzle", 55: "Heavy drizzle",
+      56: "Freezing drizzle", 57: "Heavy freezing drizzle", 61: "Light rain", 63: "Rain", 65: "Heavy rain",
+      66: "Freezing rain", 67: "Heavy freezing rain", 71: "Light snow", 73: "Snow", 75: "Heavy snow",
+      77: "Snow grains", 80: "Rain showers", 81: "Heavy rain showers", 82: "Violent rain showers",
+      85: "Snow showers", 86: "Heavy snow showers", 95: "Thunderstorm", 96: "Hailstorm", 99: "Heavy hailstorm"
+    };
+    let weatherLoading = false;
+    let weatherStartedAt = 0;
+
+    function weatherKind(code) {
+      if (code === 0 || code === 1) return "clear";
+      if (code === 2 || code === 3) return "cloud";
+      if (code === 45 || code === 48) return "fog";
+      if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "snow";
+      if (code >= 95) return "thunder";
+      return "rain";
+    }
+
+    function getPosition() {
+      return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) { reject({ code: -1 }); return; }
+        let settled = false;
+        const timer = window.setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          reject({ code: 3 });
+        }, 12000);
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+            resolve(position);
+          },
+          (error) => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+            reject(error);
+          },
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 }
+        );
+      });
+    }
+
+    async function loadWeather() {
+      if (weatherLoading && Date.now() - weatherStartedAt < 18000) return;
+      weatherLoading = true;
+      weatherStartedAt = Date.now();
+      weatherEls.status.textContent = T("Getting your location and weather…", "लोकेशन और मौसम लोड हो रहा है…");
+      weatherEls.cond.textContent = T("Loading…", "लोड हो रहा है…");
+      weatherEls.visual.className = "weather-visual is-loading";
+      weatherEls.button.disabled = true;
+      try {
+        const position = await getPosition();
+        const lat = position.coords.latitude.toFixed(3);
+        const lon = position.coords.longitude.toFixed(3);
+        const weatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon
+          + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m&timezone=auto";
+        const geoUrl = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon + "&accept-language=" + (lang === "hi" ? "hi" : "en") + "";
+        const results = await Promise.allSettled([fetch(weatherUrl), fetch(geoUrl)]);
+        const weatherResponse = results[0].status === "fulfilled" ? results[0].value : null;
+        const geoResponse = results[1].status === "fulfilled" ? results[1].value : null;
+        if (!weatherResponse || !weatherResponse.ok) throw new Error("weather failed");
+        const weather = await weatherResponse.json();
+        const current = weather.current || {};
+        let city = T("Your location", "आपकी लोकेशन");
+        if (geoResponse && geoResponse.ok) {
+          try {
+            const geo = await geoResponse.json();
+            const address = geo.address || {};
+            city = address.city || address.town || address.village || address.suburb
+              || address.state_district || address.state || city;
+          } catch (error) { /* city stays generic */ }
+        }
+        const code = Number(current.weather_code);
+        weatherEls.city.textContent = city;
+        weatherEls.temp.textContent = Number.isFinite(current.temperature_2m) ? Math.round(current.temperature_2m) + "°C" : "—";
+        const weatherLabels = lang === "hi" ? WEATHER_HI : WEATHER_EN;
+        weatherEls.cond.textContent = (weatherLabels[code] || T("Weather", "मौसम")) + (current.is_day ? "" : T(" · Night", " · रात"));
+        weatherEls.meta.textContent = T("Humidity", "नमी") + " " + Math.round(current.relative_humidity_2m) + "% · "
+          + T("Wind", "हवा") + " " + Math.round(current.wind_speed_10m) + " km/h · "
+          + T("Feels", "महसूस") + " " + Math.round(current.apparent_temperature) + "°";
+        weatherEls.visual.className = "weather-visual is-" + weatherKind(code);
+        weatherEls.status.textContent = T("Live", "लाइव") + " · " + new Date().toLocaleTimeString(lang === "hi" ? "hi-IN" : "en-IN", { hour: "2-digit", minute: "2-digit" });
+      } catch (error) {
+        weatherEls.visual.className = "weather-visual is-cloud";
+        weatherEls.temp.textContent = "--°";
+        weatherEls.cond.textContent = T("Weather unavailable", "मौसम उपलब्ध नहीं");
+        weatherEls.meta.textContent = "";
+        if (error && error.code === 1) {
+          weatherEls.status.textContent = T("Location permission denied — allow it, then retry.", "लोकेशन की अनुमति नहीं मिली — Allow करके दोबारा दबाएँ।");
+        } else if (error && error.code === 2) {
+          weatherEls.status.textContent = T("Location not available — retry.", "लोकेशन नहीं मिली — दोबारा कोशिश करें।");
+        } else if (error && error.code === 3) {
+          weatherEls.status.textContent = T("Location timed out — retry.", "लोकेशन में समय लगा — दोबारा दबाएँ।");
+        } else {
+          weatherEls.status.textContent = T("Weather data unavailable — retry.", "मौसम डेटा अभी नहीं मिला — दोबारा कोशिश करें।");
+        }
+      } finally {
+        weatherEls.button.disabled = false;
+        weatherLoading = false;
+      }
+    }
+
+    weatherEls.button.addEventListener("click", loadWeather);
+
+    /* ---------- interactions ---------- */
+    els.menuToggle.addEventListener("click", () => {
+      const open = els.nav.classList.toggle("is-open");
+      els.menuToggle.setAttribute("aria-expanded", String(open));
+      els.menuToggle.setAttribute("aria-label", open ? "मेन्यू बंद करें" : "मेन्यू खोलें");
+    });
+
+    els.nav.addEventListener("click", (event) => {
+      const link = event.target.closest("a");
+      if (!link) return;
+      if (window.innerWidth < 900) {
+        els.nav.classList.remove("is-open");
+        els.menuToggle.setAttribute("aria-expanded", "false");
+      }
+      const filter = link.dataset.filterLink;
+      if (filter) setCategory(filter);
+    });
+
+    const setSearchOpen = (open) => {
+      els.searchPanel.classList.toggle("is-open", open);
+      els.searchToggle.setAttribute("aria-expanded", String(open));
+      if (open) els.searchInput.focus();
+    };
+    els.searchToggle.addEventListener("click", () => setSearchOpen(!els.searchPanel.classList.contains("is-open")));
+
+    document.getElementById("search-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      state.query = els.searchInput.value.trim().toLocaleLowerCase("hi");
+      state.shown = PAGE_SIZE;
+      renderGrid();
+      document.getElementById("latest").scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
+    });
+    els.searchInput.addEventListener("input", (event) => {
+      state.query = event.target.value.trim().toLocaleLowerCase("hi");
+      state.shown = PAGE_SIZE;
+      renderGrid();
+    });
+    document.addEventListener("keydown", (event) => {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+      if (event.key === "/" && !typing) { event.preventDefault(); setSearchOpen(true); }
+      if (event.key === "Escape") { setSearchOpen(false); els.nav.classList.remove("is-open"); }
+    });
+    document.getElementById("reset-filters").addEventListener("click", () => {
+      els.searchInput.value = "";
+      state.query = "";
+      state.shown = PAGE_SIZE;
+      setCategory("all");
+    });
+    els.loadMore.addEventListener("click", () => {
+      state.shown += PAGE_SIZE;
+      renderGrid();
+    });
+    els.toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" }));
+    window.addEventListener("scroll", () => {
+      els.toTop.classList.toggle("is-visible", window.scrollY > 600);
+    }, { passive: true });
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    /* ---------- language ---------- */
+    function applyStaticLanguage() {
+      document.querySelectorAll("[data-en]").forEach((node) => {
+        const value = node.dataset[lang];
+        if (typeof value === "string") node.textContent = value;
+      });
+      document.querySelectorAll("[data-en-ph]").forEach((node) => {
+        const value = node.dataset[lang + "Ph"];
+        if (typeof value === "string") node.placeholder = value;
+      });
+      document.getElementById("lang-label").textContent = lang === "hi" ? "हिं" : "EN";
+      document.getElementById("lang-toggle").setAttribute("aria-label", lang === "hi" ? "Switch to English" : "हिंदी में बदलें");
+      document.documentElement.lang = lang === "hi" ? "hi" : "en";
+      document.title = lang === "hi"
+        ? "VK Tech Learn — Tech News, Computer सीखें और Free Tools"
+        : "VK Tech Learn — Tech News, Computer Guides & Free Tools";
+    }
+
+    function updateFeedStatus() {
+      els.feedStatus.textContent = T(
+        POSTS.length + " posts loaded · " + ALL_TOOLS.length + " free tools available",
+        POSTS.length + " पोस्ट लोड हुईं · " + ALL_TOOLS.length + " free tools उपलब्ध"
+      );
+    }
+
+    function setLanguage(next) {
+      lang = next === "hi" ? "hi" : "en";
+      try { localStorage.setItem(LANG_KEY, lang); } catch (error) { /* storage blocked */ }
+      applyStaticLanguage();
+      renderTools();
+      renderFilters();
+      renderToolFilters();
+      renderToolDirectory();
+      renderTrending();
+      renderPopular();
+      renderFeatured();
+      cardCache.clear();
+      els.grid.replaceChildren();
+      renderGrid();
+      updateFeedStatus();
+    }
+
+    document.getElementById("lang-toggle").addEventListener("click", () => {
+      setLanguage(lang === "en" ? "hi" : "en");
+    });
+
+    /* ---------- boot ---------- */
+    (function boot() {
+      const posts = (Array.isArray(POSTS) ? POSTS : [])
+        .filter((post) => post && clean(post.title) && safeUrl(post.url))
+        .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+      POSTS.length = 0;
+      posts.forEach((post) => POSTS.push(post));
+
+      renderTools();
+      renderToolFilters();
+      renderToolDirectory();
+      renderFilters();
+      renderFeatured();
+      renderTrending();
+      renderPopular();
+      renderGrid();
+      loadCrypto();
+      window.setInterval(() => { if (!document.hidden) loadCrypto(); }, 90000);
+      loadWeather();
+      window.setInterval(() => { if (!document.hidden) loadWeather(); }, 600000);
+      updateFeedStatus();
+      observeReveals();
+      setLanguage(lang);
+    })();
+  </script>
+</body>
+</html>
