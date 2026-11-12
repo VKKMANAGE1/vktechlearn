@@ -86,7 +86,6 @@ h1.post-title {
   margin: .85rem 0;
   text-align: justify;
   text-justify: inter-word;
-  hyphens: auto;
 }
 .post-body ul, .post-body ol { padding-left: 1.4rem; margin: .9rem 0; }
 .post-body li { margin: .35rem 0; text-align: justify; }
