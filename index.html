@@ -1062,7 +1062,7 @@
 
     function renderTrending() {
       els.trending.replaceChildren();
-      POSTS.slice(1, 6).forEach((post, index) => {
+      POSTS.slice(0, 6).forEach((post, index) => {
         const item = document.createElement("li");
         const link = document.createElement("a");
         link.className = "trend-item";
