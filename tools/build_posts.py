@@ -203,6 +203,19 @@ def fetch_feed(path):
         return json.load(response)
 
 
+def strip_duplicate_title_heading(body, title):
+    """Drop a leading heading that just repeats the page title."""
+    def norm(value):
+        text = re.sub(r"<[^>]+>", " ", value)
+        text = re.sub(r"\s+", " ", html.unescape(text)).strip().lower()
+        return text.strip(" ?!:.-\u0964")
+
+    heading = re.match(r"\s*<h([1-3])\b[^>]*>(.*?)</h\1>", body, flags=re.S | re.I)
+    if heading and norm(heading.group(2)) == norm(title):
+        return body[heading.end():].lstrip()
+    return body
+
+
 def normalize_images(body, title):
     """Give every image a descriptive alt and lazy loading."""
     alt_text = re.sub(r"<[^>]+>", " ", title)
@@ -391,6 +404,7 @@ def main():
         label_html = "".join(
             f'<span class="tag">{html.escape(label)}</span>' for label in post["labels"][:2]
         )
+        body = strip_duplicate_title_heading(body, post["title"])
         excerpt = re.sub(r"<[^>]+>", " ", body)
         excerpt = re.sub(r"\s+", " ", html.unescape(excerpt)).strip()[:160]
         page = PAGE.format(
