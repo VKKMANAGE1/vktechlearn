@@ -18,7 +18,7 @@ body {
     radial-gradient(700px 420px at 90% 0%, rgba(255, 45, 149, .12), transparent 60%),
     var(--bg);
   color: var(--text);
-  font-family: "Rajdhani", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Rajdhani", "Noto Sans Devanagari", "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 17px;
   line-height: 1.75;
   min-height: 100vh;
@@ -82,9 +82,14 @@ h1.post-title {
 .post-body h1 { font-size: 1.32rem; }
 .post-body h2 { font-size: 1.28rem; }
 .post-body h3 { font-size: 1.1rem; }
-.post-body p { margin: .85rem 0; }
+.post-body p {
+  margin: .85rem 0;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
 .post-body ul, .post-body ol { padding-left: 1.4rem; margin: .9rem 0; }
-.post-body li { margin: .35rem 0; }
+.post-body li { margin: .35rem 0; text-align: justify; }
 .post-body img { max-width: 100%; height: auto; border-radius: 10px; display: block; margin: 1rem auto; }
 .post-body a { text-decoration: underline; text-underline-offset: 2px; }
 .post-body blockquote {
