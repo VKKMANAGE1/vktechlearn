@@ -240,7 +240,39 @@ def clean_content(raw, url_to_slug):
         body = re.sub(pattern, lambda m: 'href="' + local_link(m) + '"', body)
     body = re.sub(r"https?://(?:www\.)?vktechlearn\.online", "https://vktechlearn.site", body, flags=re.I)
     body = re.sub(r"<p>(?:&nbsp;|\s)*</p>\s*", "", body, count=1, flags=re.I)
+    body = unwrap_paragraph_headings(body)
     return body.strip()
+
+
+BLOCK_TAGS = r"(?:p|ul|ol|div|table|figure|blockquote|pre|img|iframe)"
+
+
+def unwrap_paragraph_headings(body):
+    """Some Blogger posts wrap whole paragraphs in <h2>/<h3> tags; keep only real headings."""
+    block = re.compile(r"<" + BLOCK_TAGS + r"\b", re.I)
+
+    def plain_text(fragment):
+        text = re.sub(r"<[^>]+>", " ", fragment)
+        return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+    def repl(match):
+        level, attrs, inner = match.group(1), match.group(2), match.group(3).strip()
+        if not inner:
+            return ""
+        if not block.search(inner):
+            return f"<h{level}{attrs}>{inner}</h{level}>"
+        # Heading tag wraps real content: keep a short leading line as heading, unwrap the rest.
+        head = ""
+        rest = inner
+        lead = re.match(r"^(.*?)(?=<" + BLOCK_TAGS + r"\b)", inner, re.S | re.I)
+        if lead and lead.group(1).strip():
+            head_html = lead.group(1).strip()
+            if 0 < len(plain_text(head_html)) <= 70:
+                head = f"<h{level}{attrs}>{head_html}</h{level}>"
+                rest = inner[len(lead.group(1)):]
+        return head + rest
+
+    return re.sub(r"<h([1-4])\b([^>]*)>(.*?)</h\1>", repl, body, flags=re.S | re.I)
 
 
 def summary_for(post, body):
