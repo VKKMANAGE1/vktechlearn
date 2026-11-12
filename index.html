@@ -814,7 +814,7 @@
       "game": "#ff5c8a",
       "Computer Class": "#4dd4ff"
     };
-    const PAGE_SIZE = 9;
+    const PAGE_SIZE = 10;
 
     const els = {
       grid: document.getElementById("post-grid"),
@@ -1167,12 +1167,14 @@
 
     /* ---------- grid ---------- */
     function filteredPosts() {
-      return POSTS.filter((post) => {
-        if (!inCategory(post, state.category)) return false;
-        if (!state.query) return true;
-        return (post.title + " " + (post.excerpt || "") + " " + labelsOf(post).join(" "))
-          .toLocaleLowerCase("hi").includes(state.query);
-      });
+      return POSTS
+        .filter((post) => {
+          if (!inCategory(post, state.category)) return false;
+          if (!state.query) return true;
+          return (post.title + " " + (post.excerpt || "") + " " + labelsOf(post).join(" "))
+            .toLocaleLowerCase("hi").includes(state.query);
+        })
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
     function makeCard(post) {
