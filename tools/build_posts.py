@@ -42,9 +42,9 @@ body {
     radial-gradient(700px 420px at 90% 0%, rgba(255, 45, 149, .12), transparent 60%),
     var(--bg);
   color: var(--text);
-  font-family: "Rajdhani", "Noto Sans Devanagari", "Segoe UI", system-ui, -apple-system, sans-serif;
-  font-size: 17px;
-  line-height: 1.75;
+  font-family: "Inter", "Mukta", "Noto Sans Devanagari", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 17.5px;
+  line-height: 1.85;
   min-height: 100vh;
 }
 a { color: var(--cyan); }
@@ -84,7 +84,7 @@ main.post { padding: 2.2rem 0 3rem; }
   border-radius: 6px; padding: .12rem .5rem;
 }
 h1.post-title {
-  font-family: "Orbitron", "Noto Sans Devanagari", sans-serif;
+  font-family: "Sora", "Mukta", sans-serif;
   font-size: clamp(1.5rem, 4vw, 2.3rem);
   line-height: 1.3; margin: 0 0 1.1rem; color: #f4f8ff;
 }
@@ -100,7 +100,7 @@ h1.post-title {
   overflow-wrap: anywhere;
 }
 .post-body h1, .post-body h2, .post-body h3, .post-body h4 {
-  font-family: "Orbitron", "Noto Sans Devanagari", sans-serif;
+  font-family: "Sora", "Mukta", sans-serif;
   color: #eaf7ff; line-height: 1.35; margin: 1.7rem 0 .6rem;
 }
 .post-body h1 { font-size: 1.32rem; }
@@ -161,7 +161,7 @@ PAGE = """<!doctype html>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='27' font-weight='bold' fill='%2300e5ff' text-anchor='middle'%3EVK%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Rajdhani:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../post.css">
 </head>
 <body>
@@ -203,7 +203,35 @@ def fetch_feed(path):
         return json.load(response)
 
 
-def clean_content(raw, url_to_slug):
+def normalize_images(body, title):
+    """Give every image a descriptive alt and lazy loading."""
+    alt_text = re.sub(r"<[^>]+>", " ", title)
+    alt_text = re.sub(r"\s+", " ", html.unescape(alt_text)).strip() or "VK Tech Learn"
+    if len(alt_text) > 95:
+        alt_text = alt_text[:92].rstrip(" ,.-") + "..."
+
+    def repl(match):
+        tag = match.group(0)
+        def fix_alt(match):
+            value = match.group(2).strip()
+            if (not value or value.lower().startswith("http") or len(value) < 4
+                    or re.search(r"\.(?:png|jpe?g|webp|gif|svg)\b", value, re.I)
+                    or (" " not in value and value.count("-") >= 2)):
+                return f' alt="{html.escape(alt_text)}"'
+            return match.group(0)
+
+        if re.search(r"\salt\s*=", tag, re.I):
+            tag = re.sub(r"\salt\s*=\s*([\"'])(.*?)\1", fix_alt, tag, flags=re.I)
+        else:
+            tag = tag[:-1].rstrip("/").rstrip() + f' alt="{html.escape(alt_text)}">'
+        if "loading=" not in tag.lower():
+            tag = tag[:-1].rstrip("/").rstrip() + ' loading="lazy" decoding="async">'
+        return tag
+
+    return re.sub(r"<img\b[^>]*>", repl, body, flags=re.I)
+
+
+def clean_content(raw, url_to_slug, title=""):
     body = raw or ""
     body = re.sub(r"<!doctype[^>]*>", "", body, flags=re.I)
     head_match = re.search(r"<head\b[^>]*>(.*?)</head\b>", body, flags=re.S | re.I)
@@ -240,6 +268,10 @@ def clean_content(raw, url_to_slug):
     body = re.sub(r"https?://(?:www\.)?vktechlearn\.online", "https://vktechlearn.site", body, flags=re.I)
     body = re.sub(r"<p>(?:&nbsp;|\s)*</p>\s*", "", body, count=1, flags=re.I)
     body = unwrap_paragraph_headings(body)
+    body = re.sub(r"(</(?:h[1-4]|p|li|ul|ol|div|table|tr|td|blockquote)>)[>]+", r"\1", body, flags=re.I)
+    body = re.sub(r"<h1\b", "<h2", body, flags=re.I)
+    body = re.sub(r"</h1\b", "</h2", body, flags=re.I)
+    body = normalize_images(body, title)
     return body.strip()
 
 
@@ -348,7 +380,7 @@ def main():
         except ValueError:
             dt = datetime.now()
         date_text = f"{dt.day} {dt.strftime('%B %Y')}"
-        body = clean_content(post["content"], url_to_slug)
+        body = clean_content(post["content"], url_to_slug, post["title"])
         first_h1 = re.search(r"<h1\b[^>]*>(.*?)</h1\b>", body, flags=re.S | re.I)
         if first_h1 and first_h1.start() < 1200:
             heading_text = re.sub(r"<[^>]+>", "", first_h1.group(1))
@@ -383,7 +415,7 @@ def main():
     if "--update-index" in sys.argv[1:]:
         cards = []
         for post in prepared:
-            body = clean_content(post["content"], url_to_slug)
+            body = clean_content(post["content"], url_to_slug, post["title"])
             cards.append(summary_for(post, body))
         update_index(cards)
         print("homepage POSTS refreshed:", len(cards))

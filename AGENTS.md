@@ -32,8 +32,9 @@ sentence structure with common English tech words, same as existing posts).
 5. **Paragraphs:** every paragraph is `text-align: justify` (both edges aligned) — never
    left-ragged or right-aligned. `post.css` already enforces this for `.post-body p` and `li`.
 6. **Typography (already in the site CSS — keep it):**
-   - Body/paragraphs: `Rajdhani` for Latin + `Noto Sans Devanagari` for Hindi, 17px, line-height 1.75.
-   - Headings and brand: `Orbitron` + `Noto Sans Devanagari`.
+   - Body/paragraphs: `Inter` for English + `Mukta` for Hindi, 17.5px, line-height 1.85.
+   - Headings: `Sora` (English) + `Mukta` (Hindi); `Orbitron` only for the brand/logo.
+   - Fonts must stay readable and friendly, not cyberpunk: no decorative face for long text.
    - Body text colour `#dbe6f5` on dark panels, links cyan `#00e5ff`.
    - Short paragraphs (2–4 lines), so justified text has no big gaps.
 7. **Images:**
