@@ -644,6 +644,59 @@
 
             <section class="panel reveal" aria-labelledby="popular-heading">
               <div class="panel-inner">
+                <div class="panel-title"><span id="popular-heading" data-en="Most Popular" data-hi="सबसे लोकप्रिय">Most Popular</span><span aria-hidden="true">📈</span></div><div class="content-grid">
+          <section id="latest" aria-labelledby="latest-heading" style="min-width: 0; scroll-margin-top: 7rem;">
+            <div class="section-head">
+              <span class="chipbar" aria-hidden="true"></span>
+              <h2 id="latest-heading"><span data-en="Latest" data-hi="नवीनतम">Latest</span> <span class="hl" data-en="Posts" data-hi="पोस्ट">Posts</span></h2>
+            </div>
+
+            <div class="toolbar">
+              <div class="chips" id="chips" role="group" aria-label="पोस्ट श्रेणी फ़िल्टर"></div>
+              <p class="result-count" id="result-count" role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="post-grid" id="post-grid" aria-busy="true"></div>
+
+            <div class="empty-state" id="empty-state" hidden>
+              <h3 data-en="No posts found" data-hi="कोई पोस्ट नहीं मिली">No posts found</h3>
+              <p data-en="Try another keyword or category." data-hi="दूसरा शब्द या श्रेणी आज़माएँ।">Try another keyword or category.</p>
+              <button class="btn btn-ghost" id="reset-filters" type="button" data-en="Show all posts" data-hi="सभी पोस्ट दिखाएँ">Show all posts</button>
+            </div>
+
+            <div class="load-more" id="load-more-wrap" hidden>
+              <button class="btn" id="load-more" type="button" data-en="Load more posts" data-hi="और पोस्ट लोड करें">Load more posts</button>
+            </div>
+
+            <p class="feed-status" id="feed-status" role="status" aria-live="polite"></p>
+          </section>
+
+          <aside class="sidebar" aria-label="साइडबार">
+            <section class="panel weather-card reveal" aria-labelledby="weather-heading">
+              <div class="panel-inner">
+                <div class="panel-title"><span id="weather-heading" data-en="Live Weather" data-hi="लाइव मौसम">Live Weather</span><span id="weather-city">Locating…</span></div>
+                <div class="weather-body">
+                  <div class="weather-visual is-loading" id="weather-visual" aria-hidden="true">
+                    <span class="w-sun"></span>
+                    <span class="w-cloud w-cloud-a"></span>
+                    <span class="w-cloud w-cloud-b"></span>
+                    <span class="w-drops"><i></i><i></i><i></i><i></i></span>
+                  </div>
+                  <div class="weather-info">
+                    <p class="weather-temp" id="weather-temp">--°</p>
+                    <p class="weather-cond" id="weather-cond">Loading weather…</p>
+                    <p class="weather-meta" id="weather-meta"></p>
+                  </div>
+                </div>
+                <div class="weather-actions">
+                  <button class="btn btn-ghost weather-btn" id="weather-locate" type="button" data-en="Use my location" data-hi="मेरी लोकेशन से देखें">Use my location</button>
+                  <span class="weather-status" id="weather-status" role="status" aria-live="polite"></span>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel reveal" aria-labelledby="popular-heading">
+              <div class="panel-inner">
                 <div class="panel-title"><span id="popular-heading" data-en="Most Popular" data-hi="सबसे लोकप्रिय">Most Popular</span><span aria-hidden="true">📈</span></div><section class="tools-section" id="tools" aria-labelledby="tools-heading">
           <div class="section-head">
             <span class="chipbar" aria-hidden="true"></span>
