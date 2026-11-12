@@ -56,3 +56,12 @@ sentence structure with common English tech words, same as existing posts).
   `python3 tools/build_posts.py --update-index`.
 - Commit + push to `main` → workflow "Deploy static site to GitHub Pages" → live in 1–2 minutes.
 - `vktechlearn.freebuff.page` is a separate mirror and does not update on push by itself.
+
+9. **AI-detection & AdSense compliance:**
+   - Never use AI-written phrases like "As an AI language model," "In conclusion," or repetitive transition sentences.
+   - Write in natural human style: vary sentence length, use personal pronouns (मैं, आप), include real experiences or case-like examples.
+   - Avoid "lorem ipsum" filler, redundant adjectives, and paragraph padding just to hit word count — real examples and step-by-step guides pass AdSense review.
+   - Keep a clear author voice; cite sources or mention real tools/software names where relevant.
+   - No automated translation or machine-translation tone; Hindi sentences must feel natural, not translated by bot.
+   - Include at least one original insight or "what I learned" paragraph per post; AdSense reviewers check for human depth.
+   - Image alt text and captions should be descriptive and context-aware, not generic "image of" labels.
