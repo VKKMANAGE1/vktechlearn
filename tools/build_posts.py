@@ -16,8 +16,8 @@ import sys
 import urllib.request
 from datetime import datetime
 
-FEED_URL = os.environ.get("FEED_URL", "https://www.vktechlearn.site/feeds/posts/default?alt=json&max-results=500")
-SITE_URL = os.environ.get("SITE_URL", "https://vktechlearn.online").rstrip("/")
+FEED_URL = os.environ.get("FEED_URL", "https://www.blogger.com/feeds/994118461602418597/posts/default?alt=json&max-results=500")
+SITE_URL = os.environ.get("SITE_URL", "https://vktechlearn.site").rstrip("/")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(ROOT, "posts")
 CSS_PATH = os.path.join(ROOT, "post.css")
@@ -180,7 +180,6 @@ PAGE = """<!doctype html>
     </article>
     <div class="post-foot">
       <a href="../index.html#latest">&larr; Back to all posts</a>
-      <a href="{original}" target="_blank" rel="noopener noreferrer">Original on Blogger</a>
     </div>
   </div>
 </main>
@@ -234,6 +233,7 @@ def clean_content(raw, url_to_slug):
         r"href=\"(https?://(?:www\.)?vktechlearn\.site/\d{4}/\d{2}/[^\"]+\.html)\?[^\"]*\"",
     ):
         body = re.sub(pattern, lambda m: 'href="' + local_link(m) + '"', body)
+    body = re.sub(r"https?://(?:www\.)?vktechlearn\.online", "https://vktechlearn.site", body, flags=re.I)
     body = re.sub(r"<p>(?:&nbsp;|\s)*</p>\s*", "", body, count=1, flags=re.I)
     return body.strip()
 
