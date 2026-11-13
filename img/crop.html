@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop IMAGE — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Crop images free. Drag a selection on the preview, lock 1:1 or 16:9, and download the cropped photo.">
+<link rel="canonical" href="https://vktechlearn.site/img/crop.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Modify</div>
+    <h1>✂️ Crop IMAGE</h1>
+    <p>Drag a rectangle over the photo to keep just that part, with optional fixed ratios.</p>
+    <div class="related"><a href="/img/resize.html" target="_blank" rel="noopener">Resize IMAGE</a><a href="/img/rotate.html" target="_blank" rel="noopener">Rotate IMAGE</a><a href="/img/blur-face.html" target="_blank" rel="noopener">Blur face</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose an image</label>
+        <input type="file" id="file" accept="image/*">
+        <div class="hint">JPG, PNG or WebP, up to 40 MB.</div>
+      </div>      <div class="row">
+        <div class="field">
+          <label for="aspect">Aspect ratio</label>
+          <select id="aspect">
+            <option value="0" selected>Free</option>
+            <option value="1">1:1 square</option>
+            <option value="1.3333">4:3</option>
+            <option value="1.7778">16:9</option>
+            <option value="0.75">3:4 portrait</option>
+          </select>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end">
+          <button class="btn secondary small" id="reset" type="button">Reset selection</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Drag over the image to select the crop</label>
+        <div class="redact-wrap">
+          <canvas id="base"></canvas>
+          <canvas id="overlay"></canvas>
+        </div>
+        <div class="hint" id="selection">Select a file, then drag on the image.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Crop image</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose an image.</li><li>Drag a rectangle on the preview — the shaded part is removed.</li><li>Optionally pick an aspect ratio; drag again to apply it.</li><li>Press <strong>Crop image</strong> and download.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">The crop keeps the original resolution inside the selection, not the preview size.</li><li class="">Fixed ratios snap the selection to 1:1, 4:3 or 16:9 while you drag.</li><li class="warn">A selection smaller than 2% of the image is ignored.</li><li class="">Maximum input size is 40 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const base = document.getElementById('base');
+const overlay = document.getElementById('overlay');
+const runBtn = document.getElementById('run');
+let photo = null;
+let rect = null;
+let drag = null;
+
+function paint() {
+  drawSelectionStage(base, overlay, rect);
+  if (rect) {
+    document.getElementById('selection').textContent =
+      'Selection: ' + Math.round(rect.w * 100) + '% × ' + Math.round(rect.h * 100) + '% of the image.';
+  }
+}
+
+async function loadPhoto(file) {
+  const { img, url } = await imageFromFile(file);
+  photo = img;
+  const scale = Math.min(1, 900 / img.naturalWidth);
+  base.width = Math.round(img.naturalWidth * scale);
+  base.height = Math.round(img.naturalHeight * scale);
+  const ctx = base.getContext('2d');
+  ctx.drawImage(img, 0, 0, base.width, base.height);
+  rect = { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
+  overlay.width = base.width;
+  overlay.height = base.height;
+  paint();
+  URL.revokeObjectURL(url);
+}
+
+function point(e) {
+  const r = overlay.getBoundingClientRect();
+  const p = e.touches ? e.touches[0] : e;
+  return { x: clamp01((p.clientX - r.left) / r.width), y: clamp01((p.clientY - r.top) / r.height) };
+}
+
+function start(e) { const p = point(e); drag = { x: p.x, y: p.y }; e.preventDefault(); }
+function move(e) {
+  if (!drag) return;
+  const p = point(e);
+  const aspect = parseFloat(document.getElementById('aspect').value) || 0;
+  let x = Math.min(drag.x, p.x);
+  let y = Math.min(drag.y, p.y);
+  let w = Math.abs(p.x - drag.x);
+  let h = Math.abs(p.y - drag.y);
+  if (aspect) {
+    h = (w * overlay.width) / (overlay.height * aspect);
+    if (y + h > 1) h = 1 - y;
+    w = (h * aspect * overlay.height) / overlay.width;
+    if (x + w > 1) { w = 1 - x; h = (w * overlay.width) / (overlay.height * aspect); }
+    if (p.x < drag.x) x = Math.max(0, drag.x - w);
+    if (p.y < drag.y) y = Math.max(0, drag.y - h);
+  }
+  rect = { x, y, w: clamp01(w), h: clamp01(h) };
+  paint();
+  e.preventDefault();
+}
+function end() { drag = null; }
+
+overlay.addEventListener('mousedown', start);
+overlay.addEventListener('mousemove', move);
+window.addEventListener('mouseup', end);
+overlay.addEventListener('touchstart', start, { passive: false });
+overlay.addEventListener('touchmove', move, { passive: false });
+window.addEventListener('touchend', end);
+
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  try {
+    await loadPhoto(file);
+    imgSetStatus('ok', '✅ Image loaded — drag on it to choose the crop area.');
+  } catch (err) { imgSetStatus('err', '❌ ' + err.message); }
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  if (!photo) return;
+  rect = { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
+  paint();
+});
+
+runBtn.addEventListener('click', async () => {
+  if (!photo) { imgSetStatus('err', 'Please choose an image first.'); return; }
+  if (!rect || rect.w < 0.02 || rect.h < 0.02) { imgSetStatus('err', 'Please drag a larger crop area.'); return; }
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Crop image', 'Cropping…');
+  try {
+    const sx = Math.round(rect.x * photo.naturalWidth);
+    const sy = Math.round(rect.y * photo.naturalHeight);
+    const sw = Math.max(1, Math.round(rect.w * photo.naturalWidth));
+    const sh = Math.max(1, Math.round(rect.h * photo.naturalHeight));
+    const canvas = newCanvas(sw, sh);
+    canvas.getContext('2d').drawImage(photo, sx, sy, sw, sh, 0, 0, sw, sh);
+    const isPng = /\.png$/i.test(fileInput.files[0].name);
+    const blob = await canvasBlob(canvas, isPng ? 'image/png' : 'image/jpeg', 0.92);
+    downloadBlob(blob, baseName(fileInput.files[0].name) + '-cropped.' + (isPng ? 'png' : 'jpg'));
+    showPreview(canvas);
+    imgSetStatus('ok', '✅ Cropped to ' + sw + ' × ' + sh + ' px.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Crop image');
+  }
+});
+</script>
+</body>
+</html>

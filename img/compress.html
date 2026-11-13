@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compress IMAGE — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Compress images free in your browser. Choose quality and width, batch compress JPG PNG WebP and download a ZIP.">
+<link rel="canonical" href="https://vktechlearn.site/img/compress.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Optimize</div>
+    <h1>🗜️ Compress IMAGE</h1>
+    <p>Shrink JPG, PNG and WebP photos while keeping them sharp enough to use.</p>
+    <div class="related"><a href="/img/resize.html" target="_blank" rel="noopener">Resize IMAGE</a><a href="/img/to-jpg.html" target="_blank" rel="noopener">Convert to JPG</a><a href="/img/upscale.html" target="_blank" rel="noopener">Upscale</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose images</label>
+        <input type="file" id="file" accept="image/*" multiple>
+        <div class="hint">Pick as many as you like — several images arrive in one ZIP.</div>
+      </div>      <div class="row-3">
+        <div class="field">
+          <label for="quality">Quality</label>
+          <select id="quality">
+            <option value="0.85">High — barely visible loss</option>
+            <option value="0.7" selected>Balanced — recommended</option>
+            <option value="0.55">Small — for email</option>
+            <option value="0.4">Tiny — for thumbnails</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="maxw">Maximum width</label>
+          <select id="maxw">
+            <option value="0" selected>Keep original size</option>
+            <option value="1920">1920 px</option>
+            <option value="1280">1280 px</option>
+            <option value="800">800 px</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Compress images</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No image selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Select one or more images.</li><li>Pick a quality level and an optional maximum width.</li><li>Press <strong>Compress images</strong>.</li><li>Download the single image, or the ZIP for a batch.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Output is always JPEG, so transparency is replaced with white.</li><li class="">Photos usually shrink 50–80%; screenshots and flat graphics shrink less.</li><li class="">Downscaling to 1920 px or less saves the most space for web use.</li><li class="">Images are processed on your device, up to 40 MB each.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  const { img, url } = await imageFromFile(file);
+  showPreview(url);
+  imgSetStatus('info', fileInput.files.length + ' image(s) selected, ' + imgBytes(file.size) + ' each on average.');
+});
+runBtn.addEventListener('click', async () => {
+  const files = Array.from(fileInput.files || []);
+  if (!files.length) { imgSetStatus('err', 'Please choose at least one image.'); return; }
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Compress images', 'Compressing…');
+  try {
+    const quality = parseFloat(document.getElementById('quality').value) || 0.7;
+    const maxw = parseInt(document.getElementById('maxw').value, 10) || 0;
+    const out = [];
+    let before = 0;
+    let after = 0;
+    for (let i = 0; i < files.length; i++) {
+      imgSetStatus('info', 'Compressing ' + (i + 1) + ' of ' + files.length + '…');
+      const { img, url } = await imageFromFile(files[i]);
+      const canvas = imageToCanvas(img, maxw, '#ffffff');
+      const blob = await canvasBlob(canvas, 'image/jpeg', quality);
+      URL.revokeObjectURL(url);
+      before += files[i].size;
+      after += blob.size;
+      out.push({ name: baseName(files[i].name) + '-compressed.jpg', blob });
+    }
+    await deliverFiles(out, 'compressed-images.zip');
+    const saved = before > after ? Math.round((1 - after / before) * 100) : 0;
+    imgSetStatus('ok', '✅ ' + files.length + ' image(s): ' + imgBytes(before) + ' → ' + imgBytes(after) + ' (' + saved + '% smaller).');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Compress images');
+  }
+});
+</script>
+</body>
+</html>

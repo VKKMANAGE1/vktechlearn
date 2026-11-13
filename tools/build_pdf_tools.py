@@ -25,6 +25,7 @@ NAV = """    <header class="top">
           <a href="/pdf/compress.html">Compress</a>
           <a href="/pdf/merge.html">Merge</a>
           <a href="/pdf/protect.html">Protect</a>
+          <a href="/img/">Image tools</a>
           <a href="https://vktechlearn.site/">Main site</a>
         </nav>
       </div>

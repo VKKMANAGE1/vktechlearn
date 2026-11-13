@@ -1,3 +1,6 @@
 /freebuff-sites-build/
 /deploy/
 /artifacts/
+
+# Python bytecode
+__pycache__/

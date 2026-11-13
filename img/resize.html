@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resize IMAGE — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Resize images free. Set a percentage or pixel width, batch resize JPG PNG WebP and download.">
+<link rel="canonical" href="https://vktechlearn.site/img/resize.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Modify</div>
+    <h1>📐 Resize IMAGE</h1>
+    <p>Change an image's dimensions by percent or exact pixel width, keeping its shape.</p>
+    <div class="related"><a href="/img/compress.html" target="_blank" rel="noopener">Compress IMAGE</a><a href="/img/crop.html" target="_blank" rel="noopener">Crop IMAGE</a><a href="/img/upscale.html" target="_blank" rel="noopener">Upscale</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose images</label>
+        <input type="file" id="file" accept="image/*" multiple>
+        <div class="hint">Pick as many as you like — several images arrive in one ZIP.</div>
+      </div>      <div class="row-3">
+        <div class="field">
+          <label for="mode">Resize by</label>
+          <select id="mode">
+            <option value="percent" selected>Percentage</option>
+            <option value="width">Pixel width</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="value">Value</label>
+          <input type="number" id="value" value="50" min="1">
+          <div class="hint">Percent (1–400) or width in pixels.</div>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Resize images</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No image selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose one or more images.</li><li>Pick <strong>percent</strong> or <strong>pixel width</strong>.</li><li>Press <strong>Resize images</strong>.</li><li>Download the resized image or the ZIP.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Aspect ratio is always kept, so height follows the width automatically.</li><li class="warn">Upscaling beyond 200% looks soft — use the Upscale tool for a smoother result.</li><li class="">Output keeps the original format (JPEG stays JPEG, PNG stays PNG).</li><li class="">Maximum input size is 40 MB per image.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  const { img, url } = await imageFromFile(file);
+  showPreview(url);
+  imgSetStatus('info', 'Original size: ' + img.naturalWidth + ' × ' + img.naturalHeight + ' px.');
+});
+runBtn.addEventListener('click', async () => {
+  const files = Array.from(fileInput.files || []);
+  if (!files.length) { imgSetStatus('err', 'Please choose at least one image.'); return; }
+  const mode = document.getElementById('mode').value;
+  const value = parseFloat(document.getElementById('value').value);
+  if (!value || value <= 0) { imgSetStatus('err', 'Please enter a positive size value.'); return; }
+  if (mode === 'percent' && value > 400) { imgSetStatus('err', 'Please use 400% or less.'); return; }
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Resize images', 'Resizing…');
+  try {
+    const out = [];
+    for (let i = 0; i < files.length; i++) {
+      imgSetStatus('info', 'Resizing ' + (i + 1) + ' of ' + files.length + '…');
+      const { img, url } = await imageFromFile(files[i]);
+      const scale = mode === 'percent' ? value / 100 : value / img.naturalWidth;
+      const canvas = newCanvas(img.naturalWidth * scale, img.naturalHeight * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      const isPng = /png/i.test(files[i].type) || /\.png$/i.test(files[i].name);
+      const type = isPng ? 'image/png' : 'image/jpeg';
+      const blob = await canvasBlob(canvas, type, 0.92);
+      const ext = isPng ? 'png' : 'jpg';
+      out.push({ name: baseName(files[i].name) + '-' + canvas.width + 'x' + canvas.height + '.' + ext, blob });
+    }
+    await deliverFiles(out, 'resized-images.zip');
+    imgSetStatus('ok', '✅ ' + files.length + ' image(s) resized. Last output: ' + (out[out.length - 1].name) + '.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Resize images');
+  }
+});
+</script>
+</body>
+</html>

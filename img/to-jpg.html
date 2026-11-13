@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert to JPG — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Convert images to JPG free. PNG, WebP, GIF, BMP and SVG become JPEG with a white background, in bulk.">
+<link rel="canonical" href="https://vktechlearn.site/img/to-jpg.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>🖼️ Convert to JPG</h1>
+    <p>Turn PNG, WebP, GIF, BMP or SVG images into standard JPG files.</p>
+    <div class="related"><a href="/img/from-jpg.html" target="_blank" rel="noopener">Convert from JPG</a><a href="/img/compress.html" target="_blank" rel="noopener">Compress IMAGE</a><a href="/img/html-to-image.html" target="_blank" rel="noopener">HTML to IMAGE</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose images</label>
+        <input type="file" id="file" accept="image/*" multiple>
+        <div class="hint">Pick as many as you like — several images arrive in one ZIP.</div>
+      </div>      <div class="field">
+        <label for="quality">JPG quality</label>
+        <select id="quality">
+          <option value="0.92" selected>High (recommended)</option>
+          <option value="0.8">Medium</option>
+          <option value="0.65">Smaller file</option>
+        </select>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to JPG</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No image selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose one or more images.</li><li>Pick the JPG quality.</li><li>Press <strong>Convert to JPG</strong>.</li><li>Download the JPG, or the ZIP for several files.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Transparent PNG/WebP areas become white — JPG has no transparency.</li><li class="warn">HEIC, RAW and PSD are not supported by browsers; export them as JPG/PNG first.</li><li class="">Animated GIFs convert as a still frame.</li><li class="">Maximum input size is 40 MB per image.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  const { url } = await imageFromFile(file);
+  showPreview(url);
+  imgSetStatus('info', fileInput.files.length + ' image(s) ready to convert.');
+});
+runBtn.addEventListener('click', async () => {
+  const files = Array.from(fileInput.files || []);
+  if (!files.length) { imgSetStatus('err', 'Please choose at least one image.'); return; }
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Convert to JPG', 'Converting…');
+  try {
+    const quality = parseFloat(document.getElementById('quality').value) || 0.92;
+    const out = [];
+    for (let i = 0; i < files.length; i++) {
+      imgSetStatus('info', 'Converting ' + (i + 1) + ' of ' + files.length + '…');
+      const { img, url } = await imageFromFile(files[i]);
+      const canvas = imageToCanvas(img, 0, '#ffffff');
+      const blob = await canvasBlob(canvas, 'image/jpeg', quality);
+      URL.revokeObjectURL(url);
+      out.push({ name: baseName(files[i].name) + '.jpg', blob });
+    }
+    await deliverFiles(out, 'images-jpg.zip');
+    imgSetStatus('ok', '✅ ' + files.length + ' image(s) converted to JPG.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Convert to JPG');
+  }
+});
+</script>
+</body>
+</html>

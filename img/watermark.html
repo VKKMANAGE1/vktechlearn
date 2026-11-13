@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watermark IMAGE — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Watermark images free. Add text over a photo, choose opacity, colour and position or tile it across the image.">
+<link rel="canonical" href="https://vktechlearn.site/img/watermark.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Security</div>
+    <h1>💧 Watermark IMAGE</h1>
+    <p>Stamp your name, brand or site over a photo with adjustable size, colour and opacity.</p>
+    <div class="related"><a href="/img/photo-editor.html" target="_blank" rel="noopener">Photo editor</a><a href="/img/meme.html" target="_blank" rel="noopener">Meme generator</a><a href="/img/compress.html" target="_blank" rel="noopener">Compress IMAGE</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose an image</label>
+        <input type="file" id="file" accept="image/*">
+        <div class="hint">JPG, PNG or WebP, up to 40 MB.</div>
+      </div>      <div class="row-3">
+        <div class="field">
+          <label for="text">Watermark text</label>
+          <input type="text" id="text" value="vktechlearn.site">
+        </div>
+        <div class="field">
+          <label for="size">Size (% of width)</label>
+          <input type="number" id="size" value="6" min="1" max="40">
+        </div>
+        <div class="field">
+          <label for="opacity">Opacity</label>
+          <input type="range" id="opacity" min="5" max="100" value="30">
+        </div>
+        <div class="field">
+          <label for="color">Colour</label>
+          <select id="color">
+            <option value="#ffffff" selected>White</option>
+            <option value="#000000">Black</option>
+            <option value="#fbbf24">Amber</option>
+            <option value="#22d3ee">Cyan</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="position">Position</label>
+          <select id="position">
+            <option value="center" selected>Centre</option>
+            <option value="br">Bottom right</option>
+            <option value="bl">Bottom left</option>
+            <option value="tr">Top right</option>
+            <option value="tile">Tile diagonally</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Add watermark</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No image selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose a photo.</li><li>Type the watermark text and set size and opacity.</li><li>Pick a position, or <strong>Tile</strong> to repeat it diagonally.</li><li>Press <strong>Add watermark</strong> and download.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">The watermark is burned into the exported image, not stored as a removable layer.</li><li class="">Tiled mode repeats a rotated watermark across the whole photo — good for proofs.</li><li class="">Keep opacity between 0.2 and 0.5 so the photo stays visible.</li><li class="">Maximum input size is 40 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  const { url } = await imageFromFile(file);
+  showPreview(url);
+});
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { imgSetStatus('err', 'Please choose an image first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Add watermark', 'Adding…');
+  try {
+    const { img, url } = await imageFromFile(file);
+    URL.revokeObjectURL(url);
+    const canvas = imageToCanvas(img);
+    const ctx = canvas.getContext('2d');
+    const text = document.getElementById('text').value.trim() || 'vktechlearn.site';
+    const size = Math.max(8, (parseFloat(document.getElementById('size').value) || 6) / 100 * canvas.width);
+    const alpha = Math.max(0.05, (parseInt(document.getElementById('opacity').value, 10) || 30) / 100);
+    const color = document.getElementById('color').value;
+    const position = document.getElementById('position').value;
+    ctx.font = 'bold ' + size + 'px Arial, Helvetica, sans-serif';
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = color === '#000000' ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.45)';
+    ctx.shadowBlur = Math.max(2, size / 8);
+    if (position === 'tile') {
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(-Math.PI / 6);
+      const stepX = size * (ctx.measureText(text).width / size + 3);
+      const stepY = size * 5;
+      for (let y = -canvas.height; y < canvas.height; y += stepY) {
+        for (let x = -canvas.width; x < canvas.width; x += stepX) ctx.fillText(text, x, y);
+      }
+      ctx.restore();
+    } else {
+      const margin = size * 0.8;
+      ctx.textAlign = position === 'bl' ? 'left' : position === 'br' ? 'right' : position === 'tr' ? 'right' : 'center';
+      ctx.textBaseline = position === 'tr' ? 'top' : position === 'center' ? 'middle' : 'bottom';
+      const x = position === 'bl' ? margin : position === 'br' || position === 'tr' ? canvas.width - margin : canvas.width / 2;
+      const y = position === 'tr' ? margin : position === 'center' ? canvas.height / 2 : canvas.height - margin;
+      ctx.fillText(text, x, y);
+    }
+    ctx.globalAlpha = 1;
+    const isPng = /\.png$/i.test(file.name);
+    const blob = await canvasBlob(canvas, isPng ? 'image/png' : 'image/jpeg', 0.92);
+    downloadBlob(blob, baseName(file.name) + '-watermarked.' + (isPng ? 'png' : 'jpg'));
+    showPreview(canvas);
+    imgSetStatus('ok', '✅ Watermark added at ' + Math.round(alpha * 100) + '% opacity.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Add watermark');
+  }
+});
+</script>
+</body>
+</html>

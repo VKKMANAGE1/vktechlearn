@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upscale — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Upscale images free. Enlarge JPG or PNG 2x, 3x or 4x in your browser with smooth interpolation.">
+<link rel="canonical" href="https://vktechlearn.site/img/upscale.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Optimize</div>
+    <h1>🔍 Upscale</h1>
+    <p>Enlarge a small image 2×, 3× or 4× with smooth high-quality scaling.</p>
+    <div class="related"><a href="/img/resize.html" target="_blank" rel="noopener">Resize IMAGE</a><a href="/img/compress.html" target="_blank" rel="noopener">Compress IMAGE</a><a href="/img/remove-background.html" target="_blank" rel="noopener">Remove background</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose an image</label>
+        <input type="file" id="file" accept="image/*">
+        <div class="hint">JPG, PNG or WebP, up to 40 MB.</div>
+      </div>      <div class="field">
+        <label for="factor">Scale factor</label>
+        <select id="factor">
+          <option value="2" selected>2× (double)</option>
+          <option value="3">3×</option>
+          <option value="4">4×</option>
+        </select>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Upscale image</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No image selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the image you want to enlarge.</li><li>Pick a scale factor.</li><li>Press <strong>Upscale image</strong>.</li><li>Download the larger PNG and compare it at 100%.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">This is high-quality interpolation, not an AI model — it cannot invent missing detail.</li><li class="">Scaling happens in small steps, which keeps edges cleaner than a single jump.</li><li class="">Output is PNG so no extra JPEG artefacts are added.</li><li class="warn">Very large results are limited by browser memory (about 40 megapixels).</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  const { img, url } = await imageFromFile(file);
+  showPreview(url);
+  imgSetStatus('info', 'Current size: ' + img.naturalWidth + ' × ' + img.naturalHeight + ' px.');
+});
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { imgSetStatus('err', 'Please choose an image first.'); return; }
+  const factor = parseInt(document.getElementById('factor').value, 10) || 2;
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Upscale image', 'Upscaling…');
+  try {
+    const { img, url } = await imageFromFile(file);
+    URL.revokeObjectURL(url);
+    if (img.naturalWidth * img.naturalHeight * factor * factor > 40000000) {
+      throw new Error('That would be over 40 megapixels — try a smaller factor.');
+    }
+    let canvas = imageToCanvas(img);
+    let step = 1;
+    while (step < factor) {
+      const next = newCanvas(canvas.width * 2, canvas.height * 2);
+      const ctx = next.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(canvas, 0, 0, next.width, next.height);
+      canvas = next;
+      step *= 2;
+    }
+    if (step !== factor) {
+      const exact = newCanvas(img.naturalWidth * factor, img.naturalHeight * factor);
+      const ctx = exact.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(canvas, 0, 0, exact.width, exact.height);
+      canvas = exact;
+    }
+    const blob = await canvasBlob(canvas, 'image/png');
+    downloadBlob(blob, baseName(file.name) + '-' + factor + 'x.png');
+    showPreview(canvas);
+    imgSetStatus('ok', '✅ ' + img.naturalWidth + '×' + img.naturalHeight + ' → ' + canvas.width + '×' + canvas.height + ' px.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Upscale image');
+  }
+});
+</script>
+</body>
+</html>

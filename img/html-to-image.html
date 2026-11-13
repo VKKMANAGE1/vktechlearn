@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML to IMAGE — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Convert HTML to an image free. Paste markup, choose the width, and download a PNG rendered in your browser.">
+<link rel="canonical" href="https://vktechlearn.site/img/html-to-image.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>🌐 HTML to IMAGE</h1>
+    <p>Paste HTML — a card, invoice, quote or table — and save it as a crisp PNG.</p>
+    <div class="related"><a href="/img/to-jpg.html" target="_blank" rel="noopener">Convert to JPG</a><a href="/img/watermark.html" target="_blank" rel="noopener">Watermark IMAGE</a><a href="/img/photo-editor.html" target="_blank" rel="noopener">Photo editor</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="html">HTML to render</label>
+        <textarea id="html" rows="9">&lt;div style="padding:32px;font-family:Arial,Helvetica,sans-serif;background:#ffffff;color:#0f172a"&gt;
+  &lt;h1 style="margin:0 0 8px;font-size:34px"&gt;VK Tech Learn&lt;/h1&gt;
+  &lt;p style="margin:0;color:#475569"&gt;Paste any HTML here to turn it into a PNG.&lt;/p&gt;
+&lt;/div&gt;</textarea>
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="width">Render width (px)</label>
+          <input type="number" id="width" value="800" min="200" max="2000">
+        </div>
+        <div class="field">
+          <label for="scale">Pixel density</label>
+          <select id="scale">
+            <option value="1">1× — normal</option>
+            <option value="2" selected>2× — retina sharp</option>
+            <option value="3">3× — very sharp</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Render to PNG</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">The rendered PNG will appear here.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Paste your HTML (with inline styles or a &lt;style&gt; block).</li><li>Set the render width in pixels.</li><li>Press <strong>Render to PNG</strong>.</li><li>Download the image and check it.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Scripts inside the pasted HTML are removed before rendering.</li><li class="warn">External images need CORS-enabled URLs, otherwise they appear blank.</li><li class="warn">Remote URLs are not fetched — paste the HTML itself.</li><li class="">Rendering is done by html2canvas, so some modern CSS (grid gaps, filters) may differ slightly.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const html = document.getElementById('html').value.trim();
+  if (!html) { imgSetStatus('err', 'Please paste some HTML first.'); return; }
+  const width = Math.max(200, Math.min(2000, parseInt(document.getElementById('width').value, 10) || 800));
+  const scale = parseInt(document.getElementById('scale').value, 10) || 2;
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Render to PNG', 'Rendering…');
+  imgSetStatus('info', 'Loading the renderer…');
+  try {
+    await ensureHtml2Canvas();
+    const holder = document.createElement('div');
+    holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:' + width + 'px;background:#ffffff;color:#0f172a;font:16px/1.5 Arial,Helvetica,sans-serif;';
+    holder.innerHTML = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on\w+="[^"]*"/gi, '');
+    document.body.appendChild(holder);
+    imgSetStatus('info', 'Rendering HTML…');
+    const canvas = await html2canvas(holder, { backgroundColor: '#ffffff', scale, useCORS: true, logging: false });
+    holder.remove();
+    if (!canvas.width || !canvas.height) throw new Error('Nothing to render — check that your HTML has visible content.');
+    const blob = await canvasBlob(canvas, 'image/png');
+    downloadBlob(blob, 'html-image.png');
+    showPreview(canvas);
+    imgSetStatus('ok', '✅ Rendered ' + canvas.width + ' × ' + canvas.height + ' px PNG.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Render to PNG');
+  }
+});
+</script>
+</body>
+</html>

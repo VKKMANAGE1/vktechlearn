@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blur face — Free Online Image Tool | VK Tech Learn</title>
+<meta name="description" content="Blur part of an image free. Drag boxes over faces or plates, then pixelate or blur them and download.">
+<link rel="canonical" href="https://vktechlearn.site/img/blur-face.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/img/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/img/">
+          <span class="brand-badge">🖼️</span>
+          <span>Image Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/img/">All tools</a>
+          <a href="/img/compress.html">Compress</a>
+          <a href="/img/resize.html">Resize</a>
+          <a href="/img/crop.html">Crop</a>
+          <a href="/pdf/">PDF tools</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Security</div>
+    <h1>🫥 Blur face</h1>
+    <p>Hide faces, number plates or anything private by blurring or pixelating selected areas.</p>
+    <div class="related"><a href="/img/crop.html" target="_blank" rel="noopener">Crop IMAGE</a><a href="/img/watermark.html" target="_blank" rel="noopener">Watermark IMAGE</a><a href="/img/photo-editor.html" target="_blank" rel="noopener">Photo editor</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose an image</label>
+        <input type="file" id="file" accept="image/*">
+        <div class="hint">JPG, PNG or WebP, up to 40 MB.</div>
+      </div>      <div class="row-3">
+        <div class="field">
+          <label for="mode">Effect</label>
+          <select id="mode">
+            <option value="pixelate" selected>Pixelate (strongest)</option>
+            <option value="blur">Blur</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="strength">Strength</label>
+          <select id="strength">
+            <option value="8">Light</option>
+            <option value="16" selected>Medium</option>
+            <option value="28">Strong</option>
+          </select>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end;gap:.5rem">
+          <button class="btn secondary small" id="undo" type="button">Undo</button>
+          <button class="btn secondary small" id="clear" type="button">Clear</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Drag over the areas to hide</label>
+        <div class="redact-wrap">
+          <canvas id="base"></canvas>
+          <canvas id="overlay"></canvas>
+        </div>
+        <div class="hint" id="count">No areas selected yet.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Save hidden image</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose a photo.</li><li>Drag one or more boxes over the areas to hide.</li><li>Choose pixelate or blur, and the strength.</li><li>Press <strong>Save hidden image</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">There is no automatic face detection — you choose the areas yourself.</li><li class="">Pixelate is stronger than blur: it destroys detail instead of softening it.</li><li class="">The effect is burned into the exported image.</li><li class="">Maximum input size is 40 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Images are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const base = document.getElementById('base');
+const overlay = document.getElementById('overlay');
+const runBtn = document.getElementById('run');
+let photo = null;
+let boxes = [];
+let drag = null;
+
+function paint() {
+  const ctx = overlay.getContext('2d');
+  overlay.width = base.width;
+  overlay.height = base.height;
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+  boxes.forEach((b) => {
+    ctx.fillStyle = 'rgba(34, 211, 238, 0.28)';
+    ctx.fillRect(b.x * overlay.width, b.y * overlay.height, b.w * overlay.width, b.h * overlay.height);
+    ctx.strokeStyle = '#22d3ee';
+    ctx.lineWidth = Math.max(2, overlay.width / 400);
+    ctx.strokeRect(b.x * overlay.width, b.y * overlay.height, b.w * overlay.width, b.h * overlay.height);
+  });
+  if (drag) {
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(drag.x * overlay.width, drag.y * overlay.height, drag.w * overlay.width, drag.h * overlay.height);
+  }
+  document.getElementById('count').textContent = boxes.length ? boxes.length + ' area(s) selected.' : 'No areas selected yet.';
+}
+
+function point(e) {
+  const r = overlay.getBoundingClientRect();
+  const p = e.touches ? e.touches[0] : e;
+  return { x: clamp01((p.clientX - r.left) / r.width), y: clamp01((p.clientY - r.top) / r.height) };
+}
+function start(e) { const p = point(e); drag = { x: p.x, y: p.y, w: 0, h: 0 }; e.preventDefault(); }
+function move(e) {
+  if (!drag) return;
+  const p = point(e);
+  drag = { x: Math.min(drag.x, p.x), y: Math.min(drag.y, p.y), w: Math.abs(p.x - drag.x), h: Math.abs(p.y - drag.y) };
+  paint();
+  e.preventDefault();
+}
+function end() {
+  if (drag && drag.w > 0.01 && drag.h > 0.01) boxes.push(drag);
+  drag = null;
+  paint();
+}
+overlay.addEventListener('mousedown', start);
+overlay.addEventListener('mousemove', move);
+window.addEventListener('mouseup', end);
+overlay.addEventListener('touchstart', start, { passive: false });
+overlay.addEventListener('touchmove', move, { passive: false });
+window.addEventListener('touchend', end);
+
+fileInput.addEventListener('change', async () => {
+  imgClearStatus();
+  document.getElementById('output').innerHTML = '';
+  const file = fileInput.files[0];
+  if (!file) return;
+  try {
+    const { img, url } = await imageFromFile(file);
+    photo = img;
+    URL.revokeObjectURL(url);
+    const scale = Math.min(1, 900 / img.naturalWidth);
+    base.width = Math.round(img.naturalWidth * scale);
+    base.height = Math.round(img.naturalHeight * scale);
+    base.getContext('2d').drawImage(img, 0, 0, base.width, base.height);
+    boxes = [];
+    paint();
+    imgSetStatus('ok', '✅ Image loaded — drag boxes over the areas to hide.');
+  } catch (err) { imgSetStatus('err', '❌ ' + err.message); }
+});
+document.getElementById('undo').addEventListener('click', () => { boxes.pop(); paint(); });
+document.getElementById('clear').addEventListener('click', () => { boxes = []; paint(); });
+
+runBtn.addEventListener('click', async () => {
+  if (!photo) { imgSetStatus('err', 'Please choose an image first.'); return; }
+  if (!boxes.length) { imgSetStatus('err', 'Please drag at least one box over the area to hide.'); return; }
+  const mode = document.getElementById('mode').value;
+  const strength = parseInt(document.getElementById('strength').value, 10) || 16;
+  document.getElementById('output').innerHTML = '';
+  imgBusy(runBtn, true, 'Save hidden image', 'Hiding…');
+  try {
+    const canvas = imageToCanvas(photo);
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+    boxes.forEach((b) => {
+      const sx = Math.round(b.x * W);
+      const sy = Math.round(b.y * H);
+      const sw = Math.max(2, Math.round(b.w * W));
+      const sh = Math.max(2, Math.round(b.h * H));
+      if (mode === 'blur') {
+        const temp = newCanvas(sw, sh);
+        const tctx = temp.getContext('2d');
+        tctx.filter = 'blur(' + strength + 'px)';
+        tctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+        ctx.drawImage(temp, 0, 0, sw, sh, sx, sy, sw, sh);
+      } else {
+        const tiny = newCanvas(Math.max(2, sw / strength), Math.max(2, sh / strength));
+        const tctx = tiny.getContext('2d');
+        tctx.imageSmoothingEnabled = false;
+        tctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, tiny.width, tiny.height);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(tiny, 0, 0, tiny.width, tiny.height, sx, sy, sw, sh);
+        ctx.imageSmoothingEnabled = true;
+      }
+    });
+    const isPng = /\.png$/i.test(fileInput.files[0].name);
+    const blob = await canvasBlob(canvas, isPng ? 'image/png' : 'image/jpeg', 0.92);
+    downloadBlob(blob, baseName(fileInput.files[0].name) + '-hidden.' + (isPng ? 'png' : 'jpg'));
+    showPreview(canvas);
+    imgSetStatus('ok', '✅ ' + boxes.length + ' area(s) ' + (mode === 'blur' ? 'blurred' : 'pixelated') + '.');
+  } catch (err) {
+    imgSetStatus('err', '❌ ' + err.message);
+  } finally {
+    imgBusy(runBtn, false, 'Save hidden image');
+  }
+});
+</script>
+</body>
+</html>
