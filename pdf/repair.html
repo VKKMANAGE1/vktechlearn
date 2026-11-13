@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repair PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Repair a damaged PDF free. Broken structures are rewritten, and unreadable files are rebuilt page by page.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/repair.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Optimize</div>
+    <h1>🩹 Repair PDF</h1>
+    <p>Rebuild a damaged PDF: first by fixing its structure, then by rebuilding pages as images.</p>
+    <div class="related"><a href="/pdf/pdf-to-pdfa.html" target="_blank" rel="noopener">PDF to PDF/A</a><a href="/pdf/compress.html" target="_blank" rel="noopener">Compress PDF</a><a href="/pdf/unlock.html" target="_blank" rel="noopener">Unlock PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a damaged PDF</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Repair PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the damaged PDF.</li><li>Press <strong>Repair PDF</strong>.</li><li>The tool first tries a structural fix, then rebuilds pages if needed.</li><li>Download <strong>repaired.pdf</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">A structural repair keeps text and quality and fixes most index/xref damage.</li><li class="warn">If the structure cannot be read, pages are rebuilt as images and text is lost.</li><li class="warn">Severely truncated files may lose their last pages.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Repair PDF', 'Repairing…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    let structural = null;
+    setStatus('info', 'Checking the document structure…');
+    try {
+      const doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true, throwOnInvalidObject: false, updateMetadata: false });
+      if (doc.getPageCount() > 0) structural = await doc.save({ useObjectStreams: false });
+    } catch (e) { structural = null; }
+    if (structural) {
+      addDownload(structural, 'repaired.pdf', 'Download repaired.pdf');
+      setStatus('ok', '✅ Structure repaired — the file was rewritten and keeps its original text and quality.');
+      return;
+    }
+    setStatus('info', 'Structure unreadable — rebuilding pages as images…');
+    const pdf = await openPdfJs(bytes);
+    const doc = await PDFLib.PDFDocument.create();
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setStatus('info', 'Rebuilding page ' + i + ' of ' + pdf.numPages + '…');
+      const canvas = await renderPageCanvas(pdf, i, 2);
+      const jpeg = await blobToBytes(await canvasToJpeg(canvas, 0.9));
+      const img = await doc.embedJpg(jpeg);
+      const page = doc.addPage([canvas.width / 2, canvas.height / 2]);
+      page.drawImage(img, { x: 0, y: 0, width: canvas.width / 2, height: canvas.height / 2 });
+    }
+    const out = await doc.save();
+    addDownload(out, 'repaired.pdf', 'Download repaired.pdf');
+    setStatus('ok', '✅ Rebuilt ' + doc.getPageCount() + ' page(s) as images — text is no longer selectable.');
+  } catch (err) {
+    setStatus('err', '❌ This PDF could not be repaired: ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Repair PDF');
+  }
+});
+</script>
+</body>
+</html>

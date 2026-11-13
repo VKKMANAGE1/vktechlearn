@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCR PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="OCR a PDF free in your browser. Scanned pages get an invisible text layer, making the document searchable.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/ocr.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Optimize</div>
+    <h1>🔍 OCR PDF</h1>
+    <p>Add a searchable text layer to scanned pages so you can search and copy the text.</p>
+    <div class="related"><a href="/pdf/pdf-to-word.html" target="_blank" rel="noopener">PDF to Word</a><a href="/pdf/scan-to-pdf.html" target="_blank" rel="noopener">Scan to PDF</a><a href="/pdf/summarize.html" target="_blank" rel="noopener">AI Summarizer</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a scanned PDF</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">Works best on clean, straight scans at 200 DPI or more.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="lang">Language</label>
+          <select id="lang">
+            <option value="eng" selected>English</option>
+            <option value="hin">Hindi</option>
+            <option value="eng+hin">English + Hindi</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Output filename</label>
+          <input type="text" id="name" value="searchable.pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Run OCR</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Recognised text</label>
+        <div class="preview" id="result" style="min-height:100px;max-height:300px">The text will appear here.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose a scanned PDF.</li><li>Pick the language that appears in the document.</li><li>Press <strong>Run OCR</strong> — the engine downloads on first use.</li><li>Download <strong>searchable.pdf</strong> and try searching for a word.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">The first run downloads the OCR engine (~15 MB) and language data — later runs are cached.</li><li class="">English is the most accurate; Hindi needs cleaner, larger scans.</li><li class="">Text is placed as an invisible layer, so positions are approximate but search works.</li><li class="">Scanned pages only — pages that already have text keep their original layer.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+const resultBox = document.getElementById('result');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Run OCR', 'Working…');
+  let worker = null;
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const pdf = await openPdfJs(bytes);
+    setStatus('info', 'Loading the OCR engine (first run only)…');
+    await ensureExtra('tesseract');
+    const lang = document.getElementById('lang').value;
+    worker = await Tesseract.createWorker(lang);
+    const srcDoc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+    const out = await PDFLib.PDFDocument.create();
+    const font = await out.embedFont(PDFLib.StandardFonts.Helvetica);
+    const texts = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setStatus('info', 'OCR page ' + i + ' of ' + pdf.numPages + '…');
+      const canvas = await renderPageCanvas(pdf, i, 2);
+      const { data } = await worker.recognize(canvas);
+      texts.push(data.text || '');
+      const copied = await out.copyPages(srcDoc, [i - 1]);
+      out.addPage(copied[0]);
+      const page = out.getPages()[out.getPageCount() - 1];
+      const clean = (data.text || '').replace(/\s+/g, ' ').trim();
+      if (clean) {
+        const lines = [];
+        let line = '';
+        clean.split(' ').forEach((w) => {
+          if ((line + ' ' + w).length > 110) { lines.push(line); line = w; } else { line = line ? line + ' ' + w : w; }
+        });
+        if (line) lines.push(line);
+        let y = page.getHeight() - 24;
+        for (const ln of lines.slice(0, 150)) {
+          page.drawText(ln, { x: 18, y, size: 8, font, color: PDFLib.rgb(0, 0, 0), opacity: 0 });
+          y -= 9.5;
+        }
+      }
+    }
+    const outBytes = await out.save();
+    const name = (document.getElementById('name').value || 'searchable.pdf').trim();
+    addDownload(outBytes, name, 'Download ' + name);
+    resultBox.textContent = texts.join('\n\n').slice(0, 4000) || 'No text was recognised.';
+    setStatus('ok', '✅ OCR finished for ' + pdf.numPages + ' page(s). The PDF is now searchable.');
+  } catch (err) {
+    setStatus('err', '❌ OCR failed: ' + friendlyError(err));
+  } finally {
+    if (worker) { try { await worker.terminate(); } catch (e) {} }
+    setBusy(runBtn, false, 'Run OCR');
+  }
+});
+</script>
+</body>
+</html>

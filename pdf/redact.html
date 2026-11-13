@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redact PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Redact a PDF free. Draw boxes over private text, flatten the page and download a copy with the content removed.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/redact.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Security</div>
+    <h1>⬛ Redact PDF</h1>
+    <p>Drag black boxes over sensitive areas and save a file where that content is gone.</p>
+    <div class="related"><a href="/pdf/crop.html" target="_blank" rel="noopener">Crop PDF</a><a href="/pdf/protect.html" target="_blank" rel="noopener">Protect PDF</a><a href="/pdf/annotate.html" target="_blank" rel="noopener">Annotation</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="pageNum">Page</label>
+          <input type="number" id="pageNum" value="1" min="1">
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end;gap:.5rem">
+          <button class="btn secondary small" id="undo" type="button">Undo</button>
+          <button class="btn secondary small" id="clearPage" type="button">Clear page</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Drag over the content to hide</label>
+        <div class="redact-wrap">
+          <canvas id="base"></canvas>
+          <canvas id="overlay"></canvas>
+        </div>
+        <div class="hint" id="boxCount">No boxes yet.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Save redacted PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF and go to the page you want to redact.</li><li>Drag a box over each sensitive area — add as many as you need.</li><li>Use <strong>Undo</strong> or <strong>Clear page</strong> to fix mistakes.</li><li>Press <strong>Save redacted PDF</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Redacted pages are flattened to images, so the covered text is really removed, not just hidden.</li><li class="">Repeat the tool for other pages; each run only changes the page shown.</li><li class="">Pages without boxes keep their original text and quality.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const pageInput = document.getElementById('pageNum');
+const base = document.getElementById('base');
+const overlay = document.getElementById('overlay');
+const runBtn = document.getElementById('run');
+let sourceBytes = null;
+let currentPage = 1;
+let pageCount = 0;
+const boxes = {};   // page -> [{x,y,w,h}] normalised 0..1
+let drag = null;
+
+function paintOverlay() {
+  const ctx = overlay.getContext('2d');
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+  ctx.fillStyle = 'rgba(0,0,0,0.92)';
+  (boxes[currentPage] || []).forEach((b) => {
+    ctx.fillRect(b.x * overlay.width, b.y * overlay.height, b.w * overlay.width, b.h * overlay.height);
+  });
+  if (drag) {
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(drag.x * overlay.width, drag.y * overlay.height, drag.w * overlay.width, drag.h * overlay.height);
+  }
+  const count = (boxes[currentPage] || []).length;
+  document.getElementById('boxCount').textContent = count ? count + ' box(es) on page ' + currentPage : 'No boxes yet — drag on the page.';
+}
+
+async function showPage(num) {
+  if (!sourceBytes) return;
+  currentPage = Math.min(Math.max(1, num), pageCount);
+  pageInput.value = currentPage;
+  const pdf = await openPdfJs(sourceBytes);
+  const canvas = await renderPageCanvas(pdf, currentPage, 1.2);
+  base.width = overlay.width = canvas.width;
+  base.height = overlay.height = canvas.height;
+  base.getContext('2d').drawImage(canvas, 0, 0);
+  paintOverlay();
+}
+
+function norm(e) {
+  const rect = overlay.getBoundingClientRect();
+  const p = e.touches ? e.touches[0] : e;
+  return {
+    x: Math.min(1, Math.max(0, (p.clientX - rect.left) / rect.width)),
+    y: Math.min(1, Math.max(0, (p.clientY - rect.top) / rect.height))
+  };
+}
+
+function startDrag(e) { const p = norm(e); drag = { x: p.x, y: p.y, w: 0, h: 0 }; e.preventDefault(); }
+function moveDrag(e) {
+  if (!drag) return;
+  const p = norm(e);
+  drag = { x: Math.min(drag.x, p.x), y: Math.min(drag.y, p.y), w: Math.abs(p.x - drag.x), h: Math.abs(p.y - drag.y) };
+  paintOverlay();
+  e.preventDefault();
+}
+function endDrag() {
+  if (!drag) return;
+  if (drag.w > 0.01 && drag.h > 0.005) {
+    (boxes[currentPage] = boxes[currentPage] || []).push(drag);
+  }
+  drag = null;
+  paintOverlay();
+}
+
+overlay.addEventListener('mousedown', startDrag);
+overlay.addEventListener('mousemove', moveDrag);
+window.addEventListener('mouseup', endDrag);
+overlay.addEventListener('touchstart', startDrag, { passive: false });
+overlay.addEventListener('touchmove', moveDrag, { passive: false });
+window.addEventListener('touchend', endDrag);
+
+fileInput.addEventListener('change', async () => {
+  const file = fileInput.files[0];
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  Object.keys(boxes).forEach((k) => delete boxes[k]);
+  if (!file) return;
+  try {
+    sourceBytes = await readFileBytes(file);
+    const pdf = await openPdfJs(sourceBytes);
+    pageCount = pdf.numPages;
+    pageInput.max = pageCount;
+    await showPage(1);
+    setStatus('ok', '✅ ' + pageCount + ' page(s) loaded. Drag boxes on the page to redact.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  }
+});
+
+pageInput.addEventListener('change', () => showPage(parseInt(pageInput.value, 10) || 1));
+document.getElementById('undo').addEventListener('click', () => {
+  if (boxes[currentPage] && boxes[currentPage].length) boxes[currentPage].pop();
+  paintOverlay();
+});
+document.getElementById('clearPage').addEventListener('click', () => {
+  boxes[currentPage] = [];
+  paintOverlay();
+});
+
+runBtn.addEventListener('click', async () => {
+  if (!sourceBytes) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  const active = Object.keys(boxes).filter((k) => (boxes[k] || []).length);
+  if (!active.length) { setStatus('err', 'Please drag at least one box over the content to hide.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Save redacted PDF', 'Redacting…');
+  try {
+    await ensureLibs();
+    const srcDoc = await PDFLib.PDFDocument.load(sourceBytes.slice(0), { ignoreEncryption: true });
+    const srcPdf = await openPdfJs(sourceBytes);
+    const out = await PDFLib.PDFDocument.create();
+    for (let i = 1; i <= srcPdf.numPages; i++) {
+      setStatus('info', 'Processing page ' + i + ' of ' + srcPdf.numPages + '…');
+      const list = boxes[i] || [];
+      if (!list.length) {
+        const copied = await out.copyPages(srcDoc, [i - 1]);
+        out.addPage(copied[0]);
+        continue;
+      }
+      const canvas = await renderPageCanvas(srcPdf, i, 2);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#000000';
+      list.forEach((b) => ctx.fillRect(b.x * canvas.width, b.y * canvas.height, b.w * canvas.width, b.h * canvas.height));
+      const jpeg = await blobToBytes(await canvasToJpeg(canvas, 0.9));
+      const img = await out.embedJpg(jpeg);
+      const page = out.addPage([canvas.width / 2, canvas.height / 2]);
+      page.drawImage(img, { x: 0, y: 0, width: canvas.width / 2, height: canvas.height / 2 });
+    }
+    const outBytes = await out.save();
+    addDownload(outBytes, 'redacted.pdf', 'Download redacted.pdf');
+    setStatus('ok', '✅ Redacted ' + active.length + ' page(s) — the covered content is gone from the file.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Save redacted PDF');
+  }
+});
+</script>
+</body>
+</html>

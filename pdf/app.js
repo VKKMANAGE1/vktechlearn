@@ -158,6 +158,234 @@ function parsePageRange(input, totalPages) {
   return Array.from(pages).sort((a, b) => a - b);
 }
 
+/* ---------- optional engines: loaded only by the pages that need them ---------- */
+const EXTRA_LIBS = {
+  jszip: 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
+  xlsx: 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
+  pptx: 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+  tesseract: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js'
+};
+const extraPromises = {};
+function ensureExtra(key) {
+  if (!extraPromises[key]) {
+    extraPromises[key] = loadScript(EXTRA_LIBS[key]).catch((err) => { delete extraPromises[key]; throw err; });
+  }
+  return extraPromises[key];
+}
+const ensureJSZip = () => ensureExtra('jszip');
+const ensureXLSX = () => ensureExtra('xlsx');
+const ensurePPTX = () => ensureExtra('pptx');
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function addFileDownload(blob, filename, label) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.className = 'dl';
+  a.textContent = label || ('Download ' + filename);
+  const out = document.getElementById('output');
+  if (out) out.appendChild(a);
+  return a;
+}
+
+async function addZipDownload(files, zipName) {
+  await ensureJSZip();
+  const zip = new JSZip();
+  files.forEach((f) => zip.file(f.name, f.data));
+  const blob = await zip.generateAsync({ type: 'blob' });
+  return addFileDownload(blob, zipName, 'Download ' + zipName + ' (' + files.length + ' files)');
+}
+
+/* Load a PDF with pdf-lib, optionally with a password (the fork can decrypt). */
+async function openPdf(bytes, options) {
+  await ensureLibs();
+  return PDFLib.PDFDocument.load(bytes, Object.assign({ updateMetadata: false }, options || {}));
+}
+
+/* Plain text of every page, as a list of lines per page. */
+async function extractTextPages(source, onPage) {
+  await ensureLibs();
+  const bytes = source instanceof Blob ? await readFileBytes(source) : source;
+  const pdf = await window.pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const lines = [];
+    let line = '';
+    for (const item of content.items) {
+      if (typeof item.str !== 'string') continue;
+      line += item.str;
+      if (item.hasEOL) {
+        if (line.trim()) lines.push(line.trim());
+        line = '';
+      } else {
+        line += ' ';
+      }
+    }
+    if (line.trim()) lines.push(line.trim());
+    pages.push(lines);
+    if (onPage) onPage(i, pdf.numPages);
+  }
+  return pages;
+}
+
+async function openPdfJs(source) {
+  await ensureLibs();
+  const bytes = source instanceof Blob ? await readFileBytes(source) : source;
+  return window.pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+}
+
+async function renderPageCanvas(pdf, pageNum, scale) {
+  const page = await pdf.getPage(pageNum);
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.ceil(viewport.width);
+  canvas.height = Math.ceil(viewport.height);
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  return canvas;
+}
+
+const canvasToJpeg = (canvas, quality) =>
+  new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality || 0.85));
+
+const blobToBytes = (blob) => new Promise((resolve, reject) => {
+  const fr = new FileReader();
+  fr.onload = () => resolve(new Uint8Array(fr.result));
+  fr.onerror = () => reject(fr.error);
+  fr.readAsArrayBuffer(blob);
+});
+
+/* Wrap text to a width, using a pdf-lib font metric. */
+function wrapText(text, font, size, maxWidth) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const next = line ? line + ' ' + word : word;
+    if (line && font.widthOfTextAtSize(next, size) > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : [''];
+}
+
+/* Build an A4 portrait PDF from lines of text. */
+async function textPdf(pagesLines, options) {
+  const opts = Object.assign({ size: 11, leading: 16, margin: 56, title: '', author: 'Vïnâý Kúshwâhâ' }, options || {});
+  await ensureLibs();
+  const doc = await PDFLib.PDFDocument.create();
+  const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+  const bold = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+  for (const lines of pagesLines) {
+    let page = doc.addPage(PDFLib.PageSizes.A4);
+    let y = page.getHeight() - opts.margin;
+    const maxWidth = page.getWidth() - opts.margin * 2;
+    for (const raw of lines) {
+      const wrapped = wrapText(raw, font, opts.size, maxWidth);
+      for (const ln of wrapped) {
+        if (y < opts.margin) {
+          page = doc.addPage(PDFLib.PageSizes.A4);
+          y = page.getHeight() - opts.margin;
+        }
+        page.drawText(ln, { x: opts.margin, y, size: opts.size, font, color: PDFLib.rgb(0.1, 0.12, 0.16) });
+        y -= opts.leading;
+      }
+    }
+  }
+  if (doc.getPageCount() === 0) doc.addPage(PDFLib.PageSizes.A4);
+  if (opts.title) doc.setTitle(opts.title);
+  doc.setProducer('VK PDF Toolbox');
+  doc.setAuthor(opts.author);
+  return doc.save();
+}
+
+const xmlEscape = (s) => String(s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;');
+
+async function buildDocx(pagesLines) {
+  await ensureJSZip();
+  const body = [];
+  pagesLines.forEach((lines, pi) => {
+    for (const line of lines) {
+      body.push('<w:p><w:r><w:t xml:space="preserve">' + xmlEscape(line) + '</w:t></w:r></w:p>');
+    }
+    if (pi < pagesLines.length - 1) body.push('<w:p><w:r><w:br w:type="page"/></w:r></w:p>');
+  });
+  if (!body.length) body.push('<w:p/>');
+  const document = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' +
+    body.join('') +
+    '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/></w:sectPr>' +
+    '</w:body></w:document>';
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+    '</Types>');
+  zip.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+    '</Relationships>');
+  zip.file('word/document.xml', document);
+  return zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+}
+
+async function readDocxParagraphs(file) {
+  await ensureJSZip();
+  const zip = await JSZip.loadAsync(await readFileBytes(file));
+  const part = zip.file('word/document.xml');
+  if (!part) throw new Error('This file is not a .docx document (word/document.xml is missing).');
+  const xml = await part.async('string');
+  const paragraphs = [];
+  for (const chunk of xml.split(/<w:p[\s>]/).slice(1)) {
+    const texts = [...chunk.matchAll(/<w:t[^>]*>([\s\S]*?)<\/w:t>/g)].map((m) => m[1]);
+    const text = texts.join('')
+      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+    if (text.trim()) paragraphs.push(text);
+  }
+  return paragraphs;
+}
+
+async function readPptxSlides(file) {
+  await ensureJSZip();
+  const zip = await JSZip.loadAsync(await readFileBytes(file));
+  const names = Object.keys(zip.files)
+    .filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n))
+    .sort((a, b) => parseInt(a.match(/(\d+)/)[1], 10) - parseInt(b.match(/(\d+)/)[1], 10));
+  if (!names.length) throw new Error('This file is not a .pptx presentation (no slides were found).');
+  const slides = [];
+  for (const name of names) {
+    const xml = await zip.file(name).async('string');
+    const texts = [...xml.matchAll(/<a:t>([\s\S]*?)<\/a:t>/g)]
+      .map((m) => m[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"'))
+      .filter((t) => t.trim());
+    slides.push(texts);
+  }
+  return slides;
+}
+
+async function readXlsxSheets(file) {
+  await ensureXLSX();
+  const wb = XLSX.read(new Uint8Array(await readFileBytes(file)), { type: 'array' });
+  return wb.SheetNames.map((name) => ({
+    name,
+    rows: XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, blankrows: false, defval: '' })
+  }));
+}
+
 /* Warm the engine up after the first paint so the first click is instant. */
 const warm = () => ensureLibs().catch(() => {});
 if ('requestIdleCallback' in window) requestIdleCallback(warm, { timeout: 2500 });

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Excel to PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert Excel to PDF free. Every sheet becomes a landscape PDF table with borders and wrapped cells.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/excel-to-pdf.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>📑 Excel to PDF</h1>
+    <p>Print a spreadsheet as a tidy PDF table, sheets one after another.</p>
+    <div class="related"><a href="/pdf/word-to-pdf.html" target="_blank" rel="noopener">Word to PDF</a><a href="/pdf/pdf-to-excel.html" target="_blank" rel="noopener">PDF to Excel</a><a href="/pdf/powerpoint-to-pdf.html" target="_blank" rel="noopener">PowerPoint to PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a spreadsheet</label>
+        <input type="file" id="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <div class="hint">Only .xlsx files.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose an <strong>.xlsx</strong> spreadsheet.</li><li>Press <strong>Convert to PDF</strong>.</li><li>Each sheet becomes a landscape table; the header row repeats on every page.</li><li>Download <strong>spreadsheet.pdf</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Cell values are printed as plain text; formulas are not evaluated and styles are lost.</li><li class="">Very wide sheets are squeezed — keep print areas narrow for best results.</li><li class="warn">Only .xlsx is supported (not .xls).</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a .xlsx file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to PDF', 'Converting…');
+  setStatus('info', 'Reading the workbook…');
+  try {
+    const sheets = await readXlsxSheets(file);
+    await ensureLibs();
+    const doc = await PDFLib.PDFDocument.create();
+    const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    const bold = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    const PAGE_W = 842, PAGE_H = 595, M = 32, SIZE = 9, LINE = 11;
+    let pages = 0;
+    for (const sheet of sheets) {
+      const rows = sheet.rows.filter((r) => r.some((c) => String(c).trim() !== ''));
+      if (!rows.length) continue;
+      const cols = Math.max.apply(null, rows.map((r) => r.length));
+      const widths = [];
+      for (let c = 0; c < cols; c++) {
+        const maxChars = Math.max.apply(null, rows.map((r) => String(r[c] == null ? '' : r[c]).length));
+        widths.push(Math.min(160, Math.max(48, maxChars * SIZE * 0.55 + 8)));
+      }
+      const total = widths.reduce((a, b) => a + b, 0);
+      const scale = total > (PAGE_W - M * 2) ? (PAGE_W - M * 2) / total : 1;
+      const finalWidths = widths.map((w) => w * scale);
+      let page = doc.addPage([PAGE_W, PAGE_H]);
+      pages++;
+      let y = PAGE_H - M;
+      page.drawText(sheet.name, { x: M, y: y + 8, size: 12, font: bold, color: PDFLib.rgb(0.1, 0.12, 0.18) });
+      y -= 16;
+      let header = rows[0];
+      let body = rows.slice(1);
+      const drawRow = (cells, isHeader) => {
+        const linesPer = cells.map((cell, c) => wrapText(String(cell == null ? '' : cell), isHeader ? bold : font, SIZE, finalWidths[c] - 6));
+        const height = Math.max.apply(null, linesPer.map((l) => l.length)) * LINE + 4;
+        if (y - height < M) {
+          page = doc.addPage([PAGE_W, PAGE_H]);
+          pages++;
+          y = PAGE_H - M;
+          drawRow(header, true);
+        }
+        let x = M;
+        cells.forEach((cell, c) => {
+          const w = finalWidths[c];
+          page.drawRectangle({ x, y: y - height, width: w, height, borderColor: PDFLib.rgb(0.75, 0.78, 0.82), borderWidth: 0.5, color: isHeader ? PDFLib.rgb(0.93, 0.95, 0.98) : undefined });
+          linesPer[c].forEach((ln, li) => {
+            page.drawText(ln, { x: x + 3, y: y - 12 - li * LINE, size: SIZE, font: isHeader ? bold : font, color: PDFLib.rgb(0.12, 0.14, 0.18) });
+          });
+          x += w;
+        });
+        y -= height;
+      };
+      drawRow(header, true);
+      for (const row of body) {
+        if (y < M + 20) {
+          page = doc.addPage([PAGE_W, PAGE_H]);
+          pages++;
+          y = PAGE_H - M;
+          drawRow(header, true);
+        }
+        drawRow(row, false);
+      }
+    }
+    if (!pages) { setStatus('err', 'This workbook has no readable cells.'); return; }
+    doc.setTitle(file.name);
+    doc.setProducer('VK PDF Toolbox');
+    const bytes = await doc.save();
+    addDownload(bytes, 'spreadsheet.pdf', 'Download spreadsheet.pdf');
+    setStatus('ok', '✅ ' + sheets.length + ' sheet(s) printed on ' + pages + ' page(s).');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to PDF');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scan to PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Scan documents to PDF free. Use your phone camera (or pick photos), enhance them, and download one PDF.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/scan-to-pdf.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Organize</div>
+    <h1>📷 Scan to PDF</h1>
+    <p>Photograph documents with your phone and turn them into a clean PDF.</p>
+    <div class="related"><a href="/pdf/jpg-to-pdf.html" target="_blank" rel="noopener">JPG to PDF</a><a href="/pdf/ocr.html" target="_blank" rel="noopener">OCR PDF</a><a href="/pdf/rotate.html" target="_blank" rel="noopener">Rotate PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="row">
+        <div class="field">
+          <label for="camera">Take a photo</label>
+          <input type="file" id="camera" accept="image/*" capture="environment">
+          <div class="hint">Opens the camera on phones.</div>
+        </div>
+        <div class="field">
+          <label for="file">Choose images</label>
+          <input type="file" id="file" accept="image/*" multiple>
+          <div class="hint">Pictures already on this device.</div>
+        </div>
+      </div>
+      <div class="row">
+        <label class="check"><input type="checkbox" id="enhance" checked> Enhance scan (grayscale + contrast)</label>
+        <div class="field" style="margin:0">
+          <label for="name">Filename</label>
+          <input type="text" id="name" value="scan.pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Create scanned PDF</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No images yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Tap <strong>Take photo</strong> on a phone, or pick existing images.</li><li>Add as many pages as you need — one photo per page.</li><li>Keep “Enhance scan” on for sharper black text.</li><li>Press <strong>Create scanned PDF</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Camera capture works on phones and tablets; on a computer use “Choose images”.</li><li class="">Enhance mode converts to grayscale with extra contrast — good for text, bad for photos.</li><li class="">Each image becomes one A4 page, fitted with a margin.</li><li class="">Maximum file size is 50 MB per image.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const camera = document.getElementById('camera');
+const gallery = document.getElementById('file');
+const runBtn = document.getElementById('run');
+let shots = [];
+
+function refresh() {
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  if (!shots.length) { preview.textContent = 'No images yet.'; return; }
+  shots.forEach((s, i) => {
+    const img = document.createElement('img');
+    img.src = s.url;
+    img.alt = 'Scan page ' + (i + 1);
+    img.style.cssText = 'max-width:120px;border-radius:6px;margin:4px';
+    preview.appendChild(img);
+  });
+}
+
+async function addShots(files) {
+  for (const file of files) {
+    const bitmap = await createImageBitmap(file);
+    shots.push({ file, url: URL.createObjectURL(file), width: bitmap.width, height: bitmap.height });
+    bitmap.close && bitmap.close();
+  }
+  refresh();
+  clearStatus();
+}
+
+camera.addEventListener('change', () => { addShots(Array.from(camera.files || [])); camera.value = ''; });
+gallery.addEventListener('change', () => { addShots(Array.from(gallery.files || [])); gallery.value = ''; });
+
+runBtn.addEventListener('click', async () => {
+  if (!shots.length) { setStatus('err', 'Please take a photo or choose at least one image.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Create scanned PDF', 'Building…');
+  try {
+    await ensureLibs();
+    const enhance = document.getElementById('enhance').checked;
+    const doc = await PDFLib.PDFDocument.create();
+    for (let i = 0; i < shots.length; i++) {
+      setStatus('info', 'Processing image ' + (i + 1) + ' of ' + shots.length + '…');
+      const bitmap = await createImageBitmap(shots[i].file);
+      const maxSide = 2200;
+      const ratio = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(bitmap.width * ratio);
+      canvas.height = Math.round(bitmap.height * ratio);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      bitmap.close && bitmap.close();
+      if (enhance) {
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const px = data.data;
+        for (let p = 0; p < px.length; p += 4) {
+          const gray = 0.299 * px[p] + 0.587 * px[p + 1] + 0.114 * px[p + 2];
+          const boosted = Math.max(0, Math.min(255, (gray - 128) * 1.35 + 140));
+          px[p] = px[p + 1] = px[p + 2] = boosted;
+        }
+        ctx.putImageData(data, 0, 0);
+      }
+      const jpeg = await blobToBytes(await canvasToJpeg(canvas, 0.85));
+      const img = await doc.embedJpg(jpeg);
+      const landscape = canvas.width > canvas.height;
+      const size = landscape ? [PDFLib.PageSizes.A4[1], PDFLib.PageSizes.A4[0]] : PDFLib.PageSizes.A4;
+      const page = doc.addPage(size);
+      const margin = landscape ? 0 : 0;
+      const maxW = page.getWidth() - margin * 2;
+      const maxH = page.getHeight() - margin * 2;
+      const scale = Math.min(maxW / img.width, maxH / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      page.drawImage(img, { x: (page.getWidth() - w) / 2, y: (page.getHeight() - h) / 2, width: w, height: h });
+    }
+    const out = await doc.save();
+    const name = (document.getElementById('name').value || 'scan.pdf').trim();
+    addDownload(out, name, 'Download ' + name);
+    setStatus('ok', '✅ ' + shots.length + ' page(s) scanned into one PDF.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Create scanned PDF');
+  }
+});
+</script>
+</body>
+</html>

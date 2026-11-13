@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Summarizer — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Summarize a PDF free. Key sentences are picked offline in your browser and saved as text or PDF.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/summarize.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Intelligence</div>
+    <h1>✨ AI Summarizer</h1>
+    <p>Get a short, readable summary of a long PDF in seconds — computed on your device.</p>
+    <div class="related"><a href="/pdf/translate.html" target="_blank" rel="noopener">Translate PDF</a><a href="/pdf/pdf-to-markdown.html" target="_blank" rel="noopener">PDF to Markdown</a><a href="/pdf/ocr.html" target="_blank" rel="noopener">OCR PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="count">Summary length</label>
+          <select id="count">
+            <option value="3">3 sentences — quick gist</option>
+            <option value="5" selected>5 sentences — short</option>
+            <option value="8">8 sentences — medium</option>
+            <option value="12">12 sentences — detailed</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Summarise</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Summary</label>
+        <div class="preview" id="result" style="min-height:120px;max-height:360px">The summary will appear here.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want summarised.</li><li>Set how many sentences you want (3–15).</li><li>Press <strong>Summarise</strong>.</li><li>Read it on the page, or download it as TXT or PDF.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">The summary is extractive: it picks the most important existing sentences, it does not rewrite them.</li><li class="">Nothing is sent to an AI service — the text never leaves your browser.</li><li class="warn">Scanned PDFs have no text to summarise; run OCR PDF first.</li><li class="">Short documents (under ~5 sentences) come back almost unchanged.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+const resultBox = document.getElementById('result');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Summarise', 'Reading…');
+  setStatus('info', 'Reading the document…');
+  try {
+    const pages = await extractTextPages(file, (i, n) => setStatus('info', 'Reading page ' + i + ' of ' + n + '…'));
+    const text = pages.map((p) => p.join(' ')).join(' ').replace(/\s+/g, ' ').trim();
+    if (text.length < 80) { setStatus('err', 'Not enough text to summarise. If this is a scan, run OCR PDF first.'); return; }
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+    const stop = new Set('the a an and or but of to in on for with is are was were be been this that these those it its as at by from not no can will would could should have has had do does did which who whom what when where how than then so if into over under more most other some such only own same very just about after before also'.split(' '));
+    const freq = {};
+    text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).forEach((w) => {
+      if (w.length > 3 && !stop.has(w)) freq[w] = (freq[w] || 0) + 1;
+    });
+    const scored = sentences.map((s, i) => {
+      const words = s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/);
+      let score = 0;
+      words.forEach((w) => { if (freq[w]) score += freq[w]; });
+      return { i, s: s.trim(), score: score / Math.sqrt(words.length || 1) };
+    });
+    const want = Math.min(parseInt(document.getElementById('count').value, 10) || 5, sentences.length);
+    const picked = scored.slice().sort((a, b) => b.score - a.score).slice(0, want).sort((a, b) => a.i - b.i);
+    const summary = picked.map((p) => p.s).join(' ');
+    resultBox.textContent = summary;
+    const blob = new Blob([summary + '\n\n— Summary of ' + file.name + ' (VK PDF Toolbox)'], { type: 'text/plain;charset=utf-8' });
+    addFileDownload(blob, 'summary.txt', 'Download summary.txt');
+    const pdfLines = [];
+    let line = '';
+    summary.split(/\s+/).forEach((w) => {
+      if ((line + ' ' + w).length > 95) { pdfLines.push(line); line = w; } else { line = line ? line + ' ' + w : w; }
+    });
+    if (line) pdfLines.push(line);
+    const bytes = await textPdf([[file.name, ''].concat(pdfLines), []], { size: 12, leading: 18, title: 'Summary' });
+    addDownload(bytes, 'summary.pdf', 'Download summary.pdf');
+    setStatus('ok', '✅ ' + want + ' key sentence(s) picked from ' + sentences.length + '.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Summarise');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to Excel — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert PDF to Excel free. Each page's lines land in a spreadsheet column, ready to clean up and calculate.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/pdf-to-excel.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>📈 PDF to Excel</h1>
+    <p>Pull every line of text out of a PDF into an Excel (.xlsx) sheet.</p>
+    <div class="related"><a href="/pdf/pdf-to-word.html" target="_blank" rel="noopener">PDF to Word</a><a href="/pdf/excel-to-pdf.html" target="_blank" rel="noopener">Excel to PDF</a><a href="/pdf/pdf-to-markdown.html" target="_blank" rel="noopener">PDF to Markdown</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">Every text line becomes one spreadsheet row.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to Excel</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want as a spreadsheet.</li><li>Press <strong>Convert to Excel</strong>.</li><li>Text is read page by page and written row by row.</li><li>Download <strong>converted.xlsx</strong> and open it in Excel.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Text is exported as rows (page number + line) — tables are not rebuilt cell by cell.</li><li class="warn">Scanned PDFs need OCR PDF first.</li><li class="">Merged cells and styling are not preserved.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to Excel', 'Converting…');
+  setStatus('info', 'Reading text…');
+  try {
+    const pages = await extractTextPages(file, (i, n) => setStatus('info', 'Reading page ' + i + ' of ' + n + '…'));
+    const rows = [['Page', 'Text']];
+    pages.forEach((lines, i) => lines.forEach((line) => rows.push([i + 1, line])));
+    if (rows.length < 2) { setStatus('err', 'This PDF has no selectable text. Run OCR PDF first.'); return; }
+    await ensureXLSX();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{ wch: 8 }, { wch: 110 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'PDF text');
+    const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    addFileDownload(new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), 'converted.xlsx', 'Download converted.xlsx');
+    setStatus('ok', '✅ ' + (rows.length - 1) + ' text line(s) from ' + pages.length + ' page(s) written to the sheet.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to Excel');
+  }
+});
+</script>
+</body>
+</html>

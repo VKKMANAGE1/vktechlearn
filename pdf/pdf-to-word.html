@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to Word — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert PDF to Word free in your browser. Text is extracted into a .docx file you can edit in Word, Docs or LibreOffice.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/pdf-to-word.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>📝 PDF to Word</h1>
+    <p>Extract the text of a PDF into an editable Word (.docx) document.</p>
+    <div class="related"><a href="/pdf/pdf-to-excel.html" target="_blank" rel="noopener">PDF to Excel</a><a href="/pdf/pdf-to-markdown.html" target="_blank" rel="noopener">PDF to Markdown</a><a href="/pdf/ocr.html" target="_blank" rel="noopener">OCR PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">Text-based PDFs work best. Scans need OCR first.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to Word</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to convert.</li><li>Press <strong>Convert to Word</strong> — text is read page by page.</li><li>Wait for the green message with the paragraph count.</li><li>Download <strong>converted.docx</strong> and open it in Word or Google Docs.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Only selectable text is exported — layout, images and columns are not recreated.</li><li class="warn">Scanned PDFs have no text layer; run OCR PDF first.</li><li class="">Each PDF page starts on a new Word page.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  if (fileInput.files[0]) renderPreview(fileInput.files[0], 'preview', 1);
+});
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to Word', 'Converting…');
+  setStatus('info', 'Reading the document…');
+  try {
+    const pages = await extractTextPages(file, (i, n) => setStatus('info', 'Reading page ' + i + ' of ' + n + '…'));
+    const paragraphs = pages.reduce((sum, p) => sum + p.length, 0);
+    if (!paragraphs) { setStatus('err', 'This PDF has no selectable text. It looks like a scan — use the OCR PDF tool first.'); return; }
+    const blob = await buildDocx(pages);
+    addFileDownload(blob, 'converted.docx', 'Download converted.docx');
+    setStatus('ok', '✅ ' + paragraphs + ' paragraphs from ' + pages.length + ' page(s) saved as DOCX.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to Word');
+  }
+});
+</script>
+</body>
+</html>

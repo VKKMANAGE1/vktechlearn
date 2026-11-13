@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JPG to PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert JPG to PDF free. Add photos or scans, choose page size and margins, and download one PDF.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/jpg-to-pdf.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>🖼️ JPG to PDF</h1>
+    <p>Combine JPG or PNG images into one PDF, one image per page.</p>
+    <div class="related"><a href="/pdf/pdf-to-jpg.html" target="_blank" rel="noopener">PDF to JPG</a><a href="/pdf/scan-to-pdf.html" target="_blank" rel="noopener">Scan to PDF</a><a href="/pdf/merge.html" target="_blank" rel="noopener">Merge PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose images</label>
+        <input type="file" id="file" accept="image/jpeg,image/png" multiple>
+        <div class="hint">JPG or PNG, one page per image.</div>
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="size">Page size</label>
+          <select id="size">
+            <option value="a4" selected>Fit A4</option>
+            <option value="image">Image size</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="margin">Margin</label>
+          <select id="margin">
+            <option value="0">None</option>
+            <option value="24" selected>24 pt</option>
+            <option value="48">48 pt</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Filename</label>
+          <input type="text" id="name" value="images.pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Create PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose one or more JPG or PNG images.</li><li>Pick the page size and margin.</li><li>Press <strong>Create PDF</strong>.</li><li>Download <strong>images.pdf</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Supported formats: JPG and PNG (not WebP, HEIC or GIF).</li><li class="">One image per page, in the order you select them.</li><li class="">“Fit A4” keeps the whole image with margins; “Image size” uses the exact pixels.</li><li class="">Maximum file size is 50 MB per image.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const files = Array.from(fileInput.files || []);
+  if (!files.length) { setStatus('err', 'Please choose at least one JPG or PNG image.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Create PDF', 'Building…');
+  setStatus('info', 'Embedding ' + files.length + ' image(s)…');
+  try {
+    await ensureLibs();
+    const doc = await PDFLib.PDFDocument.create();
+    const mode = document.getElementById('size').value;
+    const margin = parseFloat(document.getElementById('margin').value) || 0;
+    for (const file of files) {
+      const bytes = await readFileBytes(file);
+      const isPng = /png/i.test(file.type) || /\.png$/i.test(file.name);
+      let image;
+      try {
+        image = isPng ? await doc.embedPng(bytes) : await doc.embedJpg(bytes);
+      } catch (e) {
+        throw new Error('“' + file.name + '” is not a JPG or PNG image. Convert it first.');
+      }
+      if (mode === 'image') {
+        const page = doc.addPage([image.width, image.height]);
+        page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+      } else {
+        const portrait = image.height >= image.width;
+        const pageSize = portrait ? PDFLib.PageSizes.A4 : [PDFLib.PageSizes.A4[1], PDFLib.PageSizes.A4[0]];
+        const page = doc.addPage(pageSize);
+        const maxW = page.getWidth() - margin * 2;
+        const maxH = page.getHeight() - margin * 2;
+        const ratio = Math.min(maxW / image.width, maxH / image.height);
+        const w = image.width * ratio;
+        const h = image.height * ratio;
+        page.drawImage(image, { x: (page.getWidth() - w) / 2, y: (page.getHeight() - h) / 2, width: w, height: h });
+      }
+    }
+    const out = await doc.save();
+    const name = (document.getElementById('name').value || 'images.pdf').trim();
+    addDownload(out, name, 'Download ' + name);
+    setStatus('ok', '✅ ' + files.length + ' image(s) placed on ' + doc.getPageCount() + ' page(s).');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Create PDF');
+  }
+});
+</script>
+</body>
+</html>

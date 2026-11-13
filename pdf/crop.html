@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Crop a PDF free. Set top, right, bottom and left margins in points and download the trimmed document.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/crop.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Edit</div>
+    <h1>✂️ Crop PDF</h1>
+    <p>Trim white margins or wide borders by setting exact crop margins.</p>
+    <div class="related"><a href="/pdf/rotate.html" target="_blank" rel="noopener">Rotate PDF</a><a href="/pdf/page-numbers.html" target="_blank" rel="noopener">Page Numbers</a><a href="/pdf/redact.html" target="_blank" rel="noopener">Redact PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="top">Top (pt)</label>
+          <input type="number" id="top" value="24" min="0">
+        </div>
+        <div class="field">
+          <label for="right">Right (pt)</label>
+          <input type="number" id="right" value="24" min="0">
+        </div>
+        <div class="field">
+          <label for="bottom">Bottom (pt)</label>
+          <input type="number" id="bottom" value="24" min="0">
+        </div>
+        <div class="field">
+          <label for="left">Left (pt)</label>
+          <input type="number" id="left" value="24" min="0">
+        </div>
+        <div class="field">
+          <label for="range">Pages</label>
+          <input type="text" id="range" placeholder="all, or e.g. 1-3">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Crop PDF</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to crop.</li><li>Enter the margins to remove (in points; 72 pt = 1 inch).</li><li>Optionally limit the crop to certain pages.</li><li>Press <strong>Crop PDF</strong> and download.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Margins are removed from every selected page from the outside inwards.</li><li class="">The crop is stored in the PDF's page box — viewers that ignore crop boxes may show the full page.</li><li class="warn">A page cannot be cropped to less than 40 × 40 points.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  if (fileInput.files[0]) renderPreview(fileInput.files[0], 'preview', 1);
+});
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Crop PDF', 'Cropping…');
+  setStatus('info', 'Trimming the margins…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const doc = await PDFLib.PDFDocument.load(bytes);
+    const pages = doc.getPages();
+    const targets = parsePageRange(document.getElementById('range').value, pages.length);
+    const top = parseFloat(document.getElementById('top').value) || 0;
+    const right = parseFloat(document.getElementById('right').value) || 0;
+    const bottom = parseFloat(document.getElementById('bottom').value) || 0;
+    const left = parseFloat(document.getElementById('left').value) || 0;
+    let done = 0;
+    targets.forEach((idx) => {
+      const page = pages[idx];
+      const { width, height } = page.getSize();
+      const w = width - left - right;
+      const h = height - top - bottom;
+      if (w < 40 || h < 40) return;
+      page.setCropBox(left, bottom, w, h);
+      page.setMediaBox(left, bottom, w, h);
+      done++;
+    });
+    if (!done) { setStatus('err', 'Those margins are too large for this page size — reduce them and try again.'); return; }
+    const out = await doc.save();
+    addDownload(out, 'cropped.pdf', 'Download cropped.pdf');
+    setStatus('ok', '✅ Cropped ' + done + ' page(s).');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Crop PDF');
+  }
+});
+</script>
+</body>
+</html>

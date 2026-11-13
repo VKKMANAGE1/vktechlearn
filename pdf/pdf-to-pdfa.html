@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to PDF/A — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Create an archive-ready PDF free. Pages are flattened, an sRGB output intent and PDF/A XMP metadata are added.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/pdf-to-pdfa.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Optimize</div>
+    <h1>🏛️ PDF to PDF/A</h1>
+    <p>Flatten a PDF into an archive copy with an sRGB profile and PDF/A metadata.</p>
+    <div class="related"><a href="/pdf/compress.html" target="_blank" rel="noopener">Compress PDF</a><a href="/pdf/repair.html" target="_blank" rel="noopener">Repair PDF</a><a href="/pdf/info.html" target="_blank" rel="noopener">PDF Info</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="field">
+        <label for="name">Output filename</label>
+        <input type="text" id="name" value="archive.pdf">
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Create archive PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to archive.</li><li>Press <strong>Create archive PDF</strong>.</li><li>Pages are flattened to images and tagged with sRGB + PDF/A metadata.</li><li>Download <strong>archive.pdf</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Pages become images, so text is no longer selectable or searchable.</li><li class="warn">This produces an archive-ready file with PDF/A-2b metadata and an sRGB output intent, but it is not certified — certification needs a validator such as veraPDF.</li><li class="">Scanned documents and office exports archive best with this method.</li><li class="">Large documents take longer because every page is re-rendered.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+const XMP = '<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>' +
+  '<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' +
+  '<rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/"><pdfaid:part>2</pdfaid:part>' +
+  '<pdfaid:conformance>B</pdfaid:conformance></rdf:Description></rdf:RDF></x:xmpmeta>' +
+  '<?xpacket end="w"?>';
+
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Create archive PDF', 'Archiving…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const pdf = await openPdfJs(bytes);
+    const doc = await PDFLib.PDFDocument.create();
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setStatus('info', 'Flattening page ' + i + ' of ' + pdf.numPages + '…');
+      const canvas = await renderPageCanvas(pdf, i, 2);
+      const jpeg = await blobToBytes(await canvasToJpeg(canvas, 0.92));
+      const img = await doc.embedJpg(jpeg);
+      const page = doc.addPage([canvas.width / 2, canvas.height / 2]);
+      page.drawImage(img, { x: 0, y: 0, width: canvas.width / 2, height: canvas.height / 2 });
+    }
+    setStatus('info', 'Adding the sRGB output intent and metadata…');
+    try {
+      const res = await fetch('/pdf/icc/sRGB.icc');
+      if (res.ok) {
+        const icc = new Uint8Array(await res.arrayBuffer());
+        const stream = doc.context.flateStream(icc, { N: 3 });
+        const ref = doc.context.register(stream);
+        const intent = doc.context.obj({
+          Type: 'OutputIntent',
+          S: 'GTS_PDFA1',
+          OutputConditionIdentifier: PDFLib.PDFString.of('sRGB IEC61966-2.1'),
+          Info: PDFLib.PDFString.of('sRGB IEC61966-2.1'),
+          DestOutputProfile: ref
+        });
+        doc.catalog.set(PDFLib.PDFName.of('OutputIntents'), doc.context.obj([intent]));
+      }
+    } catch (e) { /* profile is optional */ }
+    const meta = doc.context.flateStream(XMP);
+    doc.catalog.set(PDFLib.PDFName.of('Metadata'), doc.context.register(meta));
+    doc.setTitle(file.name.replace(/\.pdf$/i, ''));
+    doc.setProducer('VK PDF Toolbox');
+    doc.setAuthor('Vïnâý Kúshwâhâ');
+    const out = await doc.save({ useObjectStreams: false });
+    const name = (document.getElementById('name').value || 'archive.pdf').trim();
+    addDownload(out, name, 'Download ' + name);
+    setStatus('ok', '✅ Archive copy created: ' + doc.getPageCount() + ' flattened page(s) with sRGB + PDF/A-2b metadata (not certified).');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Create archive PDF');
+  }
+});
+</script>
+</body>
+</html>

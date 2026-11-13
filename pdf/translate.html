@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Translate PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Translate PDF text free. Pick a language pair, translate page by page and download the result as TXT or PDF.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/translate.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Intelligence</div>
+    <h1>🌍 Translate PDF</h1>
+    <p>Translate the text of a PDF into another language and save it as text or PDF.</p>
+    <div class="related"><a href="/pdf/summarize.html" target="_blank" rel="noopener">AI Summarizer</a><a href="/pdf/pdf-to-word.html" target="_blank" rel="noopener">PDF to Word</a><a href="/pdf/ocr.html" target="_blank" rel="noopener">OCR PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="from">From</label>
+          <select id="from">
+            <option value="en" selected>English</option>
+            <option value="hi">Hindi</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="ar">Arabic</option>
+            <option value="bn">Bengali</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="zh-CN">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+            <option value="pt">Portuguese</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="to">To</label>
+          <select id="to">
+            <option value="hi" selected>Hindi</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="ar">Arabic</option>
+            <option value="bn">Bengali</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="zh-CN">Chinese</option>
+            <option value="ja">Japanese</option>
+            <option value="ru">Russian</option>
+            <option value="pt">Portuguese</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pages">Pages</label>
+          <input type="text" id="pages" placeholder="all, or e.g. 1-3">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Translate</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Translation</label>
+        <div class="preview" id="result" style="min-height:120px;max-height:360px">The translation will appear here.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want translated.</li><li>Pick the source and target languages.</li><li>Press <strong>Translate</strong> — long files are sent in small chunks.</li><li>Read the translation on the page, or download TXT / PDF.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Text is translated, not layout — the translated PDF is plain text in reading order.</li><li class="warn">The extracted text is sent to the free MyMemory translation API, so avoid confidential documents.</li><li class="warn">The free service allows roughly 5,000 characters per day — split very long PDFs.</li><li class="warn">Scanned PDFs need OCR PDF first.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+const resultBox = document.getElementById('result');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  const from = document.getElementById('from').value;
+  const to = document.getElementById('to').value;
+  if (from === to) { setStatus('err', 'Please choose two different languages.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Translate', 'Reading…');
+  try {
+    const pdf = await openPdfJs(file);
+    const wanted = parsePageRange(document.getElementById('pages').value, pdf.numPages);
+    const parts = [];
+    for (const idx of wanted) {
+      setStatus('info', 'Reading page ' + (idx + 1) + '…');
+      const page = await pdf.getPage(idx + 1);
+      const content = await page.getTextContent();
+      const text = content.items.map((it) => (typeof it.str === 'string' ? it.str : '')).join(' ').replace(/\s+/g, ' ').trim();
+      if (text) parts.push(text);
+    }
+    const full = parts.join('\n\n');
+    if (!full) { setStatus('err', 'No selectable text found. Run OCR PDF first.'); return; }
+    const chunks = [];
+    let chunk = '';
+    full.split(/\s+/).forEach((word) => {
+      if ((chunk + ' ' + word).length > 420) { chunks.push(chunk); chunk = word; } else { chunk = chunk ? chunk + ' ' + word : word; }
+    });
+    if (chunk) chunks.push(chunk);
+    if (chunks.length > 40) { setStatus('err', 'This document is too long for the free service (' + chunks.length + ' chunks). Translate fewer pages.'); return; }
+    const outParts = [];
+    for (let i = 0; i < chunks.length; i++) {
+      setStatus('info', 'Translating part ' + (i + 1) + ' of ' + chunks.length + '…');
+      const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunks[i]) + '&langpair=' + from + '|' + to;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('The translation service returned HTTP ' + res.status + '.');
+      const json = await res.json();
+      if (!json.responseData || !json.responseData.translatedText) throw new Error('The translation service did not return text (daily quota may be used up).');
+      outParts.push(json.responseData.translatedText);
+      await sleep(220);
+    }
+    const translated = outParts.join('\n\n');
+    resultBox.textContent = translated;
+    addFileDownload(new Blob([translated], { type: 'text/plain;charset=utf-8' }), 'translation.txt', 'Download translation.txt');
+    setStatus('ok', '✅ Translated ' + parts.length + ' page(s) into ' + to + '.');
+  } catch (err) {
+    const msg = /fetch|network|Failed/i.test(err.message) ? 'Could not reach the translation service. Check your connection or try again later.' : err.message;
+    setStatus('err', '❌ ' + msg);
+  } finally {
+    setBusy(runBtn, false, 'Translate');
+  }
+});
+</script>
+</body>
+</html>

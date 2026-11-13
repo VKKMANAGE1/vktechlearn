@@ -5,6 +5,11 @@ Run from the repo root:  python3 tools/build_pdf_tools.py
 Output: pdf/index.html and pdf/<tool>.html
 """
 import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from pdf_extra_convert import EXTRA_CONVERT  # noqa: E402
+from pdf_extra_edit import EXTRA_EDIT  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "pdf"
@@ -58,6 +63,7 @@ def page(tool):
 
 <main class="wrap">
   <div class="tool-head">
+    <div class="eyebrow">{tool['cat']}</div>
     <h1>{tool['icon']} {tool['name']}</h1>
     <p>{tool['desc']}</p>
     <div class="related">{related}</div>
@@ -120,10 +126,37 @@ HUB = """<!DOCTYPE html>
     </div>
   </section>
 
-  <section class="grid">
+  <div class="filters" id="filters">
+{filters}
+  </div>
+  <p class="count" id="count">{count} tools</p>
+
+  <section class="grid" id="grid">
 {cards}
   </section>
 </main>
+
+<script>
+(function () {
+  const buttons = Array.from(document.querySelectorAll('.filter'));
+  const cards = Array.from(document.querySelectorAll('.card'));
+  const count = document.getElementById('count');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.filter;
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = cat === 'all' || card.dataset.cat === cat;
+        card.style.display = match ? '' : 'none';
+        if (match) shown++;
+      });
+      count.textContent = shown + (shown === 1 ? ' tool' : ' tools');
+    });
+  });
+})();
+</script>
 
 {foot}
 </body>
@@ -132,8 +165,9 @@ HUB = """<!DOCTYPE html>
 
 
 def hub_card(tool):
-    return f"""    <a class="card" href="/pdf/{tool['slug']}.html" target="_blank" rel="noopener">
+    return f"""    <a class="card" href="/pdf/{tool['slug']}.html" target="_blank" rel="noopener" data-cat="{tool['cat']}">
       <div class="card-icon">{tool['icon']}</div>
+      <div class="eyebrow">{tool['cat']}</div>
       <h3>{tool['name']}</h3>
       <p>{tool['desc']}</p>
       <span class="go">Open tool →</span>
@@ -1230,7 +1264,38 @@ runBtn.addEventListener('click', async () => {
 });""",
 }
 
-TOOLS = [MERGE, SPLIT, ROTATE, WATERMARK, ANNOTATE, SIGN, COMPRESS, EDIT, EXTRACT, BLANK, PROTECT, INFO]
+CORE = [MERGE, SPLIT, ROTATE, WATERMARK, ANNOTATE, SIGN, COMPRESS, EDIT, EXTRACT, BLANK, PROTECT, INFO]
+
+CORE_CATS = {
+    "merge": "Organize",
+    "split": "Organize",
+    "extract": "Organize",
+    "blank": "Organize",
+    "compress": "Optimize",
+    "info": "Optimize",
+    "rotate": "Edit",
+    "watermark": "Edit",
+    "annotate": "Edit",
+    "edit": "Edit",
+    "protect": "Security",
+    "sign": "Security",
+}
+
+for _tool in CORE:
+    _tool["cat"] = CORE_CATS[_tool["slug"]]
+
+CATEGORIES = ["Organize", "Optimize", "Convert", "Edit", "Security", "Intelligence"]
+
+ALL_TOOLS = CORE + EXTRA_CONVERT + EXTRA_EDIT
+TOOLS = [t for cat in CATEGORIES for t in ALL_TOOLS if t["cat"] == cat]
+
+
+def filters_html():
+    parts = ['    <button class="filter active" type="button" data-filter="all">All PDF tools</button>']
+    for cat in CATEGORIES:
+        n = sum(1 for t in TOOLS if t["cat"] == cat)
+        parts.append(f'    <button class="filter" type="button" data-filter="{cat}">{cat} <span>{n}</span></button>')
+    return "\n".join(parts)
 
 
 def main():
@@ -1238,7 +1303,13 @@ def main():
     for tool in TOOLS:
         (OUT / (tool["slug"] + ".html")).write_text(page(tool), encoding="utf-8")
     cards = "\n".join(hub_card(t) for t in TOOLS)
-    (OUT / "index.html").write_text(HUB.format(nav=NAV, cards=cards, foot=FOOT), encoding="utf-8")
+    html = (HUB
+            .replace("{nav}", NAV)
+            .replace("{filters}", filters_html())
+            .replace("{count}", str(len(TOOLS)))
+            .replace("{cards}", cards)
+            .replace("{foot}", FOOT))
+    (OUT / "index.html").write_text(html, encoding="utf-8")
     print(f"wrote hub + {len(TOOLS)} tool pages into {OUT}")
 
 

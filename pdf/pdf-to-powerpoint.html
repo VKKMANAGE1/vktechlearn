@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to PowerPoint — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert PDF to PowerPoint free. Each page becomes a 16:9 slide with its text — open the .pptx in PowerPoint or Slides.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/pdf-to-powerpoint.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>📊 PDF to PowerPoint</h1>
+    <p>Turn every PDF page into a slide in a .pptx presentation.</p>
+    <div class="related"><a href="/pdf/pdf-to-word.html" target="_blank" rel="noopener">PDF to Word</a><a href="/pdf/pdf-to-excel.html" target="_blank" rel="noopener">PDF to Excel</a><a href="/pdf/jpg-to-pdf.html" target="_blank" rel="noopener">JPG to PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">One PDF page = one slide.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to PowerPoint</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to turn into slides.</li><li>Press <strong>Convert to PowerPoint</strong>.</li><li>Each page becomes one 16:9 slide, first line as the title.</li><li>Download <strong>converted.pptx</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Slides contain text only — images and exact positions are not transferred.</li><li class="">Long pages are split into a title plus body text, capped per slide.</li><li class="warn">Scanned PDFs need OCR PDF first, otherwise slides come out empty.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to PowerPoint', 'Converting…');
+  setStatus('info', 'Collecting text…');
+  try {
+    const pages = await extractTextPages(file, (i, n) => setStatus('info', 'Reading page ' + i + ' of ' + n + '…'));
+    const withText = pages.filter((p) => p.length);
+    if (!withText.length) { setStatus('err', 'This PDF has no selectable text. Run OCR PDF first.'); return; }
+    await ensurePPTX();
+    setStatus('info', 'Building ' + pages.length + ' slide(s)…');
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_16x9';
+    pages.forEach((lines, i) => {
+      const slide = pptx.addSlide();
+      const title = (lines[0] || 'Page ' + (i + 1)).slice(0, 90);
+      slide.addText(title, { x: 0.5, y: 0.35, w: 9, h: 0.8, fontSize: 24, bold: true, color: '1F2937' });
+      const bodyText = lines.slice(1, 18).join('\n');
+      if (bodyText) slide.addText(bodyText, { x: 0.5, y: 1.25, w: 9, h: 3.8, fontSize: 12, color: '374151', valign: 'top' });
+    });
+    const data = await pptx.write({ outputType: 'blob' });
+    const blob = data instanceof Blob ? data : new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+    addFileDownload(blob, 'converted.pptx', 'Download converted.pptx');
+    setStatus('ok', '✅ ' + pages.length + ' slide(s) created.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to PowerPoint');
+  }
+});
+</script>
+</body>
+</html>

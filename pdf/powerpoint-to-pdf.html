@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerPoint to PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert PowerPoint to PDF free. Every slide becomes a landscape page with its text, straight from your browser.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/powerpoint-to-pdf.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>📽️ PowerPoint to PDF</h1>
+    <p>Turn a .pptx deck into a landscape PDF, one slide per page.</p>
+    <div class="related"><a href="/pdf/word-to-pdf.html" target="_blank" rel="noopener">Word to PDF</a><a href="/pdf/excel-to-pdf.html" target="_blank" rel="noopener">Excel to PDF</a><a href="/pdf/pdf-to-powerpoint.html" target="_blank" rel="noopener">PDF to PowerPoint</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a presentation</label>
+        <input type="file" id="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation">
+        <div class="hint">Only .pptx files (PowerPoint 2007+).</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose a <strong>.pptx</strong> presentation.</li><li>Press <strong>Convert to PDF</strong>.</li><li>Each slide becomes one landscape A4 page.</li><li>Download <strong>slides.pdf</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Slide text is reproduced; images, shapes and animations are not.</li><li class="warn">Only .pptx is supported — save old .ppt files as .pptx first.</li><li class="">Very long slides are cut off at the bottom of the page.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a .pptx file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to PDF', 'Converting…');
+  setStatus('info', 'Reading the slides…');
+  try {
+    const slides = await readPptxSlides(file);
+    await ensureLibs();
+    const doc = await PDFLib.PDFDocument.create();
+    const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    const bold = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    slides.forEach((texts, i) => {
+      const page = doc.addPage([842, 595]);
+      let y = 535;
+      const title = texts[0] || 'Slide ' + (i + 1);
+      for (const line of wrapText(title, bold, 22, 760)) {
+        page.drawText(line, { x: 40, y, size: 22, font: bold, color: PDFLib.rgb(0.1, 0.12, 0.18) });
+        y -= 28;
+      }
+      y -= 10;
+      for (const raw of texts.slice(1)) {
+        for (const line of wrapText(raw, font, 13, 760)) {
+          if (y < 40) return;
+          page.drawText(line, { x: 40, y, size: 13, font, color: PDFLib.rgb(0.2, 0.23, 0.29) });
+          y -= 18;
+        }
+      }
+    });
+    doc.setTitle(file.name);
+    doc.setProducer('VK PDF Toolbox');
+    const bytes = await doc.save();
+    addDownload(bytes, 'slides.pdf', 'Download slides.pdf');
+    setStatus('ok', '✅ ' + slides.length + ' slide(s) converted to PDF pages.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to PDF');
+  }
+});
+</script>
+</body>
+</html>

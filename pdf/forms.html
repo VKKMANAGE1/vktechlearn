@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Forms — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Fill PDF forms free. Existing fields are detected automatically, and you can add a new text field anywhere.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/forms.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Edit</div>
+    <h1>🧾 PDF Forms</h1>
+    <p>Fill interactive PDF form fields, or add a new text field to any page.</p>
+    <div class="related"><a href="/pdf/annotate.html" target="_blank" rel="noopener">Annotation</a><a href="/pdf/sign.html" target="_blank" rel="noopener">Sign PDF</a><a href="/pdf/edit.html" target="_blank" rel="noopener">Add Text</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF form</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="actions"><button class="btn secondary" id="detect" type="button">Detect fields</button></div>
+      <div id="fields" style="margin-top:1rem"></div>
+      <label class="check" style="margin-top:.6rem"><input type="checkbox" id="flatten"> Flatten fields when saving</label>
+      <div class="actions"><button class="btn" id="run" type="button">Save filled PDF</button></div>
+
+      <h2 style="margin-top:1.6rem;font-size:.95rem">Add a text field</h2>
+      <div class="row-3">
+        <div class="field">
+          <label for="fieldName">Field name</label>
+          <input type="text" id="fieldName" value="new_field">
+        </div>
+        <div class="field">
+          <label for="fieldPage">Page</label>
+          <input type="number" id="fieldPage" value="1" min="1">
+        </div>
+        <div class="field">
+          <label for="fieldX">X</label>
+          <input type="number" id="fieldX" value="72">
+        </div>
+        <div class="field">
+          <label for="fieldY">Y</label>
+          <input type="number" id="fieldY" value="700">
+        </div>
+        <div class="field">
+          <label for="fieldW">Width</label>
+          <input type="number" id="fieldW" value="200">
+        </div>
+        <div class="field">
+          <label for="fieldH">Height</label>
+          <input type="number" id="fieldH" value="24">
+        </div>
+      </div>
+      <div class="actions"><button class="btn secondary" id="addField" type="button">Add field &amp; download</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose a PDF with form fields and press <strong>Detect fields</strong>.</li><li>Type into the fields that appear.</li><li>Press <strong>Save filled PDF</strong> (tick flatten to lock the answers).</li><li>To add a field instead, use the “Add a text field” section.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Fields are detected from the PDF's AcroForm — forms flattened into an image cannot be filled.</li><li class="">“Flatten” makes answers permanent and removes the editable fields.</li><li class="">New fields can be added at any position, measured in points from the bottom-left.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const fieldsBox = document.getElementById('fields');
+const detectBtn = document.getElementById('detect');
+const runBtn = document.getElementById('run');
+const addBtn = document.getElementById('addField');
+let doc = null;
+let formDoc = null;
+
+async function load(generate) {
+  const file = fileInput.files[0];
+  if (!file) throw new Error('Please choose a PDF file first.');
+  await ensureLibs();
+  const bytes = await readFileBytes(file);
+  doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+  formDoc = doc.getForm();
+  const fields = formDoc.getFields();
+  if (generate) {
+    fieldsBox.innerHTML = '';
+    if (!fields.length) {
+      fieldsBox.innerHTML = '<div class="hint">No interactive fields found in this PDF. Use “Add a text field” below, or annotate the page.</div>';
+    }
+    fields.forEach((f) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'field';
+      const label = document.createElement('label');
+      label.textContent = f.getName() + ' (' + f.constructor.name.replace('PDF', '') + ')';
+      wrap.appendChild(label);
+      if (f instanceof PDFLib.PDFTextField) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = f.getText() || '';
+        input.dataset.field = f.getName();
+        wrap.appendChild(input);
+      } else if (f instanceof PDFLib.PDFCheckBox) {
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = f.isChecked();
+        input.dataset.field = f.getName();
+        input.dataset.kind = 'check';
+        wrap.appendChild(input);
+      } else if (f instanceof PDFLib.PDFDropdown) {
+        const select = document.createElement('select');
+        select.dataset.field = f.getName();
+        select.dataset.kind = 'choice';
+        f.getOptions().forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          select.appendChild(o);
+        });
+        wrap.appendChild(select);
+      } else {
+        const note = document.createElement('div');
+        note.className = 'hint';
+        note.textContent = 'This field type is kept as-is.';
+        wrap.appendChild(note);
+      }
+      fieldsBox.appendChild(wrap);
+    });
+  }
+  return fields;
+}
+
+detectBtn.addEventListener('click', async () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  try {
+    const fields = await load(true);
+    setStatus('ok', '✅ ' + fields.length + ' field(s) found on ' + doc.getPageCount() + ' page(s).');
+  } catch (err) {
+    fieldsBox.innerHTML = '';
+    setStatus('err', '❌ ' + friendlyError(err));
+  }
+});
+
+runBtn.addEventListener('click', async () => {
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Save filled PDF', 'Saving…');
+  try {
+    await load(false);
+    const inputs = Array.from(fieldsBox.querySelectorAll('[data-field]'));
+    if (!inputs.length) { setStatus('err', 'Press “Detect fields” first, then fill the form.'); return; }
+    inputs.forEach((input) => {
+      const field = formDoc.getField(input.dataset.field);
+      if (field instanceof PDFLib.PDFTextField) field.setText(input.value);
+      else if (field instanceof PDFLib.PDFCheckBox) { input.checked ? field.check() : field.uncheck(); }
+      else if (field instanceof PDFLib.PDFDropdown) field.select(input.value);
+    });
+    if (document.getElementById('flatten').checked) formDoc.flatten();
+    const out = await doc.save();
+    addDownload(out, 'filled-form.pdf', 'Download filled-form.pdf');
+    setStatus('ok', '✅ ' + inputs.length + ' field(s) filled and saved.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Save filled PDF');
+  }
+});
+
+addBtn.addEventListener('click', async () => {
+  document.getElementById('output').innerHTML = '';
+  setBusy(addBtn, true, 'Add field & download', 'Adding…');
+  try {
+    await load(false);
+    const name = (document.getElementById('fieldName').value || 'new_field').trim();
+    const pageNum = Math.max(1, parseInt(document.getElementById('fieldPage').value, 10) || 1);
+    const pages = doc.getPages();
+    if (pageNum > pages.length) throw new Error('This document has only ' + pages.length + ' pages.');
+    const field = formDoc.createTextField(name);
+    field.addToPage(pages[pageNum - 1], {
+      x: parseFloat(document.getElementById('fieldX').value) || 72,
+      y: parseFloat(document.getElementById('fieldY').value) || 700,
+      width: parseFloat(document.getElementById('fieldW').value) || 200,
+      height: parseFloat(document.getElementById('fieldH').value) || 24,
+      borderColor: PDFLib.rgb(0.4, 0.45, 0.55),
+      backgroundColor: PDFLib.rgb(1, 1, 1)
+    });
+    const out = await doc.save();
+    addDownload(out, 'with-field.pdf', 'Download with-field.pdf');
+    setStatus('ok', '✅ Added the field “' + name + '” on page ' + pageNum + '.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(addBtn, false, 'Add field & download');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unlock PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Unlock a PDF free. Enter the password and download a copy with the encryption removed — in your browser.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/unlock.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Security</div>
+    <h1>🔓 Unlock PDF</h1>
+    <p>Remove a PDF password (when you know it) and save an unrestricted copy.</p>
+    <div class="related"><a href="/pdf/protect.html" target="_blank" rel="noopener">Protect PDF</a><a href="/pdf/repair.html" target="_blank" rel="noopener">Repair PDF</a><a href="/pdf/info.html" target="_blank" rel="noopener">PDF Info</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose the protected PDF</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="field">
+        <label for="pass">Password</label>
+        <input type="password" id="pass" placeholder="Leave empty if the file opens without one">
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Unlock PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the protected PDF.</li><li>Type its open password (leave empty for files that only had owner restrictions).</li><li>Press <strong>Unlock PDF</strong>.</li><li>Download the unrestricted copy.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">You must know the password — this tool cannot crack or guess it.</li><li class="">Files that open without a password but block printing or copying unlock with an empty password.</li><li class="warn">Removing protection is only legitimate on your own documents.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+});
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  const pass = document.getElementById('pass').value;
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Unlock PDF', 'Unlocking…');
+  setStatus('info', 'Removing the protection…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    let doc;
+    try {
+      doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true, password: pass, updateMetadata: false });
+    } catch (err) {
+      const msg = String(err.message || err);
+      if (/password|decrypt|encrypt/i.test(msg)) throw new Error('That password did not work for this PDF.');
+      throw err;
+    }
+    // Saving an encrypted source keeps its /Encrypt dictionary, so copy every
+    // decrypted page into a fresh document — the new file has no encryption.
+    const fresh = await PDFLib.PDFDocument.create();
+    const copied = await fresh.copyPages(doc, doc.getPageIndices());
+    copied.forEach((p) => fresh.addPage(p));
+    const title = doc.getTitle();
+    if (title) fresh.setTitle(title);
+    fresh.setProducer('VK PDF Toolbox');
+    const out = await fresh.save();
+    const head = new TextDecoder('latin1').decode(new Uint8Array(out).slice(0, 4000));
+    addDownload(out, 'unlocked.pdf', 'Download unlocked.pdf');
+    if (head.indexOf('/Encrypt') >= 0) {
+      setStatus('err', '⚠️ The password was accepted but the file is still encrypted. Open it once in a PDF viewer, print to a new PDF, and try again.');
+    } else {
+      setStatus('ok', '✅ Protection removed — ' + fresh.getPageCount() + ' page(s), no password required.');
+    }
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Unlock PDF');
+  }
+});
+</script>
+</body>
+</html>

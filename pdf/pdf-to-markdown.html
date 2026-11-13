@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to Markdown — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert PDF to Markdown free. Headings and bullets are detected from text size, and the .md downloads instantly.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/pdf-to-markdown.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>📋 PDF to Markdown</h1>
+    <p>Turn a PDF into clean Markdown with headings and lists, ready for notes or LLMs.</p>
+    <div class="related"><a href="/pdf/pdf-to-word.html" target="_blank" rel="noopener">PDF to Word</a><a href="/pdf/summarize.html" target="_blank" rel="noopener">AI Summarizer</a><a href="/pdf/pdf-to-excel.html" target="_blank" rel="noopener">PDF to Excel</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to Markdown</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want as Markdown.</li><li>Press <strong>Convert to Markdown</strong>.</li><li>Large lines become headings (#, ##), bullet characters become list items.</li><li>Download <strong>document.md</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Heading levels come from font size, so documents without size differences stay plain paragraphs.</li><li class="warn">Images, tables and bold/italic styling are not converted.</li><li class="warn">Scanned PDFs need OCR PDF first.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to Markdown', 'Converting…');
+  setStatus('info', 'Reading the document…');
+  try {
+    const pdf = await openPdfJs(file);
+    const out = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setStatus('info', 'Reading page ' + i + ' of ' + pdf.numPages + '…');
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const lines = [];
+      let cur = '';
+      let size = 0;
+      for (const item of content.items) {
+        if (typeof item.str !== 'string') continue;
+        cur += item.str;
+        size = Math.max(size, item.height || 0);
+        if (item.hasEOL) {
+          if (cur.trim()) lines.push({ text: cur.trim(), size });
+          cur = '';
+          size = 0;
+        } else {
+          cur += ' ';
+        }
+      }
+      if (cur.trim()) lines.push({ text: cur.trim(), size });
+      for (const line of lines) {
+        const bullet = /^[•·‣▪\-*]\s+/.test(line.text);
+        if (bullet) out.push('- ' + line.text.replace(/^[•·‣▪\-*]\s+/, ''));
+        else if (line.size >= 18) out.push('\n# ' + line.text);
+        else if (line.size >= 14) out.push('\n## ' + line.text);
+        else if (line.size >= 11.5) out.push('\n### ' + line.text);
+        else out.push(line.text);
+      }
+      out.push('');
+    }
+    const md = out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+    if (!md) { setStatus('err', 'This PDF has no selectable text. Run OCR PDF first.'); return; }
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    addFileDownload(blob, 'document.md', 'Download document.md');
+    setStatus('ok', '✅ Markdown ready (' + md.length + ' characters from ' + pdf.numPages + ' page(s)).');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to Markdown');
+  }
+});
+</script>
+</body>
+</html>

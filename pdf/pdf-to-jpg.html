@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to JPG — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Convert PDF to JPG free. Choose the resolution and download page images — a single JPG or a ZIP.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/pdf-to-jpg.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Convert</div>
+    <h1>🖼️ PDF to JPG</h1>
+    <p>Save every PDF page as a JPG image, in one ZIP when there are several.</p>
+    <div class="related"><a href="/pdf/jpg-to-pdf.html" target="_blank" rel="noopener">JPG to PDF</a><a href="/pdf/pdf-to-word.html" target="_blank" rel="noopener">PDF to Word</a><a href="/pdf/compress.html" target="_blank" rel="noopener">Compress PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="dpi">Resolution</label>
+          <select id="dpi">
+            <option value="1.4">150 DPI — small, good for screen</option>
+            <option value="2" selected>200 DPI — balanced</option>
+            <option value="2.8">300 DPI — print quality</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="quality">JPG quality</label>
+          <select id="quality">
+            <option value="0.75">Good (smaller)</option>
+            <option value="0.88" selected>High</option>
+            <option value="0.95">Maximum</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Convert to JPG</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want as images.</li><li>Pick a resolution (150 DPI is good for screens).</li><li>Press <strong>Convert to JPG</strong>.</li><li>Download the single JPG, or the ZIP for a multi-page file.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">One JPG per page; multi-page files arrive as a ZIP.</li><li class="">Higher DPI gives sharper images but bigger files.</li><li class="">Very large documents take longer — keep the tab open.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Convert to JPG', 'Rendering…');
+  try {
+    const scale = parseFloat(document.getElementById('dpi').value) || 2;
+    const quality = parseFloat(document.getElementById('quality').value) || 0.88;
+    const pdf = await openPdfJs(file);
+    const files = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setStatus('info', 'Rendering page ' + i + ' of ' + pdf.numPages + '…');
+      const canvas = await renderPageCanvas(pdf, i, scale);
+      const blob = await canvasToJpeg(canvas, quality);
+      files.push({ name: 'page-' + i + '.jpg', data: await blobToBytes(blob) });
+    }
+    if (files.length === 1) {
+      addFileDownload(new Blob([files[0].data], { type: 'image/jpeg' }), files[0].name, 'Download page-1.jpg');
+    } else {
+      await addZipDownload(files, 'pdf-pages.zip');
+    }
+    setStatus('ok', '✅ ' + files.length + ' JPG image(s) ready.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Convert to JPG');
+  }
+});
+</script>
+</body>
+</html>

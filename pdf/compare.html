@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Compare two PDFs free. Pages are shown side by side and added or removed text lines are listed.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/compare.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Security</div>
+    <h1>🔬 Compare PDF</h1>
+    <p>See two versions of a document side by side and list the lines that changed.</p>
+    <div class="related"><a href="/pdf/repair.html" target="_blank" rel="noopener">Repair PDF</a><a href="/pdf/redact.html" target="_blank" rel="noopener">Redact PDF</a><a href="/pdf/info.html" target="_blank" rel="noopener">PDF Info</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="row">
+        <div class="field">
+          <label for="fileA">Original PDF</label>
+          <input type="file" id="fileA" accept="application/pdf">
+        </div>
+        <div class="field">
+          <label for="fileB">Revised PDF</label>
+          <input type="file" id="fileB" accept="application/pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Compare</button></div>
+      <div class="field" style="margin-top:1rem">
+        <label>Changes</label>
+        <div class="preview" id="diff" style="min-height:80px;max-height:260px">Changes will be listed here.</div>
+      </div>
+      <div class="field">
+        <label>Side by side</label>
+        <div class="preview" id="side" style="max-height:460px">Pages will appear here.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the original PDF and the revised PDF.</li><li>Press <strong>Compare</strong>.</li><li>Read the changed lines, then scroll through the side-by-side pages.</li><li>Nothing is uploaded; the comparison stays on your device.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">The comparison is visual plus a line-by-line text diff — no file is downloaded.</li><li class="warn">Pages are paired by number, so inserted pages show as differences from that point on.</li><li class="">Image-only changes are only visible in the side-by-side view.</li><li class="">Maximum file size is 50 MB per file.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileA = document.getElementById('fileA');
+const fileB = document.getElementById('fileB');
+const runBtn = document.getElementById('run');
+runBtn.addEventListener('click', async () => {
+  const a = fileA.files[0];
+  const b = fileB.files[0];
+  if (!a || !b) { setStatus('err', 'Please choose both PDF files.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Compare', 'Comparing…');
+  const diffBox = document.getElementById('diff');
+  const side = document.getElementById('side');
+  diffBox.textContent = 'Reading both documents…';
+  side.innerHTML = '';
+  try {
+    const [pdfA, pdfB] = await Promise.all([openPdfJs(a), openPdfJs(b)]);
+    const pagesA = await extractTextPages(await readFileBytes(a));
+    const pagesB = await extractTextPages(await readFileBytes(b));
+    const maxPages = Math.max(pdfA.numPages, pdfB.numPages);
+    const diffLines = [];
+    let changed = 0;
+    for (let i = 0; i < maxPages; i++) {
+      const setA = new Set((pagesA[i] || []).map((l) => l.trim()).filter(Boolean));
+      const setB = new Set((pagesB[i] || []).map((l) => l.trim()).filter(Boolean));
+      const removed = [...setA].filter((l) => !setB.has(l));
+      const added = [...setB].filter((l) => !setA.has(l));
+      if (!removed.length && !added.length) continue;
+      changed++;
+      diffLines.push('Page ' + (i + 1) + ': -' + removed.length + ' / +' + added.length);
+      removed.slice(0, 6).forEach((l) => diffLines.push('  − ' + l.slice(0, 120)));
+      added.slice(0, 6).forEach((l) => diffLines.push('  + ' + l.slice(0, 120)));
+    }
+    diffBox.textContent = diffLines.length ? diffLines.join('\n') : 'No text differences found — pages look identical in text.';
+    setStatus('info', 'Rendering pages side by side…');
+    const limit = Math.min(maxPages, 8);
+    for (let i = 1; i <= limit; i++) {
+      const row = document.createElement('div');
+      row.className = 'compare-row';
+      const wrapA = document.createElement('div');
+      wrapA.className = 'compare-cell';
+      const wrapB = document.createElement('div');
+      wrapB.className = 'compare-cell';
+      const labelA = document.createElement('div');
+      labelA.className = 'pg';
+      labelA.textContent = 'Original — page ' + i;
+      const labelB = document.createElement('div');
+      labelB.className = 'pg';
+      labelB.textContent = 'Revised — page ' + i;
+      wrapA.appendChild(labelA);
+      wrapB.appendChild(labelB);
+      if (i <= pdfA.numPages) wrapA.appendChild(await renderPageCanvas(pdfA, i, 0.75));
+      if (i <= pdfB.numPages) wrapB.appendChild(await renderPageCanvas(pdfB, i, 0.75));
+      row.appendChild(wrapA);
+      row.appendChild(wrapB);
+      side.appendChild(row);
+    }
+    if (maxPages > limit) {
+      const note = document.createElement('div');
+      note.className = 'pg';
+      note.textContent = 'Showing the first ' + limit + ' pages of ' + maxPages + '.';
+      side.appendChild(note);
+    }
+    setStatus('ok', '✅ Compared ' + maxPages + ' page(s): ' + changed + ' page(s) with text changes.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Compare');
+  }
+});
+</script>
+</body>
+</html>

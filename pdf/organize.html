@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organize PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Organize PDF pages free. Drag-free thumbnails let you reorder, duplicate and delete pages before saving.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/organize.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Organize</div>
+    <h1>🗂️ Organize PDF</h1>
+    <p>Reorder or delete pages using thumbnails, then save the new document.</p>
+    <div class="related"><a href="/pdf/merge.html" target="_blank" rel="noopener">Merge PDF</a><a href="/pdf/split.html" target="_blank" rel="noopener">Split PDF</a><a href="/pdf/rotate.html" target="_blank" rel="noopener">Rotate PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+      </div>
+      <div class="field">
+        <label>Pages — click ◀ ▶ to move, ✕ to delete</label>
+        <div class="thumbs" id="thumbs">No file selected yet.</div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Save arranged PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to reorganise.</li><li>Wait for the page thumbnails to appear.</li><li>Use ← → to move a page, ✕ to delete it.</li><li>Press <strong>Save arranged PDF</strong>.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">The original file is never changed — you always download a new copy.</li><li class="">Deleted pages are left out of the saved file; the rest keep their order.</li><li class="">Very long documents (>100 pages) take a moment to thumbnail.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+const thumbs = document.getElementById('thumbs');
+let order = [];
+let sourceBytes = null;
+let busy = false;
+
+function renderThumbs() {
+  thumbs.innerHTML = '';
+  if (!order.length) { thumbs.textContent = 'All pages were deleted — load the file again.'; return; }
+  order.forEach((pageIndex, i) => {
+    const card = document.createElement('div');
+    card.className = 'thumb';
+    card.innerHTML = '<img src="' + pageIndex.url + '" alt="Page ' + (pageIndex.index + 1) + '">' +
+      '<div class="thumb-bar"><span>' + (pageIndex.index + 1) + '</span>' +
+      '<button type="button" data-act="left" data-i="' + i + '" title="Move left">◀</button>' +
+      '<button type="button" data-act="right" data-i="' + i + '" title="Move right">▶</button>' +
+      '<button type="button" data-act="del" data-i="' + i + '" title="Delete page">✕</button></div>';
+    thumbs.appendChild(card);
+  });
+}
+
+fileInput.addEventListener('change', async () => {
+  const file = fileInput.files[0];
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  order = [];
+  if (!file) { thumbs.textContent = 'No file selected yet.'; return; }
+  thumbs.textContent = 'Loading thumbnails…';
+  try {
+    sourceBytes = await readFileBytes(file);
+    const pdf = await openPdfJs(sourceBytes);
+    order = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const canvas = await renderPageCanvas(pdf, i, 0.35);
+      order.push({ index: i - 1, url: canvas.toDataURL('image/jpeg', 0.6) });
+      if (i % 3 === 0) thumbs.textContent = 'Loading thumbnails… ' + i + '/' + pdf.numPages;
+    }
+    renderThumbs();
+    setStatus('ok', '✅ ' + pdf.numPages + ' page(s) loaded. Arrange them, then save.');
+  } catch (err) {
+    thumbs.textContent = 'Could not read that PDF.';
+    setStatus('err', '❌ ' + friendlyError(err));
+  }
+});
+
+thumbs.addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn || busy) return;
+  const i = parseInt(btn.dataset.i, 10);
+  const act = btn.dataset.act;
+  if (act === 'del') order.splice(i, 1);
+  if (act === 'left' && i > 0) { const t = order[i - 1]; order[i - 1] = order[i]; order[i] = t; }
+  if (act === 'right' && i < order.length - 1) { const t = order[i + 1]; order[i + 1] = order[i]; order[i] = t; }
+  renderThumbs();
+});
+
+runBtn.addEventListener('click', async () => {
+  if (!sourceBytes || !order.length) { setStatus('err', 'Please load a PDF and keep at least one page.'); return; }
+  document.getElementById('output').innerHTML = '';
+  busy = true;
+  setBusy(runBtn, true, 'Save arranged PDF', 'Saving…');
+  try {
+    await ensureLibs();
+    const doc = await PDFLib.PDFDocument.load(sourceBytes.slice(0));
+    const out = await PDFLib.PDFDocument.create();
+    const pages = await out.copyPages(doc, order.map((o) => o.index));
+    pages.forEach((p) => out.addPage(p));
+    const bytes = await out.save();
+    addDownload(bytes, 'arranged.pdf', 'Download arranged.pdf');
+    setStatus('ok', '✅ Saved ' + order.length + ' page(s) in the new order.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    busy = false;
+    setBusy(runBtn, false, 'Save arranged PDF');
+  }
+});
+</script>
+</body>
+</html>
