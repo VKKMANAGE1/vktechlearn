@@ -517,13 +517,6 @@
   <a class="skip-link" href="#main">मुख्य सामग्री पर जाएँ</a>
 
   <div class="page">
-    <div class="ticker">
-      <div class="container">
-        <span class="ticker-badge">LIVE</span>
-        <span class="ticker-text">Tech News · Computer सीखें · Free PDF &amp; Estimate Tools — सब एक जगह, आसान हिंदी में</span>
-      </div>
-    </div>
-
     <header class="site-header" id="site-header">
       <div class="container header-top">
         <div class="header-side left">
@@ -588,41 +581,16 @@
 
     <main id="main">
       <div class="container" id="top">
-        <section aria-labelledby="featured-heading">
-          <div class="section-head">
-            <span class="chipbar" aria-hidden="true"></span>
-            <h1 id="featured-heading"><span data-en="Today's" data-hi="आज की">Today's</span> <span class="hl" data-en="Top Story" data-hi="खास खबर">Top Story</span></h1>
-          </div>
-
-          <div class="hero-grid">
-            <article class="featured panel reveal" aria-labelledby="featured-title">
-              <img id="featured-img" alt="" decoding="async">
-              <div class="featured-body">
-                <span class="tag" id="featured-cat">FEATURED</span>
-                <h2 id="featured-title">टेक्नोलॉजी बदल रही है — सीखने का सही समय अभी है</h2>
-                <p id="featured-excerpt">Tech news से लेकर practical computer guides और free tools तक, ज़रूरी बातें आसान हिंदी में।</p>
-                <div class="featured-meta">
-                  <time id="featured-date"></time>
-                  <span id="featured-labels"></span>
-                </div>
-                <div class="featured-actions">
-                  <a class="btn btn-pink" id="featured-link" href="#latest"><span data-en="Read Post" data-hi="पोस्ट पढ़ें">Read Post</span>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg>
-                  </a>
-                  <a class="btn btn-ghost" href="#tools" data-en="Explore Free Tools" data-hi="फ्री टूल्स देखें">Explore Free Tools</a>
-                </div>
-              </div>
-            </article>
-
-            <div class="side-stack">
-              <section class="panel reveal" aria-labelledby="trending-heading">
+                <section aria-label="ट्रेंडिंग और क्विक लिंक्स">
+          <div class="side-stack">
+<section class="panel reveal" aria-labelledby="trending-heading">
                 <div class="panel-inner">
                   <div class="panel-title"><span id="trending-heading" data-en="Trending Now" data-hi="ट्रेंडिंग अभी">Trending Now</span><span aria-hidden="true">🔥</span></div>
                   <ol class="trend-list" id="trending-list"></ol>
                 </div>
               </section>
 
-              <section class="panel reveal" aria-labelledby="quick-heading">
+<section class="panel reveal" aria-labelledby="quick-heading">
                 <div class="panel-inner">
                   <div class="panel-title"><span id="quick-heading" data-en="Quick Links" data-hi="क्विक लिंक्स">Quick Links</span><span aria-hidden="true">⚡</span></div>
                   <div class="quick-links">
@@ -633,7 +601,6 @@
                   </div>
                 </div>
               </section>
-            </div>
           </div>
         </section>
 
@@ -641,7 +608,7 @@
           <section id="latest" aria-labelledby="latest-heading" style="min-width: 0; scroll-margin-top: 7rem;">
             <div class="section-head">
               <span class="chipbar" aria-hidden="true"></span>
-              <h2 id="latest-heading"><span data-en="Latest" data-hi="नवीनतम">Latest</span> <span class="hl" data-en="Posts" data-hi="पोस्ट">Posts</span></h2>
+              <h1 id="latest-heading"><span data-en="Latest" data-hi="नवीनतम">Latest</span> <span class="hl" data-en="Posts" data-hi="पोस्ट">Posts</span></h1>
             </div>
 
             <div class="toolbar">
@@ -868,13 +835,6 @@
       loadMore: document.getElementById("load-more"),
       feedStatus: document.getElementById("feed-status"),
       toolGrid: document.getElementById("tool-grid"),
-      featuredCat: document.getElementById("featured-cat"),
-      featuredTitle: document.getElementById("featured-title"),
-      featuredExcerpt: document.getElementById("featured-excerpt"),
-      featuredDate: document.getElementById("featured-date"),
-      featuredLabels: document.getElementById("featured-labels"),
-      featuredLink: document.getElementById("featured-link"),
-      featuredImg: document.getElementById("featured-img"),
       trending: document.getElementById("trending-list"),
       popular: document.getElementById("popular-list"),
       searchPanel: document.getElementById("search-panel"),
@@ -1077,35 +1037,7 @@
       renderToolDirectory();
     });
 
-    /* ---------- featured / trending / popular ---------- */
-    function renderFeatured() {
-      const post = POSTS[0];
-      if (!post) return;
-      els.featuredCat.textContent = primaryLabel(post);
-      els.featuredCat.style.setProperty("--cat", colorFor(primaryLabel(post)));
-      els.featuredTitle.textContent = post.title;
-      els.featuredExcerpt.textContent = post.excerpt || "पूरी पोस्ट पढ़ने के लिए नीचे क्लिक करें।";
-      els.featuredDate.textContent = formatDate(post.date);
-      els.featuredDate.dateTime = post.date;
-      els.featuredLabels.textContent = labelsOf(post).join(" · ");
-      els.featuredLink.href = post.url;
-      if (safeUrl(post.url).startsWith("posts/")) {
-        els.featuredLink.target = "_blank";
-        els.featuredLink.rel = "noopener noreferrer";
-      }
-      const image = safeUrl(post.image);
-      if (image) {
-        els.featuredImg.hidden = false;
-        els.featuredImg.src = image;
-        els.featuredImg.alt = post.title;
-        els.featuredImg.addEventListener("error", () => { els.featuredImg.hidden = true; }, { once: true });
-      } else {
-        els.featuredImg.hidden = true;
-        els.featuredImg.removeAttribute("src");
-        els.featuredImg.alt = "";
-      }
-    }
-
+    /* ---------- trending / popular ---------- */
     function renderTrending() {
       els.trending.replaceChildren();
       POSTS.slice(1, 6).forEach((post, index) => {
@@ -1629,7 +1561,6 @@
       renderToolDirectory();
       renderTrending();
       renderPopular();
-      renderFeatured();
       cardCache.clear();
       els.grid.replaceChildren();
       renderGrid();
@@ -1652,7 +1583,6 @@
       renderToolFilters();
       renderToolDirectory();
       renderFilters();
-      renderFeatured();
       renderTrending();
       renderPopular();
       renderGrid();
