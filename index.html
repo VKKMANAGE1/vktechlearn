@@ -289,7 +289,7 @@
     .crypto-track::-webkit-scrollbar { display: none; }
     .crypto-item { flex: none; display: inline-flex; align-items: baseline; gap: .35rem; font-family: 'Sora', 'Mukta', sans-serif; font-size: .8rem; letter-spacing: .03em; }
     .crypto-sym { color: #a9c3de; font-weight: 700; }
-    .crypto-price { color: #fff; font-weight: 700; }
+    .crypto-price { color: var(--text); font-weight: 700; }
     .crypto-change { font-size: .72rem; font-weight: 700; }
     .crypto-change.up { color: var(--lime); }
     .crypto-change.down { color: #ff6b9d; }
@@ -496,8 +496,24 @@
       --text: #16233a;
       --muted: #55688a;
       --shadow: 0 20px 50px -30px rgba(20, 40, 70, .45);
+      /* darker accents so text stays readable on the light surface */
+      --neon: #00778f;
+      --pink: #b3165f;
+      --lime: #3f6d00;
+      --violet: #5b3fc4;
+      --amber: #8a5a00;
       color-scheme: light;
     }
+    html[data-theme="night"] .chip:hover,
+    html[data-theme="night"] .cat-chip:hover,
+    html[data-theme="night"] .icon-btn:hover { color: var(--text); }
+    html[data-theme="night"] .thumb-art b { color: #fff; }
+    html[data-theme="night"] .featured-actions .btn-pink,
+    html[data-theme="night"] .btn-pink { color: #fff; }
+    html[data-theme="night"] .site-footer { background: #e8eef8; border-top-color: var(--line); }
+    html[data-theme="night"] .site-footer h2 { color: var(--text); }
+    html[data-theme="night"] .site-footer a { color: var(--muted); }
+    html[data-theme="night"] .site-footer a:hover { color: var(--neon); }
     html[data-theme="night"] body { background: var(--bg); color: var(--text); }
     html[data-theme="night"] .site-header { background: rgba(255, 255, 255, .92); }
     html[data-theme="night"] .bg-grid,
