@@ -19,6 +19,7 @@ from datetime import datetime
 FEED_URL = os.environ.get("FEED_URL", "https://www.blogger.com/feeds/994118461602418597/posts/default?alt=json&max-results=500")
 SITE_URL = os.environ.get("SITE_URL", "https://vktechlearn.site").rstrip("/")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+AUTHOR = "Vïnâý Kúshwâhå"
 OUT_DIR = os.path.join(ROOT, "posts")
 CSS_PATH = os.path.join(ROOT, "post.css")
 
@@ -176,6 +177,7 @@ PAGE = """<!doctype html>
     <div class="meta">
       {label_html}
       <time datetime="{iso}">{date}</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by {author}</span>
     </div>
     <h1 class="post-title">{title}</h1>
     {hero_html}
@@ -405,6 +407,9 @@ def main():
             f'<span class="tag">{html.escape(label)}</span>' for label in post["labels"][:2]
         )
         body = strip_duplicate_title_heading(body, post["title"])
+        # author byline is added by the template - drop any copy coming from the post body
+        body = re.sub(r'<span\s+class="author"[^>]*>.*?</span>', '', body, flags=re.I | re.S)
+        body = re.sub(r'<p>\s*<strong>\s*(?:लेखक|Author|By)\s*:?.*?</strong>\s*</p>', '', body, flags=re.I | re.S)
         excerpt = re.sub(r"<[^>]+>", " ", body)
         excerpt = re.sub(r"\s+", " ", html.unescape(excerpt)).strip()[:160]
         page = PAGE.format(
@@ -412,6 +417,7 @@ def main():
             description=html.escape(excerpt or post["title"]),
             url=html.escape(post["url"]),
             canonical=html.escape(f"{SITE_URL}/posts/{post['slug']}.html"),
+            author=AUTHOR,
             year=dt.year,
             original=html.escape(post["url"]),
             label_html=label_html,

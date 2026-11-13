@@ -46,6 +46,16 @@ sentence structure with common English tech words, same as existing posts).
 8. **Finish before publishing:** proofread for spelling, no broken markdown/HTML, tables and
    code blocks render fine on mobile, and the disclaimer/author box stays at the end.
 
+## Author name rule (apply everywhere, always)
+
+- The author byline is **always in English/Latin script — never in Hindi/Devanagari**,
+  even when the post itself is fully in Hindi.
+- Use exactly this spelling and casing, unchanged:
+  `by Vïnâý Kúshwâhå`
+- Do not capitalise differently, do not transliterate it (no "Vinay Kushwaha",
+  no "विनाय कुशवाहा"), do not add or drop the diacritics (ï â ý û å).
+- The same name is used in every post page, the homepage footer and any author box.
+
 ## Publishing flow (important)
 
 - Write/update the post on **Blogger** (source of truth). GitHub Actions `sync.yml` rebuilds
