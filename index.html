@@ -167,7 +167,7 @@
     }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 0 26px rgba(0, 240, 255, .55); }
     .btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .btn-pink { background: var(--pink); color: #fff; }
+    .btn-pink { background: #c2185b; color: #fff; }
     .btn-pink:hover { box-shadow: 0 0 26px rgba(255, 45, 149, .6); }
     .btn-ghost { background: transparent; color: var(--neon); border: 1px solid var(--line-strong); }
     .btn-ghost:hover { background: rgba(0, 240, 255, .12); box-shadow: 0 0 22px rgba(0, 240, 255, .35); }
@@ -257,7 +257,7 @@
     .tool-tag { align-self: flex-start; font-family: 'Sora', 'Mukta', sans-serif; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--lime); }
     .tool-cta { margin-top: auto; font-family: 'Sora', 'Mukta', sans-serif; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: .82rem; color: var(--neon); display: inline-flex; align-items: center; gap: .35rem; }
     .tool-features { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .2rem; }
-    .tool-features span { font-size: .74rem; padding: .16rem .45rem; border: 1px solid rgba(182, 255, 46, .35); color: #d8ff9c; background: rgba(182, 255, 46, .08); }
+    .tool-features span { font-size: .74rem; padding: .16rem .45rem; border: 1px solid rgba(182, 255, 46, .35); color: var(--lime); background: rgba(182, 255, 46, .08); }
 
     .tool-directory { margin-top: 1.2rem; }
     .tool-filter { display: grid; gap: .7rem; margin-bottom: 1rem; }
@@ -502,6 +502,7 @@
       --lime: #3f6d00;
       --violet: #5b3fc4;
       --amber: #8a5a00;
+      --grad: linear-gradient(100deg, #00778f, #5b3fc4 45%, #b3165f);
       color-scheme: light;
     }
     html[data-theme="night"] .chip:hover,
