@@ -120,7 +120,7 @@
       { id:'compress',name:'Compress PDF',      icon:'fa-compress',         color:'text-emerald-300', gradient:'from-emerald-500/20 to-teal-500/20', desc:'Shrink image-heavy PDFs with real page compression' },
       { id:'edit',    name:'Edit PDF Text',     icon:'fa-pen-to-square',    color:'text-amber-300',   gradient:'from-amber-500/20 to-orange-500/20', desc:'Add new text on top of any page' },
       { id:'extract', name:'Extract Pages',     icon:'fa-file-export',      color:'text-sky-300',     gradient:'from-sky-500/20 to-indigo-500/20',   desc:'Extract specific pages to new PDF' },
-      { id:'blank',   name:'Create Blank PDF',  icon:'fa-file-plus',        color:'text-fuchsia-300', gradient:'from-fuchsia-500/20 to-indigo-500/20',desc:'Create a new blank PDF document' },
+      { id:'blank',   name:'Create Blank PDF',  icon:'fa-file-circle-plus',        color:'text-fuchsia-300', gradient:'from-fuchsia-500/20 to-indigo-500/20',desc:'Create a new blank PDF document' },
       { id:'protect', name:'Add Protection',    icon:'fa-lock',             color:'text-purple-300',  gradient:'from-purple-500/20 to-violet-500/20',desc:'Password-protect a PDF with real AES-256 encryption' },
       { id:'info',    name:'PDF Information',   icon:'fa-info-circle',      color:'text-teal-300',    gradient:'from-teal-500/20 to-cyan-500/20',    desc:'View PDF metadata and properties' },
     ];
@@ -1332,7 +1332,7 @@
                 </label>
               </div>
               <div class="mt-4">
-                <button id="blRun" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white"><i class="fa-solid fa-file-plus"></i> Create PDF</button>
+                <button id="blRun" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white"><i class="fa-solid fa-file-circle-plus"></i> Create PDF</button>
               </div>
             </div>
             <div id="blStatus" class="hidden mt-4 p-3 rounded-xl text-sm"></div>
@@ -1493,7 +1493,7 @@
                 <label class="block text-sm text-slate-300 mb-2"><i class="fa-solid fa-file-arrow-up text-sky-300"></i> Select a PDF to analyze</label>
                 <input id="infoFile" type="file" accept="application/pdf" class="block text-sm text-slate-300 file:mr-4 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"/>
                 <div class="mt-4">
-                  <button id="infoRun" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white"><i class="fa-solid fa-info-circle"></i> Analyze PDF</button>
+                  <button id="infoRun" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white"><i class="fa-solid fa-circle-info"></i> Analyze PDF</button>
                 </div>
                 <div id="infoResults" class="mt-4 hidden">
                   <h4 class="text-sm font-semibold text-slate-300 mb-3">PDF Information</h4>
