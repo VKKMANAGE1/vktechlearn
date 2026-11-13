@@ -16,16 +16,16 @@
     /* Animations and effects */
     .fade-in{animation:fadeIn .5s ease-out both}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     .lift{transition:transform .25s ease,box-shadow .25s ease}.lift:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 18px 50px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.25)}
-    body{position:relative}
-    body::before{content:"";position:fixed;inset:-20% -10% -10% -10%;background:
-      radial-gradient(60% 80% at 15% 30%, rgba(79,70,229,.35), rgba(79,70,229,0)),
-      radial-gradient(50% 70% at 85% 70%, rgba(16,185,129,.30), rgba(16,185,129,0)),
-      radial-gradient(60% 70% at 50% 0%, rgba(14,165,233,.25), rgba(14,165,233,0));
-      filter:blur(42px) saturate(120%);animation:drift 22s ease-in-out infinite alternate;z-index:0;pointer-events:none}
+    body{position:relative;background-color:#0b0f1a}
+    body::before{content:"";position:fixed;inset:0;background:
+      radial-gradient(55% 60% at 12% 22%, rgba(79,70,229,.30), rgba(79,70,229,0) 70%),
+      radial-gradient(50% 55% at 88% 65%, rgba(16,185,129,.24), rgba(16,185,129,0) 70%),
+      radial-gradient(60% 55% at 50% -5%, rgba(14,165,233,.20), rgba(14,165,233,0) 70%);
+      z-index:0;pointer-events:none}
     body::after{content:"";position:fixed;inset:0;background-image:
       linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size:36px 36px;opacity:.7;z-index:0;pointer-events:none;mask-image:radial-gradient(closest-side, rgba(0,0,0,.2), rgba(0,0,0,.8))}
+      background-size:36px 36px;opacity:.55;z-index:0;pointer-events:none}
     @keyframes drift{0%{transform:translateX(-10px) translateY(-8px) scale(1)}50%{transform:translateX(10px) translateY(6px) scale(1.04)}100%{transform:translateX(14px) translateY(-4px) scale(1.02)}}
     .stack{position:relative;z-index:1}
     .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50}
