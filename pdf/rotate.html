@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rotate PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Rotate PDF pages online free. Fix sideways scans by 90, 180 or 270 degrees in your browser.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/rotate.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>🔄 Rotate PDF</h1>
+    <p>Turn every page of a PDF by 90°, 180° or 270° so scans and photos sit upright.</p>
+    <div class="related"><a href="/pdf/merge.html" target="_blank" rel="noopener">Merge PDF</a><a href="/pdf/split.html" target="_blank" rel="noopener">Split PDF</a><a href="/pdf/compress.html" target="_blank" rel="noopener">Compress PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">One PDF file, up to 50 MB.</div>
+      </div>      <div class="row">
+        <div class="field">
+          <label for="angle">Rotation</label>
+          <select id="angle">
+            <option value="90">90° clockwise</option>
+            <option value="180">180° (upside down)</option>
+            <option value="270">270° (90° anticlockwise)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Output filename</label>
+          <input type="text" id="name" value="rotated.pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Rotate PDF</button></div>
+      <div class="field">
+        <label>Preview</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF that needs rotating.</li><li>Pick the angle: 90° clockwise, 180°, or 270°.</li><li>Press <strong>Rotate PDF</strong>.</li><li>Download the rotated file and check the preview.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">The angle is applied to every page in the file.</li><li class="">Rotation is saved in the PDF itself, so it opens correctly everywhere.</li><li class="warn">Running the tool twice adds the angles together.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  if (fileInput.files[0]) renderPreview(fileInput.files[0], 'preview', 2);
+});
+
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Rotate PDF', 'Rotating…');
+  setStatus('info', 'Rotating pages…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const doc = await PDFLib.PDFDocument.load(bytes);
+    const angle = parseInt(document.getElementById('angle').value, 10);
+    const pages = doc.getPages();
+    pages.forEach((p) => p.setRotation(PDFLib.degrees(p.getRotation().angle + angle)));
+    const out = await doc.save();
+    const name = (document.getElementById('name').value || 'rotated.pdf').trim();
+    addDownload(out, name, 'Download ' + name);
+    setStatus('ok', '✅ Rotated ' + pages.length + ' page(s) by ' + angle + '°.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Rotate PDF');
+  }
+});
+</script>
+</body>
+</html>

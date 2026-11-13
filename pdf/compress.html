@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compress PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Compress a PDF free in your browser. Choose a quality level and download a much smaller file — no uploads.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/compress.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>🗜️ Compress PDF</h1>
+    <p>Shrink image-heavy and scanned PDFs by re-rendering pages at a smaller size.</p>
+    <div class="related"><a href="/pdf/merge.html" target="_blank" rel="noopener">Merge PDF</a><a href="/pdf/rotate.html" target="_blank" rel="noopener">Rotate PDF</a><a href="/pdf/split.html" target="_blank" rel="noopener">Split PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">One PDF file, up to 50 MB.</div>
+      </div>      <div class="row">
+        <div class="field">
+          <label for="level">Compression level</label>
+          <select id="level">
+            <option value="0.85|1.6">Light — best quality</option>
+            <option value="0.72|1.3" selected>Balanced — recommended</option>
+            <option value="0.6|1.05">Strong — smaller file</option>
+            <option value="0.45|0.85">Maximum — smallest file</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Output filename</label>
+          <input type="text" id="name" value="compressed.pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Compress PDF</button></div>
+      <div class="field">
+        <label>Preview</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to shrink.</li><li>Pick a compression level: light, balanced, strong or maximum.</li><li>Press <strong>Compress PDF</strong> and watch the size comparison.</li><li>Download the smaller file (or the original if it was already optimised).</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Pages are re-rendered as images, so text is no longer selectable.</li><li class="">Best results on scanned documents, photo PDFs and screenshot exports.</li><li class="">If the result would be larger, the original file is offered instead.</li><li class="">Large files take longer — keep the tab open until it finishes.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  if (fileInput.files[0]) renderPreview(fileInput.files[0], 'preview', 2);
+});
+
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  const [quality, scale] = document.getElementById('level').value.split('|').map(Number);
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Compress PDF', 'Compressing…');
+  setStatus('info', 'Loading the document…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+    const out = await PDFLib.PDFDocument.create();
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setStatus('info', 'Compressing page ' + i + ' of ' + pdf.numPages + '…');
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      const c = canvas.getContext('2d');
+      c.fillStyle = '#ffffff';
+      c.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: c, viewport }).promise;
+      const jpg = await out.embedJpg(dataUrlToBytes(canvas.toDataURL('image/jpeg', quality)));
+      const p = out.addPage([viewport.width, viewport.height]);
+      p.drawImage(jpg, { x: 0, y: 0, width: viewport.width, height: viewport.height });
+    }
+    const compressed = await out.save();
+    let finalBytes = compressed;
+    let note = '';
+    if (compressed.length >= file.size) {
+      finalBytes = new Uint8Array(bytes);
+      note = ' This PDF is already well optimised, so the original is offered instead.';
+    }
+    const name = (document.getElementById('name').value || 'compressed.pdf').trim();
+    addDownload(finalBytes, name, 'Download ' + name);
+    const saved = file.size > finalBytes.length ? Math.round((1 - finalBytes.length / file.size) * 100) : 0;
+    setStatus('ok', '✅ ' + formatBytes(file.size) + ' → ' + formatBytes(finalBytes.length) +
+      ' (' + saved + '% smaller).' + note);
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Compress PDF');
+  }
+});
+</script>
+</body>
+</html>

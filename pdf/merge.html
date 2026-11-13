@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merge PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Merge PDF files free in your browser. Add up to 50 MB per file, reorder pages and download one combined PDF.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/merge.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>🧩 Merge PDF</h1>
+    <p>Combine two or more PDF files into a single document, in the order you choose.</p>
+    <div class="related"><a href="/pdf/split.html" target="_blank" rel="noopener">Split PDF</a><a href="/pdf/extract.html" target="_blank" rel="noopener">Extract Pages</a><a href="/pdf/compress.html" target="_blank" rel="noopener">Compress PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">PDF files to merge</label>
+        <input type="file" id="file" accept="application/pdf" multiple>
+        <div class="hint">Pick 2 or more files. Each file can be up to 50 MB.</div>
+      </div>
+      <ul class="list" id="list"></ul>
+      <div class="actions">
+        <button class="btn" id="run" type="button">Merge PDFs</button>
+        <button class="btn secondary" id="clear" type="button">Clear list</button>
+      </div>
+      <div class="field" style="margin-top:1rem">
+        <label>Preview (first file)</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Select <strong>two or more PDF files</strong> with the file picker.</li><li>Check the list — use ▲ ▼ to change the order, ✕ to remove a file.</li><li>Press <strong>Merge PDFs</strong> and wait for the green message.</li><li>Click <strong>Download merged.pdf</strong> to save the combined file.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">At least 2 PDF files are required.</li><li class="">Each file can be up to 50 MB.</li><li class="warn">Password-protected PDFs are rejected — unlock them first.</li><li class="">Your files stay in the browser; nothing is uploaded.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const listEl = document.getElementById('list');
+const runBtn = document.getElementById('run');
+const clearBtn = document.getElementById('clear');
+let items = [];
+let seq = 0;
+
+function render() {
+  listEl.innerHTML = '';
+  items.forEach((it, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="num">' + (i + 1) + '</span>' +
+      '<span class="name">' + it.file.name + ' · ' + formatBytes(it.file.size) + '</span>' +
+      '<button type="button" data-act="up" data-id="' + it.id + '" title="Move up">▲</button>' +
+      '<button type="button" data-act="down" data-id="' + it.id + '" title="Move down">▼</button>' +
+      '<button type="button" data-act="del" data-id="' + it.id + '" title="Remove">✕</button>';
+    listEl.appendChild(li);
+  });
+  if (items.length) renderPreview(items[0].file, 'preview', 2);
+  else document.getElementById('preview').textContent = 'No file selected yet.';
+}
+
+fileInput.addEventListener('change', (e) => {
+  for (const f of e.target.files || []) items.push({ id: 'f' + (++seq), file: f });
+  fileInput.value = '';
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  render();
+});
+
+listEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const i = items.findIndex((x) => x.id === btn.dataset.id);
+  if (i < 0) return;
+  const act = btn.dataset.act;
+  if (act === 'up' && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
+  if (act === 'down' && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
+  if (act === 'del') items.splice(i, 1);
+  render();
+});
+
+clearBtn.addEventListener('click', () => {
+  items = [];
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  render();
+});
+
+runBtn.addEventListener('click', async () => {
+  if (items.length < 2) { setStatus('err', 'Please select at least 2 PDF files to merge.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Merge PDFs', 'Merging…');
+  setStatus('info', 'Merging ' + items.length + ' files…');
+  try {
+    await ensureLibs();
+    const merged = await PDFLib.PDFDocument.create();
+    for (const it of items) {
+      const bytes = await readFileBytes(it.file);
+      const src = await PDFLib.PDFDocument.load(bytes);
+      const pages = await merged.copyPages(src, src.getPageIndices());
+      pages.forEach((p) => merged.addPage(p));
+    }
+    const out = await merged.save();
+    addDownload(out, 'merged.pdf', 'Download merged.pdf');
+    setStatus('ok', '✅ Merged ' + items.length + ' files into ' + merged.getPageCount() + ' pages.');
+  } catch (err) {
+    setStatus('err', '❌ Could not merge: ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Merge PDFs');
+  }
+});
+
+render();
+</script>
+</body>
+</html>

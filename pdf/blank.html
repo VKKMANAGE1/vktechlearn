@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Blank PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Create a blank PDF free — choose page count and size (A4, Letter, Legal, A3) and download instantly.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/blank.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>📄 Create Blank PDF</h1>
+    <p>Generate an empty PDF with as many pages as you want, in A4, Letter, Legal or A3.</p>
+    <div class="related"><a href="/pdf/merge.html" target="_blank" rel="noopener">Merge PDF</a><a href="/pdf/split.html" target="_blank" rel="noopener">Split PDF</a><a href="/pdf/protect.html" target="_blank" rel="noopener">Protect PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="row">
+        <div class="field">
+          <label for="pages">Number of pages</label>
+          <input type="number" id="pages" value="1" min="1" max="100">
+        </div>
+        <div class="field">
+          <label for="size">Page size</label>
+          <select id="size">
+            <option value="a4">A4 (210 × 297 mm)</option>
+            <option value="letter">Letter (8.5 × 11 in)</option>
+            <option value="legal">Legal (8.5 × 14 in)</option>
+            <option value="a3">A3 (297 × 420 mm)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="name">Filename</label>
+          <input type="text" id="name" value="blank.pdf">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Create PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Enter how many pages you need (1–100).</li><li>Choose the page size.</li><li>Name the file.</li><li>Press <strong>Create PDF</strong> and download.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">Maximum 100 pages per file.</li><li class="">Supported sizes: A4, Letter, Legal and A3.</li><li class="">The PDF has no text or margins — it is completely empty.</li><li class="">Works offline once the page has loaded.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const runBtn = document.getElementById('run');
+
+runBtn.addEventListener('click', async () => {
+  const pages = Math.max(1, Math.min(100, parseInt(document.getElementById('pages').value, 10) || 1));
+  const sizeKey = document.getElementById('size').value;
+  const name = (document.getElementById('name').value || 'blank.pdf').trim();
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Create PDF', 'Creating…');
+  setStatus('info', 'Building the document…');
+  try {
+    await ensureLibs();
+    const doc = await PDFLib.PDFDocument.create();
+    const sizes = {
+      a4: PDFLib.PageSizes.A4,
+      letter: PDFLib.PageSizes.Letter,
+      legal: PDFLib.PageSizes.Legal,
+      a3: PDFLib.PageSizes.A3
+    };
+    const size = sizes[sizeKey] || PDFLib.PageSizes.A4;
+    for (let i = 0; i < pages; i++) doc.addPage(size);
+    doc.setTitle('Blank PDF');
+    doc.setProducer('VK PDF Toolbox');
+    doc.setCreationDate(new Date());
+    const out = await doc.save();
+    addDownload(out, name, 'Download ' + name);
+    setStatus('ok', '✅ Created ' + pages + ' blank page(s).');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Create PDF');
+  }
+});
+</script>
+</body>
+</html>

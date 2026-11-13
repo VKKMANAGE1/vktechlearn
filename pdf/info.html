@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Information — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Check PDF details free — pages, size, title, author, creation date and PDF version, read locally in your browser.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/info.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>ℹ️ PDF Information</h1>
+    <p>See a PDF's page count, size, title, author, dates and PDF version at a glance.</p>
+    <div class="related"><a href="/pdf/compress.html" target="_blank" rel="noopener">Compress PDF</a><a href="/pdf/protect.html" target="_blank" rel="noopener">Protect PDF</a><a href="/pdf/split.html" target="_blank" rel="noopener">Split PDF</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">One PDF file, up to 50 MB.</div>
+      </div>      <div class="actions"><button class="btn" id="run" type="button">Analyse PDF</button></div>
+      <div id="results" style="display:none;margin-top:1rem">
+        <table class="meta">
+          <tr><th>Pages</th><td id="mPages">—</td></tr>
+          <tr><th>File size</th><td id="mSize">—</td></tr>
+          <tr><th>PDF version</th><td id="mVersion">—</td></tr>
+          <tr><th>Title</th><td id="mTitle">—</td></tr>
+          <tr><th>Author</th><td id="mAuthor">—</td></tr>
+          <tr><th>Creator</th><td id="mCreator">—</td></tr>
+          <tr><th>Created</th><td id="mCreated">—</td></tr>
+          <tr><th>Modified</th><td id="mModified">—</td></tr>
+        </table>
+      </div>
+      <div class="field">
+        <label>Preview</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose any PDF file.</li><li>Press <strong>Analyse PDF</strong>.</li><li>Read the table: pages, size, title, author, creator and dates.</li><li>Nothing is saved or uploaded.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Everything is read locally from the file you choose.</li><li class="">Empty metadata is shown as “Not set” instead of a made-up value.</li><li class="warn">Password-protected PDFs cannot be inspected until unlocked.</li><li class="">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  if (fileInput.files[0]) renderPreview(fileInput.files[0], 'preview', 2);
+});
+
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  setBusy(runBtn, true, 'Analyse PDF', 'Reading…');
+  setStatus('info', 'Reading the document…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const head = new TextDecoder('latin1').decode(new Uint8Array(bytes).slice(0, 8));
+    const version = (head.match(/%PDF-(\d\.\d)/) || [])[1];
+    const doc = await PDFLib.PDFDocument.load(bytes);
+    const set = (id, value) => { document.getElementById(id).textContent = value || 'Not set'; };
+    set('mPages', String(doc.getPageCount()));
+    set('mSize', formatBytes(file.size));
+    set('mVersion', version ? 'PDF ' + version : 'Unknown');
+    set('mTitle', doc.getTitle());
+    set('mAuthor', doc.getAuthor());
+    set('mCreator', doc.getCreator());
+    const created = doc.getCreationDate();
+    const modified = doc.getModificationDate();
+    set('mCreated', created ? created.toLocaleString() : '');
+    set('mModified', modified ? modified.toLocaleString() : '');
+    document.getElementById('results').style.display = 'block';
+    setStatus('ok', '✅ Read ' + doc.getPageCount() + ' page(s) from this PDF.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Analyse PDF');
+  }
+});
+</script>
+</body>
+</html>

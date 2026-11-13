@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Annotation — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Annotate PDF online free — add a highlight box and note text on any page, saved straight into the PDF.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/annotate.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>🖍️ PDF Annotation</h1>
+    <p>Drop a coloured highlight box with your note anywhere on a page.</p>
+    <div class="related"><a href="/pdf/edit.html" target="_blank" rel="noopener">Add Text</a><a href="/pdf/sign.html" target="_blank" rel="noopener">Sign PDF</a><a href="/pdf/watermark.html" target="_blank" rel="noopener">Watermark</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">One PDF file, up to 50 MB.</div>
+      </div>      <div class="row">
+        <div class="field">
+          <label for="text">Note text</label>
+          <input type="text" id="text" placeholder="e.g. Check this number">
+        </div>
+        <div class="field">
+          <label for="page">Page number</label>
+          <input type="number" id="page" value="1" min="1">
+        </div>
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="color">Highlight</label>
+          <select id="color">
+            <option value="yellow">Yellow</option>
+            <option value="lime">Lime</option>
+            <option value="cyan">Cyan</option>
+            <option value="pink">Pink</option>
+            <option value="orange">Orange</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="x">X position</label>
+          <input type="number" id="x" value="72">
+        </div>
+        <div class="field">
+          <label for="y">Y position</label>
+          <input type="number" id="y" value="700">
+        </div>
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Add annotation</button></div>
+      <div class="field">
+        <label>Preview</label>
+        <div class="preview" id="preview">No file selected yet.</div>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to annotate.</li><li>Type the note and the page number.</li><li>Pick a highlight colour and set the X/Y position (points from the bottom-left).</li><li>Press <strong>Add annotation</strong> and download.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="">Position is measured in PDF points from the bottom-left corner (A4 = 595 × 842).</li><li class="">The note is drawn as a new layer; the original text is not changed.</li><li class="">Repeat the tool to add more notes — each run adds one box.</li><li class="warn">Maximum file size is 50 MB.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+  if (fileInput.files[0]) renderPreview(fileInput.files[0], 'preview', 2);
+});
+
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Add annotation', 'Adding…');
+  setStatus('info', 'Adding the note…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const doc = await PDFLib.PDFDocument.load(bytes);
+    const pages = doc.getPages();
+    const pageNum = Math.max(1, parseInt(document.getElementById('page').value, 10) || 1);
+    if (pageNum > pages.length) throw new Error('This document has only ' + pages.length + ' pages.');
+    const page = pages[pageNum - 1];
+    const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    const text = document.getElementById('text').value || 'Annotation';
+    const x = parseFloat(document.getElementById('x').value) || 72;
+    const y = parseFloat(document.getElementById('y').value) || 700;
+    const colors = {
+      yellow: PDFLib.rgb(1, 1, 0.4),
+      lime: PDFLib.rgb(0.7, 1, 0.5),
+      cyan: PDFLib.rgb(0.5, 1, 1),
+      pink: PDFLib.rgb(1, 0.6, 0.8),
+      orange: PDFLib.rgb(1, 0.7, 0.3)
+    };
+    const color = colors[document.getElementById('color').value] || colors.yellow;
+    const boxWidth = Math.max(font.widthOfTextAtSize(text, 12) + 20, 200);
+    page.drawRectangle({ x, y, width: boxWidth, height: 30, color, opacity: 0.45, borderColor: color, borderWidth: 1 });
+    page.drawText(text, { x: x + 10, y: y + 9, size: 12, font, color: PDFLib.rgb(0, 0, 0) });
+    const out = await doc.save();
+    addDownload(out, 'annotated.pdf', 'Download annotated.pdf');
+    setStatus('ok', '✅ Note added on page ' + pageNum + '.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Add annotation');
+  }
+});
+</script>
+</body>
+</html>

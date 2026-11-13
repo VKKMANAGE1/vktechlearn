@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protect PDF — Free Online PDF Tool | VK Tech Learn</title>
+<meta name="description" content="Protect a PDF with a password free. AES-256 encryption in your browser, with print and copy permissions.">
+<link rel="canonical" href="https://vktechlearn.site/pdf/protect.html">
+<link rel="stylesheet" href="/pdf/style.css">
+<script src="/pdf/app.js"></script>
+</head>
+<body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="/pdf/">
+          <span class="brand-badge">📄</span>
+          <span>PDF Toolbox<small>VK TECH LEARN</small></span>
+        </a>
+        <nav>
+          <a href="/pdf/">All tools</a>
+          <a href="/pdf/compress.html">Compress</a>
+          <a href="/pdf/merge.html">Merge</a>
+          <a href="/pdf/protect.html">Protect</a>
+          <a href="https://vktechlearn.site/">Main site</a>
+        </nav>
+      </div>
+    </header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <h1>🔒 Protect PDF</h1>
+    <p>Password-protect a PDF with real AES-256 encryption and choose what the reader may do.</p>
+    <div class="related"><a href="/pdf/watermark.html" target="_blank" rel="noopener">Watermark</a><a href="/pdf/sign.html" target="_blank" rel="noopener">Sign PDF</a><a href="/pdf/info.html" target="_blank" rel="noopener">PDF Info</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Upload &amp; set options</h2>
+      <div class="field">
+        <label for="file">Choose a PDF file</label>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="hint">One PDF file, up to 50 MB.</div>
+      </div>      <div class="row">
+        <div class="field">
+          <label for="pass">Open password (required)</label>
+          <input type="password" id="pass" placeholder="At least 4 characters">
+        </div>
+        <div class="field">
+          <label for="owner">Owner password (optional)</label>
+          <input type="password" id="owner" placeholder="Defaults to the open password">
+        </div>
+      </div>
+      <div class="row">
+        <label class="check"><input type="checkbox" id="allowPrint" checked> Allow printing</label>
+        <label class="check"><input type="checkbox" id="allowCopy"> Allow copying text</label>
+      </div>
+      <div class="field" style="margin-top:.9rem">
+        <label for="name">Output filename</label>
+        <input type="text" id="name" value="protected.pdf">
+      </div>
+      <div class="actions"><button class="btn" id="run" type="button">Protect PDF</button></div>
+      <div class="status" id="status"></div>
+      <div class="output" id="output"></div>
+    </section>
+
+    <aside>
+      <section class="panel">
+        <h2><span>2</span>How to use</h2>
+        <ol class="steps"><li>Choose the PDF you want to protect.</li><li>Enter an open password (minimum 4 characters).</li><li>Optionally set an owner password and allow printing or copying.</li><li>Press <strong>Protect PDF</strong> and download the encrypted file.</li></ol>
+      </section>
+      <section class="panel">
+        <h2><span>3</span>Rules &amp; limits</h2>
+        <ul class="rules"><li class="warn">The open password is required — without it the PDF cannot be opened.</li><li class="">Encryption is AES-256 (PDF 1.7), applied in your browser.</li><li class="">Editing, annotating and page extraction are blocked by default.</li><li class="warn">There is no password recovery — store the password safely.</li><li class="warn">Already-protected PDFs must be unlocked before using this tool.</li></ul>
+      </section>
+    </aside>
+  </div>
+</main>
+
+    <footer class="foot">
+      <div class="wrap">
+        Files are processed inside your browser — nothing is uploaded to a server.
+        Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+      </div>
+    </footer>
+<script>
+const fileInput = document.getElementById('file');
+const runBtn = document.getElementById('run');
+
+fileInput.addEventListener('change', () => {
+  clearStatus();
+  document.getElementById('output').innerHTML = '';
+});
+
+runBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { setStatus('err', 'Please choose a PDF file first.'); return; }
+  const pass = document.getElementById('pass').value;
+  if (pass.length < 4) { setStatus('err', 'Please use a password with at least 4 characters.'); return; }
+  const owner = document.getElementById('owner').value || pass;
+  document.getElementById('output').innerHTML = '';
+  setBusy(runBtn, true, 'Protect PDF', 'Encrypting…');
+  setStatus('info', 'Encrypting with AES-256…');
+  try {
+    await ensureLibs();
+    const bytes = await readFileBytes(file);
+    const doc = await PDFLib.PDFDocument.load(bytes);
+    doc.encrypt({
+      userPassword: pass,
+      ownerPassword: owner,
+      permissions: {
+        printing: document.getElementById('allowPrint').checked,
+        copying: document.getElementById('allowCopy').checked,
+        modifying: false,
+        annotating: false,
+        fillingForms: false,
+        contentAccessibility: true,
+        documentAssembly: false
+      }
+    });
+    const out = await doc.save();
+    const name = (document.getElementById('name').value || 'protected.pdf').trim();
+    addDownload(out, name, 'Download ' + name);
+    setStatus('ok', '✅ PDF encrypted with AES-256. Share the password separately from the file.');
+  } catch (err) {
+    setStatus('err', '❌ ' + friendlyError(err));
+  } finally {
+    setBusy(runBtn, false, 'Protect PDF');
+  }
+});
+</script>
+</body>
+</html>
