@@ -26,6 +26,7 @@ ESBUILD = ["npx", "--yes", "esbuild@0.24.0"]
 
 TARGETS = [
     ("pages.css", "pages.min.css", False),
+    ("post.css", "post.min.css", False),
     ("pdf/style.css", "pdf/style.min.css", False),
     ("pdf/app.js", "pdf/app.min.js", True),
     ("img/app.js", "img/app.min.js", True),

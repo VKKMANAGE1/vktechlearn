@@ -27,6 +27,9 @@ jobs:
       - name: Rebuild post pages from the Blogger feed
         run: python3 tools/build_posts.py --update-index
 
+      - name: Rebuild sitemap and RSS feed
+        run: python3 tools/build_index_files.py
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
