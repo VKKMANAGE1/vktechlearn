@@ -115,9 +115,9 @@ DEMO_REPLY = (
     "नमस्ते! मैं Shavi AI हूँ — VK Tech Learn का हिंदी सहायक।\n\n"
     "अभी सेवा डेमो मोड में चल रही है, इसलिए सच्चा AI जवाब नहीं दे पा रहा। "
     "सर्वर पर AI_API_KEY सेट होते ही मैं पूरी तरह काम करने लगूँगा।\n\n"
-    "तब तक ये काम की चीज़ें देख लें:\n"
-    "• PDF के 35 टूल — https://vktechlearn.site/pdf/\n"
-    "• इमेज के 13 टूल — https://vktechlearn.site/img/\n\n"
+    "तब तक ये काम की चीज़ें देख लें:\n\n"
+    "- PDF के 35 टूल — https://vktechlearn.site/pdf/\n"
+    "- इमेज के 13 टूल — https://vktechlearn.site/img/\n\n"
     "आपने पूछा: "
 )
 

@@ -82,3 +82,27 @@ on the hosted service (set `API_BASE` there).
 - `/api/chat` allows only the site's origins, so other sites cannot spend your credits.
 - Rate limit is in memory per instance — enough for a personal site; move it to Redis if
   you ever run several instances.
+
+## साइट पर चैट पेज जोड़ना (ज़रूरी आख़िरी कदम)
+
+साइट का पेज `shavi-ai/` (सोर्स: `shavi-ai-app/`) इसी सेवा से बात करता है। Space लाइव होने के बाद:
+
+1. `shavi-ai/config.js` खोलें और एक लाइन भरें:
+
+   ```js
+   window.SHAVI_API = "https://<username>-shavi-ai.hf.space";
+   ```
+
+2. यही फ़ाइल `shavi-ai-app/public/config.js` में भी बदल दें, ताकि अगली बिल्ड में बना रहे।
+3. साइट का पेज खोलकर एक सवाल पूछें — जवाब स्ट्रीम होना चाहिए।
+
+Space के **Settings → Variables and secrets** में ये डालें:
+
+| नाम | उदाहरण |
+| --- | --- |
+| `AI_API_KEY` | Groq key, या NVIDIA key (`nvapi-…`) |
+| `AI_BASE_URL` | `https://api.groq.com/openai/v1` या `https://integrate.api.nvidia.com/v1` |
+| `AI_MODEL` | `llama-3.3-70b-versatile` या `nvidia/nemotron-3-ultra-550b-a55b` |
+| `AI_ALLOWED_ORIGINS` | `https://vktechlearn.site,https://www.vktechlearn.site` |
+
+`/health` पर `"demo": false` दिखे तो key ठीक लगी है।

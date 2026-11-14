@@ -23,6 +23,7 @@ STATIC_PAGES = [
     ("/", 1.0, "weekly"),
     ("/pdf/", 0.9, "monthly"),
     ("/img/", 0.9, "monthly"),
+    ("/shavi-ai/", 0.8, "monthly"),
     ("/about.html", 0.6, "yearly"),
     ("/profile.html", 0.6, "yearly"),
     ("/contact.html", 0.6, "yearly"),
