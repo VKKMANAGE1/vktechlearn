@@ -147,6 +147,41 @@
     .main-nav a.hot { color: var(--pink); }
     .main-nav a.hot:hover { border-bottom-color: var(--pink); background: rgba(255, 45, 149, .08); }
 
+    /* ---------- nav dropdowns ---------- */
+    .main-nav .has-dropdown { position: relative; }
+    .main-nav .nav-toggle {
+      display: flex; align-items: center; gap: .45rem; width: 100%;
+      padding: .7rem .85rem; font-family: 'Sora', 'Mukta', sans-serif; font-weight: 600;
+      font-size: .92rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text);
+      background: none; border: 0; border-bottom: 2px solid transparent; cursor: pointer;
+      transition: color .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .main-nav .nav-toggle:hover,
+    .main-nav .has-dropdown.is-open > .nav-toggle { color: var(--neon); border-bottom-color: var(--neon); background: rgba(0, 240, 255, .06); }
+    .main-nav .caret {
+      width: .42rem; height: .42rem; margin-top: -.2rem; flex: 0 0 auto;
+      border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+      transform: rotate(45deg); transition: transform .2s ease;
+    }
+    .main-nav .has-dropdown.is-open > .nav-toggle .caret { transform: rotate(-135deg); margin-top: .2rem; }
+    .main-nav .dropdown {
+      position: absolute; top: calc(100% + .3rem); left: 0; z-index: 70;
+      display: none; flex-direction: column; gap: 0; min-width: 205px; padding: .35rem;
+      background: rgba(5, 8, 18, .98); border: 1px solid var(--line);
+      box-shadow: 0 22px 44px -24px rgba(0, 0, 0, .9);
+    }
+    .main-nav .has-dropdown.is-open > .dropdown { display: flex; }
+    .main-nav .dropdown a {
+      padding: .55rem .7rem; font-size: .84rem; letter-spacing: .08em;
+      border-bottom: 1px solid transparent; border-left: 2px solid transparent;
+    }
+    .main-nav .dropdown a:hover { border-left-color: var(--neon); }
+    html[data-theme="night"] .main-nav .dropdown { background: #fff; }
+    @media (min-width: 900px) {
+      .main-nav .has-dropdown:hover > .dropdown { display: flex; }
+      .main-nav .nav-toggle { width: auto; }
+    }
+
     .search-panel { display: none; border-top: 1px solid var(--line); background: rgba(5, 8, 18, .95); }
     .search-panel.is-open { display: block; }
     .search-form { display: flex; gap: .6rem; padding: .85rem 0; }
@@ -455,6 +490,13 @@
       .main-nav ul { flex-direction: column; gap: 0; padding: .3rem 1.1rem .8rem; }
       .main-nav a { border-bottom: 1px solid var(--line); border-left: 2px solid transparent; padding: .7rem .4rem; }
       .main-nav a:hover { border-left-color: var(--neon); }
+      .main-nav .nav-toggle { justify-content: space-between; padding: .7rem .4rem; border-bottom: 1px solid var(--line); }
+      .main-nav .dropdown {
+        position: static; top: auto; left: auto; width: 100%; min-width: 0; padding: .15rem 0 .3rem .9rem;
+        border: 0; box-shadow: none; background: rgba(0, 240, 255, .05);
+      }
+      .main-nav .dropdown a { padding: .55rem .4rem; border-bottom: 0; }
+      html[data-theme="night"] .main-nav .dropdown { background: rgba(0, 119, 143, .07); }
       .brand-mark { width: 44px; height: 44px; font-size: .82rem; }
       .brand-tag { letter-spacing: .14em; font-size: .68rem; }
     }
@@ -589,12 +631,27 @@
             <li><a href="#latest" data-filter-link="Tech" data-en="Tech News" data-hi="टेक न्यूज़">Tech News</a></li>
             <li><a href="#latest" data-filter-link="Learn" data-en="Learn Computer" data-hi="Computer सीखें">Learn Computer</a></li>
             <li><a href="#latest" data-filter-link="AI" data-en="AI" data-hi="AI">AI</a></li>
-            <li><a href="#tools" data-en="Tools" data-hi="टूल्स">Tools</a></li>
-            <li><a class="hot" href="/pdf/" target="_blank" rel="noopener noreferrer" data-en="PDF Tools" data-hi="PDF टूल्स">PDF Tools</a></li>
-            <li><a href="https://cpwdestimate.blogspot.com/" target="_blank" rel="noopener noreferrer" data-en="Estimate Tool" data-hi="एस्टिमेट टूल">Estimate Tool</a></li>
+            <li class="has-dropdown">
+              <button class="nav-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-tools">
+                <span data-en="Tools" data-hi="टूल्स">Tools</span><span class="caret" aria-hidden="true"></span>
+              </button>
+              <ul class="dropdown" id="dropdown-tools">
+                <li><a class="hot" href="/pdf/" target="_blank" rel="noopener noreferrer" data-en="PDF Tools" data-hi="PDF टूल्स">PDF Tools</a></li>
+                <li><a class="hot" href="/img/" target="_blank" rel="noopener noreferrer" data-en="Image Tools" data-hi="इमेज टूल्स">Image Tools</a></li>
+                <li><a href="https://cpwdestimate.blogspot.com/" target="_blank" rel="noopener noreferrer" data-en="Estimation Tools" data-hi="एस्टिमेट टूल्स">Estimation Tools</a></li>
+              </ul>
+            </li>
             <li><a class="hot" href="https://shavi-ai.lovable.app" target="_blank" rel="noopener noreferrer" data-en="ShâVì AI" data-hi="ShâVì AI">ShâVì AI</a></li>
-            <li><a href="https://www.vktechlearn.site/p/about-us.html" data-en="About" data-hi="हमारे बारे में">About</a></li>
-            <li><a href="https://www.vktechlearn.site/p/contact-us.html" data-en="Contact" data-hi="संपर्क">Contact</a></li>
+            <li class="has-dropdown">
+              <button class="nav-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="dropdown-about">
+                <span data-en="About Me" data-hi="मेरे बारे में">About Me</span><span class="caret" aria-hidden="true"></span>
+              </button>
+              <ul class="dropdown" id="dropdown-about">
+                <li><a href="https://www.vktechlearn.site/p/contact-us.html" data-en="Contact Me" data-hi="मुझसे संपर्क करें">Contact Me</a></li>
+                <li><a href="https://www.vktechlearn.site/p/terms-conditions.html" data-en="Terms &amp; Conditions" data-hi="नियम और शर्तें">Terms &amp; Conditions</a></li>
+                <li><a href="https://www.vktechlearn.site/p/about-us.html" data-en="Profile" data-hi="प्रोफ़ाइल">Profile</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
       </nav>
@@ -1499,6 +1556,34 @@
       const open = els.nav.classList.toggle("is-open");
       els.menuToggle.setAttribute("aria-expanded", String(open));
       els.menuToggle.setAttribute("aria-label", open ? "मेन्यू बंद करें" : "मेन्यू खोलें");
+    });
+
+    /* dropdown menus */
+    const navDrops = Array.from(els.nav.querySelectorAll(".has-dropdown"));
+    const closeDrops = (except) => {
+      navDrops.forEach((item) => {
+        if (item === except) return;
+        item.classList.remove("is-open");
+        const btn = item.querySelector(".nav-toggle");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      });
+    };
+    navDrops.forEach((item) => {
+      const btn = item.querySelector(".nav-toggle");
+      if (!btn) return;
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
+        const open = !item.classList.contains("is-open");
+        closeDrops(item);
+        item.classList.toggle("is-open", open);
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".has-dropdown")) closeDrops();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeDrops();
     });
 
     els.nav.addEventListener("click", (event) => {
