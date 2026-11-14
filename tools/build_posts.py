@@ -246,6 +246,69 @@ def normalize_images(body, title):
     return re.sub(r"<img\b[^>]*>", repl, body, flags=re.I)
 
 
+SITE_PAGE_LINKS = {
+    "/p/contact-us.html": "/contact.html",
+    "/p/about-us.html": "/about.html",
+    "/p/privacy-policy.html": "/privacy-policy.html",
+    "/p/terms-conditions.html": "/terms-conditions.html",
+    "/p/dmca-disclaimer.html": "/dmca-disclaimer.html",
+    "/p/ai.html": "/#tools",
+    "/feeds/posts/default": "/feed.xml",
+}
+
+PLACEHOLDER_IMG = re.compile(
+    r'<img\b[^>]*src="(?:IMAGE_URL_HERE|[^"]*screenshot\d+\.png|/mnt/data/[^"]*)"[^>]*>',
+    re.I,
+)
+
+
+def fix_site_links(body):
+    """Point old Blogger pages at the local pages the site serves now."""
+    for old, new in SITE_PAGE_LINKS.items():
+        body = re.sub(
+            r'href="https?://(?:www\.)?vktechlearn\.site' + re.escape(old) + r'"',
+            'href="' + new + '"',
+            body,
+            flags=re.I,
+        )
+    return body
+
+
+def drop_placeholder_images(body):
+    """Remove images whose source is a placeholder or a local path from a paste."""
+    return PLACEHOLDER_IMG.sub("", body)
+
+
+def strip_pasted_ui(body):
+    """Drop pasted chat-app markup (image galleries, buttons, icons)."""
+    out, i = [], 0
+    opener = '<span class="contents">'
+    while True:
+        start = body.find(opener, i)
+        if start < 0:
+            out.append(body[i:])
+            break
+        out.append(body[i:start])
+        depth, cursor, end = 1, start + len(opener), len(body)
+        while True:
+            match = re.search(r"<span\b|</span>", body[cursor:])
+            if not match:
+                break
+            if match.group(0) == "</span>":
+                depth -= 1
+                if depth == 0:
+                    end = cursor + match.end()
+                    break
+            else:
+                depth += 1
+            cursor += match.end()
+        block = body[start:end]
+        if not re.search(r"<(?:div|button|svg|table)\b", block):
+            out.append(block)
+        i = end
+    return "".join(out)
+
+
 def clean_content(raw, url_to_slug, title=""):
     body = raw or ""
     body = re.sub(r"<!doctype[^>]*>", "", body, flags=re.I)
@@ -286,6 +349,9 @@ def clean_content(raw, url_to_slug, title=""):
     body = re.sub(r"(</(?:h[1-4]|p|li|ul|ol|div|table|tr|td|blockquote)>)[>]+", r"\1", body, flags=re.I)
     body = re.sub(r"<h1\b", "<h2", body, flags=re.I)
     body = re.sub(r"</h1\b", "</h2", body, flags=re.I)
+    body = fix_site_links(body)
+    body = strip_pasted_ui(body)
+    body = drop_placeholder_images(body)
     body = normalize_images(body, title)
     return body.strip()
 
