@@ -1,3 +1,13 @@
+---
+title: Shavi AI
+emoji: 🤖
+colorFrom: purple
+colorTo: pink
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Shavi AI (Python backend)
 
 `vktechlearn.site` is a static site on GitHub Pages, so it cannot run Python itself.
@@ -46,9 +56,19 @@ Then open the service → Environment → add `AI_API_KEY` (never commit it). Th
 `https://shavi-ai.onrender.com` (free instances sleep after ~15 min idle; the first
 message may take ~30s to wake up).
 
-**Hugging Face Spaces (free, no card):** New Space → SDK **Docker** → blank. Upload the
-files in this folder, then Settings → *Variables and secrets* → `AI_API_KEY` as a secret.
-The Space URL is `https://<user>-<space>.hf.space`.
+**Hugging Face Spaces (free, no card) — current choice:**
+
+1. huggingface.co → **New → Space** → name `shavi-ai` → SDK **Docker** → *Blank* → Public → Create.
+2. In the new Space: **Files → Add file → Upload files** and upload everything in this
+   folder (`app.py`, `requirements.txt`, `Dockerfile`, `static/index.html`, `README.md`).
+   This README already carries the `sdk: docker` frontmatter and `app_port: 7860`, so the
+   Space builds straight away.
+3. **Settings → Variables and secrets → New secret**: name `AI_API_KEY`, value = your Groq key.
+   (Optional variables: `AI_BASE_URL=https://api.groq.com/openai/v1`,
+   `AI_MODEL=llama-3.3-70b-versatile`, `AI_ALLOWED_ORIGINS=https://vktechlearn.site,https://www.vktechlearn.site`.)
+4. Wait for the build to finish; the app opens at `https://<your-username>-shavi-ai.hf.space`.
+5. Check `https://<your-username>-shavi-ai.hf.space/health` — it should say `"demo": false`.
+6. Send that URL to be wired into the site's Shavi AI links (nav, quick links, footer, tool list).
 
 After the service is live, point the site at it: open `index.html`, find
 `shavi-ai.lovable.app` and replace the three links with your new URL, or serve the chat
