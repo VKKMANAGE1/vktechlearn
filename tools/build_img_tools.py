@@ -30,6 +30,7 @@ FOOT = """    <footer class="foot">
       <div class="wrap">
         Images are processed inside your browser — nothing is uploaded to a server.
         Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+        <br>© 2026 VK Tech Learn · All rights reserved. Design and code may not be reused without permission.
       </div>
     </footer>"""
 
@@ -51,8 +52,8 @@ def page(tool):
 <title>{tool['name']} — Free Online Image Tool | VK Tech Learn</title>
 <meta name="description" content="{tool['meta']}">
 <link rel="canonical" href="https://vktechlearn.site/img/{tool['slug']}.html">
-<link rel="stylesheet" href="/pdf/style.css">
-<script src="/img/app.js"></script>
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/img/app.min.js"></script>
 </head>
 <body>
 {NAV}
@@ -103,8 +104,8 @@ HUB = """<!DOCTYPE html>
 <title>Image Toolbox — Compress, Resize, Crop & Convert Images Free | VK Tech Learn</title>
 <meta name="description" content="Compress, resize, crop, rotate, convert and watermark images free. Every tool runs in your browser, so your photos never leave your device.">
 <link rel="canonical" href="https://vktechlearn.site/img/">
-<link rel="stylesheet" href="/pdf/style.css">
-<script src="/img/app.js"></script>
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/img/app.min.js"></script>
 </head>
 <body>
 {nav}

@@ -35,6 +35,7 @@ FOOT = """    <footer class="foot">
       <div class="wrap">
         Files are processed inside your browser — nothing is uploaded to a server.
         Made by <a href="https://vktechlearn.site/">Vïnâý Kúshwâhå</a>.
+        <br>© 2026 VK Tech Learn · All rights reserved. Design and code may not be reused without permission.
       </div>
     </footer>"""
 
@@ -56,8 +57,8 @@ def page(tool):
 <title>{tool['name']} — Free Online PDF Tool | VK Tech Learn</title>
 <meta name="description" content="{tool['meta']}">
 <link rel="canonical" href="https://vktechlearn.site/pdf/{tool['slug']}.html">
-<link rel="stylesheet" href="/pdf/style.css">
-<script src="/pdf/app.js"></script>
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/pdf/app.min.js"></script>
 </head>
 <body>
 {NAV}
@@ -108,8 +109,8 @@ HUB = """<!DOCTYPE html>
 <title>PDF Toolbox — 12 Free PDF Tools That Run in Your Browser | VK Tech Learn</title>
 <meta name="description" content="Merge, split, compress, rotate, watermark, sign, annotate, protect and inspect PDFs free. Every tool runs inside your browser — your files never leave your device.">
 <link rel="canonical" href="https://vktechlearn.site/pdf/">
-<link rel="stylesheet" href="/pdf/style.css">
-<script src="/pdf/app.js"></script>
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/pdf/app.min.js"></script>
 </head>
 <body>
 {nav}
