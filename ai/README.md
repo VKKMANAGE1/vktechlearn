@@ -105,6 +105,7 @@ Space के **Settings → Variables and secrets** में ये डाल�
 | `AI_MODEL` | `llama-3.3-70b-versatile` या `nvidia/nemotron-3-ultra-550b-a55b` |
 | `AI_ALLOWED_ORIGINS` | `https://vktechlearn.site,https://www.vktechlearn.site` |
 | `AI_MAX_TOKENS` | जवाब की लंबाई, डिफ़ॉल्ट `3000` (कोड/लंबे जवाब के लिए) |
+| `EXA_API_KEY` | *(वैकल्पिक, सुझाया गया)* Exa key — AI के लिए बनी वेब सर्च, हर महीने $10 फ्री credits |
 | `SEARCH_API_KEY` | *(वैकल्पिक)* Tavily key — "आज की खबरें खोजो" जैसे सवालों के लिए असली वेब सर्च |
 
 `/health` पर `"demo": false` दिखे तो key ठीक लगी है।

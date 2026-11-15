@@ -53,6 +53,8 @@ MAX_CHARS = 8000
 MAX_TURNS = 20
 SEARCH_KEY = (os.getenv("SEARCH_API_KEY") or os.getenv("TAVILY_API_KEY") or "").strip()
 SEARCH_ENDPOINT = "https://api.tavily.com/search"
+EXA_KEY = os.getenv("EXA_API_KEY", "").strip()
+EXA_ENDPOINT = "https://api.exa.ai/search"
 
 ALLOWED_ORIGINS = [
     origin.strip()
@@ -174,8 +176,33 @@ async def demo_stream(question):
     yield sse({"done": True})
 
 
+async def exa_search(query, client):
+    """Exa's REST search: citation-ready titles, URLs and highlight snippets."""
+    response = await client.post(
+        EXA_ENDPOINT,
+        headers={"x-api-key": EXA_KEY, "Content-Type": "application/json"},
+        json={
+            "query": query[:300],
+            "type": "auto",
+            "numResults": 5,
+            "contents": {"highlights": {"numSentences": 3, "highlightsPerUrl": 1}},
+        },
+    )
+    response.raise_for_status()
+    lines = []
+    for item in (response.json().get("results") or [])[:5]:
+        title = (item.get("title") or "").strip()
+        url = (item.get("url") or "").strip()
+        highlights = item.get("highlights") or []
+        snippet = " ".join(str(part) for part in highlights)[:500]
+        lines.append(f"- {title} ({url}): {snippet}")
+    return "\n".join(lines) or "कोई उपयोगी नतीजा नहीं मिला।"
+
+
 async def run_search(query, client):
-    """Ask Tavily for a handful of results and flatten them into readable text."""
+    """Search the web with Exa when its key is set, otherwise Tavily."""
+    if EXA_KEY:
+        return await exa_search(query, client)
     response = await client.post(
         SEARCH_ENDPOINT,
         json={
@@ -207,7 +234,7 @@ async def provider_stream(messages):
             working = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
 
             # Step 1: does this question need a fresh web lookup?
-            if SEARCH_KEY:
+            if SEARCH_KEY or EXA_KEY:
                 probe = {
                     "model": MODEL,
                     "messages": working,
@@ -280,7 +307,7 @@ async def provider_stream(messages):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "model": MODEL, "demo": DEMO, "search": bool(SEARCH_KEY)}
+    return {"status": "ok", "model": MODEL, "demo": DEMO, "search": bool(SEARCH_KEY or EXA_KEY)}
 
 
 @app.post("/api/chat")
