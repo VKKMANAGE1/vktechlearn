@@ -4,3 +4,7 @@
 
 # Python bytecode
 __pycache__/
+
+# local secrets — never commit these
+ai-key.txt
+exa-key.txt
