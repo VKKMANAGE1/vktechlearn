@@ -20,8 +20,6 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import * as pdfjs from "pdfjs-dist";
-import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
 import {
@@ -56,6 +54,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import type { ParsedFile } from "@/lib/files";
+import type { ExportFormat } from "@/lib/export";
 import logoDark from "@/assets/shavi-logo.png";
 import logoLight from "@/assets/shavi-logo-light.png";
 
@@ -63,38 +63,23 @@ const API = String((window as unknown as { SHAVI_API?: string }).SHAVI_API || ""
 const STORE = "shavi-ai-threads-v1";
 const NEW_TITLE = "नई चैट";
 const BLOB_IMAGE = /!\[[^\]]*\]\(blob:[^)]+\)/g;
-const MAX_FILE_TEXT = 12000;
-
-pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
-
-/** blob: URL wali image ko chhota karke data URL banata hai (model ke liye). */
-async function imageToDataUrl(blobUrl: string, max = 1280): Promise<string> {
-  const blob = await (await fetch(blobUrl)).blob();
-  const bitmap = await createImageBitmap(blob);
-  const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("canvas unavailable");
-  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL("image/jpeg", 0.85);
-}
-
-/** PDF ke shuru ke safho ka text nikalta hai. */
-async function pdfToText(blobUrl: string): Promise<string> {
-  const data = await (await fetch(blobUrl)).arrayBuffer();
-  const doc = await pdfjs.getDocument({ data, isEvalSupported: false }).promise;
-  const pages = Math.min(doc.numPages, 20);
-  let text = "";
-  for (let pageNumber = 1; pageNumber <= pages && text.length < MAX_FILE_TEXT; pageNumber += 1) {
-    const page = await doc.getPage(pageNumber);
-    const content = await page.getTextContent();
-    text += content.items.map((item) => ("str" in item ? item.str : "")).join(" ") + "\n";
-  }
-  return text.trim().slice(0, MAX_FILE_TEXT);
-}
-
+const FILE_ACCEPT = [
+  "image/*",
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/csv",
+  "text/plain",
+  ".docx",
+  ".xlsx",
+  ".xls",
+  ".pptx",
+  ".csv",
+  ".txt",
+  ".md",
+].join(",");
 type Thread = { id: string; title: string; messages: UIMessage[]; updatedAt: number };
 type AiState = "checking" | "online" | "demo" | "offline";
 
@@ -560,31 +545,39 @@ function ChatView({
 
     let message = value;
     const images: string[] = [];
-    const documents: string[] = [];
+    const parsed: ParsedFile[] = [];
 
-    for (const file of attachments) {
-      const name = file.filename || "file";
-      const kind = file.mediaType || "";
-      try {
-        if (kind.startsWith("image/") && file.url) {
-          images.push(await imageToDataUrl(file.url));
-          message += `\n\n![${name}](${file.url})`;
-        } else if (kind === "application/pdf" && file.url) {
-          const extracted = await pdfToText(file.url);
-          documents.push(`📄 ${name}\n\n${extracted || "(इस PDF में चुना हुआ टेक्स्ट नहीं मिला — यह स्कैन की हुई फ़ाइल हो सकती है।)"}`);
-        } else if (kind.startsWith("text/") && file.url) {
-          const raw = await (await fetch(file.url)).text();
-          documents.push(`📄 ${name}\n\n${raw.slice(0, MAX_FILE_TEXT)}`);
-        } else {
-          toast.error(`${name}: सिर्फ़ इमेज, PDF या TXT फ़ाइलें चलती हैं`);
+    if (attachments.length) {
+      const toastId = toast.loading("फ़ाइलें पढ़ रहा हूँ…");
+      const { readAttachment } = await import("@/lib/files");
+      for (const file of attachments) {
+        try {
+          const result = await readAttachment(API, {
+            name: file.filename || "file",
+            type: file.mediaType || "",
+            url: file.url || "",
+          });
+          images.push(...result.images);
+          if (result.text) parsed.push(result);
+          if (file.mediaType?.startsWith("image/")) {
+            message += `\n\n![${result.label}](${file.url})`;
+          }
+          if (result.note) toast.info(`${result.label}: ${result.note}`);
+        } catch (error) {
+          toast.error((error as Error).message);
         }
-      } catch {
-        toast.error(`${name} पढ़ी नहीं जा सकी`);
       }
+      toast.dismiss(toastId);
     }
 
-    const full = [message, ...documents].filter(Boolean).join("\n\n");
+    if (!value && (images.length || parsed.length)) {
+      message = parsed.length ? "इस दस्तावेज़ को पढ़कर ज़रूरी बातें बताओ।" : "इस इमेज में क्या है, विस्तार से बताओ।";
+    }
+
+    const context = parsed.length ? (await import("@/lib/files")).buildDocumentContext(value, parsed) : "";
+    const full = [message, context].filter(Boolean).join("\n\n");
     if (!full) return;
+
     if (!thread) {
       onStart(full, images);
       return;
@@ -677,6 +670,13 @@ function ChatView({
                 </MessageContent>
                 {message.role === "assistant" && (
                   <MessageActions>
+                    <ExportMenu
+                      text={message.parts
+                        .filter((part) => part.type === "text")
+                        .map((part) => (part as { text: string }).text)
+                        .join("")}
+                      title={thread?.title || "Shavi AI दस्तावेज़"}
+                    />
                     <MessageAction
                       tooltip="कॉपी"
                       onClick={() => {
@@ -734,17 +734,17 @@ function ChatView({
         <div className="mx-auto max-w-3xl">
           <PromptInput
             className="border-border bg-card shadow-lg"
-            accept="image/*,application/pdf,text/plain"
+            accept={FILE_ACCEPT}
             multiple
             maxFiles={3}
-            maxFileSize={12 * 1024 * 1024}
+            maxFileSize={20 * 1024 * 1024}
             onError={(err) => toast.error(err.message)}
             onSubmit={submit}
           >
             <AttachmentChips />
             <PromptInputTextarea
               ref={inputRef}
-              placeholder="कुछ भी पूछें — फ़ाइल जोड़ें, कोड, पढ़ाई, लिखाई…"
+              placeholder="कुछ भी पूछें — PDF/Word/Excel/PPT/इमेज जोड़ें, कोड, पढ़ाई, लिखाई…"
               value={input}
               onChange={(event) => setInput(event.target.value)}
             />
@@ -781,6 +781,46 @@ function ChatView({
         </div>
       </div>
     </>
+  );
+}
+
+function ExportMenu({ text, title }: { text: string; title: string }) {
+  const [busy, setBusy] = useState<ExportFormat | null>(null);
+  const options: { format: ExportFormat; label: string }[] = [
+    { format: "pdf", label: "PDF" },
+    { format: "docx", label: "Word (DOCX)" },
+    { format: "xlsx", label: "Excel (XLSX)" },
+    { format: "pptx", label: "PowerPoint (PPTX)" },
+  ];
+  async function run(format: ExportFormat) {
+    setBusy(format);
+    const toastId = toast.loading("दस्तावेज़ बना रहा हूँ…");
+    try {
+      const { saveAs } = await import("@/lib/export");
+      await saveAs(text, title, format);
+      toast.success("डाउनलोड शुरू हो गया");
+    } catch (error) {
+      toast.error((error as Error).message || "दस्तावेज़ नहीं बना");
+    } finally {
+      toast.dismiss(toastId);
+      setBusy(null);
+    }
+  }
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button disabled={!text.trim()} size="icon-sm" type="button" variant="ghost">
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        {options.map((option) => (
+          <DropdownMenuItem key={option.format} onSelect={() => void run(option.format)}>
+            {option.label} में डाउनलोड करें
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -855,7 +895,7 @@ function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
         <h2 className="font-display text-3xl font-semibold">नमस्ते, मैं ShâVì Ai हूँ</h2>
         <p className="mt-3 leading-7 text-muted-foreground">
           कोडिंग, पढ़ाई, लिखाई, अनुवाद, करियर या रिसर्च — हिंदी या English में कुछ भी पूछें।
-          इमेज/PDF जोड़कर उसके बारे में पूछें, या नई इमेज बनवाएँ। बिना लॉगिन, मुफ़्त।
+          PDF, Word, Excel, PowerPoint, CSV, इमेज जोड़कर पूछें; जवाब PDF/Word/Excel/PPT में डाउनलोड करें।
         </p>
       </div>
       <div className="mt-7 grid w-full max-w-xl gap-2 sm:grid-cols-2">

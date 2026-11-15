@@ -134,6 +134,64 @@ export default {
       );
     }
 
+    if (url.pathname === "/api/ocr") {
+      if (request.method !== "POST") return new Response("Use POST", { status: 405, headers });
+      const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      if (rateLimited(ip)) {
+        return Response.json({ error: "एक घंटे की सीमा पूरी हो गई। थोड़ी देर बाद कोशिश करें।" }, { status: 429, headers });
+      }
+      let images = [];
+      try {
+        const body = await request.json();
+        images = (Array.isArray(body.images) ? body.images : [])
+          .filter((value) => typeof value === "string" && /^data:image\/(png|jpe?g|webp);base64,/.test(value))
+          .slice(0, 6);
+      } catch {
+        return Response.json({ error: "इमेज भेजें।" }, { status: 400, headers });
+      }
+      if (!images.length) return Response.json({ texts: [] }, { headers });
+
+      const model = env.AI_VISION_MODEL || DEFAULT_VISION_MODEL;
+      const texts = new Array(images.length).fill("");
+      const queue = images.map((_, index) => index);
+      async function worker() {
+        while (queue.length) {
+          const index = queue.shift();
+          try {
+            const result = await fetch(`${env.AI_BASE_URL || "https://integrate.api.nvidia.com/v1"}/chat/completions`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${env.AI_API_KEY}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                model,
+                messages: [
+                  {
+                    role: "user",
+                    content: [
+                      {
+                        type: "text",
+                        text: "Transcribe every bit of text in this image exactly as written, keeping line breaks. If it is handwritten, transcribe it as best you can. If there is no text, reply with exactly: (कोई टेक्स्ट नहीं). Do not add commentary.",
+                      },
+                      { type: "image_url", image_url: { url: images[index] } },
+                    ],
+                  },
+                ],
+                temperature: 0.1,
+                max_tokens: 1500,
+              }),
+            });
+            if (result.ok) {
+              const data = await result.json();
+              texts[index] = (data.choices?.[0]?.message?.content || "").trim();
+            }
+          } catch {
+            texts[index] = "";
+          }
+        }
+      }
+      await Promise.all([worker(), worker()]);
+      return Response.json({ texts }, { headers });
+    }
+
     if (url.pathname === "/api/image") {
       if (request.method !== "POST") return new Response("Use POST", { status: 405, headers });
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
