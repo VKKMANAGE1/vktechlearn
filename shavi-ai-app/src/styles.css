@@ -160,3 +160,133 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; }
 }
+
+/* ---------- ShâVì Ai cyberpunk neon wordmark ---------- */
+.shavi-mark {
+  position: relative;
+  display: inline-block;
+  font-family: "Orbitron", var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  white-space: nowrap;
+  isolation: isolate;
+  user-select: none;
+}
+
+.shavi-mark .mark-base {
+  display: inline-block;
+  background-image: linear-gradient(100deg, #00e5ff 0%, #7b6bff 34%, #ff2bd6 66%, #00e5ff 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.45)) drop-shadow(0 0 20px rgba(255, 43, 214, 0.22));
+  animation: shavi-flow 7s linear infinite;
+}
+
+.shavi-mark .mark-glitch {
+  position: absolute;
+  inset: 0;
+  color: #00e5ff;
+  opacity: 0;
+  mix-blend-mode: screen;
+  clip-path: inset(0 0 58% 0);
+  animation: shavi-glitch-a 4.6s steps(2, end) infinite;
+}
+
+.shavi-mark .mark-glitch-b {
+  color: #ff2bd6;
+  clip-path: inset(56% 0 0 0);
+  animation: shavi-glitch-b 3.7s steps(2, end) infinite;
+}
+
+.shavi-mark .mark-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 26%;
+  pointer-events: none;
+  opacity: 0.55;
+  background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.38), transparent);
+  mix-blend-mode: screen;
+  animation: shavi-scan 3.8s ease-in-out infinite;
+}
+
+@keyframes shavi-flow {
+  to {
+    background-position: 220% 0;
+  }
+}
+
+@keyframes shavi-glitch-a {
+  0%,
+  90%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  91% {
+    opacity: 0.85;
+    transform: translate(-2px, -1px);
+  }
+  93% {
+    opacity: 0.5;
+    transform: translate(2px, 1px);
+  }
+  95% {
+    opacity: 0.9;
+    transform: translate(-1px, 1px);
+  }
+  97% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes shavi-glitch-b {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  89% {
+    opacity: 0.8;
+    transform: translate(2px, 1px);
+  }
+  92% {
+    opacity: 0.45;
+    transform: translate(-2px, -1px);
+  }
+  94% {
+    opacity: 0.75;
+    transform: translate(1px, -1px);
+  }
+  96% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes shavi-scan {
+  0% {
+    transform: translateY(-130%);
+  }
+  55%,
+  100% {
+    transform: translateY(430%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shavi-mark .mark-base,
+  .shavi-mark .mark-glitch,
+  .shavi-mark .mark-scan {
+    animation: none !important;
+  }
+  .shavi-mark .mark-glitch {
+    display: none;
+  }
+}

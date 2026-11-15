@@ -46,6 +46,7 @@ import {
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
+import { ShaviMark } from "@/components/shavi-mark";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -56,8 +57,6 @@ import {
 import { Input } from "@/components/ui/input";
 import type { ParsedFile } from "@/lib/files";
 import type { ExportFormat } from "@/lib/export";
-import logoDark from "@/assets/shavi-logo.png";
-import logoLight from "@/assets/shavi-logo-light.png";
 
 const API = String((window as unknown as { SHAVI_API?: string }).SHAVI_API || "").replace(/\/$/, "");
 const STORE = "shavi-ai-threads-v1";
@@ -323,8 +322,7 @@ export function App() {
       >
         <div className="flex h-16 items-center justify-between px-4">
           <button className="flex items-center" onClick={newChat} aria-label="ShâVì Ai होम">
-            <img alt="ShâVì Ai" className="h-9 w-auto dark:hidden" src={logoDark} />
-            <img alt="ShâVì Ai" className="hidden h-9 w-auto dark:block" src={logoLight} />
+            <ShaviMark className="text-[1.35rem]" />
           </button>
           <Button
             aria-label="साइडबार बंद करें"
@@ -445,7 +443,7 @@ export function App() {
                   ? "AI सेवा जुड़ी नहीं"
                   : aiState === "demo"
                     ? "डेमो मोड — key सेट नहीं"
-                    : "ShâVì Ai"}
+                    : <ShaviMark className="text-[0.72rem]" text="ShâVì Ai" />}
               </p>
             </div>
           </div>
@@ -892,7 +890,9 @@ function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
         <BrainCircuit className="size-7" />
       </div>
       <div className="mt-3 max-w-lg">
-        <h2 className="font-display text-3xl font-semibold">नमस्ते, मैं ShâVì Ai हूँ</h2>
+        <h2 className="font-display text-3xl font-semibold">
+          नमस्ते, मैं <ShaviMark className="align-[-0.1em] text-[1.7rem]" /> हूँ
+        </h2>
         <p className="mt-3 leading-7 text-muted-foreground">
           कोडिंग, पढ़ाई, लिखाई, अनुवाद, करियर या रिसर्च — हिंदी या English में कुछ भी पूछें।
           PDF, Word, Excel, PowerPoint, CSV, इमेज जोड़कर पूछें; जवाब PDF/Word/Excel/PPT में डाउनलोड करें।
