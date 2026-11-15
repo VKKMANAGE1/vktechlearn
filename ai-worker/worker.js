@@ -19,6 +19,9 @@ const LIMIT_PER_HOUR = 30;
 const MAX_CHARS = 8000;
 const MAX_TURNS = 20;
 const MAX_TOKENS = 3000;
+const DEFAULT_VISION_MODEL = "meta/llama-3.2-90b-vision-instruct";
+const IMAGE_MODEL = "black-forest-labs/flux.1-dev";
+const IMAGE_ENDPOINT = `https://ai.api.nvidia.com/v1/genai/${IMAGE_MODEL}`;
 
 const SYSTEM_PROMPT = `तुम "ShâVì Ai" हो — एक आम, पूरी तरह काम का AI सहायक, जिसे Vïnâý Kúshwâhå ने VK Tech Learn के लिए बनाया है।
 तुम्हें किसी एक विषय तक सीमित नहीं रहना है। लोग तुमसे कोडिंग, गणित, पढ़ाई, लिखाई, अनुवाद, करियर,
@@ -126,9 +129,42 @@ export default {
 
     if (url.pathname === "/health") {
       return Response.json(
-        { status: "ok", model, demo: !env.AI_API_KEY, search: Boolean(env.EXA_API_KEY) },
+        { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: Boolean(env.EXA_API_KEY) },
         { headers },
       );
+    }
+
+    if (url.pathname === "/api/image") {
+      if (request.method !== "POST") return new Response("Use POST", { status: 405, headers });
+      const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      if (rateLimited(ip)) {
+        return Response.json({ error: "एक घंटे की सीमा पूरी हो गई। थोड़ी देर बाद कोशिश करें।" }, { status: 429, headers });
+      }
+      let prompt = "";
+      try {
+        prompt = String((await request.json()).prompt || "").trim().slice(0, 800);
+      } catch {
+        return Response.json({ error: "प्रॉम्प्ट भेजें।" }, { status: 400, headers });
+      }
+      if (!prompt) return Response.json({ error: "क्या बनाना है, लिखें।" }, { status: 400, headers });
+      try {
+        const result = await fetch(IMAGE_ENDPOINT, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${env.AI_API_KEY}`, "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ prompt, steps: 8, seed: Math.floor(Math.random() * 100000) }),
+        });
+        if (!result.ok) {
+          const detail = (await result.text().catch(() => "")).slice(0, 200);
+          return Response.json({ error: `इमेज नहीं बन पाई (${result.status}). ${detail}` }, { status: 502, headers });
+        }
+        const data = await result.json();
+        const artifact = (data.artifacts || [])[0];
+        if (!artifact?.base64) return Response.json({ error: "इमेज खाली लौटी, दोबारा कोशिश करें।" }, { status: 502, headers });
+        const mime = artifact.base64.startsWith("/9j/") ? "image/jpeg" : "image/png";
+        return Response.json({ prompt, image: `data:${mime};base64,${artifact.base64}` }, { headers });
+      } catch (error) {
+        return Response.json({ error: "इमेज सेवा से कनेक्ट नहीं हो सका।" }, { status: 502, headers });
+      }
     }
 
     if (url.pathname !== "/api/chat" || request.method !== "POST") {
@@ -150,6 +186,9 @@ export default {
     if (!messages.length || messages[messages.length - 1].role !== "user") {
       return Response.json({ error: "कृपया पहले कुछ लिखें।" }, { status: 400, headers });
     }
+    const images = (Array.isArray(body.images) ? body.images : [])
+      .filter((value) => typeof value === "string" && /^data:image\/(png|jpe?g|webp);base64,/.test(value))
+      .slice(0, 3);
 
     if (!env.AI_API_KEY) {
       const demo =
@@ -162,7 +201,22 @@ export default {
     const auth = { Authorization: `Bearer ${env.AI_API_KEY}`, "Content-Type": "application/json" };
     let working = [{ role: "system", content: SYSTEM_PROMPT }, ...messages];
 
-    if (env.EXA_API_KEY) {
+    if (images.length) {
+      const last = messages[messages.length - 1];
+      working = [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...messages.slice(0, -1),
+        {
+          role: "user",
+          content: [
+            { type: "text", text: last.content },
+            ...images.map((url) => ({ type: "image_url", image_url: { url } })),
+          ],
+        },
+      ];
+    }
+
+    if (env.EXA_API_KEY && !images.length) {
       try {
         const probe = await fetch(`${base}/chat/completions`, {
           method: "POST",
@@ -202,7 +256,13 @@ export default {
     const upstream = await fetch(`${base}/chat/completions`, {
       method: "POST",
       headers: auth,
-      body: JSON.stringify({ model, messages: working, temperature: 0.7, max_tokens: MAX_TOKENS, stream: true }),
+      body: JSON.stringify({
+        model: images.length ? env.AI_VISION_MODEL || DEFAULT_VISION_MODEL : model,
+        messages: working,
+        temperature: 0.7,
+        max_tokens: MAX_TOKENS,
+        stream: true,
+      }),
     });
 
     if (!upstream.ok || !upstream.body) {

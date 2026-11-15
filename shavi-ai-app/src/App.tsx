@@ -6,10 +6,13 @@ import {
   Check,
   Copy,
   Download,
+  ImagePlus,
+  Loader2,
   Menu,
   MessageSquare,
   Moon,
   MoreHorizontal,
+  Paperclip,
   Pencil,
   Plus,
   Search,
@@ -17,6 +20,8 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import * as pdfjs from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
 import {
@@ -35,9 +40,12 @@ import {
 import {
   PromptInput,
   PromptInputFooter,
+  PromptInputHeader,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
+  usePromptInputAttachments,
+  type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
@@ -54,12 +62,46 @@ import logoLight from "@/assets/shavi-logo-light.png";
 const API = String((window as unknown as { SHAVI_API?: string }).SHAVI_API || "").replace(/\/$/, "");
 const STORE = "shavi-ai-threads-v1";
 const NEW_TITLE = "नई चैट";
+const BLOB_IMAGE = /!\[[^\]]*\]\(blob:[^)]+\)/g;
+const MAX_FILE_TEXT = 12000;
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
+/** blob: URL wali image ko chhota karke data URL banata hai (model ke liye). */
+async function imageToDataUrl(blobUrl: string, max = 1280): Promise<string> {
+  const blob = await (await fetch(blobUrl)).blob();
+  const bitmap = await createImageBitmap(blob);
+  const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("canvas unavailable");
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.85);
+}
+
+/** PDF ke shuru ke safho ka text nikalta hai. */
+async function pdfToText(blobUrl: string): Promise<string> {
+  const data = await (await fetch(blobUrl)).arrayBuffer();
+  const doc = await pdfjs.getDocument({ data, isEvalSupported: false }).promise;
+  const pages = Math.min(doc.numPages, 20);
+  let text = "";
+  for (let pageNumber = 1; pageNumber <= pages && text.length < MAX_FILE_TEXT; pageNumber += 1) {
+    const page = await doc.getPage(pageNumber);
+    const content = await page.getTextContent();
+    text += content.items.map((item) => ("str" in item ? item.str : "")).join(" ") + "\n";
+  }
+  return text.trim().slice(0, MAX_FILE_TEXT);
+}
 
 type Thread = { id: string; title: string; messages: UIMessage[]; updatedAt: number };
 type AiState = "checking" | "online" | "demo" | "offline";
 
 /** Backend se aane wale simple SSE ({delta}) ko AI SDK ke UI stream me badalta hai. */
 class ShaviTransport implements ChatTransport<UIMessage> {
+  images: string[] = [];
+
   async sendMessages({
     messages,
     abortSignal,
@@ -73,7 +115,9 @@ class ShaviTransport implements ChatTransport<UIMessage> {
         content: message.parts
           .filter((part) => part.type === "text")
           .map((part) => (part as { text: string }).text)
-          .join(""),
+          .join("")
+          .replace(BLOB_IMAGE, "")
+          .trim(),
       }))
       .filter((message) => message.content.trim().length > 0)
       .slice(-10);
@@ -81,7 +125,7 @@ class ShaviTransport implements ChatTransport<UIMessage> {
     const response = await fetch(API + "/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: payload }),
+      body: JSON.stringify({ messages: payload, images: this.images }),
       signal: abortSignal,
     });
 
@@ -169,7 +213,7 @@ function saveThreads(threads: Thread[]) {
 export function App() {
   const [threads, setThreads] = useState<Thread[]>(() => loadThreads());
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [pending, setPending] = useState("");
+  const [pending, setPending] = useState<{ text: string; images: string[] } | null>(null);
   const [filter, setFilter] = useState("");
   const [sidebar, setSidebar] = useState(false);
   const [dark, setDark] = useState(true);
@@ -191,21 +235,30 @@ export function App() {
   const persist = useCallback(
     (messages: UIMessage[]) => {
       if (!messages.length) return;
+      const cleaned = messages.map((message) => ({
+        ...message,
+        parts: message.parts.map((part) =>
+          part.type === "text" ? { ...part, text: (part as { text: string }).text.replace(BLOB_IMAGE, "").trim() } : part,
+        ),
+      }));
       setThreads((current) => {
         const id = activeId;
         if (!id) return current;
-        const firstUser = messages.find((message) => message.role === "user");
-        const firstText =
+        const firstUser = cleaned.find((message) => message.role === "user");
+        const firstText = (
           firstUser?.parts
             .filter((part) => part.type === "text")
             .map((part) => (part as { text: string }).text)
-            .join("") || "";
+            .join("") || ""
+        )
+          .replace(/\s+/g, " ")
+          .trim();
         const next = current.map((thread) =>
           thread.id === id
             ? {
                 ...thread,
                 title: thread.title === NEW_TITLE && firstText ? firstText.slice(0, 54) : thread.title,
-                messages,
+                messages: cleaned,
                 updatedAt: Date.now(),
               }
             : thread,
@@ -219,11 +272,11 @@ export function App() {
 
   function newChat() {
     setActiveId(null);
-    setPending("");
+    setPending(null);
     setSidebar(false);
   }
 
-  function startWith(text: string) {
+  function startWith(text: string, images: string[] = []) {
     const thread: Thread = {
       id: (crypto.randomUUID?.() || String(Date.now())).slice(0, 36),
       title: NEW_TITLE,
@@ -236,7 +289,7 @@ export function App() {
       return next;
     });
     setActiveId(thread.id);
-    setPending(text);
+    setPending({ text, images });
   }
 
   function remove(id: string) {
@@ -446,7 +499,7 @@ export function App() {
             key={active ? active.id : "home"}
             thread={active}
             pending={pending}
-            onPendingDone={() => setPending("")}
+            onPendingDone={() => setPending(null)}
             onPersist={persist}
             onStart={startWith}
           />
@@ -464,12 +517,14 @@ function ChatView({
   onStart,
 }: {
   thread: Thread | null;
-  pending: string;
+  pending: { text: string; images: string[] } | null;
   onPendingDone: () => void;
   onPersist: (messages: UIMessage[]) => void;
-  onStart: (text: string) => void;
+  onStart: (text: string, images?: string[]) => void;
 }) {
   const [input, setInput] = useState("");
+  const [makingImage, setMakingImage] = useState(false);
+  const [generated, setGenerated] = useState<{ id: string; prompt: string; url: string }[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const transport = useMemo(() => new ShaviTransport(), []);
   const sent = useRef(false);
@@ -493,23 +548,80 @@ function ChatView({
   useEffect(() => {
     if (!pending || sent.current) return;
     sent.current = true;
-    void sendMessage({ text: pending });
+    transport.images = pending.images;
+    void sendMessage({ text: pending.text });
     onPendingDone();
-  }, [pending, sendMessage, onPendingDone]);
+  }, [pending, sendMessage, onPendingDone, transport]);
 
-  function submit({ text }: { text: string }) {
+  async function submit({ text, files }: PromptInputMessage) {
     const value = text.trim();
-    if (!value || busy) return;
+    const attachments = files || [];
+    if ((!value && !attachments.length) || busy) return;
+
+    let message = value;
+    const images: string[] = [];
+    const documents: string[] = [];
+
+    for (const file of attachments) {
+      const name = file.filename || "file";
+      const kind = file.mediaType || "";
+      try {
+        if (kind.startsWith("image/") && file.url) {
+          images.push(await imageToDataUrl(file.url));
+          message += `\n\n![${name}](${file.url})`;
+        } else if (kind === "application/pdf" && file.url) {
+          const extracted = await pdfToText(file.url);
+          documents.push(`📄 ${name}\n\n${extracted || "(इस PDF में चुना हुआ टेक्स्ट नहीं मिला — यह स्कैन की हुई फ़ाइल हो सकती है।)"}`);
+        } else if (kind.startsWith("text/") && file.url) {
+          const raw = await (await fetch(file.url)).text();
+          documents.push(`📄 ${name}\n\n${raw.slice(0, MAX_FILE_TEXT)}`);
+        } else {
+          toast.error(`${name}: सिर्फ़ इमेज, PDF या TXT फ़ाइलें चलती हैं`);
+        }
+      } catch {
+        toast.error(`${name} पढ़ी नहीं जा सकी`);
+      }
+    }
+
+    const full = [message, ...documents].filter(Boolean).join("\n\n");
+    if (!full) return;
     if (!thread) {
-      onStart(value);
+      onStart(full, images);
       return;
     }
     setInput("");
-    void sendMessage({ text: value });
+    transport.images = images;
+    void sendMessage({ text: full });
+  }
+
+  async function makeImage() {
+    const prompt = (input.trim() || lastUserText(messages) || "").trim();
+    if (!prompt) {
+      toast.error("क्या बनाना है, कमर में लिखें (जैसे: पहाड़ों पर सूर्योदय)");
+      return;
+    }
+    if (makingImage) return;
+    setMakingImage(true);
+    try {
+      const response = await fetch(API + "/api/image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "इमेज नहीं बन पाई");
+      const blob = await (await fetch(data.image)).blob();
+      setGenerated((current) => [...current, { id: String(Date.now()), prompt, url: URL.createObjectURL(blob) }]);
+      setInput("");
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setMakingImage(false);
+    }
   }
 
   function pickPrompt(text: string) {
-    if (thread) submit({ text });
+    if (thread) void submit({ text, files: [] });
     else onStart(text);
   }
 
@@ -583,6 +695,30 @@ function ChatView({
               </Message>
             ))
           )}
+          {generated.map((image) => (
+            <div className="flex gap-3" key={image.id}>
+              <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
+                <ImagePlus className="size-3.5" />
+              </span>
+              <div className="min-w-0 space-y-2">
+                <p className="text-sm text-muted-foreground">{image.prompt}</p>
+                <img alt={image.prompt} className="max-w-full rounded-lg border border-border" src={image.url} />
+                <a
+                  className="inline-block text-xs underline underline-offset-4"
+                  download={`shavi-ai-${image.id}.jpg`}
+                  href={image.url}
+                >
+                  डाउनलोड करें
+                </a>
+              </div>
+            </div>
+          ))}
+          {makingImage && (
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <ImagePlus className="size-5 text-primary" />
+              <Shimmer>इमेज बना रहा हूँ…</Shimmer>
+            </div>
+          )}
           {status === "submitted" && (
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <BrainCircuit className="size-5 text-primary" />
@@ -596,17 +732,37 @@ function ChatView({
 
       <div className="shrink-0 bg-background px-3 pb-4 pt-2 sm:px-6">
         <div className="mx-auto max-w-3xl">
-          <PromptInput className="border-border bg-card shadow-lg" onSubmit={submit}>
+          <PromptInput
+            className="border-border bg-card shadow-lg"
+            accept="image/*,application/pdf,text/plain"
+            multiple
+            maxFiles={3}
+            maxFileSize={12 * 1024 * 1024}
+            onError={(err) => toast.error(err.message)}
+            onSubmit={submit}
+          >
+            <AttachmentChips />
             <PromptInputTextarea
               ref={inputRef}
-              placeholder="कुछ भी पूछें — कोड, पढ़ाई, लिखाई, रिसर्च…"
+              placeholder="कुछ भी पूछें — फ़ाइल जोड़ें, कोड, पढ़ाई, लिखाई…"
               value={input}
               onChange={(event) => setInput(event.target.value)}
             />
             <PromptInputFooter>
               <PromptInputTools>
-                <span className="px-2 text-xs text-muted-foreground">
-                  Enter से भेजें · Shift + Enter से नई लाइन
+                <AddFileButton />
+                <Button
+                  aria-label="इमेज बनाएँ"
+                  disabled={makingImage || !input.trim()}
+                  size="icon-sm"
+                  type="button"
+                  variant="ghost"
+                  onClick={makeImage}
+                >
+                  {makingImage ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
+                </Button>
+                <span className="hidden px-2 text-xs text-muted-foreground sm:inline">
+                  Enter से भेजें · Shift + Enter नई लाइन
                 </span>
               </PromptInputTools>
               <PromptInputSubmit disabled={!input.trim() && !busy} onStop={stop} status={status} />
@@ -628,6 +784,61 @@ function ChatView({
   );
 }
 
+function lastUserText(messages: UIMessage[]): string {
+  const user = [...messages].reverse().find((message) => message.role === "user");
+  return (
+    user?.parts
+      .filter((part) => part.type === "text")
+      .map((part) => (part as { text: string }).text)
+      .join(" ") || ""
+  );
+}
+
+function AddFileButton() {
+  const attachments = usePromptInputAttachments();
+  return (
+    <Button
+      aria-label="फ़ाइल जोड़ें (इमेज, PDF, TXT)"
+      size="icon-sm"
+      type="button"
+      variant="ghost"
+      onClick={() => attachments.openFileDialog()}
+    >
+      <Paperclip className="size-4" />
+    </Button>
+  );
+}
+
+function AttachmentChips() {
+  const attachments = usePromptInputAttachments();
+  if (!attachments.files.length) return null;
+  return (
+    <PromptInputHeader>
+      {attachments.files.map((file) => (
+        <span
+          className="flex items-center gap-2 rounded-md border border-border bg-background/60 px-2 py-1 text-xs"
+          key={file.id}
+        >
+          {file.mediaType?.startsWith("image/") ? (
+            <img alt={file.filename || "attachment"} className="size-6 rounded object-cover" src={file.url} />
+          ) : (
+            <Paperclip className="size-3.5" />
+          )}
+          <span className="max-w-40 truncate">{file.filename || "file"}</span>
+          <button
+            aria-label="हटाएँ"
+            className="text-muted-foreground hover:text-foreground"
+            type="button"
+            onClick={() => attachments.remove(file.id)}
+          >
+            <X className="size-3.5" />
+          </button>
+        </span>
+      ))}
+    </PromptInputHeader>
+  );
+}
+
 function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
   const prompts = [
     "Python में API से डेटा कैसे लाऊँ?",
@@ -644,7 +855,7 @@ function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
         <h2 className="font-display text-3xl font-semibold">नमस्ते, मैं ShâVì Ai हूँ</h2>
         <p className="mt-3 leading-7 text-muted-foreground">
           कोडिंग, पढ़ाई, लिखाई, अनुवाद, करियर या रिसर्च — हिंदी या English में कुछ भी पूछें।
-          बिना लॉगिन, बिल्कुल मुफ़्त।
+          इमेज/PDF जोड़कर उसके बारे में पूछें, या नई इमेज बनवाएँ। बिना लॉगिन, मुफ़्त।
         </p>
       </div>
       <div className="mt-7 grid w-full max-w-xl gap-2 sm:grid-cols-2">
