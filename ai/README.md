@@ -104,5 +104,7 @@ Space के **Settings → Variables and secrets** में ये डाल�
 | `AI_BASE_URL` | `https://api.groq.com/openai/v1` या `https://integrate.api.nvidia.com/v1` |
 | `AI_MODEL` | `llama-3.3-70b-versatile` या `nvidia/nemotron-3-ultra-550b-a55b` |
 | `AI_ALLOWED_ORIGINS` | `https://vktechlearn.site,https://www.vktechlearn.site` |
+| `AI_MAX_TOKENS` | जवाब की लंबाई, डिफ़ॉल्ट `3000` (कोड/लंबे जवाब के लिए) |
+| `SEARCH_API_KEY` | *(वैकल्पिक)* Tavily key — "आज की खबरें खोजो" जैसे सवालों के लिए असली वेब सर्च |
 
 `/health` पर `"demo": false` दिखे तो key ठीक लगी है।

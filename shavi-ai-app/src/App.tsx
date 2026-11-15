@@ -599,7 +599,7 @@ function ChatView({
           <PromptInput className="border-border bg-card shadow-lg" onSubmit={submit}>
             <PromptInputTextarea
               ref={inputRef}
-              placeholder="ShâVì Ai से कुछ भी पूछें…"
+              placeholder="कुछ भी पूछें — कोड, पढ़ाई, लिखाई, रिसर्च…"
               value={input}
               onChange={(event) => setInput(event.target.value)}
             />
@@ -630,10 +630,10 @@ function ChatView({
 
 function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
   const prompts = [
-    "PDF को Word में कैसे बदलें?",
-    "इमेज का साइज़ कम कैसे करें?",
-    "लैपटॉप स्लो क्यों हो गया?",
-    "10वीं के बाद क्या करें?",
+    "Python में API से डेटा कैसे लाऊँ?",
+    "इस वाक्य को शुद्ध हिंदी में लिखो: …",
+    "3 महीने में English सुधारने का प्लान बनाओ",
+    "आज की बड़ी टेक खबरें खोजो",
   ];
   return (
     <ConversationEmptyState className="min-h-[58vh]">
@@ -643,7 +643,8 @@ function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
       <div className="mt-3 max-w-lg">
         <h2 className="font-display text-3xl font-semibold">नमस्ते, मैं ShâVì Ai हूँ</h2>
         <p className="mt-3 leading-7 text-muted-foreground">
-          हिंदी में कुछ भी पूछें — पढ़ाई, कोडिंग, लेखन, मोबाइल या PDF/इमेज टूल्स। बिना लॉगिन, बिल्कुल मुफ़्त।
+          कोडिंग, पढ़ाई, लिखाई, अनुवाद, करियर या रिसर्च — हिंदी या English में कुछ भी पूछें।
+          बिना लॉगिन, बिल्कुल मुफ़्त।
         </p>
       </div>
       <div className="mt-7 grid w-full max-w-xl gap-2 sm:grid-cols-2">
