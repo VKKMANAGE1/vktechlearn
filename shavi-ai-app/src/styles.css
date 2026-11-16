@@ -166,71 +166,13 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.42em;
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;
-  font-size: 1em;
   line-height: 1;
   letter-spacing: -0.015em;
   color: var(--foreground);
   white-space: nowrap;
   user-select: none;
-}
-
-.shavi-logo .logo-emblem {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 1.3em;
-  height: 1.3em;
-  flex: none;
-}
-
-.shavi-logo .logo-emblem::before {
-  content: "";
-  position: absolute;
-  inset: -22%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.42), rgba(123, 107, 255, 0.24) 45%, transparent 72%);
-  filter: blur(6px);
-  animation: shavi-breathe 5s ease-in-out infinite;
-}
-
-.shavi-logo .emblem-hex {
-  position: absolute;
-  inset: 0;
-  clip-path: polygon(50% 0%, 94% 25%, 94% 75%, 50% 100%, 6% 75%, 6% 25%);
-  background-image: linear-gradient(135deg, #00e5ff 0%, #7b6bff 45%, #ff2bd6 100%);
-  background-size: 200% 200%;
-  animation: shavi-edge 9s linear infinite;
-}
-
-.shavi-logo .emblem-hex::after {
-  content: "";
-  position: absolute;
-  inset: 1.6px;
-  clip-path: polygon(50% 0%, 94% 25%, 94% 75%, 50% 100%, 6% 75%, 6% 25%);
-  background: color-mix(in oklab, var(--background) 88%, black);
-}
-
-.shavi-logo .emblem-ring {
-  position: absolute;
-  inset: 11%;
-  clip-path: polygon(50% 0%, 94% 25%, 94% 75%, 50% 100%, 6% 75%, 6% 25%);
-  background: linear-gradient(160deg, rgba(0, 229, 255, 0.22), rgba(255, 43, 214, 0.16));
-  opacity: 0.9;
-}
-
-.shavi-logo .emblem-glyph {
-  position: relative;
-  font-size: 0.74em;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background-image: linear-gradient(140deg, #7ef1ff 0%, #c9bcff 50%, #ff8ee8 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.45));
 }
 
 .shavi-logo .logo-word {
@@ -277,9 +219,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shavi-logo .emblem-hex,
-  .shavi-logo .logo-accent,
-  .shavi-logo .logo-emblem::before {
+  .shavi-logo .logo-accent {
     animation: none !important;
   }
 }

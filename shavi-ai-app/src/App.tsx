@@ -322,7 +322,7 @@ export function App() {
       >
         <div className="flex h-16 items-center justify-between px-4">
           <button className="flex items-center" onClick={newChat} aria-label="ShâVì Ai होम">
-            <ShaviMark className="text-[1.2rem]" />
+            <ShaviMark className="text-[1.25rem]" />
           </button>
           <Button
             aria-label="साइडबार बंद करें"
@@ -443,7 +443,7 @@ export function App() {
                   ? "AI सेवा जुड़ी नहीं"
                   : aiState === "demo"
                     ? "डेमो मोड — key सेट नहीं"
-                    : <ShaviMark className="text-[0.74rem]" emblem={false} text="ShâVì Ai" />}
+                    : <ShaviMark className="text-[0.74rem]" text="ShâVì Ai" />}
               </p>
             </div>
           </div>
@@ -886,7 +886,7 @@ function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
   ];
   return (
     <ConversationEmptyState className="min-h-[58vh]">
-      <ShaviMark className="text-[2.15rem]" />
+      <ShaviMark className="text-[2.4rem]" />
       <div className="mt-5 max-w-lg">
         <h2 className="font-display text-2xl font-semibold sm:text-3xl">नमस्ते! मैं आपकी AI सहायक हूँ</h2>
         <p className="mt-3 leading-7 text-muted-foreground">
