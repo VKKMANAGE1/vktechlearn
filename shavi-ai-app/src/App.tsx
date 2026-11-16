@@ -655,7 +655,7 @@ function ChatView({
                 <MessageContent>
                   {message.parts.map((part, index) =>
                     part.type === "text" ? (
-                      <MessageResponse key={index}>
+                      <MessageResponse key={index} linkSafety={{ enabled: false }}>
                         {message.role === "assistant" ? linkify(part.text) : part.text}
                       </MessageResponse>
                     ) : part.type === "reasoning" ? (
