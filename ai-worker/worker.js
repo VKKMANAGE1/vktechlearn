@@ -37,7 +37,10 @@ const SYSTEM_PROMPT = `तुम "ShâVì Ai" हो — एक आम, पू�
 
 ## ईमानदारी और सुरक्षा
 - ताज़ा/बदलती जानकारी (खबर, कीमत, तारीख़, नया वर्ज़न) का पक्का पता न हो तो साफ़ कहो। लिंक, आँकड़े, API बनाकर मत बताओ।
-- अगर वेब सर्च का नतीजा दिया गया है, उसी के आधार पर जवाब दो और अंत में "स्रोत" में URLs लिखो।
+- अगर वेब सर्च के नतीजे दिए गए हैं, तो उन्हीं के आधार पर जवाब दो और हर तथ्य के आगे [1], [2] जैसा नंबर लगाओ।
+- जवाब के अंत में "**स्रोत**" शीर्षक के नीचे नंबर वार लिस्ट दो: [1] शीर्षक — लिंक — तारीख (जो नतीजे में दी हो)। लिंक हूबहू वही रखो, अपने से कोई URL मत बनाओ।
+- नतीजों में न मिली बात अपनी जानकारी से दे सकते हो, पर उसे साफ़ अलग रखो और बताओ कि यह सर्च से नहीं है।
+- अगर नतीजे कम या अधूरे हैं, साफ़ कहो कि पूरी पुष्टि नहीं हुई — अंदाज़ा मत लगाओ।
 - पासवर्ड, OTP, बैंक/कार्ड नंबर या किसी की निजी जानकारी माँगो मत।
 - मेडिकल/कानूनी/बड़े पैसे के फ़ैसलों में सामान्य जानकारी दो और विशेषज्ञ से मिलने को कहो।
 - धोखाधड़ी, हैकिंग, मैलवेयर या गैरकानूनी काम में मदद मत करो; सुरक्षित विकल्प बताओ।
@@ -97,6 +100,17 @@ function pickText(messages) {
     .slice(-MAX_TURNS);
 }
 
+const SEARCH_EMPTY = "वेब खोज अभी उपलब्ध नहीं है; अपनी जानकारी से जवाब दो और साफ़ बताओ कि ताज़ा जानकारी नहीं मिली।";
+
+function formatSources(results) {
+  const lines = results.slice(0, 6).map((item, index) => {
+    const date = item.publishedDate || item.published_date || "";
+    const snippet = (item.highlights || []).join(" ").replace(/\s+/g, " ").slice(0, 600) || item.text?.slice(0, 600) || "";
+    return `[${index + 1}] ${item.title || "(बिना शीर्षक)"}${date ? ` — ${String(date).slice(0, 10)}` : ""}\nURL: ${item.url || ""}\nसार: ${snippet}`;
+  });
+  return lines.join("\n\n") || "कोई उपयोगी नतीजा नहीं मिला।";
+}
+
 async function exaSearch(query, env) {
   const response = await fetch("https://api.exa.ai/search", {
     method: "POST",
@@ -104,17 +118,45 @@ async function exaSearch(query, env) {
     body: JSON.stringify({
       query: query.slice(0, 300),
       type: "auto",
-      numResults: 5,
-      contents: { highlights: { numSentences: 3, highlightsPerUrl: 1 } },
+      numResults: 6,
+      contents: { highlights: { numSentences: 3, highlightsPerUrl: 2 } },
     }),
   });
-  if (!response.ok) return "वेब खोज अभी उपलब्ध नहीं है; अपनी जानकारी से जवाब दो और साफ़ बताओ कि ताज़ा जानकारी नहीं मिली।";
+  if (!response.ok) return SEARCH_EMPTY;
   const data = await response.json();
-  const lines = (data.results || []).slice(0, 5).map((item) => {
-    const snippet = (item.highlights || []).join(" ").slice(0, 500);
-    return `- ${item.title || ""} (${item.url || ""}): ${snippet}`;
+  return formatSources(Array.isArray(data.results) ? data.results : []);
+}
+
+async function tavilySearch(query, env) {
+  const response = await fetch("https://api.tavily.com/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      api_key: env.TAVILY_API_KEY,
+      query: query.slice(0, 300),
+      max_results: 6,
+      search_depth: "advanced",
+      include_answer: false,
+    }),
   });
-  return lines.join("\n") || "कोई उपयोगी नतीजा नहीं मिला।";
+  if (!response.ok) return SEARCH_EMPTY;
+  const data = await response.json();
+  const results = (data.results || []).map((item) => ({
+    title: item.title,
+    url: item.url,
+    publishedDate: item.published_date,
+    text: item.content,
+  }));
+  return formatSources(results);
+}
+
+async function webSearch(query, env) {
+  if (env.EXA_API_KEY) {
+    const result = await webSearch(query, env);
+    if (result !== SEARCH_EMPTY) return result;
+  }
+  if (env.TAVILY_API_KEY) return tavilySearch(query, env);
+  return SEARCH_EMPTY;
 }
 
 export default {
@@ -129,7 +171,7 @@ export default {
 
     if (url.pathname === "/health") {
       return Response.json(
-        { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: Boolean(env.EXA_API_KEY) },
+        { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: Boolean(env.EXA_API_KEY || env.TAVILY_API_KEY) },
         { headers },
       );
     }
@@ -274,7 +316,7 @@ export default {
       ];
     }
 
-    if (env.EXA_API_KEY && !images.length) {
+    if ((env.EXA_API_KEY || env.TAVILY_API_KEY) && !images.length) {
       try {
         const probe = await fetch(`${base}/chat/completions`, {
           method: "POST",
@@ -301,7 +343,7 @@ export default {
               } catch {
                 /* keep the user message as the query */
               }
-              const result = await exaSearch(query, env);
+              const result = await webSearch(query, env);
               working.push({ role: "tool", tool_call_id: call.id || "search", name: "web_search", content: result });
             }
           }

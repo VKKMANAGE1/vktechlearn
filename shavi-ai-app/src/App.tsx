@@ -886,13 +886,9 @@ function Welcome({ onPick }: { onPick: (prompt: string) => void }) {
   ];
   return (
     <ConversationEmptyState className="min-h-[58vh]">
-      <div className="grid size-14 place-items-center rounded-md border border-primary/30 bg-accent text-primary">
-        <BrainCircuit className="size-7" />
-      </div>
-      <div className="mt-3 max-w-lg">
-        <h2 className="font-display text-3xl font-semibold">
-          नमस्ते, मैं <ShaviMark className="align-[-0.12em] text-[1.65rem]" /> हूँ
-        </h2>
+      <ShaviMark className="text-[2.15rem]" />
+      <div className="mt-5 max-w-lg">
+        <h2 className="font-display text-2xl font-semibold sm:text-3xl">नमस्ते! मैं आपकी AI सहायक हूँ</h2>
         <p className="mt-3 leading-7 text-muted-foreground">
           कोडिंग, पढ़ाई, लिखाई, अनुवाद, करियर या रिसर्च — हिंदी या English में कुछ भी पूछें।
           PDF, Word, Excel, PowerPoint, CSV, इमेज जोड़कर पूछें; जवाब PDF/Word/Excel/PPT में डाउनलोड करें।
