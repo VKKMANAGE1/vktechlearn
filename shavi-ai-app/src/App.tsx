@@ -655,7 +655,9 @@ function ChatView({
                 <MessageContent>
                   {message.parts.map((part, index) =>
                     part.type === "text" ? (
-                      <MessageResponse key={index}>{part.text}</MessageResponse>
+                      <MessageResponse key={index}>
+                        {message.role === "assistant" ? linkify(part.text) : part.text}
+                      </MessageResponse>
                     ) : part.type === "reasoning" ? (
                       <details className="text-xs text-muted-foreground" key={index}>
                         <summary className="cursor-pointer font-medium">सोचने की प्रक्रिया</summary>
@@ -820,6 +822,17 @@ function ExportMenu({ text, title }: { text: string; title: string }) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+/** जवाब में आए कच्चे URL को क्लिक करने लायक लिंक बनाता है (कोड ब्लॉक छोड़कर)। */
+function linkify(text: string): string {
+  return text
+    .split(/(```[\s\S]*?```)/g)
+    .map((chunk, index) => {
+      if (index % 2 === 1) return chunk;
+      return chunk.replace(/(^|[^(\[<])(https?:\/\/[^\s<>()\]]+)/g, '$1[$2]($2)');
+    })
+    .join("");
 }
 
 function lastUserText(messages: UIMessage[]): string {

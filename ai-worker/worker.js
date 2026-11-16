@@ -46,20 +46,6 @@ const SYSTEM_PROMPT = `तुम "ShâVì Ai" हो — एक आम, पू�
 - धोखाधड़ी, हैकिंग, मैलवेयर या गैरकानूनी काम में मदद मत करो; सुरक्षित विकल्प बताओ।
 - खुद को Google/OpenAI/NVIDIA का AI मत बताओ। तुम ShâVì Ai हो।`;
 
-const SEARCH_TOOL = {
-  type: "function",
-  function: {
-    name: "web_search",
-    description:
-      "Search the live web for fresh facts: news, prices, releases, schedules, sports, current events, or anything that may have changed recently.",
-    parameters: {
-      type: "object",
-      properties: { query: { type: "string", description: "Short, specific search query (2-8 words)." } },
-      required: ["query"],
-    },
-  },
-};
-
 const hits = new Map();
 
 function rateLimited(ip) {
@@ -99,6 +85,8 @@ function pickText(messages) {
     .filter((message) => message.content)
     .slice(-MAX_TURNS);
 }
+
+const NEWS_HINT = /(खबर|ख़बर|समाचार|न्यूज़|न्यूज|news|आज|ताज़ा|latest|today|अभी|breaking|update|अपडेट|कीमत|price|मौसम|weather|स्कोर|score|रिज़ल्ट|result|चुनाव|election|शेयर|stock|bitcoin|crypto|लॉन्च|launch|released|रिलीज़|हुआ|हुई|क्या चल रहा)/i;
 
 const SEARCH_EMPTY = "वेब खोज अभी उपलब्ध नहीं है; अपनी जानकारी से जवाब दो और साफ़ बताओ कि ताज़ा जानकारी नहीं मिली।";
 
@@ -150,13 +138,200 @@ async function tavilySearch(query, env) {
   return formatSources(results);
 }
 
-async function webSearch(query, env) {
-  if (env.EXA_API_KEY) {
-    const result = await webSearch(query, env);
-    if (result !== SEARCH_EMPTY) return result;
+function decodeEntities(text) {
+  return String(text)
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&");
+}
+
+function tagValue(block, name) {
+  const match = block.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)</${name}>`, "i"));
+  if (!match) return "";
+  return decodeEntities(match[1].replace(/^<!\[CDATA\[|\]\]>$/g, "").trim());
+}
+
+const NEWS_FEEDS = [
+  { name: "BBC हिंदी", url: "https://feeds.bbci.co.uk/hindi/rss.xml" },
+  { name: "NDTV", url: "https://feeds.feedburner.com/ndtvnews-top-stories" },
+  { name: "Indian Express Tech", url: "https://indianexpress.com/section/technology/feed/" },
+  { name: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
+  { name: "TechCrunch", url: "https://techcrunch.com/feed/" },
+  { name: "Gadgets 360", url: "https://feeds.feedburner.com/gadgets360-latest" },
+  { name: "अमर उजाला", url: "https://www.amarujala.com/rss/breaking-news.xml" },
+  { name: "BBC हिंदी खेल", url: "https://feeds.bbci.co.uk/hindi/sport/rss.xml" },
+  { name: "NDTV Sports", url: "https://feeds.feedburner.com/ndtvsports-latest" },
+];
+
+function parseFeed(xml, fallbackName) {
+  const blocks = [...xml.matchAll(/<item[^>]*>([\s\S]*?)<\/item>/g)].map((match) => match[1]);
+  const entries = blocks.length
+    ? blocks
+    : [...xml.matchAll(/<entry[^>]*>([\s\S]*?)<\/entry>/g)].map((match) => match[1]);
+  return entries.slice(0, 12).map((block) => {
+    const published = tagValue(block, "pubDate") || tagValue(block, "published") || tagValue(block, "updated");
+    const stamp = published ? new Date(published) : null;
+    const linkTag = block.match(/<link[^>]*href="([^"]+)"[^>]*\/?>/i)?.[1] || tagValue(block, "link");
+    return {
+      title: tagValue(block, "title"),
+      url: linkTag,
+      source: fallbackName,
+      date: stamp && !Number.isNaN(stamp.valueOf()) ? stamp.toISOString().slice(0, 10) : "",
+    };
+  });
+}
+
+const TOPIC_FEEDS = {
+  tech: ["Indian Express Tech", "The Verge", "TechCrunch", "Gadgets 360"],
+  टेक: ["Indian Express Tech", "The Verge", "TechCrunch", "Gadgets 360", "BBC हिंदी"],
+  cricket: ["BBC हिंदी खेल", "NDTV Sports", "BBC हिंदी"],
+  क्रिकेट: ["BBC हिंदी खेल", "NDTV Sports", "BBC हिंदी"],
+  खेल: ["BBC हिंदी खेल", "NDTV Sports"],
+  sports: ["BBC हिंदी खेल", "NDTV Sports"],
+};
+
+function feedsFor(query) {
+  const lower = query.toLowerCase();
+  for (const key of Object.keys(TOPIC_FEEDS)) {
+    if (lower.includes(key)) {
+      const names = TOPIC_FEEDS[key];
+      const picked = NEWS_FEEDS.filter((feed) => names.includes(feed.name));
+      if (picked.length) return picked;
+    }
   }
-  if (env.TAVILY_API_KEY) return tavilySearch(query, env);
-  return SEARCH_EMPTY;
+  return NEWS_FEEDS;
+}
+
+async function feedNews(feeds = NEWS_FEEDS) {
+  const settled = await Promise.allSettled(
+    feeds.map(async (feed) => {
+      const response = await fetch(feed.url, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; ShaviAI/1.0)", Accept: "application/rss+xml, application/xml" },
+      });
+      if (!response.ok) return [];
+      return parseFeed(await response.text(), feed.name);
+    }),
+  );
+  return settled.flatMap((result) => (result.status === "fulfilled" ? result.value : []));
+}
+
+/** GDELT ka public news API — topic ke hisaab se taaza articles. */
+async function gdeltNews(query) {
+  const hindi = /[\u0900-\u097F]/.test(query);
+  const lang = hindi ? "sourcelang:hindi" : "sourcelang:english";
+  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(`${query.slice(0, 110)} ${lang}`)}&mode=artlist&format=json&maxrecords=8&timespan=2d&sort=datedesc`;
+  const read = async () => {
+    const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; ShaviAI/1.0)" } });
+    if (!response.ok) return [];
+    const text = await response.text();
+    if (!text.trim().startsWith("{")) return [];
+    try {
+      const data = JSON.parse(text);
+      return (data.articles || []).slice(0, 8).map((item) => {
+        const raw = item.seendate || "";
+        const stamp = raw ? new Date(raw.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/, "$1-$2-$3T$4:$5:$6Z")) : null;
+        return {
+          title: (item.title || "").trim(),
+          url: item.url || "",
+          source: item.domain || (hindi ? "GDELT हिंदी" : "GDELT"),
+          date: stamp && !Number.isNaN(stamp.valueOf()) ? stamp.toISOString().slice(0, 10) : "",
+        };
+      });
+    } catch {
+      return [];
+    }
+  };
+  return read();
+}
+
+const STOP_WORDS = new Set(["आज", "की", "के", "का", "क्या", "है", "हैं", "और", "में", "से", "को", "par", "the", "and", "for", "with", "news", "latest", "today", "khabar", "खबरें", "खबर", "बताओ", "बड़ी", "3", "तीन"]);
+
+const SYNONYMS = {
+  tech: ["tech", "technology", "टेक", "गैजेट", "मोबाइल", "स्मार्टफोन", "iphone", "android", "एआई", "ai", "चिप"],
+  टेक: ["टेक", "technology", "tech", "गैजेट", "मोबाइल", "स्मार्टफोन", "ai", "चिप"],
+  cricket: ["cricket", "क्रिकेट", "ipl", "आईपीएल", "विराट", "रोहित", "बल्ले", "विकेट", "test match"],
+  क्रिकेट: ["क्रिकेट", "cricket", "ipl", "आईपीएल", "विराट", "रोहित", "विकेट"],
+  ai: ["ai", "एआई", "artificial intelligence", "chatgpt", "openai", "gemini", "मशीन लर्निंग"],
+  share: ["share", "शेयर", "stock", "market", "nifty", "sensex", "बाज़ार"],
+  शेयर: ["शेयर", "share", "stock", "nifty", "sensex", "बाज़ार"],
+};
+
+function keywordsOf(query) {
+  const words = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((word) => word.length > 2 && !STOP_WORDS.has(word));
+  const expanded = new Set(words);
+  for (const word of words) {
+    for (const extra of SYNONYMS[word] || []) expanded.add(extra.toLowerCase());
+  }
+  return [...expanded];
+}
+
+async function newsSearch(query) {
+  const items = [];
+  try {
+    items.push(...(await gdeltNews(query)));
+  } catch {
+    /* gdelt skip */
+  }
+  try {
+    const words = keywordsOf(query);
+    const chosen = feedsFor(query);
+    const topicalNames = new Set(chosen === NEWS_FEEDS ? [] : chosen.map((feed) => feed.name));
+    const feeds = await feedNews(chosen).then((all) =>
+      all.map((item) => ({
+        ...item,
+        _score:
+          (topicalNames.has(item.source) ? 1 : 0) +
+          words.reduce((sum, word) => (item.title.toLowerCase().includes(word) ? sum + 1 : sum), 0),
+      })),
+    );
+    items.push(...feeds);
+  } catch {
+    /* feed skip */
+  }
+
+  const seen = new Set();
+  return items
+    .filter((item) => {
+      if (!item.title || !item.url) return false;
+      const key = item.title.toLowerCase().slice(0, 60);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => ((b._score || 0) - (a._score || 0)) || (b.date || "").localeCompare(a.date || ""))
+    .slice(0, 6)
+    .map(({ _score, ...item }) => item);
+}
+
+function formatNews(items) {
+  return items
+    .map((item, index) => `[${index + 1}] ${item.title}\nURL: ${item.url}\nस्रोत: ${item.source}${item.date ? ` · ${item.date}` : ""}`)
+    .join("\n\n");
+}
+
+async function webSearch(query, env) {
+  const sections = [];
+  try {
+    const news = await newsSearch(query);
+    if (news.length) sections.push(`ताज़ा खबरें (Google News — आज की):\n\n${formatNews(news)}`);
+  } catch {
+    /* news skip */
+  }
+  if (env.EXA_API_KEY) {
+    const result = await exaSearch(query, env);
+    if (result !== SEARCH_EMPTY) sections.push(`वेब नतीजे:\n\n${result}`);
+  } else if (env.TAVILY_API_KEY) {
+    const result = await tavilySearch(query, env);
+    if (result !== SEARCH_EMPTY) sections.push(`वेब नतीजे:\n\n${result}`);
+  }
+  return sections.join("\n\n") || SEARCH_EMPTY;
 }
 
 export default {
@@ -171,9 +346,23 @@ export default {
 
     if (url.pathname === "/health") {
       return Response.json(
-        { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: Boolean(env.EXA_API_KEY || env.TAVILY_API_KEY) },
+        { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: true, news: "gdelt+rss", exa: Boolean(env.EXA_API_KEY), tavily: Boolean(env.TAVILY_API_KEY) },
         { headers },
       );
+    }
+
+    if (url.pathname === "/api/news") {
+      const query = url.searchParams.get("q") || "technology";
+      try {
+        const [gdelt, feeds, items] = await Promise.all([
+          gdeltNews(query).then((value) => value.length).catch((error) => String(error).slice(0, 80)),
+          feedNews().then((value) => value.length).catch((error) => String(error).slice(0, 80)),
+          newsSearch(query),
+        ]);
+        return Response.json({ query, count: items.length, gdelt, feeds, items }, { headers });
+      } catch (error) {
+        return Response.json({ query, error: String(error).slice(0, 200) }, { status: 502, headers });
+      }
     }
 
     if (url.pathname === "/api/ocr") {
@@ -316,40 +505,17 @@ export default {
       ];
     }
 
-    if ((env.EXA_API_KEY || env.TAVILY_API_KEY) && !images.length) {
-      try {
-        const probe = await fetch(`${base}/chat/completions`, {
-          method: "POST",
-          headers: auth,
-          body: JSON.stringify({
-            model,
-            messages: working,
-            tools: [SEARCH_TOOL],
-            tool_choice: "auto",
-            temperature: 0.2,
-            max_tokens: 200,
-          }),
-        });
-        if (probe.ok) {
-          const plan = await probe.json();
-          const message = plan.choices?.[0]?.message;
-          const calls = message?.tool_calls || [];
-          if (calls.length) {
-            working = [...working, message];
-            for (const call of calls.slice(0, 2)) {
-              let query = messages[messages.length - 1].content;
-              try {
-                query = JSON.parse(call.function?.arguments || "{}").query || query;
-              } catch {
-                /* keep the user message as the query */
-              }
-              const result = await webSearch(query, env);
-              working.push({ role: "tool", tool_call_id: call.id || "search", name: "web_search", content: result });
-            }
-          }
-        }
-      } catch {
-        /* search is optional — answer without it */
+    const latestQuestion = messages[messages.length - 1].content;
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (!images.length && NEWS_HINT.test(latestQuestion)) {
+      const direct = await webSearch(latestQuestion, env).catch(() => SEARCH_EMPTY);
+      if (direct !== SEARCH_EMPTY) {
+        const lastIndex = working.length - 1;
+        working[lastIndex] = {
+          role: "user",
+          content: `${latestQuestion}\n\n---\nआज की तारीख: ${today}\nये अभी लिए गए लाइव सर्च नतीजे हैं (इन्हीं के आधार पर जवाब दो। हर खबर के नीचे उसका असली लिंक दो। अंत में "स्रोत" में हर लाइन ऐसे लिखो: [1] [शीर्षक](पूरा लिंक) — तारीख):\n\n${direct}`,
+        };
       }
     }
 
