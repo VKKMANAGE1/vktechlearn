@@ -41,6 +41,7 @@ const SYSTEM_PROMPT = `तुम "ShâVì Ai" हो — एक आम, पू�
 - जवाब के अंत में "**स्रोत**" शीर्षक के नीचे नंबर वार लिस्ट दो: [1] शीर्षक — लिंक — तारीख (जो नतीजे में दी हो)। लिंक हूबहू वही रखो, अपने से कोई URL मत बनाओ।
 - नतीजों में न मिली बात अपनी जानकारी से दे सकते हो, पर उसे साफ़ अलग रखो और बताओ कि यह सर्च से नहीं है।
 - अगर नतीजे कम या अधूरे हैं, साफ़ कहो कि पूरी पुष्टि नहीं हुई — अंदाज़ा मत लगाओ।
+- जब तक नीचे सर्च नतीजे दिए न हों, यह मत कहो कि तुमने वेब सर्च किया, नतीजे देखे या कोई फ़ीड पढ़ी — ऐसा दावा झूठा होगा।
 - पासवर्ड, OTP, बैंक/कार्ड नंबर या किसी की निजी जानकारी माँगो मत।
 - मेडिकल/कानूनी/बड़े पैसे के फ़ैसलों में सामान्य जानकारी दो और विशेषज्ञ से मिलने को कहो।
 - धोखाधड़ी, हैकिंग, मैलवेयर या गैरकानूनी काम में मदद मत करो; सुरक्षित विकल्प बताओ।
@@ -86,7 +87,7 @@ function pickText(messages) {
     .slice(-MAX_TURNS);
 }
 
-const NEWS_HINT = /(खबर|ख़बर|समाचार|न्यूज़|न्यूज|news|आज|ताज़ा|latest|today|अभी|breaking|update|अपडेट|कीमत|price|मौसम|weather|स्कोर|score|रिज़ल्ट|result|चुनाव|election|शेयर|stock|bitcoin|crypto|लॉन्च|launch|released|रिलीज़|हुआ|हुई|क्या चल रहा)/i;
+const NEWS_HINT = /(खबर|ख़बर|समाचार|न्यूज़|न्यूज|news|ताज़ा|latest|breaking|headline|अपडेट|कीमत|price|मौसम|weather|स्कोर|score|रिज़ल्ट|result|चुनाव|election|शेयर|stock|nifty|sensex|bitcoin|crypto|क्या हुआ|आज क्या|what happened)/i;
 
 const SEARCH_EMPTY = "वेब खोज अभी उपलब्ध नहीं है; अपनी जानकारी से जवाब दो और साफ़ बताओ कि ताज़ा जानकारी नहीं मिली।";
 
@@ -320,7 +321,14 @@ async function webSearch(query, env) {
   const sections = [];
   try {
     const news = await newsSearch(query);
-    if (news.length) sections.push(`ताज़ा खबरें (Google News — आज की):\n\n${formatNews(news)}`);
+    if (news.length) {
+      const words = keywordsOf(query);
+      const matched = words.some((word) => news.some((item) => item.title.toLowerCase().includes(word)));
+      const note = words.length && !matched
+        ? "ध्यान दो: इन फ़ीड्स में इस सवाल से सीधा जुड़ा कोई नतीजा नहीं मिला — जो नीचे है वह आज की सामान्य खबरें हैं, इन्हें इस सवाल का जवाब मत बनाओ। साफ़ बताओ कि इस विषय की पक्की लाइव जानकारी नहीं मिली।\n\n"
+        : "";
+      sections.push(`${note}ताज़ा खबरें (सार्वजनिक न्यूज़ फ़ीड्स — आज की):\n\n${formatNews(news)}`);
+    }
   } catch {
     /* news skip */
   }
