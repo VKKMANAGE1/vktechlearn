@@ -1,7 +1,7 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M03 — SHAVI AI Branding (verified in browser)
-**Date:** 2026-11-16
+**Milestone:** M04 — AI API Integration (implemented; live replies blocked on provider keys)
+**Date:** 2026-11-17
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
 
@@ -114,6 +114,64 @@ third-party tree stays reproducible and this repo only carries our own files.
 **Known gaps:** the UI chrome strings are LibreChat's English i18n (Hindi is selectable in Settings → Language);
 `customFooter` is only exposed via env and not by `/api/config` for anonymous callers (UI shows it after login);
 favicon override is partially masked by LibreChat's inline icon.
+
+
+## 1d. M04 — AI API integration (DeepSeek, OpenAI, Gemini)
+
+**Model registry lives in `librechat/librechat.yaml` (+ `librechat-deploy/librechat.yaml`), keys live only in
+the environment.** Model IDs were taken from the providers' own documentation on 2026-11-17, not guessed:
+
+| Provider | Endpoint in LibreChat | Base URL | Model IDs used | Source |
+| --- | --- | --- | --- | --- |
+| NVIDIA NIM (house model) | custom `SHAVI AI` | `https://integrate.api.nvidia.com/v1` | `nvidia/nemotron-3-ultra-550b-a55b` | existing M02 config |
+| DeepSeek | custom `DeepSeek` | `https://api.deepseek.com` | `deepseek-flash`, `deepseek-v4-pro` | api-docs.deepseek.com/quick_start/models |
+| OpenAI | built-in `openAI` | `https://api.openai.com/v1` | `gpt-6.1-sol`, `gpt-6-luna`, `gpt-6-astra` | developers.openai.com/api/docs/models |
+| Google Gemini | built-in `google` | `https://generativelanguage.googleapis.com` | `gemini-4-argon`, `gemini-3.8-flash` | ai.google.dev/gemini-api/docs/models |
+
+`modelSpecs.enforce: true` + 7 specs (one per model) drive the selector; the registry is the single source of
+truth for which provider/model a user can pick, and each spec carries label, capability description and icon.
+
+| Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| DeepSeek official API | `librechat.yaml` custom endpoint `DeepSeek`, `baseURL https://api.deepseek.com`, `apiKey ${DEEPSEEK_API_KEY}` | Dummy key → `401 Authentication Fails, Your api key: ****-key is invalid (request_id …)` from DeepSeek itself; message persisted with `endpoint: DeepSeek, model: deepseek-flash` | Selector shows "DeepSeek V4.1 Flash" / "DeepSeek V4 Pro"; selecting routes request with `endpoint: DeepSeek` | **PASS (wiring + error path)** | No valid `DEEPSEEK_API_KEY` → no successful completion yet (see blocker) |
+| OpenAI official API | `librechat.yaml` built-in `openAI` (+ `titleModel gpt-6-luna`) | Dummy key → `401 Incorrect API key provided … platform.openai.com/account/api-keys`; message persisted with `endpoint: openAI, model: gpt-6.1-sol` | Specs "OpenAI GPT-6.1 Sol" / "GPT-6 Luna" listed with OpenAI icon | **PASS (wiring + error path)** | No valid `OPENAI_API_KEY` → no successful completion yet |
+| Gemini official API | `librechat.yaml` built-in `google` | Dummy key → `400 API key not valid. Please pass a valid API key.` from `generativelanguage.googleapis.com`; message persisted with `endpoint: google, model: gemini-3.8-flash` | Specs "Google Gemini 4 Argon" / "3.8 Flash" with Google icon | **PASS (wiring + error path)** | No valid `GOOGLE_KEY` → no successful completion yet |
+| Model registry | `modelSpecs.list` (7 specs), `/api/models` | `GET /api/models` → `openAI: 33`, `google: 15`, `SHAVI AI: 1`, `DeepSeek: 2`; `GET /api/config` → 7 spec names | Selector lists exactly 7 specs; all 7 icons load (`img.complete && naturalWidth>0`) | PASS | LibreChat hides endpoints without a key, so an unconfigured provider's spec is listed but cannot route (see gap 1) |
+| Streaming | LibreChat agents stream (`/api/agents/chat` → generation job) | `POST /api/agents/chat` → `{streamId, conversationId, generationProtocolVersion: 1}`; after completion `GET /api/messages/<id>` → assistant text `M04-STREAM-OK` | UI renders the reply progressively (verified in M03 browser run) | PASS | SSE body is a job handle in this version; token-by-token capture not measured over the wire |
+| Error handling | LibreChat provider error passthrough, surfaced in-message | No key → `Missing API Key for DeepSeek`; invalid key → provider's own 401/400 text; endpoint/spec mismatch → `Model spec mismatch` (no silent fallback to another provider) | Error text rendered inside the chat bubble, request terminates (no hang, 0:00 timer) | PASS | Provider errors are raw JSON strings for Gemini (LibreChat formats them verbatim) |
+| API key security | `tools/start-librechat.sh` loads keys from untracked files into the process env; `.gitignore` covers `ai-key.txt`, `openai-key.txt`, `deepseek-key.txt`, `gemini-key.txt`; `.env.example` has placeholders only | `grep -r nvapi client/dist` → no match; `grep -r nvapi librechat.yaml librechat-deploy/*` → no match; launcher prints only key lengths | Keys are never sent to the browser (`/api/config` contains no key fields) | PASS | Keys must be pasted into local files/secret store; nothing is stored in Mongo |
+| Model switching | Selector → `onSelectSpec` → `newConversation` with preset (`endpoint` + `model`) | DeepSeek run: payload `{endpoint: "DeepSeek", endpointType: "custom", model: "deepseek-flash", spec: "deepseek-flash"}`; Gemini run (dummy key): payload `{endpoint: "google", model: "gemini-3.8-flash"}` and Gemini's own 400 came back | Header label updates to the chosen spec; switching back to "SHAVI AI — Nemotron Ultra" keeps working (reply `M04-STREAM-OK`) | **PASS with keys present, FAIL without** | See gap 1: with no key at all for a provider, LibreChat drops that endpoint from the client config, the switch silently keeps the old endpoint, and the server rejects it as `Model spec mismatch` |
+| Database integration | Mongo `messages`/`conversations` (LibreChat models) | Mongo query grouped by `endpoint`/`model`: `SHAVI AI/nvidia/nemotron-3-ultra-550b-a55b`, `DeepSeek/deepseek-flash`, `openAI/gpt-6.1-sol`, `google/gemini-3.8-flash` all stored; survives backend restart | Each switched model's message renders with its spec label | PASS | Error rows store the provider error object, not a normalised code |
+
+**Gaps / blockers (honest state of M04)**
+
+1. **No valid provider keys in this workspace.** `ai-key.txt` is the only real key (NVIDIA). `openai-key.txt`,
+   `deepseek-key.txt`, `gemini-key.txt` exist as placeholders (`PASTE_YOUR_KEY_HERE`). Consequences:
+   - real completions from OpenAI/DeepSeek/Gemini are **not** verified — only that requests reach the official
+     endpoints and their auth errors come back;
+   - LibreChat omits keyless endpoints from the client config, so picking an unconfigured provider's spec ends in
+     `Model spec mismatch` instead of a "provider not configured" message. This is expected LibreChat behaviour,
+     but the UX is poor. Fixing it properly needs either the keys (endpoint becomes selectable) or a UI patch to
+     hide unconfigured specs; I did not patch the vendored client for this.
+2. Streaming granularity was verified through persisted message content and UI rendering, not by counting
+   provider deltas on the wire.
+3. `titleModel` for OpenAI is `gpt-6-luna`; with a valid key the conversation-title job will consume a small
+   amount of quota. Gemini titles use the first available model (no explicit `titleModel`, because the model
+   list is provider-driven in this LibreChat version).
+4. Anthropic/azure/bedrock/assistants endpoints remain visible in `/api/models` (LibreChat defaults) but are not
+   offered in the selector, since `modelSpecs.enforce` is on.
+
+**How to unblock (user action, ~2 minutes)**
+
+```bash
+cd <repo>
+printf '%s' 'sk-...'  > openai-key.txt      # OpenAI platform key
+printf '%s' 'sk-...'  > deepseek-key.txt    # DeepSeek platform key
+printf '%s' 'AIza...' > gemini-key.txt      # Google AI Studio key
+tools/start-librechat.sh --bg               # prints which keys are set (lengths only)
+```
+
+No restart of Mongo is needed; keys are read at process start and never written to disk by the app.
 
 ## 2. Requirement audit (evidence-based)
 

@@ -15,3 +15,8 @@ tools/librechat-dev/node_modules/
 tools/librechat-dev/mongo-data/
 tools/librechat-dev/mongo-uri.txt
 tools/librechat-dev/*.log
+
+# provider keys (local, never commit)
+openai-key.txt
+deepseek-key.txt
+gemini-key.txt

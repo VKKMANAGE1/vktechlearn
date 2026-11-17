@@ -1,4 +1,4 @@
-# SHAVI AI — LibreChat configuration (M02 foundation)
+# SHAVI AI — LibreChat configuration
 # Server-side only. Never contains API keys: they are read from env vars.
 version: 1.3.19
 cache: true
@@ -18,7 +18,19 @@ registration:
   socialLogins: []
 
 endpoints:
+  # ---------- Official provider endpoints (keys come from env) ----------
+  openAI:
+    titleConvo: true
+    titleModel: "gpt-6-luna"
+    modelDisplayLabel: "OpenAI"
+    dropParams: ["user"]
+
+  google:
+    titleConvo: true
+    modelDisplayLabel: "Google Gemini"
+
   custom:
+    # NVIDIA NIM (SHAVI AI house model)
     - name: "SHAVI AI"
       apiKey: "${SHAVI_AI_KEY}"
       baseURL: "https://integrate.api.nvidia.com/v1"
@@ -30,16 +42,76 @@ endpoints:
       modelDisplayLabel: "SHAVI AI"
       dropParams: ["user"]
 
-# Only SHAVI AI is offered; LibreChat's other built-in endpoints need keys we do not have.
+    # DeepSeek — OpenAI-compatible official API
+    - name: "DeepSeek"
+      apiKey: "${DEEPSEEK_API_KEY}"
+      baseURL: "https://api.deepseek.com"
+      models:
+        default: ["deepseek-flash", "deepseek-v4-pro"]
+        fetch: false
+      titleConvo: true
+      titleModel: "deepseek-flash"
+      modelDisplayLabel: "DeepSeek"
+      dropParams: ["user"]
+
+# ---------- Model registry: what the selector offers ----------
 modelSpecs:
   enforce: true
   prioritize: true
   list:
-    - name: "shavi-default"
+    - name: "shavi-nemotron"
       label: "SHAVI AI — Nemotron Ultra"
+      description: "NVIDIA Nemotron 3 Ultra 550B · 128K context · reasoning + text"
       iconURL: "/assets/shavi-mark.svg"
-      description: "NVIDIA Nemotron 3 Ultra 550B via the SHAVI AI endpoint"
       default: true
       preset:
         endpoint: "SHAVI AI"
         model: "nvidia/nemotron-3-ultra-550b-a55b"
+
+    - name: "deepseek-flash"
+      label: "DeepSeek V4.1 Flash"
+      description: "DeepSeek · 1M context · vision + thinking · tool calls"
+      iconURL: "/assets/deepseek.svg"
+      preset:
+        endpoint: "DeepSeek"
+        model: "deepseek-flash"
+
+    - name: "deepseek-v4-pro"
+      label: "DeepSeek V4 Pro"
+      description: "DeepSeek · 1M context · thinking · no vision"
+      iconURL: "/assets/deepseek.svg"
+      preset:
+        endpoint: "DeepSeek"
+        model: "deepseek-v4-pro"
+
+    - name: "gpt-6.1-sol"
+      label: "OpenAI GPT-6.1 Sol"
+      description: "OpenAI · 1.05M context · vision + reasoning"
+      iconURL: "/assets/openai.svg"
+      preset:
+        endpoint: "openAI"
+        model: "gpt-6.1-sol"
+
+    - name: "gpt-6-luna"
+      label: "OpenAI GPT-6 Luna"
+      description: "OpenAI · 1.05M context · cheapest GPT-6 tier"
+      iconURL: "/assets/openai.svg"
+      preset:
+        endpoint: "openAI"
+        model: "gpt-6-luna"
+
+    - name: "gemini-4-argon"
+      label: "Google Gemini 4 Argon"
+      description: "Google · 1M context · multimodal reasoning"
+      iconURL: "/assets/google.svg"
+      preset:
+        endpoint: "google"
+        model: "gemini-4-argon"
+
+    - name: "gemini-3.8-flash"
+      label: "Google Gemini 3.8 Flash"
+      description: "Google · fast, low-cost multimodal"
+      iconURL: "/assets/google.svg"
+      preset:
+        endpoint: "google"
+        model: "gemini-3.8-flash"
