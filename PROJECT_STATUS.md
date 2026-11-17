@@ -1,6 +1,6 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M01 — Audit & Architecture (audit only, no feature work)
+**Milestone:** M02 — LibreChat Foundation & Installation (verified running)
 **Date:** 2026-11-16
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -29,6 +29,64 @@
 replacing the working stack — that requires explicit approval (see §6, decision needed).
 
 ---
+
+## 1b. M02 — LibreChat foundation (implemented this milestone)
+
+**Architecture chosen:** B (LibreChat), per your instruction to set up the LibreChat foundation.
+
+| Item | Value |
+| --- | --- |
+| LibreChat version | `v0.8.9` (latest stable tag at setup time), shallow clone into `librechat/` (gitignored) |
+| Runtime | Node `v26.13.0` (LibreChat ships no `engines` pin; works, but Node 20–22 is the supported range) |
+| Package manager | `npm ci` against LibreChat's `package-lock.json` (2.3 GB `node_modules`, 5 workspace packages built) |
+| Database | Real `mongod 8.0.20` (started via `mongodb-memory-server`, persistent `dbPath`) on `127.0.0.1:27017` |
+| Backend | `npm run backend` → `api/server/index.js`, listening `0.0.0.0:3080` |
+| Frontend | LibreChat client built (`client/dist`) and served by the same backend |
+| AI endpoint | `librechat.yaml` → custom endpoint `SHAVI AI`, `baseURL https://integrate.api.nvidia.com/v1`, key from `SHAVI_AI_KEY` env (never stored in files/commits) |
+| Model specs | `modelSpecs.enforce: true` with one spec `shavi-default` → Nemotron Ultra 550B |
+| Branding | `APP_TITLE=SHAVI AI` (page title, UI header) |
+
+**Evidence (all run in this VM, no Docker):**
+
+```
+GET  /health                     200 OK
+GET  /api/config                 appTitle "SHAVI AI", registrationEnabled true
+POST /api/auth/register          200 (creates user; first user role ADMIN)
+POST /api/auth/login             200 (JWT issued)
+GET  /api/user                   role ADMIN, emailVerified true
+GET  /api/models                 200, includes "SHAVI AI": ["nvidia/nemotron-3-ultra-550b-a55b"]
+POST /api/agents/chat            200 → {streamId, conversationId, responseMessageId, status:"started"}
+GET  /api/convos                 2 conversations persisted
+GET  /api/messages/<convId>      assistant message content: [{type:think,...},{type:"text",text:"SHAVI-OK"}]
+restart backend → /api/convos    still 2 conversations (data survived)
+Browser (preview host)           login → new chat → typed "Reply with exactly: UI-OK"
+                                 → /c/<uuid>, reply "UI-OK" with "Thoughts", sidebar updated
+```
+
+**Files added**
+
+- `tools/setup-librechat.sh` — reproducible clone (pinned tag) + `npm ci` + packages + client build + mongo helper
+- `tools/librechat-dev/mongod-server.mjs` — real mongod on 127.0.0.1:27017 with persistent `mongo-data/`
+- `tools/librechat-dev/proxy3000.mjs` — exposes the app on this chat's reserved preview port
+- `librechat-deploy/docker-compose.yml` — api + mongodb + meilisearch + rag_api + pgvector
+- `librechat-deploy/.env.example` — every required variable, no secrets
+- `librechat-deploy/librechat.yaml` — the same config that was verified locally
+- `.gitignore` — `librechat/`, local mongo data, tool `node_modules`
+
+**Blockers / deviations**
+
+1. **Docker cannot run here**: `/var/run/docker.sock` is root-only and sudo is disabled in this container,
+   so `docker compose up` is impossible in the Freebuff VM. The compose file is delivered for your host;
+   the identical stack was verified natively (real mongod + real API + real browser session).
+2. **No SMTP**: registration returns "check your email"; accounts are verified with
+   `librechat/scripts-shavi/verify-email.mjs` (local-only script).
+3. **RAG API not running locally** (needs the `rag_api`+pgvector containers): LibreChat logs
+   "RAG API is not reachable", so file uploads/document Q&A are **not** verified in this milestone.
+4. **Meilisearch not running locally**: conversation search falls back to Mongo; not verified.
+5. LibreChat's built-in endpoint model lists (OpenAI/Google/…) still appear in `/api/models`, but the UI
+   selector only offers the enforced `SHAVI AI — Nemotron Ultra` spec.
+6. LibreChat is **gitignored**, not vendored: the repo stays a static site + Workers project; the pinned
+   version is reproducible through `tools/setup-librechat.sh`.
 
 ## 2. Requirement audit (evidence-based)
 

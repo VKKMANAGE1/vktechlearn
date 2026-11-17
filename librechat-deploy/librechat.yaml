@@ -1,0 +1,41 @@
+# SHAVI AI — LibreChat configuration (M02 foundation)
+# Server-side only. Never contains API keys: they are read from env vars.
+version: 1.3.19
+cache: true
+
+interface:
+  privacyPolicy:
+    externalUrl: "https://vktechlearn.site/privacy-policy.html"
+    openNewTab: true
+  termsOfService:
+    externalUrl: "https://vktechlearn.site/terms-conditions.html"
+    openNewTab: true
+
+registration:
+  socialLogins: []
+
+endpoints:
+  custom:
+    - name: "SHAVI AI"
+      apiKey: "${SHAVI_AI_KEY}"
+      baseURL: "https://integrate.api.nvidia.com/v1"
+      models:
+        default: ["nvidia/nemotron-3-ultra-550b-a55b"]
+        fetch: false
+      titleConvo: true
+      titleModel: "nvidia/nemotron-3-ultra-550b-a55b"
+      modelDisplayLabel: "SHAVI AI"
+      dropParams: ["user"]
+
+# Only SHAVI AI is offered; LibreChat's other built-in endpoints need keys we do not have.
+modelSpecs:
+  enforce: true
+  prioritize: true
+  list:
+    - name: "shavi-default"
+      label: "SHAVI AI — Nemotron Ultra"
+      description: "NVIDIA Nemotron 3 Ultra 550B via the SHAVI AI endpoint"
+      default: true
+      preset:
+        endpoint: "SHAVI AI"
+        model: "nvidia/nemotron-3-ultra-550b-a55b"

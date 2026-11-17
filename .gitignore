@@ -8,3 +8,9 @@ __pycache__/
 # local secrets — never commit these
 ai-key.txt
 exa-key.txt
+
+# LibreChat foundation (cloned locally, not vendored into this repo)
+librechat/
+tools/librechat-dev/node_modules/
+tools/librechat-dev/mongo-data/
+tools/librechat-dev/mongo-uri.txt

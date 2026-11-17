@@ -1,0 +1,1 @@
+{"name":"librechat-dev-tools","private":true,"type":"module","dependencies":{"mongodb-memory-server":"^11.3.0"}}
