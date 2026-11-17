@@ -4,6 +4,9 @@ version: 1.3.19
 cache: true
 
 interface:
+  customWelcome: "SHAVI AI — कोडिंग, पढ़ाई, लिखाई और रिसर्च के लिए आपका AI साथी। कुछ भी पूछें, हिंदी या English में।"
+  landingFooter: true
+  modelSelect: true
   privacyPolicy:
     externalUrl: "https://vktechlearn.site/privacy-policy.html"
     openNewTab: true
@@ -34,6 +37,7 @@ modelSpecs:
   list:
     - name: "shavi-default"
       label: "SHAVI AI — Nemotron Ultra"
+      iconURL: "/assets/shavi-mark.svg"
       description: "NVIDIA Nemotron 3 Ultra 550B via the SHAVI AI endpoint"
       default: true
       preset:

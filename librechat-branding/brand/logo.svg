@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" role="img" aria-label="SHAVI AI">
+  <defs>
+    <linearGradient id="shaviAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="55%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#a78bfa" />
+    </linearGradient>
+  </defs>
+  <text x="12" y="86" font-family="Sora, Inter, 'Segoe UI', system-ui, sans-serif" font-size="62" font-weight="700" fill="#e6f2ff" letter-spacing="1">ShâVì</text>
+  <text x="232" y="86" font-family="Sora, Inter, 'Segoe UI', system-ui, sans-serif" font-size="62" font-weight="700" fill="url(#shaviAccent)" letter-spacing="1">Ai</text>
+  <text x="14" y="118" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="19" font-weight="500" fill="#8aa4c0" letter-spacing="3.6">SHAVI AI</text>
+</svg>
