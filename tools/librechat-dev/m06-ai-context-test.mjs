@@ -155,9 +155,11 @@ const waitForReply = async (token, conversationId, timeoutMs = 150000) => {
 
 const main = async () => {
   const token = await login();
+  const onlyArg = process.argv.indexOf('--only');
+  const ONLY = onlyArg > -1 ? process.argv[onlyArg + 1] : null;
   const names = fs
     .readdirSync(DIR)
-    .filter((f) => !f.startsWith('.') && f !== 'expected.json')
+    .filter((f) => !f.startsWith('.') && f !== 'expected.json' && (!ONLY || f.includes(ONLY)))
     .sort();
   const EXPECTED = JSON.parse(fs.readFileSync(path.join(DIR, 'expected.json'), 'utf8'));
   const rows = [];
@@ -191,9 +193,10 @@ const main = async () => {
       ...(expected?.token ? [expected.token] : []),
       ...(expected?.amount ? [expected.amount] : []),
     ];
-    /* providers format numbers either way: 445000 vs 445,000 */
-    const normalized = reply.text.replace(/,/g, '');
-    const pass = Boolean(reply.text) && wanted.every((t) => normalized.includes(t.replace(/,/g, '')));
+    /* models answer with 445,000 / **पेज 2** / line breaks; compare on flat text */
+    const flatten = (text) => text.replace(/[,*_`]/g, '').replace(/\s+/g, ' ').trim();
+    const normalized = flatten(reply.text);
+    const pass = Boolean(reply.text) && wanted.every((t) => normalized.includes(flatten(t)));
     rows.push({
       name,
       upload: 200,

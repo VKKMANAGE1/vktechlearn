@@ -40,7 +40,14 @@ export OPENAI_API_KEY="${OPENAI_API_KEY:-$openai}"
 export DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-$deepseek}"
 export GOOGLE_KEY="${GOOGLE_KEY:-$gemini}"
 
-for pair in "SHAVI_AI_KEY:$SHAVI_AI_KEY" "OPENAI_API_KEY:$OPENAI_API_KEY" "DEEPSEEK_API_KEY:$DEEPSEEK_API_KEY" "GOOGLE_KEY:$GOOGLE_KEY"; do
+# OCR (M07): scanned PDFs / images are transcribed by the same NVIDIA account.
+# Model + limits are overridable from the environment; no extra key file is needed.
+export SHAVI_OCR_API_KEY="${SHAVI_OCR_API_KEY:-$nvidia}"
+export SHAVI_OCR_BASE_URL="${SHAVI_OCR_BASE_URL:-https://integrate.api.nvidia.com/v1}"
+export SHAVI_OCR_MODEL="${SHAVI_OCR_MODEL:-nvidia/nemotron-3.5-super-vl-120b-a12b}"
+export SHAVI_OCR_MAX_PAGES="${SHAVI_OCR_MAX_PAGES:-12}"
+
+for pair in "SHAVI_AI_KEY:$SHAVI_AI_KEY" "OPENAI_API_KEY:$OPENAI_API_KEY" "DEEPSEEK_API_KEY:$DEEPSEEK_API_KEY" "GOOGLE_KEY:$GOOGLE_KEY" "SHAVI_OCR_API_KEY:$SHAVI_OCR_API_KEY"; do
   name="${pair%%:*}"; value="${pair#*:}"
   if [ -n "$value" ]; then echo "  $name: set (${#value} chars)"; else echo "  $name: NOT set"; fi
 done

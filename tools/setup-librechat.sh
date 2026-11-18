@@ -29,6 +29,7 @@ echo "==> building the client bundle (API serves it in production mode)"
 echo "==> applying the SHAVI AI runtime config + file support patch"
 cp "$ROOT/librechat-deploy/librechat.yaml" "$LC/librechat.yaml"
 node "$ROOT/librechat-file-support/apply-file-support.mjs"
+node "$ROOT/librechat-ocr/apply-ocr-support.mjs"
 
 echo "==> installing local mongo helper"
 mkdir -p "$ROOT/tools/librechat-dev"

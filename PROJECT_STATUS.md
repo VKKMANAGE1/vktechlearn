@@ -1,6 +1,6 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M06 — File upload system (implemented and verified; M05 still unaudited)
+**Milestone:** M07 — OCR and Document AI (implemented and verified; M05 still unaudited)
 **Date:** 2026-11-18
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -273,6 +273,87 @@ bash tools/start-librechat.sh --bg                # backend + provider keys from
 python3 tools/make-upload-fixtures.py             # 11 fixtures in artifacts/m06-fixtures
 node tools/librechat-dev/upload-test.mjs          # per-format upload + Mongo record dump
 node tools/librechat-dev/m06-ai-context-test.mjs  # per-format end-to-end AI answer check
+```
+
+## 1g. M07 — OCR and Document AI (scanned PDFs + images, Hindi + English, page refs, tables)
+
+**What the audit found before this milestone:** there was **no OCR engine at all**.
+LibreChat only OCRs through a Mistral OCR key (`ocr.strategy: mistral_ocr`) or the RAG API, neither
+of which is configured here, and its built-in PDF parser reads the text layer only. A scanned PDF
+therefore extracted to `""` and answered `No text found in document`; an image was readable only by
+sending it to the vision model at chat time (no transcription stored, no page references).
+`custom_ocr` exists as an enum value but has no implementation in v0.8.9.
+
+**Implementation (tracked in this repo, applied to the gitignored clone):**
+
+| File | Purpose |
+| --- | --- |
+| `librechat-ocr/files/shaviOcr.ts` → `librechat/packages/api/src/files/documents/shaviOcr.ts` | OCR engine: pulls the page image out of a PDF with pdfjs, paints its pixels into a PNG with `canvas`, and transcribes it with the OpenAI-compatible vision endpoint. One retry-free request per page, 180 s timeout, env-only config. |
+| `librechat-ocr/apply-ocr-support.mjs` | idempotent patch: page-by-page `pdfToText` (text layer used when present, OCR only on pages shorter than 24 chars, `[Page N]` markers), `imageToText` for png/jpg/webp/gif, image MIME types registered as parser types, upstream spec updated for that intentional change, `canvas` install, `build:data-provider` + `build:api` |
+| `tools/start-librechat.sh` | exports `SHAVI_OCR_API_KEY` (defaults to the existing NVIDIA key — no extra secret file), `SHAVI_OCR_BASE_URL`, `SHAVI_OCR_MODEL` (`nvidia/nemotron-3.5-super-vl-120b-a12b`), `SHAVI_OCR_MAX_PAGES` |
+| `tools/make-ocr-fixtures.py` | generates the fixtures: image-only 2-page and 3-page PDFs (Hindi + English), a table PDF, a **mixed** PDF (real text page + scanned page), a Hindi image note, an English table image |
+| `tools/librechat-dev/m07-agent-ocr-test.mjs` | image OCR end-to-end: OCR text stored on the file record, then a **text-only** model answers from it |
+| `tools/librechat-dev/upload-test.mjs` | extended with `--tool-resource` / `--agent-id` for OCR-resource uploads |
+| `tools/setup-librechat.sh` | runs the OCR patch after the file-support patch |
+
+**Evidence (every row produced by a real call, no mocks):**
+
+| Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| Scanned PDF OCR (Hindi + English) | `shaviOcr.ts`, `crud.ts#pdfToText` | upload 200, `llmDeliveryPath=text`, stored text 504 chars: `गंगा स्वच्छता परियोजना … Token: TOKEN-SCAN-101 … बजट: 445000 … First instalment amount: 283000`; answer `162000 रुपये — पेज 2` | chip `scanned-multipage.pdf · Document`, answer rendered in chat | **PASS** | one vision call per scanned page (~4–12 s/page) |
+| Page references | `[Page N]` markers written by `pdfToText` | Mongo text starts `[Page 1] … [Page 2] … [Page 3]`; answer cites `पेज 2` / `पेज 3` | browser answer: “पेज 2 — पात्र जिले … पेज 3 — कुल राशि 8,90,000” | **PASS** | markers are page blocks, not per-line coordinates |
+| Multi-page documents | same | 3-page scan → 3 `[Page N]` blocks, 580 chars, every page's token present (`TOKEN-OCR-201/202/203`) | 2-page scan uploaded through the UI and answered per page | **PASS** | OCR is capped at `SHAVI_OCR_MAX_PAGES` (12) pages per document |
+| Tables | OCR prompt asks for markdown pipe tables | stored text contains `| मद | राशि (रुपये) | … | कुल | 890000 |`; invoice table `Printer 24000 / Total 31250`; answers correct | table question answered from the rendered image | **PASS** | table structure is the VLM's markdown; column widths/merges are not guaranteed |
+| Mixed PDF (text page + scan page) | `pdfToText` per-page decision | page 1 taken from the text layer (no OCR call), page 2 OCR'd; text 301 chars with both tokens | — | **PASS** | page-level granularity only; a page with a short text layer (<24 chars) is OCR'd |
+| Images (OCR to text) | `imageToText` in `crud.ts` | image uploaded to an agent `context` resource: `llmDeliveryPath=text`, 143 chars Hindi + 129 chars table; **text-only model** then answered `TOKEN-HINDI-401, बजट 445000, Q2 revenue 283000` | image preview + answer rendered (M06 evidence) | **PASS** | OCR text is stored only for `context`/agent uploads; a plain image attachment still goes to the vision model at chat time and stores no text |
+| Images (vision answers) | modelSpecs `shavi-vision` (`nvidia/nemotron-3.5-super-vl-120b-a12b`) | answers `TOKEN-TBLIMG-501 / Q2 283000`, `TOKEN-HINDI-401 / 445000` | rendered in chat | **PASS** | hallucination risk on blurry scans is the provider's |
+| Database integration | Mongo `files` | 14 records carry `[Page N]` text (scanned/mixed/table PDFs), 6 image records carry OCR text (129–143 chars) | My Files lists them | **PASS** | OCR text counts against the stored-text cap |
+| Real API connection | `SHAVI_OCR_BASE_URL` → `https://integrate.api.nvidia.com/v1` | every transcription is an HTTP 200 completion against NVIDIA NIM (key from env, 70 chars, never logged) | — | **PASS** | shares the NVIDIA account quota with chat |
+| Error handling | `ocrImageBuffer` throws with status+body snippet; `pdfToText` logs and keeps the text layer | a page that fails OCR keeps its text layer and the upload still succeeds (logged `[pdfToText] OCR failed for page N`) | upload toast on fatal errors | **PASS** | no retry/backoff on 429 |
+| Config safety | env only | `grep -r nvapi` in `client/dist`, `librechat.yaml`, repo → no key; start script prints lengths only | — | **PASS** | — |
+
+**Tests run**
+
+```
+packages/api      npx jest src/files/documents/crud.spec.ts      21 passed
+data-provider     npx jest src/file-config.spec.ts              270 passed  (after updating the spec
+                                                                 for the intentional "images are parser types" change)
+OCR end-to-end    node tools/librechat-dev/m06-ai-context-test.mjs --dir artifacts/m07-fixtures
+                  6/6 fixtures pass (hindi-note, scanned-hindi-en, scanned-mixed, scanned-multipage,
+                  scanned-table, table-image)
+Image OCR         node tools/librechat-dev/m07-agent-ocr-test.mjs <agent-id>   PASS
+Browser           scanned 3-page Hindi PDF uploaded through the UI, question answered with page
+                  numbers and the table total (screenshot artifacts/design/m07-scanned-pdf-ocr.png)
+```
+
+**Gaps / blockers (honest state of M07)**
+
+1. **OCR engine is a vision-language model, not Tesseract.** Quality is high on clean scans
+   (Hindi Devanagari included) but there are no bounding boxes, per-word confidence or layout
+   coordinates — only text blocks per page.
+2. **Cost/latency:** one completion per scanned page; a 12-page scan is 12 calls. `SHAVI_OCR_MAX_PAGES`
+   caps it and pages beyond the cap keep their (empty) text layer.
+3. **Plain image attachments are not transcribed.** An image dropped into a normal chat goes to the
+   vision model for that turn (verified) but stores no text; only uploading it to an agent's
+   `context` resource runs the OCR engine and persists the transcription.
+4. **Agent chat needs the model spec:** posting to `/api/agents/chat` with `endpoint: "agents"` is
+   rejected with `Model spec mismatch` under `modelSpecs.enforce`; the working shape is
+   `endpoint: "SHAVI AI"` + `agent_id`. Reported here because it affects how the UI/agents are driven.
+5. **Tables** are re-rendered as markdown by the model; numbers were verified, but merged cells,
+   colours and multi-line cells are not preserved.
+6. **Handwriting and very low-resolution scans** are untested — no fixture for either.
+7. **No OCR for PPTX slide images / embedded pictures inside DOCX** — only PDF pages and image files.
+
+**Reproduce**
+
+```bash
+bash tools/setup-librechat.sh                    # clone + config + file-support + OCR patch + builds
+node tools/librechat-dev/mongod-server.mjs &
+bash tools/start-librechat.sh --bg               # prints SHAVI_OCR_API_KEY: set (70 chars)
+python3 tools/make-ocr-fixtures.py               # Hindi/English scanned PDFs, table, mixed, images
+node tools/librechat-dev/upload-test.mjs --dir artifacts/m07-fixtures
+node tools/librechat-dev/m06-ai-context-test.mjs --dir artifacts/m07-fixtures
+node tools/librechat-dev/m07-agent-ocr-test.mjs <agent-id>
 ```
 
 ## 2. Requirement audit (evidence-based)

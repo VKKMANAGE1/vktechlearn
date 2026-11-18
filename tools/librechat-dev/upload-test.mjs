@@ -4,7 +4,7 @@
  * `/api/files` endpoint, prints the server response, then reads the stored records
  * straight out of MongoDB (text length, delivery path, stored type).
  *
- *   node tools/librechat-dev/upload-test.mjs [--dir artifacts/m06-fixtures]
+ *   node tools/librechat-dev/upload-test.mjs [--dir artifacts/m07-fixtures] [--tool-resource context] [--agent-id <id>]
  *
  * Requires: LibreChat backend on 127.0.0.1:3080, mongod on 127.0.0.1:27017.
  */
@@ -17,6 +17,10 @@ const BASE = 'http://127.0.0.1:3080';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36';
 const dirArg = process.argv.indexOf('--dir');
 const DIR = dirArg > -1 ? process.argv[dirArg + 1] : 'artifacts/m06-fixtures';
+const trArg = process.argv.indexOf('--tool-resource');
+const TOOL_RESOURCE = trArg > -1 ? process.argv[trArg + 1] : null;
+const agArg = process.argv.indexOf('--agent-id');
+const AGENT_ID = agArg > -1 ? process.argv[agArg + 1] : null;
 const MODEL = 'nvidia/nemotron-3-ultra-550b-a55b';
 
 const login = async () => {
@@ -51,7 +55,15 @@ const upload = async (token, file) => {
   form.append('file_id', crypto.randomUUID());
   form.append('endpoint', 'SHAVI AI');
   form.append('endpointType', 'custom');
-  form.append('message_file', 'true');
+  if (AGENT_ID) {
+    form.append('agent_id', AGENT_ID);
+  }
+  if (TOOL_RESOURCE) {
+    /* agent context / ocr resource: the document parser extracts text instead of the provider path */
+    form.append('tool_resource', TOOL_RESOURCE);
+  } else {
+    form.append('message_file', 'true');
+  }
   form.append('model', MODEL);
   const res = await fetch(`${BASE}/api/files`, {
     method: 'POST',
