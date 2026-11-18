@@ -1,7 +1,7 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M04 — AI API Integration (implemented; live replies blocked on provider keys)
-**Date:** 2026-11-17
+**Milestone:** M06 — File upload system (implemented and verified; M05 still unaudited)
+**Date:** 2026-11-18
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
 
@@ -128,7 +128,7 @@ the environment.** Model IDs were taken from the providers' own documentation on
 | OpenAI | built-in `openAI` | `https://api.openai.com/v1` | `gpt-6.1-sol`, `gpt-6-luna`, `gpt-6-astra` | developers.openai.com/api/docs/models |
 | Google Gemini | built-in `google` | `https://generativelanguage.googleapis.com` | `gemini-4-argon`, `gemini-3.8-flash` | ai.google.dev/gemini-api/docs/models |
 
-`modelSpecs.enforce: true` + 7 specs (one per model) drive the selector; the registry is the single source of
+`modelSpecs.enforce: true` + 7 specs (one per model; 8 after M06 added the vision spec) drive the selector; the registry is the single source of
 truth for which provider/model a user can pick, and each spec carries label, capability description and icon.
 
 | Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
@@ -136,7 +136,7 @@ truth for which provider/model a user can pick, and each spec carries label, cap
 | DeepSeek official API | `librechat.yaml` custom endpoint `DeepSeek`, `baseURL https://api.deepseek.com`, `apiKey ${DEEPSEEK_API_KEY}` | Dummy key → `401 Authentication Fails, Your api key: ****-key is invalid (request_id …)` from DeepSeek itself; message persisted with `endpoint: DeepSeek, model: deepseek-flash` | Selector shows "DeepSeek V4.1 Flash" / "DeepSeek V4 Pro"; selecting routes request with `endpoint: DeepSeek` | **PASS (wiring + error path)** | No valid `DEEPSEEK_API_KEY` → no successful completion yet (see blocker) |
 | OpenAI official API | `librechat.yaml` built-in `openAI` (+ `titleModel gpt-6-luna`) | Dummy key → `401 Incorrect API key provided … platform.openai.com/account/api-keys`; message persisted with `endpoint: openAI, model: gpt-6.1-sol` | Specs "OpenAI GPT-6.1 Sol" / "GPT-6 Luna" listed with OpenAI icon | **PASS (wiring + error path)** | No valid `OPENAI_API_KEY` → no successful completion yet |
 | Gemini official API | `librechat.yaml` built-in `google` | Dummy key → `400 API key not valid. Please pass a valid API key.` from `generativelanguage.googleapis.com`; message persisted with `endpoint: google, model: gemini-3.8-flash` | Specs "Google Gemini 4 Argon" / "3.8 Flash" with Google icon | **PASS (wiring + error path)** | No valid `GOOGLE_KEY` → no successful completion yet |
-| Model registry | `modelSpecs.list` (7 specs), `/api/models` | `GET /api/models` → `openAI: 33`, `google: 15`, `SHAVI AI: 1`, `DeepSeek: 2`; `GET /api/config` → 7 spec names | Selector lists exactly 7 specs; all 7 icons load (`img.complete && naturalWidth>0`) | PASS | LibreChat hides endpoints without a key, so an unconfigured provider's spec is listed but cannot route (see gap 1) |
+| Model registry | `modelSpecs.list` (7 specs in M04; an 8th vision spec was added in M06), `/api/models` | `GET /api/models` → `openAI: 33`, `google: 15`, `SHAVI AI: 1`, `DeepSeek: 2`; `GET /api/config` → 7 spec names | Selector lists exactly 7 specs; all 7 icons load (`img.complete && naturalWidth>0`) | PASS | LibreChat hides endpoints without a key, so an unconfigured provider's spec is listed but cannot route (see gap 1) |
 | Streaming | LibreChat agents stream (`/api/agents/chat` → generation job) | `POST /api/agents/chat` → `{streamId, conversationId, generationProtocolVersion: 1}`; after completion `GET /api/messages/<id>` → assistant text `M04-STREAM-OK` | UI renders the reply progressively (verified in M03 browser run) | PASS | SSE body is a job handle in this version; token-by-token capture not measured over the wire |
 | Error handling | LibreChat provider error passthrough, surfaced in-message | No key → `Missing API Key for DeepSeek`; invalid key → provider's own 401/400 text; endpoint/spec mismatch → `Model spec mismatch` (no silent fallback to another provider) | Error text rendered inside the chat bubble, request terminates (no hang, 0:00 timer) | PASS | Provider errors are raw JSON strings for Gemini (LibreChat formats them verbatim) |
 | API key security | `tools/start-librechat.sh` loads keys from untracked files into the process env; `.gitignore` covers `ai-key.txt`, `openai-key.txt`, `deepseek-key.txt`, `gemini-key.txt`; `.env.example` has placeholders only | `grep -r nvapi client/dist` → no match; `grep -r nvapi librechat.yaml librechat-deploy/*` → no match; launcher prints only key lengths | Keys are never sent to the browser (`/api/config` contains no key fields) | PASS | Keys must be pasted into local files/secret store; nothing is stored in Mongo |
@@ -172,6 +172,108 @@ tools/start-librechat.sh --bg               # prints which keys are set (lengths
 ```
 
 No restart of Mongo is needed; keys are read at process start and never written to disk by the app.
+
+## 1e. M05 — not audited (the turn never started)
+
+The M05 request (chat history, rename, delete, edit, regenerate, stop, continue, markdown, code
+blocks, tables, export) arrived while this VM was unavailable, so **no agent work ran for M05** and
+no M05 audit exists. Those features are LibreChat-native and were exercised incidentally during the
+M04/M06 runs below (persisted conversations in Mongo, rename/delete in the sidebar, stop button,
+regenerate/continue actions, streamed markdown) but **they are not verified evidence and M05 must
+still be audited on its own** before it can be called complete. M06 was requested next and is
+audited against the M04 state of the build.
+
+## 1f. M06 — File upload system (PDF, DOCX, DOC, TXT, XLSX, XLS, CSV, PPTX, JSON, images)
+
+**Pipeline (real, no mocks):**
+
+```
+composer attach → POST /api/files (multipart) → processAgentFileUpload
+  → resolveUploadLLMDeliveryPath   text | provider | none
+  → document parser / native text  → extracted text stored on the file record
+  → files collection in MongoDB (text, llmDeliveryPath, context, source, bytes)
+send → POST /api/agents/chat { files: [...] } → resolveTurnLLMDeliveryPath
+  → text attached to the prompt | image sent as vision part
+```
+
+**Files added / changed (this repo):**
+
+| File | Purpose |
+| --- | --- |
+| `librechat-deploy/librechat.yaml` | `fileConfig` block (text delivery for documents, `provider` for images, `textFallbackWithoutTools`); 8th spec `shavi-vision` + `nvidia/nemotron-3.5-super-vl-120b-a12b` in the SHAVI AI endpoint |
+| `librechat-file-support/apply-file-support.mjs` | idempotent patch on the (gitignored) LibreChat clone: PPTX parser (yauzl over `ppt/slides/slideN.xml`), legacy `.doc` parser (`word-extractor`), both MIME types registered as parser + text-path types, `word-extractor` install, `build:data-provider` + `build:api` |
+| `tools/make-upload-fixtures.py` | generates the 11 fixtures, each with a unique token and a number |
+| `tools/librechat-dev/upload-test.mjs` | uploads every fixture through `/api/files` and dumps the stored Mongo records |
+| `tools/librechat-dev/m06-ai-context-test.mjs` | per-format end-to-end chat test: upload → real turn → asserts the model's answer contains the document's token/number |
+| `tools/setup-librechat.sh` | now copies the runtime config and applies the parser patch after `npm ci` |
+
+**What the audit found before the fix (baseline, same build):**
+
+| Fixture | Upload | Delivery | Stored text | Result before fix |
+| --- | --- | --- | --- | --- |
+| txt, csv, json, xls, xlsx, docx | 200 | `text` | 71–342 chars | OK |
+| pdf | 200 | `provider` | 0 chars | PDF base64 would be posted to NVIDIA NIM, which does not accept documents |
+| doc, pptx | 200 | `none` | 0 chars | uploaded "successfully" but the model never received it (silent, no error) |
+| png, jpg | 200 | `provider` | – | no vision model in the registry (Nemotron Ultra is text-only) → upstream model error |
+
+**Per-format evidence (after the fix — `node tools/librechat-dev/m06-ai-context-test.mjs`):**
+
+| Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| PDF | LibreChat built-in parser (`packages/api/src/files/documents/crud.ts` `pdfToText`, pdfjs) + `fileConfig` text delivery | upload 200, `llmDeliveryPath=text`, text 294 chars; `/api/messages` answer `Token: TOKEN-PDF-4417 / Budget: 445000 rupees` | PDF chip in composer, answer rendered in chat (browser run) | **PASS** | no page markers in extracted text; scanned PDFs need OCR |
+| DOCX | `wordDocToText` (mammoth) | text 246 chars (Hindi + table); answer `Token: TOKEN-DOCX-5521 / Scholarship amount: 25000` | chip + answer render | **PASS** | tables flattened to text |
+| DOC (legacy Word 97) | **new** `legacyWordDocToText` via `word-extractor` in `apply-file-support.mjs` | text 196 chars; answer `This is a simple word document created using Word 97 - SR2.` | not re-run in browser (API only) | **PASS** | body + headers/footers only; images/tables not extracted |
+| TXT | native text path (`parseTextNative`) | text 178 chars (Hindi preserved); answer `TOKEN-TXT-3399` | chip + answer render | **PASS** | — |
+| XLSX | built-in spreadsheet parser (`spreadsheetToText`, SheetJS) | text 143 chars; answer `Token: TOKEN-XLSX-6633 / Hardware Amount: 445000` | chip + answer render | **PASS** | sheet cell cap applies, layout flattened |
+| XLS (legacy) | same spreadsheet parser | text 80 chars; answer `Token: TOKEN-XLS-7744 / East Region Revenue: 445,000` | not re-run in browser | **PASS** | — |
+| CSV | native text path | text 71 chars; answer `TOKEN-CSV-8855` | not re-run in browser | **PASS** | no table rendering; raw text to the model |
+| PPTX | **new** `pptxToText` (yauzl, `<a:t>` runs, `[Slide N]` blocks, 50 MB inflate cap + zip-bomb guard) | text 176 chars; answer `Token: TOKEN-PPTX-9966 / Launch Budget: 445000 rupees` | not re-run in browser | **PASS** | speaker notes, charts and images not extracted |
+| JSON | native text path | text 342 chars; answer `token: TOKEN-JSON-1177, budget_rupees: 445000` | not re-run in browser | **PASS** | sent verbatim (not pretty-summarised) |
+| PNG image | vision path (`provider`) + `shavi-vision` spec (`nvidia/nemotron-3.5-super-vl-120b-a12b`) | upload 200, converted to `/images/...png` (900×600), answer `Token: TOKEN-IMG-2288 / Invoice Total: 445000 rupees` | image preview rendered in the message (`naturalWidth=900`), full-size preview modal in My Files, answer in chat — screenshot `artifacts/design/m06-image-context.png` | **PASS** | large images are resized client-side before upload |
+| JPG image | same vision path (server converts jpg→png) | answer `Token: TOKEN-JPG-6611 / Invoice total: 445000 rupees` | not re-run in browser | **PASS** | — |
+| Upload / storage | `POST /api/files` (`api/server/routes/files/files.js`, `services/Files/process.js`), local strategy | 11/11 uploads 200; Mongo `files` has 65 docs, 47 with extracted text, per-MIME counts for all ten types | attach/detach chip in composer, upload toast | **PASS** | no percentage progress bar (LibreChat shows a spinner/toast) |
+| Preview | LibreChat composer chip + message image + My Files dialog | `GET /images/<file>` serves the stored image | My Files dialog lists every upload with source/context/size and a full-size image preview — screenshot `artifacts/design/m06-files-preview.png` | **PASS (images)** | documents have no in-app viewer; their text is the preview the model sees |
+| Extraction | `extractInspectableFileText` + size caps (`MAX_STORED_EXTRACTED_TEXT_BYTES`, 15 MB parser cap) | stored `text` field inspected per record; `No text found in document` returned for text-free documents | extraction errors surface as an upload toast, not a silent success | **PASS** | no OCR/vision fallback for scanned PDFs |
+| AI context | `resolveTurnLLMDeliveryPath` + files[] on `/api/agents/chat` | 32 user messages carry `files[]`; replies quote document tokens | browser run: PDF and image answers rendered with the correct token | **PASS** | long documents count against the model context window |
+| Database integration | Mongo `files` (text, delivery path, context) and `messages.files` | counts above; records survive backend restart | My Files shows the rows | **PASS** | — |
+| Config / reproducibility | `librechat-deploy/librechat.yaml` + `librechat-file-support/apply-file-support.mjs` + `tools/setup-librechat.sh` | LibreChat boot log shows the merged `fileConfig`; patch is idempotent | model selector now lists 8 specs including "SHAVI AI — Nemotron 3.5 VL" | **PASS** | the clone is gitignored, so the patch must be re-applied after any re-clone (setup does it) |
+
+**Unit tests run (both green after the patch):**
+
+```
+packages/api   npx jest src/files/documents/crud.spec.ts   21 passed
+data-provider  npx jest src/file-config.spec.ts           270 passed
+```
+
+**Gaps / blockers (honest state of M06)**
+
+1. **No RAG API / vector store.** There is no Docker in this VM, so `RAG_API_URL` is unset:
+   `file_search` (vector indexing, citations from chunks) is unavailable. Uploads work as **direct
+   file context**, which is what this milestone asked for; document Q&A over a corpus does not.
+2. **No OCR provider.** A scanned/image-only PDF returns `No text found in document`. Fixing it
+   needs Mistral OCR (paid key) or the RAG API's unstructured pipeline. Images work because they go
+   to the vision model instead.
+3. **PPTX/DOC extraction is text-only**: slide bodies (no notes/charts/images) and Word body +
+   headers/footers (no embedded images, tables flattened).
+4. **No antivirus/MIME sniffing**: the upload parser trusts the multipart content type for choosing
+   a reader; the file-config allowlist is the only gate.
+5. **Provider keys still missing** for OpenAI/DeepSeek/Gemini (M04 blocker), so "send a PDF to GPT-6"
+   cannot be verified yet — only the NVIDIA endpoint is live.
+6. The `.doc` fixture is Apache POI's public Word 97 sample document (no company-specific token), so
+   its check asserts the document's own first sentence; the other ten fixtures carry unique tokens.
+7. Parsed text is capped by LibreChat (15 MB parser input, extracted-text storage cap) — a very large
+   workbook/PDF is truncated rather than rejected.
+
+**Reproduce**
+
+```bash
+bash tools/setup-librechat.sh                     # clone + npm ci + config copy + parser patch + builds
+node tools/librechat-dev/mongod-server.mjs &      # real mongod
+bash tools/start-librechat.sh --bg                # backend + provider keys from the untracked files
+python3 tools/make-upload-fixtures.py             # 11 fixtures in artifacts/m06-fixtures
+node tools/librechat-dev/upload-test.mjs          # per-format upload + Mongo record dump
+node tools/librechat-dev/m06-ai-context-test.mjs  # per-format end-to-end AI answer check
+```
 
 ## 2. Requirement audit (evidence-based)
 

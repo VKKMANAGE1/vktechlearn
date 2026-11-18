@@ -3,6 +3,16 @@
 version: 1.3.19
 cache: true
 
+# Document uploads are extracted to text server-side (built-in parser: pdf, docx, doc,
+# xls/xlsx, csv, pptx, odt/ods, plus native txt/json) and given to the model as context.
+# Images stay on the provider (vision) path.
+fileConfig:
+  textFallbackWithoutTools: true
+  defaultLLMDeliveryPath:
+    fallback: "text"
+    overrides:
+      "image/*": "provider"
+
 interface:
   customWelcome: "SHAVI AI — कोडिंग, पढ़ाई, लिखाई और रिसर्च के लिए आपका AI साथी। कुछ भी पूछें, हिंदी या English में।"
   landingFooter: true
@@ -35,7 +45,10 @@ endpoints:
       apiKey: "${SHAVI_AI_KEY}"
       baseURL: "https://integrate.api.nvidia.com/v1"
       models:
-        default: ["nvidia/nemotron-3-ultra-550b-a55b"]
+        default:
+          - "nvidia/nemotron-3-ultra-550b-a55b"
+          # vision model: used for image uploads (file context)
+          - "nvidia/nemotron-3.5-super-vl-120b-a12b"
         fetch: false
       titleConvo: true
       titleModel: "nvidia/nemotron-3-ultra-550b-a55b"
@@ -67,6 +80,14 @@ modelSpecs:
       preset:
         endpoint: "SHAVI AI"
         model: "nvidia/nemotron-3-ultra-550b-a55b"
+
+    - name: "shavi-vision"
+      label: "SHAVI AI — Nemotron 3.5 VL"
+      description: "NVIDIA Nemotron 3.5 Super VL 120B · image + document OCR, visual Q&A"
+      iconURL: "/assets/shavi-mark.svg"
+      preset:
+        endpoint: "SHAVI AI"
+        model: "nvidia/nemotron-3.5-super-vl-120b-a12b"
 
     - name: "deepseek-flash"
       label: "DeepSeek V4.1 Flash"
