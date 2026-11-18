@@ -13,6 +13,14 @@ fileConfig:
     overrides:
       "image/*": "provider"
 
+# Web search + research: Keenable's keyless public API is the search provider and
+# the page scraper. Real requests only — no cached or fabricated results.
+webSearch:
+  searchProvider: "keenable"
+  scraperProvider: "keenable"
+  rerankerType: "none"
+  scraperTimeout: 25000
+
 interface:
   customWelcome: "SHAVI AI — कोडिंग, पढ़ाई, लिखाई और रिसर्च के लिए आपका AI साथी। कुछ भी पूछें, हिंदी या English में।"
   landingFooter: true
@@ -77,6 +85,7 @@ modelSpecs:
       description: "NVIDIA Nemotron 3 Ultra 550B · 128K context · reasoning + text"
       iconURL: "/assets/shavi-mark.svg"
       default: true
+      webSearch: true
       preset:
         endpoint: "SHAVI AI"
         model: "nvidia/nemotron-3-ultra-550b-a55b"

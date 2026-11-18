@@ -1,6 +1,6 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M07 — OCR and Document AI (implemented and verified; M05 still unaudited)
+**Milestone:** M08 — Web search and research (implemented and verified; M05 still unaudited)
 **Date:** 2026-11-18
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -354,6 +354,89 @@ python3 tools/make-ocr-fixtures.py               # Hindi/English scanned PDFs, t
 node tools/librechat-dev/upload-test.mjs --dir artifacts/m07-fixtures
 node tools/librechat-dev/m06-ai-context-test.mjs --dir artifacts/m07-fixtures
 node tools/librechat-dev/m07-agent-ocr-test.mjs <agent-id>
+```
+
+## 1h. M08 — Web search and research (real provider, page extraction, citations)
+
+**Audit before this milestone:** the deployment had **no web search at all**. Every provider in
+`webSearch` needs a credential — Serper, Tavily, SearXNG (all keyed or blocked), Firecrawl for
+scraping — and none was configured, so `web_search` was never offered as a tool. The other
+keyless routes were tested and rejected on evidence: DuckDuckGo HTML returned `202` with a bot
+check, seven public SearXNG instances answered `429`/captcha, and `api.duckduckgo.com` returns an
+empty instant-answer object for real queries. Keenable's public endpoints answer with real
+results and real page content, so Keenable is the provider.
+
+**Configuration (tracked, `librechat-deploy/librechat.yaml` → runtime `librechat/librechat.yaml`):**
+
+```yaml
+webSearch:
+  searchProvider: "keenable"     # https://api.keenable.ai/v1/search/public  (keyless)
+  scraperProvider: "keenable"    # https://api.keenable.ai/v1/fetch/public   (keyless)
+  rerankerType: "none"
+  scraperTimeout: 25000
+```
+
+`shavi-nemotron` also carries `webSearch: true`, which seeds the composer's Web Search toggle.
+
+**Research workflow:** the `SHAVI Research` agent (`tools/librechat-dev/create-research-agent.mjs`,
+idempotent) runs on `web_search` with instructions that (1) forbid URL-shaped queries, (2) forbid
+any fact, link, number or date that is not in the tool output, (3) require citation markers, and
+(4) require a `स्रोत:` list of the real URLs used. Its prompt is the guard against fabricated
+citations; the tool output is the only source of URLs it may print.
+
+**Evidence (every row a real call, no mocks):**
+
+| Requirement | Implementation | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| Real search provider integrated | `librechat.yaml#webSearch`, `tools/librechat-dev/create-research-agent.mjs` | `POST /.v1/search/public` answers 200 with 8 organic results (`librechat.ai/changelog/v0.8.9`, GitHub release, …); the tool call carries `args={"query":"LibreChat v0.8.9 changelog new features"}` | "Searched the web" badge + result chips `LibreChat v0.8.9`, `api.github.com` | **PASS** | keyless public tier: rate limits and bot rules are the provider's; no key configured |
+| Search results reach the model | `@librechat/agents` search tool via `createSearchTool` | tool output 36,480 chars with `# Search 0…`, `Anchor:`, `URL:`, `Summary:`, `Date:`, `Source:` per result | result table rendered from the answer | **PASS** | results are the provider's ranking (no reranker) |
+| Page extraction | `scraperProvider: keenable` → `/v1/fetch/public` | `Summary:` plus `### Highlight 1..N` blocks contain the page's real markdown (`Chat Projects…`, `Slack with linked accounts…`), 36k chars total for 8 results | highlights feed the rendered table | **PASS** | no JS rendering, no images; pages behind a bot check return `target_blocked` |
+| Source citations | citation markers `\ue202turn0searchN` from the tool output | answer carries `turn0search0/1/4`; **all three anchors exist in the tool output**; the two URLs in the answer are byte-equal to tool URLs; both pages answer HTTP 200 | footnote chips + linked sources under the answer | **PASS** | marker rendering is the client's; plain-URL citations depend on the model following instruction 4 |
+| No fake citations | agent instructions + anchor whitelist in the test | `no fabricated citation markers`, `no fabricated URLs in answer` both verified by set-difference against the tool output | — | **PASS** | a model that ignores the instructions is caught by the test, not blocked by code |
+| Research workflow | `SHAVI Research` agent (tools `["web_search"]`) | `/api/agents` list → detail `tools: ["web_search"]`, instructions stored; turn produced search → answer → sources | agent answers in the normal chat UI with the same citations | **PASS** | one agent; no multi-step "deep research" planner, no sub-question decomposition |
+| Database integration | Mongo `messages` | stored assistant message contains the `web_search` tool call with `URL: http…` **and** the `turn0searchN` markers in `content` | conversation reloads from Mongo in the browser | **PASS** | scraped page text is stored inside the message, not in a separate retrievable table |
+| Failure behaviour | provider errors surface to the model | observed `422 content_not_extracted`, `404 page_not_found`, `403 target_blocked` for URL-shaped queries; the tool reports them instead of inventing results; with the research-agent instructions those queries no longer occur | — | **PASS (by design)** | the raw spec (`/c/new`, no agent) can still send URL queries and wastes its tool-call budget — see gaps |
+| Config safety | yaml only, no secrets | `webSearch` block has no key fields; `/api/config` serves no secrets; `grep -r keenable` in `client/dist` → none | — | **PASS** | — |
+
+**Tests run**
+
+```
+packages/api   npx jest src/web/web.spec.ts src/tools/toolkits/web.spec.ts     126 passed
+end-to-end     node tools/librechat-dev/m08-web-search-test.mjs                 10/10 checks pass
+               (tool executed · keyword query · >=2 real URLs · extraction ·
+                citation markers · no fabricated markers · no fabricated URLs ·
+                pages reachable · tool output + citations stored in Mongo)
+browser        conversation c365ff9d… opened in the Cloud browser: "Searched the web",
+               source chips, linked sources, Web Search toggle on the composer
+               (screenshot artifacts/design/m08-web-search-citations.png)
+```
+
+**Gaps / blockers (honest state of M08)**
+
+1. **Provider is Keenable's keyless public tier.** No key is configured, so the deployment sits on
+   the public rate limit and the provider's own bot rules; `KEENABLE_API_KEY` lifts the limit and is
+   the single upgrade path (search and fetch both).
+2. **URL-shaped queries fail by design.** The provider treats them as fetch targets and answers
+   `422/403/404`; the research agent is instructed to send keywords only, but a user chatting on the
+   default spec with the Web Search toggle can still trigger this and burn the turn's tool budget.
+3. **No reranker.** `rerankerType: none` means the provider's order is used; Cohere/Jina need keys.
+4. **No JavaScript rendering.** Pages that build their content client-side extract to little or
+   nothing, and pages behind bot checks return `target_blocked`.
+5. **Not a deep-research planner.** One search per turn, no sub-question decomposition, no
+   cross-checking across sources, no report file; the workflow is search → extract → answer with
+   citations.
+6. **Only web results were exercised.** News/image/video result types are rendered by the same
+   pipeline but were not tested.
+7. **Locale:** search quality for Hindi queries was not measured; the tested queries were English
+   keywords with Hindi answers.
+
+**Reproduce**
+
+```bash
+bash tools/setup-librechat.sh                       # config + patches + builds
+bash tools/start-librechat.sh --bg
+node tools/librechat-dev/create-research-agent.mjs  # creates/refreshes "SHAVI Research"
+node tools/librechat-dev/m08-web-search-test.mjs
 ```
 
 ## 2. Requirement audit (evidence-based)
