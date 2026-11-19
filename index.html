@@ -95,7 +95,7 @@
     .header-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; padding: .85rem 0 .5rem; }
     .brand { grid-column: 2; display: flex; align-items: center; gap: .75rem; text-align: left; }
     .brand-mark {
-      flex: none; width: 84px; height: 42px; display: block; object-fit: contain;
+      flex: none; width: auto; height: 40px; display: block;
       filter: drop-shadow(0 0 14px rgba(0, 240, 255, .18));
     }
     .brand-text { display: grid; }
@@ -495,7 +495,7 @@
       }
       .main-nav .dropdown a { padding: .55rem .4rem; border-bottom: 0; }
       html[data-theme="night"] .main-nav .dropdown { background: rgba(0, 119, 143, .07); }
-      .brand-mark { width: 66px; height: 33px; }
+      .brand-mark { height: 30px; }
       .brand-tag { letter-spacing: .14em; font-size: .68rem; }
     }
     @media (max-width: 420px) {
@@ -596,7 +596,7 @@
         </div>
 
         <a class="brand" href="./" aria-label="VK Tech Learn — home">
-          <img class="brand-mark" src="img/logo.svg" alt="" width="84" height="42" aria-hidden="true" decoding="async" />
+          <img class="brand-mark" src="img/logo.png" alt="" width="116" height="40" aria-hidden="true" decoding="async" />
           <span class="brand-text">
             <span class="brand-name neon-text" data-text="VK Tech Learn">VK Tech Learn</span>
             <span class="brand-tag">Tech · Learn · Tools</span>
