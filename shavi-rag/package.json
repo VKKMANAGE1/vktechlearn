@@ -1,0 +1,9 @@
+{
+  "name": "shavi-rag",
+  "private": true,
+  "type": "module",
+  "description": "Local LibreChat-compatible retrieval API for SHAVI AI (file_search backend)",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.2"
+  }
+}

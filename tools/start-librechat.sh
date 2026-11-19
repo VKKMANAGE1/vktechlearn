@@ -47,7 +47,24 @@ export SHAVI_OCR_BASE_URL="${SHAVI_OCR_BASE_URL:-https://integrate.api.nvidia.co
 export SHAVI_OCR_MODEL="${SHAVI_OCR_MODEL:-nvidia/nemotron-3.5-super-vl-120b-a12b}"
 export SHAVI_OCR_MAX_PAGES="${SHAVI_OCR_MAX_PAGES:-12}"
 
-for pair in "SHAVI_AI_KEY:$SHAVI_AI_KEY" "OPENAI_API_KEY:$OPENAI_API_KEY" "DEEPSEEK_API_KEY:$DEEPSEEK_API_KEY" "GOOGLE_KEY:$GOOGLE_KEY" "SHAVI_OCR_API_KEY:$SHAVI_OCR_API_KEY"; do
+# Media (M09): the image_gen_oai agent tool and the OpenAI speech providers all talk to
+# the local SHAVI Media gateway, which fans out to NVIDIA FLUX (images) and to the
+# local Piper / faster-whisper engines (voice). The gateway URL is not a secret; the
+# placeholder key only satisfies the tool's env check — the gateway ignores it.
+export SHAVI_MEDIA_KEY="${SHAVI_MEDIA_KEY:-shavi-media-local}"
+export IMAGE_GEN_OAI_API_KEY="${IMAGE_GEN_OAI_API_KEY:-$SHAVI_MEDIA_KEY}"
+export IMAGE_GEN_OAI_BASEURL="${IMAGE_GEN_OAI_BASEURL:-http://127.0.0.1:4123/v1/}"
+export IMAGE_GEN_OAI_MODEL="${IMAGE_GEN_OAI_MODEL:-flux.1-dev}"
+
+# Retrieval + code interpreter (M10): both are local services started by
+# tools/start-shavi-services.sh. file_search stays hidden until RAG_API_URL answers,
+# and execute_code stays hidden until LIBRECHAT_CODE_BASEURL answers, so these two
+# URLs are what expose those agent tools at all.
+export RAG_API_URL="${RAG_API_URL:-http://127.0.0.1:4125}"
+export LIBRECHAT_CODE_BASEURL="${LIBRECHAT_CODE_BASEURL:-http://127.0.0.1:4126}"
+export LIBRECHAT_CODE_API_KEY="${LIBRECHAT_CODE_API_KEY:-shavi-code-local}"
+
+for pair in "SHAVI_AI_KEY:$SHAVI_AI_KEY" "OPENAI_API_KEY:$OPENAI_API_KEY" "DEEPSEEK_API_KEY:$DEEPSEEK_API_KEY" "GOOGLE_KEY:$GOOGLE_KEY" "SHAVI_OCR_API_KEY:$SHAVI_OCR_API_KEY" "IMAGE_GEN_OAI_BASEURL:$IMAGE_GEN_OAI_BASEURL" "RAG_API_URL:$RAG_API_URL" "LIBRECHAT_CODE_BASEURL:$LIBRECHAT_CODE_BASEURL"; do
   name="${pair%%:*}"; value="${pair#*:}"
   if [ -n "$value" ]; then echo "  $name: set (${#value} chars)"; else echo "  $name: NOT set"; fi
 done

@@ -3,6 +3,45 @@
 version: 1.3.19
 cache: true
 
+# Generated images come back from FLUX as JPEG; the tool and the file pipeline are
+# told the same format so no image is mislabelled or re-encoded twice.
+imageOutputType: "jpeg"
+
+# Voice: LibreChat's OpenAI-compatible speech providers point at the local SHAVI Media
+# gateway (:4123), which runs Piper TTS and faster-whisper ASR on this host. No cloud
+# speech key is involved; if the gateway is not running these endpoints return 503 and
+# the UI hides the mic/speaker (the speech block is what advertises them).
+speech:
+  stt:
+    allowedAddresses:
+      - "127.0.0.1:4123"
+    openai:
+      url: "http://127.0.0.1:4123/v1/audio/transcriptions"
+      apiKey: "${SHAVI_MEDIA_KEY}"
+      model: "whisper-small"
+  tts:
+    allowedAddresses:
+      - "127.0.0.1:4123"
+    maxInputChars: 3000
+    openai:
+      url: "http://127.0.0.1:4123/v1/audio/speech"
+      apiKey: "${SHAVI_MEDIA_KEY}"
+      model: "shavi-tts"
+      voices:
+        - "hi-IN-Pratham"
+        - "en-US-Lessac"
+  speechTab:
+    speechToText:
+      engineSTT: "external"
+      languageSTT: "hi-IN"
+      autoTranscribeAudio: true
+    textToSpeech:
+      engineTTS: "external"
+      voice: "hi-IN-Pratham"
+      languageTTS: "hi-IN"
+      automaticPlayback: false
+      cacheTTS: true
+
 # Document uploads are extracted to text server-side (built-in parser: pdf, docx, doc,
 # xls/xlsx, csv, pptx, odt/ods, plus native txt/json) and given to the model as context.
 # Images stay on the provider (vision) path.
@@ -12,6 +51,28 @@ fileConfig:
     fallback: "text"
     overrides:
       "image/*": "provider"
+
+# Memory (M10): user-controlled facts. `personalize` injects saved memories into the
+# conversation, and the background memory agent turns an explicit "remember this" into a
+# stored fact. Users keep final control from Settings -> Memory (the opt-out switch) and
+# from the Memory panel, where every entry can be edited or deleted.
+memory:
+  disabled: false
+  personalize: true
+  charLimit: 10000
+  messageWindowSize: 5
+  agent:
+    enabled: true
+    provider: "SHAVI AI"
+    model: "nvidia/nemotron-3-ultra-550b-a55b"
+
+# Chat Projects (M10): a project groups conversations, its own instructions and its own
+# reference files, all scoped to the owner. Limits are the defaults, written out so the
+# deployment's caps are explicit rather than implied.
+projects:
+  maxFiles: 50
+  maxInstructionsLength: 16000
+  maxDescriptionLength: 1000
 
 # Web search + research: Keenable's keyless public API is the search provider and
 # the page scraper. Real requests only — no cached or fabricated results.
@@ -92,11 +153,36 @@ modelSpecs:
 
     - name: "shavi-vision"
       label: "SHAVI AI — Nemotron 3.5 VL"
-      description: "NVIDIA Nemotron 3.5 Super VL 120B · image + document OCR, visual Q&A"
+      description: "NVIDIA Nemotron 3.5 Super VL 120B · image + document OCR, visual Q&A · images in, text out"
       iconURL: "/assets/shavi-mark.svg"
       preset:
         endpoint: "SHAVI AI"
         model: "nvidia/nemotron-3.5-super-vl-120b-a12b"
+
+    - name: "shavi-image"
+      label: "SHAVI AI — Image (FLUX)"
+      description: "NVIDIA FLUX.1-dev · text-to-image · असली इमेज, कोई नकली नहीं"
+      iconURL: "/assets/shavi-mark.svg"
+      preset:
+        endpoint: "agents"
+        agent_id: "agent_shavi_image"
+
+    - name: "shavi-workspace"
+      label: "SHAVI AI — Workspace (Files + Code)"
+      description: "अपनी फाइलों में सर्च · सेफ कोड रनर · वेब सर्च · याद रखना"
+      iconURL: "/assets/shavi-mark.svg"
+      webSearch: true
+      preset:
+        endpoint: "agents"
+        agent_id: "agent_shavi_workspace"
+
+    - name: "shavi-research"
+      label: "SHAVI AI — Research (Web)"
+      description: "वेब सर्च + पेज एक्सट्रैक्शन + असली स्रोत के साथ रिसर्च"
+      iconURL: "/assets/shavi-mark.svg"
+      preset:
+        endpoint: "agents"
+        agent_id: "agent_shavi_research"
 
     - name: "deepseek-flash"
       label: "DeepSeek V4.1 Flash"

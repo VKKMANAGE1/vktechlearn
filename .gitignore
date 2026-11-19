@@ -20,3 +20,9 @@ tools/librechat-dev/*.log
 openai-key.txt
 deepseek-key.txt
 gemini-key.txt
+
+# M09 media gateway runtime (piper voices, whisper venv/model) — rebuilt by setup-speech.sh
+shavi-media/runtime/
+shavi-media/runtime/
+shavi-rag/runtime/
+shavi-code/runtime/
