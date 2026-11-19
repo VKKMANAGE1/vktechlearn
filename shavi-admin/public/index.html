@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SHAVI AI — Admin</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark">S</span>
+        <div>
+          <strong>SHAVI AI</strong>
+          <span class="muted">Admin &amp; Security</span>
+        </div>
+      </div>
+      <div class="session">
+        <span id="whoami" class="muted">not signed in</span>
+        <button id="signout" class="ghost" hidden>Sign out</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="login-view" class="card login">
+        <h1>Admin sign-in</h1>
+        <p class="muted">
+          Uses your SHAVI AI account. The panel opens only for accounts with the
+          <code>access:admin</code> capability (checked by the API, not the UI).
+        </p>
+        <form id="login-form">
+          <label>Email <input type="email" name="email" required autocomplete="username" /></label>
+          <label>Password <input type="password" name="password" required autocomplete="current-password" /></label>
+          <button type="submit">Sign in</button>
+          <p id="login-error" class="error" hidden></p>
+        </form>
+      </section>
+
+      <section id="panel-view" hidden>
+        <nav class="tabs" role="tablist">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="usage">Usage</button>
+          <button class="tab" data-tab="cost">Cost</button>
+          <button class="tab" data-tab="users">Users</button>
+          <button class="tab" data-tab="roles">Permissions</button>
+          <button class="tab" data-tab="limits">Rate limits</button>
+          <button class="tab" data-tab="audit">Audit log</button>
+          <button class="tab" data-tab="privacy">Privacy</button>
+        </nav>
+
+        <div class="window">
+          Window:
+          <select id="days">
+            <option value="7">7 days</option>
+            <option value="30" selected>30 days</option>
+            <option value="90">90 days</option>
+            <option value="365">1 year</option>
+          </select>
+          <span id="status" class="muted"></span>
+        </div>
+
+        <div id="tab-overview" class="tabpanel">
+          <div id="kpis" class="kpis"></div>
+          <h2>Messages and tokens per day</h2>
+          <div id="chart" class="chart"></div>
+          <h2>Top models</h2>
+          <div id="overview-models" class="table"></div>
+        </div>
+
+        <div id="tab-usage" class="tabpanel" hidden>
+          <div class="row">
+            <button class="chip active" data-by="day">By day</button>
+            <button class="chip" data-by="model">By model</button>
+            <button class="chip" data-by="user">By user</button>
+          </div>
+          <div id="usage-table" class="table"></div>
+        </div>
+
+        <div id="tab-cost" class="tabpanel" hidden>
+          <div id="cost-summary" class="kpis"></div>
+          <div id="cost-table" class="table"></div>
+          <p class="muted small">
+            Cost is estimated from recorded <code>tokenCount</code> and the declared price table in
+            <code>shavi-admin/pricing.json</code> — it is not a provider invoice.
+          </p>
+        </div>
+
+        <div id="tab-users" class="tabpanel" hidden>
+          <div class="row">
+            <input id="user-search" type="search" placeholder="Search email or name" />
+            <button id="user-search-btn">Search</button>
+          </div>
+          <div id="users-table" class="table"></div>
+        </div>
+
+        <div id="tab-roles" class="tabpanel" hidden>
+          <p class="muted small">
+            Role capability changes go through <code>PATCH /api/admin/roles/:name/permissions</code> and are written to
+            the audit log by the API.
+          </p>
+          <div id="roles-list" class="table"></div>
+        </div>
+
+        <div id="tab-limits" class="tabpanel" hidden>
+          <div id="limits" class="table"></div>
+        </div>
+
+        <div id="tab-audit" class="tabpanel" hidden>
+          <div class="row">
+            <button id="audit-refresh">Refresh</button>
+            <button id="audit-verify">Verify hash chain</button>
+            <a id="audit-csv" class="button" href="#" download>Export CSV</a>
+          </div>
+          <p id="audit-verify-result" class="muted"></p>
+          <div id="audit-table" class="table"></div>
+        </div>
+
+        <div id="tab-privacy" class="tabpanel" hidden>
+          <h2>Your data</h2>
+          <p class="muted">
+            Export downloads every row this account owns (conversations, messages, memories, files metadata, projects,
+            shared links) as JSON. Delete removes the account and everything that cascades from it.
+          </p>
+          <div class="row">
+            <button id="export-btn">Download my data (JSON)</button>
+            <button id="delete-btn" class="danger">Delete my account</button>
+          </div>
+          <p id="privacy-status" class="muted"></p>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

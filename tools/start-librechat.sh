@@ -64,10 +64,22 @@ export RAG_API_URL="${RAG_API_URL:-http://127.0.0.1:4125}"
 export LIBRECHAT_CODE_BASEURL="${LIBRECHAT_CODE_BASEURL:-http://127.0.0.1:4126}"
 export LIBRECHAT_CODE_API_KEY="${LIBRECHAT_CODE_API_KEY:-shavi-code-local}"
 
+# Security (M11): LibreChat ships message rate limiting *disabled* unless LIMIT_MESSAGE_*
+# is set, so a single account could otherwise send unlimited chat requests. Enabling it
+# here means the limits are enforced by the API (express-rate-limit, per user and per IP)
+# and reported by the admin panel at /api/panel/limits.
+export LIMIT_MESSAGE_USER="${LIMIT_MESSAGE_USER:-true}"
+export LIMIT_MESSAGE_IP="${LIMIT_MESSAGE_IP:-true}"
+export MESSAGE_USER_MAX="${MESSAGE_USER_MAX:-40}"
+export MESSAGE_USER_WINDOW="${MESSAGE_USER_WINDOW:-1}"
+export MESSAGE_IP_MAX="${MESSAGE_IP_MAX:-60}"
+export MESSAGE_IP_WINDOW="${MESSAGE_IP_WINDOW:-1}"
+
 for pair in "SHAVI_AI_KEY:$SHAVI_AI_KEY" "OPENAI_API_KEY:$OPENAI_API_KEY" "DEEPSEEK_API_KEY:$DEEPSEEK_API_KEY" "GOOGLE_KEY:$GOOGLE_KEY" "SHAVI_OCR_API_KEY:$SHAVI_OCR_API_KEY" "IMAGE_GEN_OAI_BASEURL:$IMAGE_GEN_OAI_BASEURL" "RAG_API_URL:$RAG_API_URL" "LIBRECHAT_CODE_BASEURL:$LIBRECHAT_CODE_BASEURL"; do
   name="${pair%%:*}"; value="${pair#*:}"
   if [ -n "$value" ]; then echo "  $name: set (${#value} chars)"; else echo "  $name: NOT set"; fi
 done
+echo "  LIMIT_MESSAGE_USER: $LIMIT_MESSAGE_USER ($MESSAGE_USER_MAX/${MESSAGE_USER_WINDOW}min per user, $MESSAGE_IP_MAX/${MESSAGE_IP_WINDOW}min per IP)"
 
 if [ "${1:-}" = "--bg" ]; then
   nohup npm run backend > /tmp/shavi-librechat.log 2>&1 &

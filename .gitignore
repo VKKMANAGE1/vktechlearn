@@ -26,3 +26,6 @@ shavi-media/runtime/
 shavi-media/runtime/
 shavi-rag/runtime/
 shavi-code/runtime/
+
+# M11 admin panel service dependencies
+shavi-admin/node_modules/

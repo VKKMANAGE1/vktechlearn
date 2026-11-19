@@ -1,0 +1,18 @@
+{
+  "currency": "USD",
+  "unit": "per 1M tokens",
+  "note": "List prices per 1M tokens. `input`/`output` are used when a provider splits them; `blended` is used for messages that only store a total tokenCount (LibreChat v0.8.9 stores tokenCount only). Costs in the panel are estimates from these numbers, not provider invoices.",
+  "models": {
+    "nvidia/nemotron-3-ultra-550b-a55b": { "provider": "NVIDIA NIM", "input": 0.6, "output": 2.4, "blended": 1.5 },
+    "nvidia/nemotron-3.5-super-vl-120b-a12b": { "provider": "NVIDIA NIM", "input": 0.4, "output": 1.6, "blended": 1.0 },
+    "meta/llama-3.2-90b-vision-instruct": { "provider": "NVIDIA NIM", "input": 0.6, "output": 0.6, "blended": 0.6 },
+    "deepseek-flash": { "provider": "DeepSeek", "input": 0.28, "output": 0.42, "blended": 0.35 },
+    "deepseek-v4-pro": { "provider": "DeepSeek", "input": 0.55, "output": 2.19, "blended": 1.1 },
+    "gpt-6.1-sol": { "provider": "OpenAI", "input": 2.5, "output": 10.0, "blended": 5.0 },
+    "gpt-6-luna": { "provider": "OpenAI", "input": 1.25, "output": 5.0, "blended": 2.5 },
+    "gpt-6-astra": { "provider": "OpenAI", "input": 5.0, "output": 20.0, "blended": 10.0 },
+    "gemini-4-argon": { "provider": "Google", "input": 1.25, "output": 5.0, "blended": 2.5 },
+    "gemini-3.8-flash": { "provider": "Google", "input": 0.3, "output": 1.2, "blended": 0.75 }
+  },
+  "fallback": { "provider": "unknown", "input": 0, "output": 0, "blended": 0 }
+}

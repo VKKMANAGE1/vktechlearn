@@ -1,0 +1,12 @@
+{
+  "name": "shavi-admin",
+  "private": true,
+  "type": "module",
+  "description": "SHAVI AI admin panel + usage/cost/privacy gateway (M11)",
+  "scripts": {
+    "start": "node service.mjs"
+  },
+  "dependencies": {
+    "mongodb": "^6.20.0"
+  }
+}

@@ -1,6 +1,7 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M10 — Memory and Agents (implemented and verified; awaiting approval. M05 still unaudited)
+**Milestone:** M11 — Admin & Security (implemented and audited: 37/39 checks pass, **1 open issue: per-user chat
+rate limit does not deny** — see §1k open items; awaiting approval. M05 still unaudited)
 **Date:** 2026-11-19
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -523,6 +524,87 @@ PASS 24/24 checks
 3. The code sandbox is namespace/chroot level, not VM level (Docker unavailable in this environment).
 4. Per-conversation `promptPrefix` is not part of the v0.8.9 conversation schema; the client resends it.
 5. M05 (accounts/roles/admin) is still unaudited.
+
+---
+
+## 1k. M11 — Admin & Security (admin panel, usage, cost, permissions, rate limits, audit, privacy)
+
+**What already existed:** LibreChat v0.8.9 ships a hardened admin *API* (`/api/admin/{users,roles,grants,groups,audit-log,config}`),
+capability-based RBAC, a hash-chained audit log and the rate-limit middleware — but **no admin UI** (its
+`ADMIN_PANEL_URL` points at a separate product) and **no usage/cost view**. Winners this milestone are those two
+missing pieces plus the wiring that makes the existing security controls actually enforce.
+
+**New services / files (this repo):**
+
+| File | Role | Port |
+| --- | --- | --- |
+| `shavi-admin/service.mjs` | admin panel gateway: static panel + `/api/panel/*` (auth, users, roles, audit, limits, usage, cost, privacy). Authorises every admin call through LibreChat's own `access:admin` capability — no second RBAC implementation. | 4127 |
+| `shavi-admin/public/{index.html,app.js,style.css,favicon.svg}` | admin UI: Overview, Usage, Cost, Users, Permissions, Rate limits, Audit log, Privacy | — |
+| `shavi-admin/pricing.json` | declared price table (per 1M tokens) used for the cost estimate; agent turns are priced against the agent's underlying model (`agents.model`) | — |
+| `tools/start-shavi-admin.sh` | starts the gateway with the **same** `MESSAGE_*`/`LOGIN_*` variables the backend runs with, so the panel reports the enforced values | — |
+| `tools/start-librechat.sh` | **changed:** exports `LIMIT_MESSAGE_USER/IP=true` + `MESSAGE_*` defaults. LibreChat leaves message limiting **off** unless these are set, so before this change a single account could send unlimited chat requests | — |
+| `tools/librechat-dev/m11-admin-security-test.mjs` | 39 end-to-end checks (below) | — |
+
+### Requirement table (evidence, not appearance)
+
+| Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| **Admin Panel** | `shavi-admin/service.mjs`, `shavi-admin/public/*`; data from `/api/admin/*` proxies | `GET /api/panel/me` → 200 for ADMIN (25 capabilities incl. `access:admin`), **403** for a plain account, **401** anonymous; `/api/panel/overview|users|roles|limits|audit` all 200 | Panel is served (`GET /` → 200, HTML + `app.js` load); every tab calls the endpoints above. **Not clicked through in a browser this run** — see open item 4 | **PASS (API + asset serving)** | Panel is a separate origin/port (4127); it is not yet behind the site's reverse proxy — see open item 3 |
+| **Usage tracking** | `service.mjs` aggregations over Mongo `messages.tokenCount` / `conversations` / `users` | Panel totals **equal** a direct Mongo aggregation: `266/133/133/512,907` (messages/user/assistant/tokens) in both; `byDay`, `byModel`, `byUser` returned | Overview KPIs + per-day bar chart + model table; Usage tab switches day/model/user | **PASS** | Windows are token-total only (LibreChat stores one `tokenCount`, no prompt/completion split) |
+| **Cost tracking** | `shavi-admin/pricing.json` + `service.mjs` (`priceFor`/`costOf`, agent→model resolution) | Panel total `$0.7345` == recomputed `tokens × price` `$0.7345` (tolerance 1e-4); payload labelled `estimate: true`, `currency: USD`, unpriced tokens reported (0 after agent mapping + `meta/llama-3.2-90b-vision` price) | Cost tab: total, priced-model count, unpriced tokens, per-model table with blended $/1M | **PASS** | Prices are list prices, not provider invoices; the table must be kept current by hand |
+| **User Permissions** | LibreChat roles/capabilities (`/api/admin/roles`, `/api/roles/:name/:group`, `systemgrants`), panel Permissions tab, `shavi-admin/service.mjs` proxy | Plain account: panel 403, `GET /api/admin/users` **403**, role write **403**; ADMIN: `access:admin` + 25 capabilities; `PUT /api/roles/USER/prompts {SHARE_PUBLIC:true}` → 200 and the role document **changes** (`PROMPTS.SHARE_PUBLIC` flips, then restored) | Roles table lists each role with its capability groups; toggle writes through the documented per-group route | **PASS** | No UI to create roles or assign members yet (API supports it) |
+| **Rate Limits** | LibreChat limiters (`messageLimiters`, `loginLimiter`, `registerLimiter`, `toolCallLimiter`) + `tools/start-librechat.sh` enabling them; panel Rate-limits tab | **Login limiter denies with HTTP 429** `{"message":"Too many login attempts, please try again after 5 minutes."}`; chat IP limiter denies with an SSE `{"type":"message_limit","max":"2","limiter":"ip"}` frame at `MESSAGE_IP_MAX=2`; headers show `X-RateLimit-Limit/Remaining` decrementing | Rate-limits tab shows configured budgets and the limiter source | **PARTIAL — per-user chat limiter counts but never denies** | Open issue 1: 5 concurrent turns at `MESSAGE_USER_MAX=3` all succeeded (no `limiter:"user"` denial frame) while the IP-keyed limiter did deny in a manual probe. Login/register/tool limiters are unaffected |
+| **Audit Logs** | LibreChat hash-chained audit log (`auditlogs`, `api/server/routes/admin/audit.js`), panel Audit tab + `service.mjs` proxies | Every read is itself audited (`audit.read`); a role change emits `role.permissions_updated`; entries count grew 20 → 27 during the run; `GET /api/panel/audit/verify` → `{ok:true, checked:…, range:{firstSeq:1,lastSeq:…}}`; CSV export returns rows | Audit tab: table (time/category/action/actor/target/outcome/seq), **Verify hash chain** button, CSV download | **PASS** | Append-only store; retention/purge policy not defined |
+| **Data Privacy** | `shavi-admin/service.mjs` (`exportUserData`), LibreChat `DELETE /api/user/delete` cascade; panel Privacy tab | Export is generated from Mongo for the **caller only** (admin export returned the admin account, not the other user); counts matched the DB; no password hash / `totpSecret` in the export or in `/api/panel/me`; delete → 200, user row gone, owned conversations gone, re-login fails | Privacy tab: “Download my data (JSON)” + “Delete my account” (confirm dialog) | **PASS** | Export includes conversations/messages/memories/files-metadata/projects/shared links; RAG vectors and uploads on disk are removed by LibreChat's own file cleanup (not re-verified here) |
+
+### M11 test log (`workflow: tools/librechat-dev/m11-admin-security-test.mjs`, live stack)
+
+```
+PASS LibreChat API is up
+PASS admin panel service is up with Mongo access
+PASS admin panel UI is served
+PASS admin can sign in through the panel login route / panel login route returns a JWT
+PASS admin account reports its effective capabilities (25, incl. access:admin)
+PASS panel never returns the password hash
+PASS a second, non-admin account can be created / can sign in
+PASS plain user is refused the admin panel API (403) / cannot read usage-cost / cannot read /api/admin/users / cannot change role permissions
+PASS anonymous caller is refused (401)
+PASS admin sees the usage overview / can list users / can list roles / rate-limit configuration is reported
+PASS usage totals equal the MongoDB aggregation
+PASS cost equals tokens × the declared price table / cost is labelled as an estimate
+FAIL chat rate limit denies the turn once the per-user budget is spent   (no denial frame)
+FAIL the denial names the per-user limiter, not just the IP one          (0 user-limit denials of 5 turns)
+PASS turns inside the budget are not denied
+PASS panel reports the limiter that actually fired
+PASS admin can change a role permission / the change is persisted in the role document
+PASS the admin action produced a new audit entry / audit hash chain verifies / audit log exports as CSV
+PASS account export is generated from the database / counts match the database / strips secrets / is scoped to the caller
+PASS account deletion runs through the API / cascades: user row and owned conversations are gone / deleted account cannot sign in
+PASS prompt text is not written to the service logs
+PASS no provider key is present in the panel responses
+
+37/39 checks passed
+```
+
+### M11 — open items (not hidden, not fixed)
+
+1. **Per-user chat limiter does not deny.** Evidence: 5 concurrent `POST /api/agents/chat` at
+   `MESSAGE_USER_MAX=3 / WINDOW=1` all returned 200 with no `{"type":"message_limit","limiter":"user"}` frame,
+   while `X-RateLimit-*` headers show the user bucket counting (2 → 1 → 0). With `MESSAGE_IP_MAX=2` the IP-keyed
+   limiter **did** deny (SSE `message_limit` frame), and the login limiter denies with HTTP 429, so the middleware
+   itself works — the per-user bucket's deny path does not fire in this build. Next step: read
+   `agents/index.js` `exemptScheduleFromUserLimiter` / `isConfirmedGenerationRetry` interplay and, if it is a
+   v0.8.9 defect, enforce the quota in `shavi-admin` only if chat is proxied through it (it is not today), or patch
+   `messageLimiters.js` to use an explicit counter.
+2. Message-limit denials are streamed as HTTP 200 + `event: error` (SSE), not HTTP 429 — the panel and docs must say
+   so, otherwise a monitor watching status codes will miss abuse.
+3. The admin panel runs on its own port (4127) and is not yet exposed through the site's reverse proxy or protected
+   beyond the LibreChat login + `access:admin` capability. Before production it needs a host/route decision
+   (e.g. `admin.vktechlearn.site`) and `ADMIN_PANEL_URL` set so LibreChat's Settings → Admin panel link points to it.
+4. The panel UI was verified by asset serving + every endpoint it calls, **not** by clicking through it in a browser;
+   a screenshot run is still owed.
+5. Rate-limit counters are in-memory per backend process (`USE_REDIS` is off): a restart resets them and multiple
+   replicas would each keep their own window.
 
 ---
 
