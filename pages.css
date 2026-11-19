@@ -66,17 +66,10 @@ a:hover { color: #fff; text-decoration: underline; }
 .brand:hover { text-decoration: none; color: #fff; }
 
 .brand-mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  font-family: 'Sora', sans-serif;
-  font-weight: 800;
-  font-size: .95rem;
-  letter-spacing: .04em;
-  background: linear-gradient(135deg, #a78bfa, #f472b6);
-  box-shadow: 0 10px 26px -12px rgba(244, 114, 182, .9);
+  width: 60px;
+  height: 30px;
+  display: block;
+  object-fit: contain;
 }
 
 .brand-text { display: grid; line-height: 1.15; }

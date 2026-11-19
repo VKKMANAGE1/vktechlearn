@@ -95,10 +95,8 @@
     .header-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .6rem; padding: .85rem 0 .5rem; }
     .brand { grid-column: 2; display: flex; align-items: center; gap: .75rem; text-align: left; }
     .brand-mark {
-      flex: none; width: 52px; height: 52px; display: grid; place-items: center;
-      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: .95rem; color: #04121a;
-      background: var(--grad); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-      box-shadow: 0 0 26px rgba(0, 240, 255, .55);
+      flex: none; width: 84px; height: 42px; display: block; object-fit: contain;
+      filter: drop-shadow(0 0 14px rgba(0, 240, 255, .18));
     }
     .brand-text { display: grid; }
     .brand-name { font-family: 'Orbitron', sans-serif; font-size: clamp(1.1rem, 2.6vw, 1.55rem); font-weight: 900; letter-spacing: .1em; text-transform: uppercase; position: relative; display: inline-block; }
@@ -497,7 +495,7 @@
       }
       .main-nav .dropdown a { padding: .55rem .4rem; border-bottom: 0; }
       html[data-theme="night"] .main-nav .dropdown { background: rgba(0, 119, 143, .07); }
-      .brand-mark { width: 44px; height: 44px; font-size: .82rem; }
+      .brand-mark { width: 66px; height: 33px; }
       .brand-tag { letter-spacing: .14em; font-size: .68rem; }
     }
     @media (max-width: 420px) {
@@ -547,7 +545,6 @@
       --grad: linear-gradient(100deg, #00778f, #5b3fc4 45%, #b3165f);
       color-scheme: light;
     }
-    html[data-theme="night"] .brand-mark { color: #fff; }
     html[data-theme="night"] .btn,
     html[data-theme="night"] .skip-link { color: #fff; }
     html[data-theme="night"] .btn-ghost { background: transparent; color: var(--neon); border: 1px solid var(--line-strong); }
@@ -599,7 +596,7 @@
         </div>
 
         <a class="brand" href="./" aria-label="VK Tech Learn — home">
-          <span class="brand-mark" aria-hidden="true">VK</span>
+          <img class="brand-mark" src="img/logo.svg" alt="" width="84" height="42" aria-hidden="true" decoding="async" />
           <span class="brand-text">
             <span class="brand-name neon-text" data-text="VK Tech Learn">VK Tech Learn</span>
             <span class="brand-tag">Tech · Learn · Tools</span>
