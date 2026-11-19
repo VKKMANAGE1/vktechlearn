@@ -1278,8 +1278,6 @@
       const title = document.createElement("h3");
       const link = document.createElement("a");
       link.href = post.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
       link.textContent = post.title;
       title.append(link);
 
@@ -1289,8 +1287,6 @@
       const read = document.createElement("a");
       read.className = "read-more";
       read.href = post.url;
-      read.target = "_blank";
-      read.rel = "noopener noreferrer";
       read.append(document.createTextNode(T("Read More", "पोस्ट पढ़ें")), arrow());
 
       body.append(meta, title, excerpt, read);
