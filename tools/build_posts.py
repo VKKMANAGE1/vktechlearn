@@ -16,6 +16,9 @@ import sys
 import urllib.request
 from datetime import datetime
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import post_seo  # noqa: E402  (shared SEO head + hero images)
+
 FEED_URL = os.environ.get("FEED_URL", "https://www.blogger.com/feeds/994118461602418597/posts/default?alt=json&max-results=500")
 SITE_URL = os.environ.get("SITE_URL", "https://vktechlearn.site").rstrip("/")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -115,6 +118,9 @@ h1.post-title {
 .post-body ul, .post-body ol { padding-left: 1.4rem; margin: .9rem 0; }
 .post-body li { margin: .35rem 0; text-align: justify; }
 .post-body img { max-width: 100%; height: auto; border-radius: 10px; display: block; margin: 1rem auto; }
+.post-hero { margin: 1.2rem 0 1.6rem; }
+.post-hero img { max-width: 100%; height: auto; border-radius: 12px; display: block; margin: 0 auto; }
+.post-hero figcaption { color: var(--muted); font-size: .82rem; text-align: center; margin-top: .5rem; }
 .post-body a { text-decoration: underline; text-underline-offset: 2px; }
 .post-body blockquote {
   margin: 1.2rem 0; padding: .6rem 1rem; border-left: 3px solid var(--cyan);
@@ -159,6 +165,7 @@ PAGE = """<!doctype html>
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{canonical}">
 <link rel="canonical" href="{canonical}">
+{seo_html}
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f1a'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='27' font-weight='bold' fill='%2300e5ff' text-anchor='middle'%3EVK%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -476,8 +483,21 @@ def main():
         # author byline is added by the template - drop any copy coming from the post body
         body = re.sub(r'<span\s+class="author"[^>]*>.*?</span>', '', body, flags=re.I | re.S)
         body = re.sub(r'<p>\s*<strong>\s*(?:लेखक|Author|By)\s*:?.*?</strong>\s*</p>', '', body, flags=re.I | re.S)
-        excerpt = re.sub(r"<[^>]+>", " ", body)
-        excerpt = re.sub(r"\s+", " ", html.unescape(excerpt)).strip()[:160]
+        body = post_seo.drop_placeholder_images(body)
+        excerpt = post_seo.meta_description(body or post["title"])
+        hero = post_seo.hero_html(post["slug"], post["title"])
+        hero_path = post_seo.hero_image(post["slug"])[0]
+        share_image = post_seo.first_usable_image(body) or post_seo.absolute(hero_path)
+        seo_html = post_seo.seo_block(
+            title=post["title"],
+            description=excerpt,
+            canonical=f"{SITE_URL}/posts/{post['slug']}.html",
+            published=dt.isoformat(),
+            modified=dt.isoformat(),
+            labels=post["labels"],
+            image=share_image,
+            image_alt=post["title"],
+        )
         page = PAGE.format(
             title=html.escape(post["title"]),
             description=html.escape(excerpt or post["title"]),
@@ -489,7 +509,8 @@ def main():
             label_html=label_html,
             iso=dt.isoformat(),
             date=date_text,
-            hero_html="",
+            hero_html=hero,
+            seo_html=seo_html,
             body="\n".join(("      " + line) if line.strip() else "" for line in body.splitlines()),
         )
         with open(os.path.join(OUT_DIR, f"{post['slug']}.html"), "w", encoding="utf-8") as handle:

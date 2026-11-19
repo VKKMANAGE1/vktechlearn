@@ -120,3 +120,8 @@ footer.site-foot {
   body { font-size: 16px; }
   .post-head .wrap { padding: .65rem 0; }
 }
+
+/* single post hero */
+.post-hero { margin: 1.2rem 0 1.6rem; }
+.post-hero img { max-width: 100%; height: auto; border-radius: 12px; display: block; margin: 0 auto; }
+.post-hero figcaption { color: var(--muted); font-size: .82rem; text-align: center; margin-top: .5rem; }
