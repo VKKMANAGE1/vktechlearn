@@ -29,3 +29,7 @@ shavi-code/runtime/
 
 # M11 admin panel service dependencies
 shavi-admin/node_modules/
+
+# M12 backup dumps (never committed)
+backups/
+librechat-deploy/.env

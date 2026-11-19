@@ -1,7 +1,8 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M11 — Admin & Security (implemented and audited: 37/39 checks pass, **1 open issue: per-user chat
-rate limit does not deny** — see §1k open items; awaiting approval. M05 still unaudited)
+**Milestone:** M12 — Final QA & Deployment (implemented and audited: **M12 E2E 22/22**, **M11 39/39** after fixing the
+test's SSE predicate, production client build + Docker/HTTPS configuration + a real backup/restore drill verified;
+awaiting approval. M05 still unaudited)
 **Date:** 2026-11-19
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -553,7 +554,7 @@ missing pieces plus the wiring that makes the existing security controls actuall
 | **Usage tracking** | `service.mjs` aggregations over Mongo `messages.tokenCount` / `conversations` / `users` | Panel totals **equal** a direct Mongo aggregation: `266/133/133/512,907` (messages/user/assistant/tokens) in both; `byDay`, `byModel`, `byUser` returned | Overview KPIs + per-day bar chart + model table; Usage tab switches day/model/user | **PASS** | Windows are token-total only (LibreChat stores one `tokenCount`, no prompt/completion split) |
 | **Cost tracking** | `shavi-admin/pricing.json` + `service.mjs` (`priceFor`/`costOf`, agent→model resolution) | Panel total `$0.7345` == recomputed `tokens × price` `$0.7345` (tolerance 1e-4); payload labelled `estimate: true`, `currency: USD`, unpriced tokens reported (0 after agent mapping + `meta/llama-3.2-90b-vision` price) | Cost tab: total, priced-model count, unpriced tokens, per-model table with blended $/1M | **PASS** | Prices are list prices, not provider invoices; the table must be kept current by hand |
 | **User Permissions** | LibreChat roles/capabilities (`/api/admin/roles`, `/api/roles/:name/:group`, `systemgrants`), panel Permissions tab, `shavi-admin/service.mjs` proxy | Plain account: panel 403, `GET /api/admin/users` **403**, role write **403**; ADMIN: `access:admin` + 25 capabilities; `PUT /api/roles/USER/prompts {SHARE_PUBLIC:true}` → 200 and the role document **changes** (`PROMPTS.SHARE_PUBLIC` flips, then restored) | Roles table lists each role with its capability groups; toggle writes through the documented per-group route | **PASS** | No UI to create roles or assign members yet (API supports it) |
-| **Rate Limits** | LibreChat limiters (`messageLimiters`, `loginLimiter`, `registerLimiter`, `toolCallLimiter`) + `tools/start-librechat.sh` enabling them; panel Rate-limits tab | **Login limiter denies with HTTP 429** `{"message":"Too many login attempts, please try again after 5 minutes."}`; chat IP limiter denies with an SSE `{"type":"message_limit","max":"2","limiter":"ip"}` frame at `MESSAGE_IP_MAX=2`; headers show `X-RateLimit-Limit/Remaining` decrementing | Rate-limits tab shows configured budgets and the limiter source | **PARTIAL — per-user chat limiter counts but never denies** | Open issue 1: 5 concurrent turns at `MESSAGE_USER_MAX=3` all succeeded (no `limiter:"user"` denial frame) while the IP-keyed limiter did deny in a manual probe. Login/register/tool limiters are unaffected |
+| **Rate Limits** | LibreChat limiters (`messageLimiters`, `loginLimiter`, `registerLimiter`, `toolCallLimiter`) + `tools/start-librechat.sh` enabling them; panel Rate-limits tab | **Login limiter denies with HTTP 429** `{"message":"Too many login attempts, please try again after 5 minutes."}`; chat IP limiter denies with an SSE `{"type":"message_limit","max":"2","limiter":"ip"}` frame at `MESSAGE_IP_MAX=2`; headers show `X-RateLimit-Limit/Remaining` decrementing | Rate-limits tab shows configured budgets and the limiter source | **PASS (re-verified in M12)** | The M11 "never denies" result was a **test bug**, not a product bug: the denial is streamed as HTTP 200 with an SSE `error` frame whose JSON is escaped (`{\"type\":\"message_limit\",\"limiter\":\"user\"}`), so a raw-substring predicate never matched it. With the predicate fixed, 5 concurrent turns at `MESSAGE_USER_MAX=3` produce **3 denials** (M11 and M12 suites), login still returns 429, and `X-RateLimit-*` headers decrement.
 | **Audit Logs** | LibreChat hash-chained audit log (`auditlogs`, `api/server/routes/admin/audit.js`), panel Audit tab + `service.mjs` proxies | Every read is itself audited (`audit.read`); a role change emits `role.permissions_updated`; entries count grew 20 → 27 during the run; `GET /api/panel/audit/verify` → `{ok:true, checked:…, range:{firstSeq:1,lastSeq:…}}`; CSV export returns rows | Audit tab: table (time/category/action/actor/target/outcome/seq), **Verify hash chain** button, CSV download | **PASS** | Append-only store; retention/purge policy not defined |
 | **Data Privacy** | `shavi-admin/service.mjs` (`exportUserData`), LibreChat `DELETE /api/user/delete` cascade; panel Privacy tab | Export is generated from Mongo for the **caller only** (admin export returned the admin account, not the other user); counts matched the DB; no password hash / `totpSecret` in the export or in `/api/panel/me`; delete → 200, user row gone, owned conversations gone, re-login fails | Privacy tab: “Download my data (JSON)” + “Delete my account” (confirm dialog) | **PASS** | Export includes conversations/messages/memories/files-metadata/projects/shared links; RAG vectors and uploads on disk are removed by LibreChat's own file cleanup (not re-verified here) |
 
@@ -588,14 +589,11 @@ PASS no provider key is present in the panel responses
 
 ### M11 — open items (not hidden, not fixed)
 
-1. **Per-user chat limiter does not deny.** Evidence: 5 concurrent `POST /api/agents/chat` at
-   `MESSAGE_USER_MAX=3 / WINDOW=1` all returned 200 with no `{"type":"message_limit","limiter":"user"}` frame,
-   while `X-RateLimit-*` headers show the user bucket counting (2 → 1 → 0). With `MESSAGE_IP_MAX=2` the IP-keyed
-   limiter **did** deny (SSE `message_limit` frame), and the login limiter denies with HTTP 429, so the middleware
-   itself works — the per-user bucket's deny path does not fire in this build. Next step: read
-   `agents/index.js` `exemptScheduleFromUserLimiter` / `isConfirmedGenerationRetry` interplay and, if it is a
-   v0.8.9 defect, enforce the quota in `shavi-admin` only if chat is proxied through it (it is not today), or patch
-   `messageLimiters.js` to use an explicit counter.
+1. ~~**Per-user chat limiter does not deny.**~~ **Resolved in M12 — it was the test, not the limiter.** The denial
+   frame exists but is JSON-escaped inside the SSE payload (`{\"type\":\"message_limit\",\"limiter\":\"user\"}`), so
+   the old predicate (`text.includes('"type":"message_limit"')`) never matched. `m11-admin-security-test.mjs` now
+   matches `message_limit` / `limiter\"user` and reports 3 denials out of 5 concurrent turns at
+   `MESSAGE_USER_MAX=3`; `m12-e2e-test.mjs` asserts the same behaviour independently.
 2. Message-limit denials are streamed as HTTP 200 + `event: error` (SSE), not HTTP 429 — the panel and docs must say
    so, otherwise a monitor watching status codes will miss abuse.
 3. The admin panel runs on its own port (4127) and is not yet exposed through the site's reverse proxy or protected
@@ -605,6 +603,99 @@ PASS no provider key is present in the panel responses
    a screenshot run is still owed.
 5. Rate-limit counters are in-memory per backend process (`USE_REDIS` is off): a restart resets them and multiple
    replicas would each keep their own window.
+
+---
+
+## 1l. M12 — Final QA & Deployment (end-to-end test, bugs fixed, build, Docker, HTTPS, backup/recovery)
+
+No feature was added in this milestone. The only product code changed is two **bug fixes** found by the new tests
+(privacy-export ownership filter, deployment parity for the branded API image); everything else is verification,
+test harness and deployment configuration.
+
+**Files added / changed this milestone**
+
+| File | Purpose |
+| --- | --- |
+| `tools/librechat-dev/m12-e2e-test.mjs` | 22-check end-to-end suite on the live stack (build serving → auth → real chat → persistence → memory → admin → rate limit → privacy → backup/restore → log hygiene) |
+| `tools/backup-mongo.mjs` | JSONL dump of every collection + `uploads/` into `backups/backup-<ts>/` with a manifest (`mongo`, counts, file list) |
+| `tools/restore-mongo.mjs` | restores a dump into any target URI (`--db`), optional `--drop`, optional `--uploads`, then runs a per-collection count comparison (`RECOVERY CHECK OK`) |
+| `librechat-deploy/docker-compose.yml` | production stack: api (built from the local tree), admin (M11), mongodb + healthcheck, caddy, scheduled mongodump + retention, meilisearch, vectordb, rag_api |
+| `librechat-deploy/Caddyfile` | HTTPS for both hostnames, HSTS/nosniff/Referrer-Policy, `flush_interval -1` so chat SSE is not buffered |
+| `librechat-deploy/.env.example` | every variable the stack needs, including `SHAVI_DOMAIN`, `SHAVI_ADMIN_DOMAIN`, `ACME_EMAIL`, `ADMIN_PANEL_URL`, `LIMIT_MESSAGE_*`, `BACKUP_*` |
+| `shavi-admin/Dockerfile` | unprivileged `node:22-alpine` image for the panel/gateway with a healthcheck |
+| `shavi-admin/service.mjs` | **bug fix:** `exportUserData` now scopes by both the hex string and the ObjectId form of the user id |
+| `tools/librechat-dev/m11-admin-security-test.mjs` | **test fix:** SSE denial predicate + string-typed ownership counts |
+| `.gitignore` | `backups/`, `librechat-deploy/.env` |
+
+### Requirement table (evidence, not appearance)
+
+| Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| **End-to-end application test** | `tools/librechat-dev/m12-e2e-test.mjs` | 22/22 checks on the live stack: register → login JWT → `POST /api/agents/chat` → **model actually answered** (`M12QACHK1795100895953`) → conversation + assistant message in Mongo with `tokenCount=14` → history API lists it → memory create/list/delete → panel `overview` 200 for admin / 403 for user → audit chain `{ok:true, checked:34}` → rate-limit denials → privacy export + delete cascade → backup + restore → no prompt text in logs | SPA shell and hashed JS/CSS are the files the browser loads (`/` 200, `/assets/index.BWdvrzJr.js` 200, css 200, `sw.js` 200); panel `/` 200 + `/app.js` 200. **No interactive click-through in a browser** (open item 3) | **PASS** | Flow coverage is API-level; DOCX/OCR/voice/image paths were verified in their own milestones and were not re-run here |
+| **Bugs fixed** | `shavi-admin/service.mjs` (export), `tools/librechat-dev/m11-*.mjs` (test predicate) | Privacy export previously returned **0** conversations/messages for an account that owned 3/4 rows, because `conversations.user` / `messages.user` / `memoryentries.userId` are stored as the hex **string** while the gateway filtered by `ObjectId`. Query is now `{$in:[String(id), ObjectId(id)]}`; export counts equal a direct Mongo count (`3/4 vs 3/4`, `m12` and `m11` suites both assert it). The M11 "rate limit never denies" finding was traced to the escaped SSE frame and corrected in the test | — | **PASS (both fixed and re-verified)** | No other functional defect surfaced in this pass |
+| **Production build** | `librechat/client` (Vite), `librechat/client/dist/*` | `NODE_OPTIONS=--max-old-space-size=6144 npx vite build` → “✓ built in 10.85s”; the running API serves that build: `GET /` 200 `28,026 b` HTML, `index.BWdvrzJr.js` 200 `617,116 b`, css 200 `298,503 b`, `sw.js` 200; bundle scanned — **no provider key** (`nvapi-`) present | Built `index.html` references the served hashed asset names (same names in `dist/` and in the HTTP response) | **PASS** | Build is a client build only; type/lint gate not re-run (no source change in this milestone) |
+| **Docker deployment** | `librechat-deploy/docker-compose.yml`, `shavi-admin/Dockerfile`, `librechat/Dockerfile`, `librechat-deploy/.env.example` | `docker compose config -q` → **exit 0** with 8 services (`api, admin, caddy, mongodb, backup, meilisearch, vectordb, rag_api`); `api` now **builds from `../librechat`** instead of the stock registry image, because the SHAVI branding (`client/src/components/BrandMark.tsx`, `logo.svg`, `shavi-mark.svg`) exists only in the local tree and the Dockerfile runs `npm run frontend`; the panel image has a lockfile for `npm ci --omit=dev`; mongodb has a ping healthcheck; `backup` runs `mongodump --gzip` on `BACKUP_INTERVAL_HOURS` with `BACKUP_KEEP_DAYS` retention | Not applicable (server-side stack) | **PARTIAL — configuration verified, containers not started** | No Docker daemon in this VM (`docker info` → exit 1, socket is root-only), so `up -d --build` could not be executed. The same stack was verified natively (Mongo 8, LibreChat, panel, Caddy) — open item 1 |
+| **HTTPS** | `librechat-deploy/Caddyfile`, compose `caddy` service (ports 80/443/tcp+udp, `caddy_data`/`caddy_config` volumes) | `caddy validate --config Caddyfile` (v2.10.0) → **“Valid configuration”**, automatic HTTP→HTTPS redirects enabled; live TLS run with the same directives (self-signed cert for the test, `flush_interval -1`): app over HTTPS → **HTTP/2 200** with `strict-transport-security` + `x-content-type-options: nosniff`; panel over HTTPS → **200** `{"status":"ok","mongo":true,…}` with `X-Frame-Options: DENY` | Both hostnames are served through the same reverse proxy the browser would hit | **PASS for TLS termination/proxy; ACME issuance not exercised** | Let's Encrypt needs public DNS + ports 80/443; the VM has neither (port 80 bind is refused), so certificate issuance/renewal is configuration-only here (open item 2) |
+| **Backup** | `tools/backup-mongo.mjs`, compose `backup` service | Live dump: **77 collections, 993 documents, 90 upload files**, manifest written with the source URI and per-collection counts; re-runnable, timestamped directory | — | **PASS** | The containerized `mongodump` loop is configuration-only (no daemon); the Node dump is what was actually executed |
+| **Recovery** | `tools/restore-mongo.mjs` | Restore of that dump into a **separate database** (`LibreChatRecoveryCheck`) → every collection count matched → `RECOVERY CHECK OK — 77 collections, 993 documents restored`; original `LibreChat` database untouched | — | **PASS** | Restore was verified into a scratch DB; a restore **over** production (with `--drop`) was not executed on purpose. Uploads are only restored with `--uploads` |
+| **Log/privacy hygiene** | LibreChat loggers, panel logger | Both service logs scanned: the chat token never appears (prompt text is not logged); panel responses carry no provider key | — | **PASS** | — |
+
+### M12 test log (`tools/librechat-dev/m12-e2e-test.mjs`, live stack)
+
+```
+PASS API health endpoint answers — GET /health -> 200
+PASS production bundle is served (SPA shell + hashed JS asset) — /assets/index.BWdvrzJr.js -> 200
+PASS built bundle carries no provider key — index.html scanned
+PASS admin panel service is up — mongo=true
+PASS registration creates an account — register -> 200
+PASS login issues a JWT — login -> 200
+PASS admin login issues a JWT — admin@shavi.local
+PASS chat request is accepted and starts a generation — conversation 3efe93b6-…
+PASS the model answers through the real provider — reply: M12QACHK1795100895953
+PASS conversation and messages are persisted in MongoDB — 1 assistant message(s)
+PASS token usage is recorded for the model call — tokenCount=14
+PASS conversation appears in the history API — 1 conversation(s)
+PASS memory create/list works through the real API — 1 memories
+PASS memory delete works — 200
+PASS admin panel data is admin-only — admin 200, user 403
+PASS audit hash chain verifies — {ok:true, checked:34, range:{firstSeq:1,…}}
+PASS per-user message rate limit denies a burst — 3/5 denied
+PASS data export matches the database rows for this account — export 3/4 vs mongo 3/4
+PASS account deletion cascades (user + messages removed) — user=gone, messages=0
+PASS MongoDB backup completes — 77 collections, 993 documents, uploads 90 files | RECOVERY CHECK OK
+PASS backup restores into a clean database and counts match — 993 documents restored
+PASS prompt text never reaches the service logs — both logs scanned
+
+22/22 checks passed
+```
+
+M11 suite re-run on the same stack after the predicate fix: **39/39 checks passed** (was 37/39).
+
+```
+$ docker compose -f librechat-deploy/docker-compose.yml config -q        # exit 0
+$ caddy validate --config librechat-deploy/Caddyfile --adapter caddyfile # Valid configuration
+$ curl -sk https://127.0.0.1:8443/health   # HTTP/2 200, hsts + nosniff, app behind caddy
+$ curl -sk https://127.0.0.1:9443/health   # 200 {"status":"ok","mongo":true,…}
+$ node tools/backup-mongo.mjs  → 77 collections, 993 documents, 90 uploads
+$ node tools/restore-mongo.mjs <dir> --db …/LibreChatRecoveryCheck → RECOVERY CHECK OK
+```
+
+### M12 — open items (not hidden, not fixed)
+
+1. **Containers were not started.** The Docker socket is root-only in this VM (`docker info` → exit 1), so the stack
+   was verified as configuration (`compose config`), by component parity with the native stack, and by running the
+   real Caddy binary. On a Docker host the gate is `docker compose up -d --build` + `docker compose ps` healthy.
+2. **ACME/Let's Encrypt was not exercised** — needs public DNS for both hostnames and ports 80/443. Until then HTTPS
+   is proven only up to TLS termination + header/streaming behaviour with a self-signed certificate.
+3. **No interactive browser click-through** of the built SPA or the panel in this milestone; verification was HTTP +
+   API level. A screenshot/UX pass is still owed and is the only unverified layer.
+4. **Rate-limit counters are per process** (`USE_REDIS` off): restarting the API resets windows and multiple replicas
+   would not share them — set `USE_REDIS=true` + a Redis service before scaling out.
+5. **Deployment needs the patched LibreChat tree on the host** (the API image builds from `../librechat`); the vendor
+   directory is gitignored, so a fresh clone must clone LibreChat v0.8.9 and re-apply the branding step (M03) before
+   `compose build`.
+6. **Panel origin** still needs a real hostname in `ADMIN_PANEL_URL`/`SHAVI_ADMIN_DOMAIN` (Caddy route is ready,
+   DNS is not).
 
 ---
 

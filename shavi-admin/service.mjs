@@ -295,6 +295,9 @@ async function exportUserData(userId) {
   const db = await mongo();
   const { ObjectId } = await import('mongodb');
   const _id = ObjectId.isValid(userId) ? new ObjectId(userId) : userId;
+  // LibreChat stores ownership as the hex *string* for conversations/messages/memories and
+  // as an ObjectId elsewhere, so scope by both forms instead of guessing per collection.
+  const owner = { $in: [String(userId), _id] };
   const user = await db.collection('users').findOne({ _id });
   if (!user) throw new HttpError(404, 'User not found');
   const safeUser = { ...user };
@@ -303,15 +306,15 @@ async function exportUserData(userId) {
   delete safeUser.backupCodes;
 
   const [conversations, messages, memories, files, projects, sharedLinks] = await Promise.all([
-    db.collection('conversations').find({ user: _id }).toArray(),
-    db.collection('messages').find({ user: _id }).toArray(),
-    db.collection('memoryentries').find({ userId: _id }).toArray().catch(() => []),
+    db.collection('conversations').find({ user: owner }).toArray(),
+    db.collection('messages').find({ user: owner }).toArray(),
+    db.collection('memoryentries').find({ userId: owner }).toArray().catch(() => []),
     db.collection('files')
-      .find({ user: _id }, { projection: { text: 0, content: 0 } })
+      .find({ user: owner }, { projection: { text: 0, content: 0 } })
       .toArray()
       .catch(() => []),
-    db.collection('chatprojects').find({ user: _id }).toArray().catch(() => []),
-    db.collection('sharedlinks').find({ user: _id }).toArray().catch(() => []),
+    db.collection('chatprojects').find({ user: owner }).toArray().catch(() => []),
+    db.collection('sharedlinks').find({ user: owner }).toArray().catch(() => []),
   ]);
 
   return {

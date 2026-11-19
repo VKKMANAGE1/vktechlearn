@@ -257,8 +257,10 @@ try {
   // Fire them together: a turn can take longer than the 1-minute window when awaited
   // one by one, which would silently reset the limiter between requests.
   const turns = await Promise.all([0, 1, 2, 3, 4].map((i) => chat(userToken, i)));
-  const limited = turns.filter((t) => t.text.includes('"type":"message_limit"'));
-  const userLimited = limited.filter((t) => t.text.includes('"limiter":"user"'));
+  // The denial travels inside an SSE `error` frame whose JSON is itself stringified on
+  // the wire, so the quotes are escaped (`\"type\":\"message_limit\"`).
+  const limited = turns.filter((t) => t.text.includes('message_limit'));
+  const userLimited = limited.filter((t) => /limiter\\*"\s*:\s*\\*"user/.test(t.text));
   check(
     'chat rate limit denies the turn once the per-user budget is spent',
     limited.length > 0,
@@ -317,8 +319,9 @@ try {
 
   /* ---------------------------------------------------------- 9. data privacy */
   const exportRes = await panel('/api/panel/privacy/export', userToken);
-  const userConvos = await db.collection('conversations').countDocuments({ user: createdUserId });
-  const userMessages = await db.collection('messages').countDocuments({ user: createdUserId });
+  // LibreChat stores ownership as the hex string for these collections.
+  const userConvos = await db.collection('conversations').countDocuments({ user: String(createdUserId) });
+  const userMessages = await db.collection('messages').countDocuments({ user: String(createdUserId) });
   check('account export is generated from the database', exportRes.status === 200 && exportRes.body.format === 'shavi-ai-user-export/v1', `${exportRes.status}`);
   check(
     'export counts match the database rows for that account',
@@ -340,7 +343,7 @@ try {
   const deleted = await panel('/api/panel/privacy/account', userToken, { method: 'DELETE', body: JSON.stringify({}) });
   check('account deletion runs through the API', deleted.status === 200, `${deleted.status} ${deleted.body.error ?? ''}`.trim());
   const goneUser = await db.collection('users').findOne({ email: TEST_EMAIL });
-  const goneConvos = await db.collection('conversations').countDocuments({ user: createdUserId });
+  const goneConvos = await db.collection('conversations').countDocuments({ user: String(createdUserId) });
   check(
     'deletion cascades: user row and owned conversations are gone',
     goneUser === null && goneConvos === 0,

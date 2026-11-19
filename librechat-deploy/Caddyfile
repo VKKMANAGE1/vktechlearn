@@ -1,0 +1,50 @@
+# SHAVI AI — HTTPS termination for the Docker deployment (M12).
+#
+# Caddy obtains and renews Let's Encrypt certificates automatically; nothing else in the
+# stack is exposed to the internet, so the api/panel containers need no TLS of their own.
+#
+#   SHAVI_DOMAIN       chat.example.com      -> LibreChat (SPA + /api)
+#   SHAVI_ADMIN_DOMAIN admin.example.com     -> shavi-admin panel (M11)
+#
+# Both hostnames must resolve to this host before `docker compose up`; Caddy fails the
+# ACME challenge otherwise. For a local test set the env vars to :80 / localhost and
+# Caddy serves plain HTTP instead of provisioning a certificate.
+
+{
+	email {$ACME_EMAIL}
+	# Uncomment for staging certificates while testing a new hostname:
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+{$SHAVI_DOMAIN} {
+	encode zstd gzip
+
+	# Security headers (LibreChat sets its own CSP; these are the transport-level ones).
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Streaming chat responses must not be buffered by the proxy.
+	reverse_proxy api:{$PORT:3080} {
+		flush_interval -1
+		header_up X-Forwarded-Proto {scheme}
+	}
+}
+
+{$SHAVI_ADMIN_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	# The panel runs on 4127 and proxies every /api/panel/* call to LibreChat itself.
+	reverse_proxy admin:4127
+}
