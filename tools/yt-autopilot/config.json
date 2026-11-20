@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "privacy": "public",
+  "clips_per_run": 2,
+  "clip_seconds": [25, 50],
+  "max_source_age_days": 120,
+  "min_source_views": 150,
+  "caption_langs": ["hi", "en"],
+  "burn_captions": true,
+  "title_style": "hinglish",
+  "hashtags": ["#Shorts", "#VKTechLearn"],
+  "extra_tags": [],
+  "category_id": "22"
+}

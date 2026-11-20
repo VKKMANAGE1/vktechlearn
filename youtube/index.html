@@ -9,7 +9,7 @@
       content="अपने YouTube channel का link दें — 11 AI skills और 6 tools खुद चलकर पूरा video package (script, title, thumbnail text, description, Shorts, plan) बना देंगे। मुफ़्त, बिना login."
     />
     <link rel="icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="./style.css?v=2" />
+    <link rel="stylesheet" href="./style.css?v=3" />
   </head>
   <body>
     <header class="top">
@@ -32,6 +32,55 @@
 
       <!-- ------------------------------------------------------- auto pilot -->
       <main class="stage" id="pilot">
+        <!-- ------------------------------------------ channel + autopilot -->
+        <section class="publish" id="publish">
+          <div class="pub-head">
+            <div>
+              <h2>Channel जोड़ें — बाकी काम यह खुद करेगा</h2>
+              <p>
+                एक बार connect कीजिए. उसके बाद यह खुद अपने ही channel के सबसे अच्छे हिस्सों से 25–50 सेकंड
+                की vertical Shorts काटता है, captions जलाता है, title/description लिखता है और सीधे आपके
+                channel पर publish कर देता है. आपको सिर्फ़ नतीजा देखना है — या "Test run" से पहले जाँच लेना है.
+              </p>
+            </div>
+            <span class="pill" id="pubPill">जाँच हो रही है…</span>
+          </div>
+
+          <div class="pub-channel" id="pubChannel">
+            <p class="muted">Channel की जानकारी आ रही है…</p>
+          </div>
+
+          <div class="actions pub-actions">
+            <button id="pubConnect" class="primary" type="button">Channel connect करें</button>
+            <button id="pubRun" class="ghost" type="button" disabled>अभी चलाओ</button>
+            <button id="pubTest" class="ghost" type="button" disabled>Test run (publish नहीं)</button>
+            <a id="pubActions" class="link" href="https://github.com/VKKMANAGE1/vktechlearn/actions/workflows/yt-autopilot.yml" target="_blank" rel="noopener noreferrer">Actions में देखें</a>
+            <span id="pubStatus" class="status" aria-live="polite"></span>
+          </div>
+
+          <div id="pubNotes" class="pub-notes" hidden></div>
+
+          <div class="pub-lists">
+            <div>
+              <h3>पिछले runs</h3>
+              <ul id="pubRuns" class="pub-list"><li class="muted">अभी कोई run नहीं</li></ul>
+            </div>
+            <div>
+              <h3>पिछली Shorts</h3>
+              <ul id="pubClips" class="pub-list"><li class="muted">अभी कुछ publish नहीं हुआ</li></ul>
+            </div>
+          </div>
+
+          <p class="fine">
+            Clips सिर्फ़ आपके ही channel के videos से बनते हैं — किसी और का content नहीं उठाया जाता. Google से
+            सिर्फ़ upload और अपने channel का data पढ़ने की अनुमति माँगी जाती है; token Worker में रहता है,
+            browser में कभी नहीं आता, और आप कभी भी
+            <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google permissions</a>
+            से हटा सकते हैं. “Viral” की गारंटी कोई tool नहीं देता — यह आपके proven हिस्सों को Shorts में बदलकर
+            लगातार post करता है, बाकी दर्शक तय करते हैं.
+          </p>
+        </section>
+
         <section class="head">
           <h2>Auto Pilot — एक link, पूरा package</h2>
           <p>
@@ -126,6 +175,6 @@
       </form>
     </dialog>
 
-    <script src="./app.js?v=2" type="module"></script>
+    <script src="./app.js?v=3" type="module"></script>
   </body>
 </html>

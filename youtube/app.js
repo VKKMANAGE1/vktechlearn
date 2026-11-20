@@ -661,6 +661,133 @@ function downloadPackage() {
   URL.revokeObjectURL(link.href);
 }
 
+/* ------------------------------------------------------- channel + publish */
+
+const ACTIONS_URL = "https://github.com/VKKMANAGE1/vktechlearn/actions/workflows/yt-autopilot.yml";
+
+function pubSay(text, kind) {
+  setStatus($("pubStatus"), text || "", kind);
+}
+
+function pill(text, kind) {
+  const el = $("pubPill");
+  el.textContent = text;
+  el.className = `pill ${kind}`;
+}
+
+function renderChannel(data) {
+  const box = $("pubChannel");
+  if (!data.connected || !data.channel) {
+    box.innerHTML =
+      '<p class="muted">अभी कोई channel जुड़ा नहीं है. नीचे Connect दबाएँ — Google खुलेगा, अपना channel चुनें और अनुमति दें. एक ही बार करना है.</p>';
+    return;
+  }
+  const since = (data.channel.connectedAt || "").slice(0, 10);
+  box.innerHTML = `
+    ${data.channel.thumb ? `<img src="${data.channel.thumb}" alt="" width="44" height="44" />` : ""}
+    <div>
+      <strong>${data.channel.title}</strong>
+      <p class="muted">${since} से जुड़ा · अब तक ${data.published ?? 0} Shorts publish हुईं</p>
+    </div>`;
+}
+
+function renderList(el, rows, empty) {
+  if (!rows.length) {
+    el.innerHTML = `<li class="muted">${empty}</li>`;
+    return;
+  }
+  el.innerHTML = rows
+    .map((row) => {
+      if (row.url) {
+        return `<li><a href="${row.url}" target="_blank" rel="noopener noreferrer">${row.title || row.video_id}</a><span class="when">${(row.at || "").slice(0, 16).replace("T", " ")}</span></li>`;
+      }
+      const mark = row.status === "published" ? "✓" : row.status === "failed" ? "✕" : "·";
+      return `<li>${mark} ${row.source_title || row.status}${row.note ? ` — ${row.note}` : ""}<span class="when">${(row.at || "").slice(0, 16).replace("T", " ")}</span></li>`;
+    })
+    .join("");
+}
+
+function renderPublish(data) {
+  pill(data.connected ? "जुड़ा हुआ" : "जुड़ा नहीं", data.connected ? "ok" : "bad");
+  renderChannel(data);
+  $("pubConnect").textContent = data.connected ? "दोबारा connect करें" : "Channel connect करें";
+  $("pubConnect").disabled = !data.oauth;
+  $("pubRun").disabled = !data.connected;
+  $("pubTest").disabled = !data.connected;
+  renderList($("pubRuns"), data.runs || [], "अभी कोई run नहीं");
+  renderList($("pubClips"), data.clips || [], "अभी कुछ publish नहीं हुआ");
+
+  const notes = [];
+  if (!data.oauth) {
+    notes.push(
+      `Worker में <code>GOOGLE_CLIENT_ID</code> / <code>GOOGLE_CLIENT_SECRET</code> सेट नहीं हैं. Google Cloud → APIs &amp; Services → Credentials → OAuth client (Web application) बनाइए, “Authorized redirect URI” में यह डालिए: <code>${API_BASE}/api/yt/oauth/callback</code> — फिर दोनों keys Sites → Secrets में जोड़ दीजिए.`,
+    );
+  }
+  if (!data.storage) notes.push("Worker में <code>DB</code> (D1) binding नहीं है — token कहीं सेव नहीं हो पाएगा.");
+  if (data.connected) {
+    notes.push("Schedule: रोज़ 09:10 और 21:10 IST (GitHub Actions). Settings: <code>tools/yt-autopilot/config.json</code> — privacy, clips per run, length, hashtags.");
+  }
+  if (data.connected && !data.dispatch) {
+    notes.push(`“अभी चलाओ” के लिए Worker में <code>GH_TOKEN</code> चाहिए — तब तक <a href="${ACTIONS_URL}" target="_blank" rel="noopener noreferrer">Actions tab</a> से Run workflow दबाएँ.`);
+  }
+  $("pubNotes").innerHTML = notes.map((line) => `<p>${line}</p>`).join("");
+  $("pubNotes").hidden = notes.length === 0;
+}
+
+async function loadPublish() {
+  try {
+    const res = await fetch(`${API_BASE}/api/yt/status`, { cache: "no-store" });
+    renderPublish(await res.json());
+  } catch (error) {
+    pill("Worker से कनेक्ट नहीं", "bad");
+    pubSay(`status नहीं आया: ${error.message}`, "error");
+  }
+}
+
+function connectChannel() {
+  const here = location.origin + location.pathname;
+  location.href = `${API_BASE}/api/yt/oauth/start?return=${encodeURIComponent(here)}`;
+}
+
+async function runAutopilot(dryRun) {
+  $("pubRun").disabled = true;
+  $("pubTest").disabled = true;
+  pubSay("Actions पर भेजा जा रहा है…");
+  try {
+    const res = await fetch(`${API_BASE}/api/yt/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dry_run: Boolean(dryRun) }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    $("pubActions").href = data.actions || ACTIONS_URL;
+    pubSay(
+      dryRun
+        ? "Test run चल पड़ा — clips बनेंगे, publish नहीं होंगे (2–5 मिनट, Actions में देखें)"
+        : "चल पड़ा — 2–5 मिनट में Shorts publish होंगी (Actions में progress देखें)",
+      "ok",
+    );
+  } catch (error) {
+    pubSay(error.message, "error");
+  } finally {
+    $("pubRun").disabled = false;
+    $("pubTest").disabled = false;
+  }
+}
+
+function readConnectResult() {
+  const params = new URLSearchParams(location.search);
+  const result = params.get("yt");
+  if (!result) return;
+  if (result === "connected") {
+    pubSay(`channel जुड़ गया${params.get("ch") ? `: ${params.get("ch")}` : ""} — पहला run “अभी चलाओ” से या अगले schedule पर`, "ok");
+  } else if (result === "denied") {
+    pubSay("अनुमति नहीं मिली — दोबारा Connect दबाकर सारी permissions Allow करें", "error");
+  }
+  history.replaceState({}, "", location.origin + location.pathname);
+}
+
 /* ------------------------------------------------------------------- voice */
 
 async function openVoice() {
@@ -694,6 +821,8 @@ async function boot() {
   } catch (error) {
     $("health").textContent = `load fail: ${error.message}`;
   }
+  readConnectResult();
+  loadPublish();
 }
 
 $("runTool").addEventListener("click", runTool);
@@ -701,6 +830,9 @@ $("ask").addEventListener("click", ask);
 $("voiceBtn").addEventListener("click", openVoice);
 $("voiceSave").addEventListener("click", saveVoice);
 $("startPilot").addEventListener("click", runPilot);
+$("pubConnect").addEventListener("click", connectChannel);
+$("pubRun").addEventListener("click", () => runAutopilot(false));
+$("pubTest").addEventListener("click", () => runAutopilot(true));
 $("autoBtn").addEventListener("click", () => showMode("auto"));
 $("openLast").addEventListener("click", openLastPackage);
 $("downloadPkg").addEventListener("click", downloadPackage);

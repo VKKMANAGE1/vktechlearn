@@ -33,3 +33,7 @@ shavi-admin/node_modules/
 # M12 backup dumps (never committed)
 backups/
 librechat-deploy/.env
+
+# YouTube autopilot clip output (Actions artifacts में जाता है)
+/tools/yt-autopilot/autopilot-out/
+autopilot-out/

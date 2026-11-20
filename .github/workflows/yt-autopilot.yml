@@ -1,0 +1,74 @@
+name: YouTube autopilot — clip + publish Shorts
+
+# एक बार channel connect होने के बाद यह workflow खुद चलता है:
+# अपने channel की uploads → transcript → Shavi model से moments → ffmpeg vertical clip
+# (blur bed + जली हुई captions) → YouTube पर #Shorts publish → worker के ledger में हिसाब.
+# किसी secret की ज़रूरत नहीं: Worker GitHub के OIDC token से पहचान जाँचता है
+# (audience shavi-autopilot, सिर्फ़ इसी repo का token चलता है).
+
+on:
+  schedule:
+    - cron: "40 3,15 * * *" # 09:10 और 21:10 IST
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "पहले test करें — clips बनेंगे, publish नहीं होंगे"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: yt-autopilot
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: ffmpeg + Devanagari fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends ffmpeg fonts-noto-core fonts-noto-devanagari
+
+      - name: yt-dlp
+        run: python -m pip install --upgrade --quiet yt-dlp
+
+      - name: Worker के लिए GitHub OIDC token
+        id: oidc
+        run: |
+          TOKEN=$(curl -sS -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=shavi-autopilot" \
+            | python -c "import json,sys; print(json.load(sys.stdin)['value'])")
+          echo "::add-mask::$TOKEN"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Autopilot
+        env:
+          GITHUB_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+          SHAVI_WORKER_URL: https://site-d28594350583452e987524c38e89b7a9.freebuff.page
+        run: |
+          set -euo pipefail
+          FLAGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="--dry-run"; fi
+          python tools/yt-autopilot/autopilot.py $FLAGS --out autopilot-out
+
+      - name: Clips सुरक्षित रखें (3 दिन)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopilot-clips
+          path: autopilot-out
+          retention-days: 3
+          if-no-files-found: ignore

@@ -1,10 +1,11 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M13 — YouTube Studio (youtube-agent-skill pack). Live on the site at
-<https://vktechlearn.site/youtube/> (static: Python tools in-browser via Pyodide, model via the existing
-Worker); the Docker/subdomain variant is configured but not deployed. M12 E2E **22/22**, M11 **39/39**.
-M12 deployment open items still stand. M05 still unaudited)
-**Date:** 2026-11-19
+**Milestone:** M13d — YouTube Studio + Auto Publish. Static studio at
+<https://vktechlearn.site/youtube/> (Python tools in-browser via Pyodide, model via the existing Worker);
+**M13d** adds one-time channel connect (OAuth in the Worker, token in D1) and a scheduled clip-and-publish
+pipeline in GitHub Actions. The Docker/subdomain variant is configured but not deployed.
+M12 E2E **22/22**, M11 **39/39**. M12 deployment open items still stand. M05 still unaudited)
+**Date:** 2026-11-20
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
 
@@ -966,3 +967,63 @@ image generation, exports. No feature code was modified in M01.
 - `shavi-ai-app/src/lib/*` — storage client, document pipeline upgrades
 - new: `ai-worker/migrations/*.sql`, `tests/*` — schema + automated checks
 - untouched: `index.html`, `posts/*`, `tools/build_posts.py`, `post.css` (site rules)
+
+---
+
+## 9. M13d — channel connect + auto-publish (2026-11-20)
+
+**Ask:** "main chahta hun ki main channel connect kar du ek baar ye khud viral videos ki clip publish kare."
+
+**What was built**
+
+- `ai-worker/worker.js` — `/api/yt/oauth/start` + `/api/yt/oauth/callback` (Google OAuth, HMAC-signed state,
+  return-URL allowlist), `/api/yt/status` (public, `no-store`, never returns tokens), `/api/yt/token`
+  (Bearer `AUTOPILOT_KEY` **or** GitHub OIDC JWT: RS256 signature checked against
+  `token.actions.githubusercontent.com/.well-known/jwks`, `aud=shavi-autopilot`,
+  `repository=VKKMANAGE1/vktechlearn`), `/api/yt/ledger`, `/api/yt/log`, `/api/yt/run` (workflow_dispatch via
+  optional `GH_TOKEN`, 10 min/IP). Refresh token + run history + dedupe ledger in D1 binding `DB`.
+- `tools/yt-autopilot/autopilot.py` — own-channel uploads → captions API (yt-dlp auto-subs fallback) → model
+  moment picking + deterministic heuristic fallback → yt-dlp section download → ffmpeg 1080×1920 (blurred bed,
+  centred source, burned SRT captions, loudnorm −14 LUFS) → resumable `videos.insert` as `#Shorts` → ledger.
+  `--self-test` runs everything except Google; `--dry-run` builds clips without publishing.
+- `.github/workflows/yt-autopilot.yml` — cron `40 3,15 * * *` (09:10 / 21:10 IST) + manual dispatch with a
+  `dry_run` input; installs ffmpeg + Noto fonts + yt-dlp; mints an OIDC token, so no secret is stored in GitHub.
+- `youtube/` — "Channel जोड़ें" panel: connect button, अभी चलाओ / Test run, channel card, last runs, last
+  Shorts, setup hints when the Google keys or `GH_TOKEN` are missing. Assets bumped to `?v=3`.
+- `tools/yt-autopilot/README.md` + `config.json` — one-time setup, settings table, honest limits.
+
+**Scope decision (copyright):** clips are cut only from the connected channel's own uploads (`mine=true`).
+Republishing other creators' videos was not implemented — that is a copyright-strike path, not a feature.
+
+**Verified here**
+
+```
+python3 -m py_compile autopilot.py            OK
+node --check worker.js (as .mjs)              OK
+node --check youtube/app.js (as .mjs)         OK
+autopilot.py --self-test                      clip-1.mp4 1080x1920 32.0s 9.4 MB, captions burned
+frame at 8s                                   blurred bed + centred 16:9 + bold outlined caption
+worker routes (node:sqlite D1 shim)           status 200 + flags; token 401 (missing/wrong key);
+                                              oauth start 302 with 3 scopes; bad state 400;
+                                              foreign return URL rejected; denied → /youtube/?yt=denied;
+                                              log 200 → ledger sources [VID1] → status published 1;
+                                              run without GH_TOKEN 502 with actionable message
+live production worker                        /health 200; /api/yt/status {"connected":false,
+                                              "oauth":false,"storage":true,...}; /api/yt/oauth/start 503
+                                              (keys not set yet); /api/yt/token 401;
+                                              /api/yt/channel?u=@mkbhd 200
+bug found on first live deploy                D1 exec() splits on newlines → CREATE TABLE failed;
+                                              now one prepare().run() per statement (`end` → `end_s`)
+```
+
+**Not verified / still open**
+
+- End-to-end publish: needs the Google OAuth client (`GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` in
+  Sites → Secrets, redirect `https://site-d28594350583452e987524c38e89b7a9.freebuff.page/api/yt/oauth/callback`)
+  and one Connect click. Nothing has been uploaded to YouTube from here — no credentials existed in this workspace.
+- Caption burn was proven locally with DejaVu + a hand-written fontconfig; this VM ships zero fonts, so the
+  runner's own run is the first place the `fonts-noto-*` path executes.
+- `GH_TOKEN` (fine-grained PAT, Actions: write) is not set → "अभी चलाओ" returns 502 with instructions; the
+  Actions tab "Run workflow" is the fallback path.
+- YouTube quota: `videos.insert` ≈1600 units → 4–6 uploads/day; `clips_per_run` stays 2.
+- Not a viral guarantee: the pipeline reuses proven moments and posts consistently; reach is the audience's call.
