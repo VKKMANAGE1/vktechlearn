@@ -328,3 +328,97 @@ header.top a.brand {
   text-decoration: none;
   color: inherit;
 }
+
+/* --- auto pilot --- */
+.top-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.primary.active {
+  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.45);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.grid2 .field {
+  margin-bottom: 6px;
+}
+
+.steps {
+  margin: 16px 0 0;
+  padding: 0 0 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.steps li.run {
+  color: var(--cyan);
+}
+
+.steps li.done {
+  color: var(--green);
+}
+
+.steps li.fail {
+  color: var(--red);
+}
+
+.card {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel-2);
+}
+
+.card h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 12.5px;
+  margin: 0 0 8px;
+}
+
+.top-videos {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12.8px;
+  line-height: 1.7;
+}
+
+.top-videos a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+.top-videos a:hover {
+  text-decoration: underline;
+}
+
+.pkg-actions {
+  margin-top: 16px;
+}
+
+.out.pkg {
+  max-height: 70vh;
+  font-family: Inter, "Mukta", system-ui, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 720px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}

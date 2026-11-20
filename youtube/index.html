@@ -6,7 +6,7 @@
     <title>YouTube Studio — ShâVì Ai</title>
     <meta
       name="description"
-      content="YouTube channel चलाने के 11 AI skills और 6 tools — script, hook score, title-thumbnail lint, chapters, edit list, retention और viral ranking. मुफ़्त, बिना login."
+      content="अपने YouTube channel का link दें — 11 AI skills और 6 tools खुद चलकर पूरा video package (script, title, thumbnail text, description, Shorts, plan) बना देंगे। मुफ़्त, बिना login."
     />
     <link rel="icon" href="../favicon.ico" />
     <link rel="stylesheet" href="./style.css" />
@@ -21,13 +21,63 @@
           <p id="health">loading…</p>
         </div>
       </div>
-      <button id="voiceBtn" class="ghost" type="button">मेरी आवाज़</button>
+      <div class="top-actions">
+        <button id="autoBtn" class="primary" type="button">Auto Pilot</button>
+        <button id="voiceBtn" class="ghost" type="button">मेरी आवाज़</button>
+      </div>
     </header>
 
     <div class="layout">
       <nav id="nav" class="rail" aria-label="Skills"></nav>
 
-      <main class="stage">
+      <!-- ------------------------------------------------------- auto pilot -->
+      <main class="stage" id="pilot">
+        <section class="head">
+          <h2>Auto Pilot — एक link, पूरा package</h2>
+          <p>
+            अपना channel link दें (या @handle). यह पहले आपके channel का असली public data पढ़ता है, फिर audit →
+            hook → title/thumbnail → script → description → Shorts → plan — सब खुद एक के बाद एक चलाता है।
+            जो बनेगा वहीं दिखेगा, अंत में पूरा package download कर सकते हैं।
+          </p>
+        </section>
+
+        <div class="grid2">
+          <label class="field">
+            <span>Channel link / @handle</span>
+            <input id="channelUrl" type="text" placeholder="https://youtube.com/@yourchannel" />
+          </label>
+          <label class="field">
+            <span>इस बार किस पर video? (खाली छोड़ें तो खुद चुनेगा)</span>
+            <input id="idea" type="text" placeholder="जैसे: AI se thumbnail banane ke 3 free tools" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="startPilot" class="primary" type="button">पूरा package बनाओ</button>
+          <button id="openLast" class="ghost" type="button" hidden>पिछला package खोलो</button>
+          <span id="pilotStatus" class="status" aria-live="polite"></span>
+        </div>
+
+        <ol id="steps" class="steps" hidden></ol>
+        <div id="channelCard" class="card" hidden></div>
+        <div id="packageWrap" hidden>
+          <div class="actions pkg-actions">
+            <button id="downloadPkg" class="primary" type="button">Download .md</button>
+            <button id="copyPkg" class="ghost" type="button">Copy पूरा</button>
+          </div>
+          <pre id="package" class="out pkg"></pre>
+        </div>
+
+        <p class="fine">
+          Channel data सिर्फ़ public RSS/चैनल पेज से आता है — कोई login नहीं, कोई API key नहीं। Tools आपके
+          browser में Python में चलते हैं। जवाब ShâVì Ai Worker से (30 सवाल/घंटा)। “Viral” की गारंटी कोई tool
+          नहीं दे सकता — यह आपके channel के अपने proven patterns पर बनाया जाता है, फिर भी पहला दर्शक आपका ही
+          होगा।
+        </p>
+      </main>
+
+      <!-- ---------------------------------------------------------- manual -->
+      <main class="stage" id="manual" hidden>
         <section class="head">
           <h2 id="skillName">—</h2>
           <p id="skillDesc"></p>

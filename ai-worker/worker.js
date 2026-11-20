@@ -342,6 +342,93 @@ async function webSearch(query, env) {
   return sections.join("\n\n") || SEARCH_EMPTY;
 }
 
+/* ------------------------------------------------------------------ youtube
+ *
+ * The YouTube Studio page (site /youtube/) reads a creator's PUBLIC channel data through this
+ * Worker: browsers cannot fetch youtube.com directly (no CORS), and the studio should work
+ * without a YouTube API key. Only public RSS + the public channel page are used; nothing is
+ * logged in, scraped behind auth, or posted.
+ */
+const channelCache = new Map();
+const CHANNEL_TTL = 15 * 60_000;
+
+async function resolveChannelId(input) {
+  const raw = String(input || "").trim();
+  if (!raw) throw new Error("channel link या @handle भेजें");
+  const direct = /(UC[0-9A-Za-z_-]{22})/.exec(raw);
+  if (direct) return direct[1];
+
+  let target = raw;
+  if (!/^https?:\/\//i.test(raw)) {
+    target = raw.startsWith("@") ? `https://www.youtube.com/${raw}` : `https://www.youtube.com/@${raw}`;
+  }
+  const res = await fetch(target, {
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; ShaviAi/1.0; +https://vktechlearn.site)" },
+  });
+  if (!res.ok) throw new Error(`channel page ने ${res.status} लौटाया`);
+  const html = await res.text();
+  const found =
+    /"externalId":"(UC[0-9A-Za-z_-]{22})"/.exec(html) ||
+    /channel_id=(UC[0-9A-Za-z_-]{22})/.exec(html) ||
+    /"browseId":"(UC[0-9A-Za-z_-]{22})"/.exec(html);
+  if (!found) throw new Error("channel id नहीं मिला — पूरा channel link भेजें");
+  return found[1];
+}
+
+function xmlText(block, tag) {
+  const match = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`).exec(block);
+  return match ? match[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim() : "";
+}
+
+async function readChannel(channelId) {
+  const cached = channelCache.get(channelId);
+  if (cached && Date.now() - cached.at < CHANNEL_TTL) return cached.data;
+
+  const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`, {
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; ShaviAi/1.0; +https://vktechlearn.site)" },
+  });
+  if (!res.ok) throw new Error(`RSS ने ${res.status} लौटाया`);
+  const xml = await res.text();
+
+  const channelTitle = xmlText(xml.split("<entry>")[0], "title");
+  const videos = [];
+  for (const match of xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)) {
+    const block = match[1];
+    const views = /<media:statistics\s+views="(\d+)"/.exec(block);
+    videos.push({
+      id: xmlText(block, "yt:videoId"),
+      title: xmlText(block, "title"),
+      url: xmlText(block, "link") || (match[0].match(/<link[^>]*href="([^"]+)"/) || [])[1] || "",
+      published: xmlText(block, "published"),
+      views: views ? Number(views[1]) : null,
+    });
+  }
+
+  const withViews = videos.filter((video) => typeof video.views === "number");
+  const sorted = [...withViews].sort((a, b) => b.views - a.views);
+  const viewList = withViews.map((video) => video.views).sort((a, b) => a - b);
+  const median = viewList.length ? viewList[Math.floor(viewList.length / 2)] : null;
+  const dates = videos.map((video) => Date.parse(video.published)).filter((value) => !Number.isNaN(value)).sort((a, b) => a - b);
+  const gaps = dates.slice(1).map((value, index) => (value - dates[index]) / 86_400_000);
+  const data = {
+    channelId,
+    title: channelTitle || channelId,
+    url: `https://www.youtube.com/channel/${channelId}`,
+    fetched_at: new Date().toISOString(),
+    stats: {
+      videos: videos.length,
+      medianViews: median,
+      averageViews: withViews.length ? Math.round(withViews.reduce((sum, video) => sum + video.views, 0) / withViews.length) : null,
+      averageGapDays: gaps.length ? Math.round((gaps.reduce((sum, gap) => sum + gap, 0) / gaps.length) * 10) / 10 : null,
+      lastPublished: videos[0]?.published ?? null,
+    },
+    videos: sorted,
+  };
+  channelCache.set(channelId, { at: Date.now(), data });
+  if (channelCache.size > 200) channelCache.clear();
+  return data;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -357,6 +444,16 @@ export default {
         { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: true, news: "gdelt+rss", exa: Boolean(env.EXA_API_KEY), tavily: Boolean(env.TAVILY_API_KEY) },
         { headers },
       );
+    }
+
+    if (url.pathname === "/api/yt/channel") {
+      try {
+        const channelId = await resolveChannelId(url.searchParams.get("u"));
+        const channel = await readChannel(channelId);
+        return Response.json(channel, { headers: { ...headers, "Cache-Control": "public, max-age=900" } });
+      } catch (error) {
+        return Response.json({ error: "channel data नहीं मिला: " + String(error.message || error) }, { status: 502, headers });
+      }
     }
 
     if (url.pathname === "/api/news") {
