@@ -9,7 +9,7 @@
       content="अपने YouTube channel का link दें — 11 AI skills और 6 tools खुद चलकर पूरा video package (script, title, thumbnail text, description, Shorts, plan) बना देंगे। मुफ़्त, बिना login."
     />
     <link rel="icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="./style.css?v=5" />
+    <link rel="stylesheet" href="./style.css?v=6" />
   </head>
   <body>
     <header class="top">
@@ -22,6 +22,7 @@
         </div>
       </div>
       <div class="top-actions">
+        <div id="account" class="account" hidden></div>
         <button id="autoBtn" class="primary" type="button">Auto Pilot</button>
         <button id="voiceBtn" class="ghost" type="button">मेरी आवाज़</button>
       </div>
@@ -38,7 +39,7 @@
             <div>
               <h2>Google से जुड़ें — बाकी काम यह खुद करेगा</h2>
               <p>
-                अपनी Google OAuth keys नीचे एक बार सेव कीजिए, फिर एक बार channel connect कीजिए. उसके बाद
+                पहले Google से login (या sign up) कीजिए, फिर एक बार channel connect कीजिए. उसके बाद
                 यह खुद अपने ही channel के सबसे अच्छे हिस्सों से 25–50 सेकंड की vertical Shorts काटता है,
                 captions जलाता है, title/description लिखता है और सीधे आपके channel पर publish कर देता है.
                 आपको सिर्फ़ नतीजा देखना है — या "Test run" से पहले जाँच लेना है.
@@ -51,25 +52,18 @@
             <p class="muted">Channel की जानकारी आ रही है…</p>
           </div>
 
+          <div class="login-row">
+            <span id="loginState" class="status" aria-live="polite">login जाँचा जा रहा है…</span>
+            <a id="loginLink" class="ghost" href="./login.html">Login / Sign up</a>
+          </div>
+
           <div class="pub-setup" id="pubSetup">
-            <h3>Google login — keys सिर्फ़ एक बार</h3>
+            <h3>अपनी Google OAuth keys (सिर्फ़ ज़रूरत हो तो)</h3>
             <p class="muted">
-              नीचे अपनी Google Cloud OAuth client की दो चाबियाँ डालकर <b>Save</b> करें. ये आपके खाते में सेव
-              होती हैं (Worker के database में) और इस browser में आपका login बन जाता है — अगली बार page
-              खोलने पर keys नहीं पूछी जाएँगी. Client secret browser को कभी वापस नहीं दिखाया जाता.
+              ये दो चाबियाँ सिर्फ़ तब चाहिए जब Worker में site-level Google client सेट न हो. एक बार सेव करने
+              पर ये आपके खाते में रहती हैं और दोबारा नहीं पूछी जातीं. Client secret browser को कभी वापस नहीं
+              दिखाया जाता.
             </p>
-            <div class="login-row">
-              <span id="loginState" class="status" aria-live="polite">login जाँचा जा रहा है…</span>
-              <button id="copyLogin" class="ghost" type="button" hidden>Login code copy करें</button>
-            </div>
-            <details class="login-more">
-              <summary>दूसरे browser / device पर login करें</summary>
-              <p class="muted">पहले device पर “Login code copy करें” दबाएँ और यहाँ चिपकाएँ — keys दोबारा डालने की ज़रूरत नहीं.</p>
-              <div class="copy-row">
-                <input id="loginCode" type="text" autocomplete="off" spellcheck="false" placeholder="login code चिपकाएँ" />
-                <button id="loginBtn" class="ghost" type="button">Login करें</button>
-              </div>
-            </details>
             <label class="field">
               <span>Authorized redirect URI — यही Google Cloud → OAuth client में डालें</span>
               <span class="copy-row">
@@ -218,6 +212,6 @@
       </form>
     </dialog>
 
-    <script src="./app.js?v=5" type="module"></script>
+    <script src="./app.js?v=6" type="module"></script>
   </body>
 </html>

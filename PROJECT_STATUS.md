@@ -1096,3 +1096,38 @@ callback → 302 `yt=connected`, channel उसी login खाते में,
 
 **Not verified:** असली Google consent + callback + publish (live Google keys नहीं), और page
 browser में खोलकर नहीं देखा गया.
+
+## 12. M13g — असली Google login/signup page (2026-11-20)
+
+**क्या बदला**
+
+- पुराना “login code copy/paste” तरीका हटा दिया (UI + `POST /api/yt/login` route). अब पहचान
+  Google account से होती है: `/youtube/login.html` पर **Log in / Sign up** दो tab और एक
+  “Google से जारी रखें” बटन. पहला Google login ही खाता बना देता है (signup), दूसरी बार वही
+  खाता मिलता है (`yt_accounts.acct = client_id|Google sub`, इसलिए दोबारा row नहीं बनती).
+- `/api/auth/google/start` → Google consent (`openid email profile`, वही redirect URI जो
+  connect इस्तेमाल करता है) → `/api/yt/oauth/callback` पर `state.k === "auth"` वाली शाखा.
+  Callback URL में login token नहीं जाता — सिर्फ़ 10 मिनट का एक-बार वाला `h` code, जिसे page
+  `POST /api/auth/session` से token में बदलता है (हर code एक ही बार, दोबारा 401).
+- `POST /api/auth/logout` token मिटाकर cookie साफ़ करता है; `GET /api/yt/status` में अब
+  `account {email,name,picture}` और `googleLogin` भी आते हैं.
+- login से पहले इस browser में सेव keys/channel (दूसरी uid पर) login के बाद उसी खाते में
+  migrate हो जाते हैं, इसलिए “keys पहले सेव, login बाद में” वाला रास्ता भी सुरक्षित है.
+- studio header में account chip (photo/email + Logout) और “Login / Sign up” लिंक; keys वाला
+  card सिर्फ़ तब दिखता है जब Worker का site-level client सेट न हो.
+
+**Verified locally** (node:sqlite D1 shim, 43 checks, 0 fail): anon status; start → 302 Google
+पर सही client/scope/redirect_uri/state; callback → `login=ok`, `new=1`, `h`, URL में token नहीं,
+uid cookie; session exchange → token + user.email; वही `h` दोबारा → 401; token से status →
+`loggedIn/account`; दूसरा login → वही खाता, `yt_accounts`/`yt_users` में एक-एक row; logout →
+token बेकार; keys पहले सेव वाला uid login पर खाते में merge (keys एक ही row में); बिना keys →
+`?login=nokeys`; foreign origin 403; गलत handoff 401; connect ticket + youtube scopes + mocked
+callback अब भी `yt=connected`.
+
+**Live**: preview + production deploy `succeeded`; live `/api/yt/status` में
+`account:null, googleLogin:false` (site-level client अभी सेट नहीं), `/api/auth/google/start` →
+302 `?login=nokeys`, गलत handoff → 401, foreign origin → 403, logout → `{ok:true}`.
+
+**Not verified**: असली Google consent + session + publish — इसके लिए Sites → Secrets में
+`GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (या studio में अपनी keys) चाहिए; login page browser
+में खोलकर आँखों से नहीं देखा गया.

@@ -685,6 +685,87 @@ function apiHeaders(extra = {}) {
   return { ...(token ? { "X-YT-Token": token } : {}), ...extra };
 }
 
+const esc = (value) =>
+  String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+
+/** Google login/signup: पूरा page Google पर जाता है और वापस यहीं आता है. */
+function googleStartUrl(mode) {
+  const back = location.origin + location.pathname;
+  return `${API_BASE}/api/auth/google/start?mode=${encodeURIComponent(mode)}&return=${encodeURIComponent(back)}`;
+}
+
+function renderAccount(data) {
+  const box = $("account");
+  if (!box) return;
+  if (!data.loggedIn) {
+    box.innerHTML = '<a class="primary" href="./login.html">Login / Sign up</a>';
+    box.hidden = false;
+    return;
+  }
+  const user = data.account || {};
+  const name = user.name || user.email || "मेरा खाता";
+  const picture = /^https:\/\//.test(user.picture || "")
+    ? `<img src="${esc(user.picture)}" alt="" width="28" height="28" />`
+    : '<span class="avatar">👤</span>';
+  box.innerHTML = `${picture}<span class="who"><b>${esc(name)}</b>${
+    user.email && user.email !== name ? `<small>${esc(user.email)}</small>` : ""
+  }</span><button id="logoutBtn" class="ghost" type="button">Logout</button>`;
+  box.hidden = false;
+  $("logoutBtn").addEventListener("click", logoutAccount);
+}
+
+async function logoutAccount() {
+  try {
+    await fetch(`${API_BASE}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: apiHeaders({ "Content-Type": "application/json" }),
+      body: "{}",
+    });
+  } catch {
+    /* token हटाना ही असली logout है */
+  }
+  localStorage.removeItem(LOGIN_KEY);
+  pubSay("logout हो गया — दोबारा Google से login कर सकते हैं", "ok");
+  await loadPublish();
+}
+
+/** Google से लौटने पर एक-बार वाला handoff code → login token (URL में token नहीं आता). */
+async function finishGoogleLogin() {
+  const params = new URLSearchParams(location.search);
+  const result = params.get("login");
+  if (!result) return;
+  const handoff = params.get("h") || "";
+  const note = params.get("msg") || "";
+  history.replaceState({}, "", location.origin + location.pathname);
+  if (result === "denied") {
+    pubSay("Google login रद्द हो गया", "error");
+    return;
+  }
+  if (result === "nokeys") {
+    pubSay("Google login अभी सेट नहीं है — नीचे अपनी OAuth keys एक बार सेव करें", "error");
+    return;
+  }
+  if (result === "error") {
+    pubSay(note || "Google login पूरा नहीं हुआ — दोबारा कोशिश करें", "error");
+    return;
+  }
+  if (result !== "ok" || !handoff) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/session`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ h: handoff }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.token) throw new Error(data.error || `HTTP ${res.status}`);
+    localStorage.setItem(LOGIN_KEY, data.token);
+    pubSay(data.user?.email ? `login हो गया — ${data.user.email}` : "login हो गया", "ok");
+  } catch (error) {
+    pubSay(`login पूरा नहीं हुआ: ${error.message}`, "error");
+  }
+}
+
 function pill(text, kind) {
   const el = $("pubPill");
   el.textContent = text;
@@ -726,15 +807,21 @@ function renderList(el, rows, empty) {
 function renderPublish(data) {
   pill(data.connected ? "जुड़ा हुआ" : data.keysSaved ? "keys सेव" : "शुरू करें", data.connected ? "ok" : "bad");
   renderChannel(data);
-  const tokened = Boolean(loginToken());
-  $("copyLogin").hidden = !tokened;
+  renderAccount(data);
   if (data.loggedIn) {
-    setStatus($("loginState"), "✓ इस browser में login सेव है — keys दोबारा नहीं डालनी पड़ेंगी", "ok");
-  } else if (data.keysSource === "worker") {
-    setStatus($("loginState"), "Worker की default keys चल रही हैं — अपनी keys सेव करें तो यही खाता login बनेगा", "");
+    setStatus($("loginState"), data.account?.email ? `✓ ${data.account.email} से login` : "✓ इस browser में login सेव है", "ok");
+  } else if (data.googleLogin) {
+    setStatus($("loginState"), "अभी login नहीं — ऊपर Login / Sign up से Google से जुड़ें", "");
   } else {
-    setStatus($("loginState"), "अभी login नहीं — नीचे keys एक बार सेव करें, फिर यह browser हमेशा login रहेगा", "");
+    setStatus(
+      $("loginState"),
+      "अभी login नहीं — Google login के लिए Worker में GOOGLE_CLIENT_ID/SECRET चाहिए; तब तक नीचे अपनी keys एक बार सेव करें",
+      "",
+    );
   }
+  const loginLink = $("loginLink");
+  if (loginLink) loginLink.textContent = data.loggedIn ? "दूसरा खाता" : "Login / Sign up";
+  $("pubSetup").hidden = data.keysSource === "worker";
   $("pubConnect").textContent = data.connected ? "दोबारा connect करें" : "Channel connect करें";
   $("pubConnect").disabled = !data.oauth;
   $("pubConnect").title = data.oauth ? "" : "पहले ऊपर client ID और secret सेव करें";
@@ -814,7 +901,7 @@ async function saveKeys() {
     if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
     if (data.token) localStorage.setItem(LOGIN_KEY, data.token);
     $("gSecret").value = "";
-    gSay("सेव हो गया और login बन गया — अब “Channel connect करें” दबाएँ", "ok");
+    gSay("सेव हो गया — अब “Channel connect करें” दबाएँ (या Google से login करें)", "ok");
     await loadPublish();
   } catch (error) {
     gSay(error.message, "error");
@@ -849,46 +936,6 @@ async function connectChannel() {
   } catch (error) {
     pubSay(error.message, "error");
     $("pubConnect").disabled = false;
-  }
-}
-
-async function copyLogin() {
-  const token = loginToken();
-  if (!token) return;
-  try {
-    await navigator.clipboard.writeText(token);
-    gSay("login code copy हो गया — दूसरे device पर इसे डालें", "ok");
-  } catch {
-    $("loginCode").value = token;
-    $("loginCode").select();
-    gSay("code नीचे भर दिया — Ctrl/Cmd + C दबाएँ", "error");
-  }
-}
-
-async function loginWithCode() {
-  const token = $("loginCode").value.trim();
-  if (!token) {
-    gSay("पहले login code डालें", "error");
-    return;
-  }
-  $("loginBtn").disabled = true;
-  gSay("login हो रहा है…");
-  try {
-    const res = await fetch(`${API_BASE}/api/yt/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-    localStorage.setItem(LOGIN_KEY, token);
-    $("loginCode").value = "";
-    gSay("login हो गया — इस खाते की keys और channel आ गए", "ok");
-    await loadPublish();
-  } catch (error) {
-    gSay(error.message, "error");
-  } finally {
-    $("loginBtn").disabled = false;
   }
 }
 
@@ -966,6 +1013,7 @@ async function boot() {
   } catch (error) {
     $("health").textContent = `load fail: ${error.message}`;
   }
+  await finishGoogleLogin();
   readConnectResult();
   loadPublish();
 }
@@ -978,8 +1026,6 @@ $("startPilot").addEventListener("click", runPilot);
 $("pubConnect").addEventListener("click", connectChannel);
 $("gSave").addEventListener("click", saveKeys);
 $("gCopy").addEventListener("click", copyRedirect);
-$("copyLogin").addEventListener("click", copyLogin);
-$("loginBtn").addEventListener("click", loginWithCode);
 $("pubRun").addEventListener("click", () => runAutopilot(false));
 $("pubTest").addEventListener("click", () => runAutopilot(true));
 $("autoBtn").addEventListener("click", () => showMode("auto"));
