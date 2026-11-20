@@ -1131,3 +1131,35 @@ callback अब भी `yt=connected`.
 **Not verified**: असली Google consent + session + publish — इसके लिए Sites → Secrets में
 `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (या studio में अपनी keys) चाहिए; login page browser
 में खोलकर आँखों से नहीं देखा गया.
+
+## 13. M13h — पहले login, फिर Studio + secret-free Google login (2026-11-20)
+
+- **Gate:** `/youtube/` अब बिना login नहीं खुलता — `app.js` boot में `loginGate()` status पूछता है
+  और logged out होने पर `login.html?return=…` पर भेज देता है। login के बाद वही `return` URL खुलता
+  है। ज़रूरत पड़े तो `?nologin=1` से पुराना (keys वाला) रास्ता खुलता है.
+- **Google login बिना client secret:** पहले वाला रास्ता secret माँगता था, इसलिए जब तक
+  `GOOGLE_CLIENT_SECRET` सेट न हो login “नहीं चलता” था. अब login page Google Identity Services
+  का बटन दिखाता है: ID token (JWT) → `POST /api/auth/google/idtoken` → Worker उसकी signature
+  Google की public keys (`https://www.googleapis.com/oauth2/v3/certs`) से जाँचता है, फिर
+  `iss`/`aud`/`exp`/`sub` देखकर वही खाता login/signup करता है. इसके लिए **सिर्फ़ public client ID**
+  चाहिए (Sites → Secret नहीं).
+- `POST /api/auth/client` — login page पर एक बार client ID सेव (`yt_settings.google_client_id`);
+  env का `GOOGLE_CLIENT_ID` हो तो वह पहले. `status` में अब `loginClientId` भी आता है.
+- `loginAccount()` helper — callback (redirect वाला पुराना login) और ID-token वाला login दोनों
+  एक ही जगह खाता बनाते/जोड़ते हैं, पहले सेव keys/channel उसी खाते में migrate होते हैं.
+- login page: Log in / Sign up tabs, Google बटन (tab के हिसाब से “sign in with”/“sign up with”),
+  एक-बार सेटअप card (client ID + “Authorized JavaScript origins” का hint), पहले से login होने पर
+  अपने आप Studio. Assets: `app.js?v=7`, `style.css?v=7`, `login.js?v=2`.
+
+**Verified locally** (node:sqlite D1 shim, 37 checks, 0 fail): बिना client → status
+`loginClientId:""`; client सेव (गलत 400 / सही 200 / foreign origin 403); अपने हाथ से sign किया
+ID token → 200 + token + `created:true`; वही Google खाता दोबारा → `created:false` और
+`yt_accounts`/`yt_users` में एक-एक row; गलत `aud`/`iss`/expired/दूसरी key/खाली credential → 401;
+foreign origin → 403; बिना client → 409; keys पहले सेव → login पर उसी खाते में; logout → token
+बेकार; पुराना redirect login + handoff अब भी `login=ok` और code दोबारा 401.
+
+**Live**: preview + production deploy `succeeded`; `/api/yt/status` में `loginClientId` field,
+`/api/auth/client` और `/api/auth/google/idtoken` live.
+
+**Not verified**: असली Google popup (Google Cloud में client ID + `https://vktechlearn.site`
+origin चाहिए) और studio gate का browser में असली redirect.

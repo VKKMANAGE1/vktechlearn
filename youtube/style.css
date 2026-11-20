@@ -789,6 +789,37 @@ header.top a.brand {
   flex: 0 0 auto;
 }
 
+.gis-box {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.client-setup {
+  margin-top: 14px;
+  border: 1px dashed #24536e;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(0, 229, 255, 0.03);
+}
+
+.client-setup summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  color: #9fd8f2;
+}
+
+.client-setup .muted {
+  font-size: 12px;
+  line-height: 1.65;
+  margin: 8px 0;
+}
+
+.client-setup code {
+  color: var(--cyan);
+  word-break: break-all;
+}
+
 .auth-perks {
   margin: 16px 0 0;
   padding-left: 18px;

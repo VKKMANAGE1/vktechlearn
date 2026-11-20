@@ -643,6 +643,28 @@ async function userKeys(env, uid) {
   return null;
 }
 
+/* ---- settings (kv): login के लिए public Google client ID इत्यादि ---- */
+async function settingGet(env, key) {
+  try {
+    const row = await (await ytDb(env)).prepare("SELECT value FROM yt_settings WHERE key = ?1").bind(key).first();
+    return String(row?.value || "");
+  } catch {
+    return "";
+  }
+}
+
+async function settingSet(env, key, value) {
+  await (await ytDb(env))
+    .prepare("INSERT INTO yt_settings (key, value) VALUES (?1, ?2) ON CONFLICT(key) DO UPDATE SET value = ?2")
+    .bind(key, String(value || ""))
+    .run();
+}
+
+/** login/signup के लिए client ID: Worker env वाला, वरना login page पर सेव किया हुआ public id. */
+async function loginClientId(env) {
+  return String(env.GOOGLE_CLIENT_ID || "") || (await settingGet(env, "google_client_id"));
+}
+
 async function setupKeys(env, request) {
   try {
     const sid = await readCookie(env, request, COOKIE_SETUP);
@@ -746,6 +768,117 @@ async function googleProfile(access) {
     name: String(data.name || ""),
     picture: String(data.picture || ""),
   };
+}
+
+/* ---- Google Identity Services: ID token से login (client secret की ज़रूरत नहीं) ----
+ * Google का button page पर ID token (JWT) देता है; यहाँ उसकी signature Google की public keys
+ * (JWKS) से जाँची जाती है, फिर aud/iss/exp देखकर वही खाता login होता है.
+ */
+let googleCerts = { at: 0, keys: [] };
+
+async function googleJwks() {
+  if (googleCerts.keys.length && Date.now() - googleCerts.at < 6 * 3600_000) return googleCerts.keys;
+  const res = await fetch("https://www.googleapis.com/oauth2/v3/certs");
+  if (!res.ok) throw new Error(`Google certs ${res.status}`);
+  const data = await res.json();
+  googleCerts = { at: Date.now(), keys: Array.isArray(data.keys) ? data.keys : [] };
+  return googleCerts.keys;
+}
+
+async function verifyGoogleIdToken(credential, clientId) {
+  const [rawHeader, rawPayload, rawSig] = String(credential || "").split(".");
+  if (!rawHeader || !rawPayload || !rawSig) throw new Error("ID token अधूरा है");
+  const header = JSON.parse(new TextDecoder().decode(fromB64url(rawHeader)));
+  if (header.alg !== "RS256") throw new Error("ID token का alg गलत है");
+  const jwk = (await googleJwks()).find((key) => key.kid === header.kid);
+  if (!jwk?.n || !jwk?.e) throw new Error("Google की signing key नहीं मिली — दोबारा login करें");
+  const key = await crypto.subtle.importKey(
+    "jwk",
+    { kty: "RSA", n: jwk.n, e: jwk.e, alg: "RS256", ext: true },
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
+  const valid = await crypto.subtle.verify(
+    "RSASSA-PKCS1-v1_5",
+    key,
+    fromB64url(rawSig),
+    new TextEncoder().encode(`${rawHeader}.${rawPayload}`),
+  );
+  if (!valid) throw new Error("ID token का हस्ताक्षर गलत है");
+  const claims = JSON.parse(new TextDecoder().decode(fromB64url(rawPayload)));
+  if (!["accounts.google.com", "https://accounts.google.com"].includes(String(claims.iss))) {
+    throw new Error("ID token का issuer Google नहीं है");
+  }
+  if (String(claims.aud) !== String(clientId)) throw new Error("ID token दूसरे client का है");
+  if (Number(claims.exp) <= Math.floor(Date.now() / 1000)) throw new Error("ID token पुराना है — दोबारा login करें");
+  if (!claims.sub) throw new Error("ID token में खाता नहीं है");
+  return {
+    sub: String(claims.sub),
+    email: String(claims.email || ""),
+    name: String(claims.name || ""),
+    picture: String(claims.picture || ""),
+  };
+}
+
+/** Google खाते से login/signup — पहली बार नया खाता बनता है, दूसरी बार वही मिलता है. */
+async function loginAccount(env, clientId, profile, adoptUid) {
+  const db = await ytDb(env);
+  const now = new Date().toISOString();
+  // एक ही Google खाता दो बार न बने — sub (client के साथ) ही कुंजी है.
+  const acct = `${clientId}|${profile.sub}`;
+  const known = await db.prepare("SELECT uid FROM yt_accounts WHERE acct = ?1").bind(acct).first();
+  const created = !known?.uid;
+  // इसी browser में पहले से सेव keys/token वाला uid हो तो उसी को खाता बना दो.
+  const uid = known?.uid || adoptUid || b64url(crypto.getRandomValues(new Uint8Array(12)));
+  await db
+    .prepare(
+      "INSERT INTO yt_users (uid, email, updated_at) VALUES (?1, ?2, ?3) ON CONFLICT(uid) DO UPDATE SET email = COALESCE(?2, email), updated_at = ?3",
+    )
+    .bind(uid, profile.email || null, now)
+    .run();
+  await db
+    .prepare(
+      `INSERT INTO yt_accounts (acct, uid, email, name, picture, created_at, updated_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6)
+       ON CONFLICT(acct) DO UPDATE SET uid = ?2, email = ?3, name = ?4, picture = ?5, updated_at = ?6`,
+    )
+    .bind(acct, uid, profile.email || "", profile.name || "", profile.picture || "", now)
+    .run();
+  // login से पहले इस browser में keys/channel सेव थे (दूसरी uid पर) — उन्हें खाते में ले आओ.
+  if (adoptUid && adoptUid !== uid) {
+    const mine = await db
+      .prepare(
+        "SELECT client_id, client_secret, refresh_token, channel_id, channel_title, channel_thumb, connected_at FROM yt_users WHERE uid = ?1",
+      )
+      .bind(adoptUid)
+      .first();
+    const target = await db.prepare("SELECT client_id, channel_id FROM yt_users WHERE uid = ?1").bind(uid).first();
+    const moveKeys = Boolean(mine?.client_id && mine?.client_secret && !target?.client_id);
+    const moveChannel = Boolean(mine?.refresh_token && !target?.channel_id);
+    if (moveKeys) {
+      await db
+        .prepare("UPDATE yt_users SET client_id = ?2, client_secret = ?3, updated_at = ?4 WHERE uid = ?1")
+        .bind(uid, mine.client_id, mine.client_secret, now)
+        .run();
+      await db.prepare("UPDATE yt_users SET client_id = NULL, client_secret = NULL, updated_at = ?2 WHERE uid = ?1").bind(adoptUid, now).run();
+    }
+    if (moveChannel) {
+      await db
+        .prepare(
+          "UPDATE yt_users SET channel_id = ?2, channel_title = ?3, channel_thumb = ?4, refresh_token = ?5, connected_at = ?6, updated_at = ?7 WHERE uid = ?1",
+        )
+        .bind(uid, mine.channel_id, mine.channel_title, mine.channel_thumb, mine.refresh_token, mine.connected_at, now)
+        .run();
+      await db
+        .prepare(
+          "UPDATE yt_users SET channel_id = NULL, channel_title = NULL, channel_thumb = NULL, refresh_token = NULL, connected_at = NULL, updated_at = ?2 WHERE uid = ?1",
+        )
+        .bind(adoptUid, now)
+        .run();
+    }
+  }
+  return { uid, created };
 }
 
 async function googleEmail(access) {
@@ -1038,6 +1171,78 @@ export default {
       }
     }
 
+    /* login page का एक-बार वाला सेटअप: सिर्फ़ public Google client ID (कोई secret नहीं). */
+    if (url.pathname === "/api/auth/client") {
+      if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से सेट नहीं हो सकता" }, { status: 403, headers });
+      }
+      let body = {};
+      try {
+        body = await request.json();
+      } catch {
+        body = {};
+      }
+      const value = cleanKey(body.client_id, 220);
+      if (!/^[0-9A-Za-z_-]{10,}\.apps\.googleusercontent\.com$/.test(value)) {
+        return Response.json({ error: "client ID गलत लग रहा है — वह …apps.googleusercontent.com पर खत्म होता है" }, { status: 400, headers });
+      }
+      try {
+        await settingSet(env, "google_client_id", value);
+        return Response.json({ ok: true, clientId: value }, { headers: { ...headers, "Cache-Control": "no-store" } });
+      } catch (error) {
+        return Response.json({ error: String(error.message || error) }, { status: 500, headers });
+      }
+    }
+
+    /* Google बटन से मिला ID token → खाता login/signup → यही token. */
+    if (url.pathname === "/api/auth/google/idtoken") {
+      if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से login नहीं हो सकता" }, { status: 403, headers });
+      }
+      let body = {};
+      try {
+        body = await request.json();
+      } catch {
+        body = {};
+      }
+      const clientId = await loginClientId(env);
+      if (!clientId) {
+        return Response.json({ error: "पहले login page पर अपना Google Client ID सेव करें" }, { status: 409, headers });
+      }
+      try {
+        const profile = await verifyGoogleIdToken(body.credential, clientId);
+        const adopt = await currentUid(env, request);
+        const { uid, created } = await loginAccount(env, clientId, profile, adopt);
+        const token = await issueLogin(env, uid);
+        const db = await ytDb(env);
+        const auth = await db.prepare("SELECT channel_title, refresh_token FROM yt_users WHERE uid = ?1").bind(uid).first();
+        const keys = await userKeys(env, uid);
+        return Response.json(
+          {
+            ok: true,
+            token,
+            uid,
+            created,
+            user: { email: profile.email, name: profile.name, picture: profile.picture },
+            keysSaved: Boolean(keys?.id),
+            connected: Boolean(auth?.refresh_token),
+            channelTitle: auth?.channel_title || "",
+          },
+          {
+            headers: {
+              ...headers,
+              "Cache-Control": "no-store",
+              "Set-Cookie": cookieHeader(COOKIE_UID, await signCookie(env, uid), COOKIE_AGE),
+            },
+          },
+        );
+      } catch (error) {
+        return Response.json({ error: `Google login पूरा नहीं हुआ: ${String(error.message || error)}` }, { status: 401, headers });
+      }
+    }
+
     if (url.pathname === "/api/auth/logout") {
       if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
       if (!originOk(env, request.headers.get("Origin") || "")) {
@@ -1163,61 +1368,9 @@ export default {
             grant_type: "authorization_code",
           });
           const profile = await googleProfile(tokens.access_token);
+          const { uid, created } = await loginAccount(env, keys.id, profile, state.u);
           const db = await ytDb(env);
           const now = new Date().toISOString();
-          // एक ही Google खाता दो बार न बने — sub (client के साथ) ही कुंजी है.
-          const acct = `${keys.id}|${profile.sub}`;
-          const known = await db.prepare("SELECT uid FROM yt_accounts WHERE acct = ?1").bind(acct).first();
-          const created = !known?.uid;
-          // इसी browser में पहले से सेव keys/token वाला uid हो तो उसी को खाता बना दो.
-          const uid = known?.uid || state.u || b64url(crypto.getRandomValues(new Uint8Array(12)));
-          await db
-            .prepare(
-              "INSERT INTO yt_users (uid, email, updated_at) VALUES (?1, ?2, ?3) ON CONFLICT(uid) DO UPDATE SET email = COALESCE(?2, email), updated_at = ?3",
-            )
-            .bind(uid, profile.email || null, now)
-            .run();
-          await db
-            .prepare(
-              `INSERT INTO yt_accounts (acct, uid, email, name, picture, created_at, updated_at)
-               VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?6)
-               ON CONFLICT(acct) DO UPDATE SET uid = ?2, email = ?3, name = ?4, picture = ?5, updated_at = ?6`,
-            )
-            .bind(acct, uid, profile.email || "", profile.name || "", profile.picture || "", now)
-            .run();
-          // login से पहले इस browser में keys/channel सेव थे (दूसरी uid पर) — उन्हें खाते में ले आओ.
-          if (state.u && state.u !== uid) {
-            const mine = await db
-              .prepare(
-                "SELECT client_id, client_secret, refresh_token, channel_id, channel_title, channel_thumb, connected_at FROM yt_users WHERE uid = ?1",
-              )
-              .bind(state.u)
-              .first();
-            const target = await db.prepare("SELECT client_id, channel_id FROM yt_users WHERE uid = ?1").bind(uid).first();
-            const moveKeys = Boolean(mine?.client_id && mine?.client_secret && !target?.client_id);
-            const moveChannel = Boolean(mine?.refresh_token && !target?.channel_id);
-            if (moveKeys) {
-              await db
-                .prepare("UPDATE yt_users SET client_id = ?2, client_secret = ?3, updated_at = ?4 WHERE uid = ?1")
-                .bind(uid, mine.client_id, mine.client_secret, now)
-                .run();
-              await db.prepare("UPDATE yt_users SET client_id = NULL, client_secret = NULL, updated_at = ?2 WHERE uid = ?1").bind(state.u, now).run();
-            }
-            if (moveChannel) {
-              await db
-                .prepare(
-                  "UPDATE yt_users SET channel_id = ?2, channel_title = ?3, channel_thumb = ?4, refresh_token = ?5, connected_at = ?6, updated_at = ?7 WHERE uid = ?1",
-                )
-                .bind(uid, mine.channel_id, mine.channel_title, mine.channel_thumb, mine.refresh_token, mine.connected_at, now)
-                .run();
-              await db
-                .prepare(
-                  "UPDATE yt_users SET channel_id = NULL, channel_title = NULL, channel_thumb = NULL, refresh_token = NULL, connected_at = NULL, updated_at = ?2 WHERE uid = ?1",
-                )
-                .bind(state.u, now)
-                .run();
-            }
-          }
           // URL में token नहीं — सिर्फ़ 10 मिनट का एक-बार वाला code, जिसे page token में बदलता है.
           const handoff = b64url(crypto.getRandomValues(new Uint8Array(18)));
           await db.prepare("INSERT INTO yt_handoffs (code, uid, created_at) VALUES (?1, ?2, ?3)").bind(handoff, uid, now).run();
@@ -1330,6 +1483,7 @@ export default {
         const account = uid
           ? await db.prepare("SELECT email, name, picture FROM yt_accounts WHERE uid = ?1 LIMIT 1").bind(uid).first()
           : null;
+        const loginClient = await loginClientId(env);
         return Response.json(
           {
             ...ytBase,
@@ -1338,7 +1492,8 @@ export default {
             account: account
               ? { email: account.email || "", name: account.name || "", picture: account.picture || "" }
               : null,
-            googleLogin: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
+            loginClientId: loginClient,
+            googleLogin: Boolean(loginClient),
             keysSaved: Boolean(keys.id),
             keysSource: keys.source,
             clientId: keys.id || "",

@@ -9,11 +9,11 @@
       content="Google से एक क्लिक में login या sign up कीजिए — YouTube Studio खाता, keys और channel सब अपने आप सेव रहते हैं।"
     />
     <link rel="icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="./style.css?v=6" />
+    <link rel="stylesheet" href="./style.css?v=7" />
   </head>
   <body class="auth-body">
     <main class="auth-wrap">
-      <a class="auth-back" href="./">← Studio</a>
+      <a class="auth-back" href="../">← साइट होम</a>
 
       <section class="auth-card">
         <div class="auth-brand">
@@ -34,7 +34,9 @@
           Google से जारी रखें — एक क्लिक, कोई नया password नहीं. आपकी keys और channel पहले से सेव मिलेंगी.
         </p>
 
-        <button id="googleBtn" class="google-btn" type="button">
+        <div id="gisBox" class="gis-box" hidden></div>
+
+        <button id="googleBtn" class="google-btn" type="button" hidden>
           <svg viewBox="0 0 48 48" aria-hidden="true">
             <path
               fill="#EA4335"
@@ -59,6 +61,20 @@
         <p id="authState" class="status" aria-live="polite"></p>
         <p id="authNote" class="fine"></p>
 
+        <details id="clientSetup" class="client-setup" hidden>
+          <summary>एक बार सेटअप: Google Client ID डालें (public id — कोई secret नहीं)</summary>
+          <p class="muted">
+            Google Cloud → APIs &amp; Services → Credentials → OAuth client (Web application) की
+            <b>Client ID</b> यहाँ सेव करें. उसी client में “Authorized JavaScript origins” में यह origin
+            ज़रूर जोड़ें: <code id="originHint">https://vktechlearn.site</code>
+          </p>
+          <div class="copy-row">
+            <input id="clientId" type="text" autocomplete="off" spellcheck="false" placeholder="1234567890-abc.apps.googleusercontent.com" />
+            <button id="clientSave" class="primary" type="button">Save</button>
+          </div>
+          <p id="clientState" class="status" aria-live="polite"></p>
+        </details>
+
         <ul class="auth-perks">
           <li>keys, channel और रिपोर्ट — सब आपके खाते में सेव, दोबारा कुछ लिखना नहीं</li>
           <li>कोई नया password नहीं — पहचान Google ही बनाता है</li>
@@ -69,9 +85,10 @@
           पहली बार आ रहे हैं? वही Google बटन आपका खाता बना देगा — keys बाद में Studio में एक बार सेव होंगी.<br />
           by Vïnâý Kúshwâhå
         </p>
+        <p class="fine"><a href="./?nologin=1">बिना login Studio खोलें (पुराना keys वाला तरीका)</a></p>
       </section>
     </main>
 
-    <script src="./login.js?v=1" type="module"></script>
+    <script src="./login.js?v=2" type="module"></script>
   </body>
 </html>

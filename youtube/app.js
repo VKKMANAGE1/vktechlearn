@@ -813,11 +813,7 @@ function renderPublish(data) {
   } else if (data.googleLogin) {
     setStatus($("loginState"), "अभी login नहीं — ऊपर Login / Sign up से Google से जुड़ें", "");
   } else {
-    setStatus(
-      $("loginState"),
-      "अभी login नहीं — Google login के लिए Worker में GOOGLE_CLIENT_ID/SECRET चाहिए; तब तक नीचे अपनी keys एक बार सेव करें",
-      "",
-    );
+    setStatus($("loginState"), "अभी login नहीं — login page पर एक बार Google Client ID सेव करें, फिर Studio पूरा खुलेगा", "");
   }
   const loginLink = $("loginLink");
   if (loginLink) loginLink.textContent = data.loggedIn ? "दूसरा खाता" : "Login / Sign up";
@@ -881,6 +877,22 @@ async function loadPublish() {
 }
 
 /** Google client id + secret एक बार — खाते में सेव, दोबारा डालने की ज़रूरत नहीं. */
+/** Studio पहले login माँगता है — खाता नहीं है तो login/signup page पर भेजो. */
+async function loginGate() {
+  if (new URLSearchParams(location.search).get("nologin") === "1") return true;
+  try {
+    const res = await fetch(`${API_BASE}/api/yt/status`, { cache: "no-store", credentials: "include", headers: apiHeaders() });
+    const data = await res.json();
+    if (data.loggedIn) return true;
+  } catch {
+    // Worker से कनेक्ट नहीं — studio के बाकी tools बंद न हों.
+    return true;
+  }
+  const back = encodeURIComponent(location.origin + location.pathname);
+  location.replace(`./login.html?return=${back}`);
+  return false;
+}
+
 async function saveKeys() {
   const clientId = $("gClientId").value.trim();
   const clientSecret = $("gSecret").value.trim();
@@ -1002,6 +1014,10 @@ function saveVoice() {
 
 async function boot() {
   $("gRedirect").value = REDIRECT_URI;
+  $("health").textContent = "login जाँचा जा रहा है…";
+  // Google से लौटे हों तो पहले token बना लो, फिर login ज़रूरी है या नहीं.
+  await finishGoogleLogin();
+  if (!(await loginGate())) return;
   $("health").textContent = "skills load हो रहे हैं…";
   try {
     await loadSkills();
@@ -1013,7 +1029,6 @@ async function boot() {
   } catch (error) {
     $("health").textContent = `load fail: ${error.message}`;
   }
-  await finishGoogleLogin();
   readConnectResult();
   loadPublish();
 }
