@@ -1,8 +1,9 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M13 — YouTube Studio (youtube-agent-skill pack, added after M12: 11 skills, 6 Python tools and
-voice.md running on this stack; M12 E2E **22/22**, M11 **39/39**). M12 deployment open items still stand.
-M05 still unaudited)
+**Milestone:** M13 — YouTube Studio (youtube-agent-skill pack). Live on the site at
+<https://vktechlearn.site/youtube/> (static: Python tools in-browser via Pyodide, model via the existing
+Worker); the Docker/subdomain variant is configured but not deployed. M12 E2E **22/22**, M11 **39/39**.
+M12 deployment open items still stand. M05 still unaudited)
 **Date:** 2026-11-19
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -729,6 +730,29 @@ user/hash in `.env`, then `docker compose up -d --build`.
 3. `voice.md` is unedited template text, so skills correctly refuse to write “in your voice” until you fill it.
 4. No conversation history: each answer replaces the previous one in the pane. The skill output is copy-paste
    material, not a saved project.
+
+### M13b — same pack, live on the site (`https://vktechlearn.site/youtube/`)
+
+GitHub Pages cannot run the Node service from §1m, so the pack was re-shipped as a **static page**
+that needs no server of ours:
+
+| Piece | How it works now | Evidence |
+| --- | --- | --- |
+| Six Python tools | run **unmodified** in the visitor's browser via Pyodide 0.26.4 (CDN); scripts are fetched from `youtube/skills/*.py` and executed with `runpy`, `sys.argv`, real cwd — including `chapters.py`/`retention.py` importing `deadair` | hookscore (verdict 41 “WEAK”), title (`score 76`), deadair (EDL with cuts), chapters (`valid:true`) and retention (`hook_leak 48`), swipe (`multiple 16`) all executed on the **live** page in a browser |
+| Eleven skills | `SKILL.md` fetched per skill, frontmatter parsed for the sidebar, body injected into the prompt | sidebar shows all 11 with their descriptions |
+| Model | the **existing** `ai-worker` (`/api/chat`, same backend as `/shavi-ai/`), already CORS-allowed for `vktechlearn.site` | live run streamed a real answer from the production origin (`# YouTube Packaging — 3 Free AI Tools…`); worker’s 30 questions/hour limit applies |
+| voice.md | `localStorage` (per browser, no account) | "मेरी आवाज़" dialog loads the template, saves locally |
+| Entry point | homepage nav → Tools → **YouTube Studio** (`index.html`) | `curl https://vktechlearn.site/` shows `href="/youtube/"`, and `GET /youtube/` → 200 with `app.js`, `SKILL.md`, `hookscore.py` all 200 |
+
+Pushed to `main`; GitHub Actions deployed it (404 → 200 on the second poll). Nothing on the existing site
+changed apart from one nav item. The Node studio from §1m still exists for the Docker path (basic auth,
+`youtube.<domain>`), but the site now has a working copy without any deployment at all.
+
+**M13b limitations:** first tool run downloads the Pyodide runtime (~10 MB, CDN); answers are capped by the
+Worker's 30/hour per-IP limit; `voice.md` is per browser, not an account; the page is public (the pack writes
+nothing and publishes nothing, so the only cost surface is the Worker, which is already public).
+
+---
 
 ---
 
