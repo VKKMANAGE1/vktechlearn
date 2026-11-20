@@ -1163,3 +1163,20 @@ foreign origin → 403; बिना client → 409; keys पहले सेव
 
 **Not verified**: असली Google popup (Google Cloud में client ID + `https://vktechlearn.site`
 origin चाहिए) और studio gate का browser में असली redirect.
+
+### M13i — site-level Google Client ID सेव + जाँच का रास्ता खुला
+
+- `POST /api/auth/client` से असली (public) client ID production में सेव हो गया, इसलिए अब हर
+  browser में login page पर Google बटन अपने आप बनता है — status: `loginClientId` भरा हुआ,
+  `googleLogin: true`, `loggedIn: false`.
+- Live `https://vktechlearn.site/youtube/login.html` पर GIS script + बटन iframe 200, कोई console
+  error नहीं. headless cloud browser में बटन का FedCM popup नहीं खुला (native UI), इसलिए
+  **असली sign-in अब भी unverified** — Google Cloud में उसी OAuth client की
+  “Authorized JavaScript origins” में `https://vktechlearn.site` (और `https://www.vktechlearn.site`)
+  जोड़ना ज़रूरी है.
+- Login page: client ID सेव होने के बाद भी सेटअप card **बंद हालत में** दिखता रहता है (client ID
+  पहले से भरा), ताकि `origin_mismatch` जैसी गलती वहीं से ठीक हो सके. `login.js?v=4`.
+- **Client secret कभी इस्तेमाल नहीं हुआ** — login के लिए ज़रूरत नहीं (ID token + Google JWKS).
+  चैट में paste हो चुका है, इसलिए Google Cloud से उसे **rotate/delete** करें; channel connect के
+  लिए नया secret सिर्फ़ Sites → Secrets में `GOOGLE_CLIENT_SECRET` (और `GOOGLE_CLIENT_ID`) के
+  रूप में डालें — repo, code या chat में नहीं.
