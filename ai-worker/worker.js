@@ -88,7 +88,7 @@ function cors(env, request) {
     "Access-Control-Allow-Origin": allowed && origin ? origin : configured[0],
     ...(allowed && origin ? { "Access-Control-Allow-Credentials": "true" } : {}),
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-YT-Token",
     "Access-Control-Max-Age": "600",
     Vary: "Origin",
   };
@@ -488,6 +488,8 @@ const YT_SCHEMA = [
   "CREATE TABLE IF NOT EXISTS yt_users (uid TEXT PRIMARY KEY, channel_id TEXT, channel_title TEXT, channel_thumb TEXT, email TEXT, client_id TEXT, client_secret TEXT, refresh_token TEXT, connected_at TEXT, updated_at TEXT)",
   "CREATE TABLE IF NOT EXISTS yt_setups (sid TEXT PRIMARY KEY, client_id TEXT, client_secret TEXT, created_at TEXT)",
   "CREATE TABLE IF NOT EXISTS yt_settings (key TEXT PRIMARY KEY, value TEXT)",
+  "CREATE TABLE IF NOT EXISTS yt_logins (token TEXT PRIMARY KEY, uid TEXT, created_at TEXT, last_seen TEXT)",
+  "CREATE TABLE IF NOT EXISTS yt_tickets (ticket TEXT PRIMARY KEY, uid TEXT, created_at TEXT)",
   "CREATE TABLE IF NOT EXISTS yt_runs (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, source_id TEXT, source_title TEXT, status TEXT, note TEXT, clips INTEGER DEFAULT 0)",
   "CREATE TABLE IF NOT EXISTS yt_clips (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, source_id TEXT, source_title TEXT, start_s REAL, end_s REAL, video_id TEXT, title TEXT)",
   "ALTER TABLE yt_runs ADD COLUMN uid TEXT",
@@ -577,7 +579,47 @@ function cookieHeader(name, value, maxAge) {
   return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=None`;
 }
 
+/* ---- login token: page इसे localStorage में रखता है, हर request में header से भेजता है ----
+ *
+ * cookie तीसरे domain (Worker) की होती है, इसलिए Safari/Firefox और third-party cookies block
+ * करने वाले Chrome में वह अक्सर सेव ही नहीं होती — और user को keys हर बार दोबारा डालनी पड़ती थीं.
+ * इसलिए असली पहचान token है: keys सेव करते समय एक बार बनता है, page उसे first-party
+ * localStorage में रखता है, और हर call में X-YT-Token header से भेजता है. वही token “login code”
+ * है जो दूसरे device/browser पर एक बार डालकर वही खाता मिल जाता है. cookie सिर्फ़ fallback रहती है.
+ */
+const LOGIN_HEADER = "X-YT-Token";
+
+async function loginUid(env, request) {
+  const token = (request.headers.get(LOGIN_HEADER) || "").trim();
+  if (token.length < 20) return "";
+  try {
+    const db = await ytDb(env);
+    const row = await db.prepare("SELECT uid FROM yt_logins WHERE token = ?1").bind(token).first();
+    if (!row?.uid) return "";
+    const user = await db.prepare("SELECT uid FROM yt_users WHERE uid = ?1").bind(row.uid).first();
+    if (!user) return "";
+    await db.prepare("UPDATE yt_logins SET last_seen = ?2 WHERE token = ?1").bind(token, new Date().toISOString()).run();
+    return row.uid;
+  } catch {
+    return "";
+  }
+}
+
+/** इस खाते का login token — है तो वही, नहीं तो नया (एक बार). */
+async function issueLogin(env, uid) {
+  if (!uid) return "";
+  const db = await ytDb(env);
+  const existing = await db.prepare("SELECT token FROM yt_logins WHERE uid = ?1 ORDER BY created_at LIMIT 1").bind(uid).first();
+  if (existing?.token) return existing.token;
+  const token = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const now = new Date().toISOString();
+  await db.prepare("INSERT INTO yt_logins (token, uid, created_at, last_seen) VALUES (?1, ?2, ?3, ?3)").bind(token, uid, now).run();
+  return token;
+}
+
 async function currentUid(env, request) {
+  const byToken = await loginUid(env, request);
+  if (byToken) return byToken;
   try {
     const uid = await readCookie(env, request, COOKIE_UID);
     if (!uid) return "";
@@ -653,7 +695,7 @@ async function verifyState(env, state) {
   if ((await stateHmac(env, payload)) !== signature) throw new Error("OAuth state का हस्ताक्षर गलत है");
   const data = JSON.parse(payload);
   if (Date.now() - Number(data.t) > 30 * 60_000) throw new Error("OAuth state पुराना है, दोबारा connect करें");
-  return { r: String(data.r || ""), s: String(data.s || "") };
+  return { r: String(data.r || ""), s: String(data.s || ""), u: String(data.u || "") };
 }
 
 function ytRedirect(url) {
@@ -841,32 +883,98 @@ export default {
       try {
         const db = await ytDb(env);
         const now = new Date().toISOString();
-        const uid = await currentUid(env, request);
-        if (uid) {
-          const current = await db
-            .prepare("SELECT client_id, client_secret, refresh_token FROM yt_users WHERE uid = ?1")
-            .bind(uid)
-            .first();
-          // पुरानी keys से मिला refresh token नई keys के साथ काम नहीं करेगा — बदली keys पर reconnect.
-          const changed = Boolean(current && (current.client_id !== clientId || current.client_secret !== clientSecret));
-          await db
-            .prepare("UPDATE yt_users SET client_id = ?2, client_secret = ?3, refresh_token = ?4, updated_at = ?5 WHERE uid = ?1")
-            .bind(uid, clientId, clientSecret, changed ? null : current?.refresh_token ?? null, now)
-            .run();
-          return Response.json(
-            { saved: true, scope: "account", clientId, needsReconnect: changed && Boolean(current?.refresh_token) },
-            { headers: { ...headers, "Cache-Control": "no-store" } },
-          );
+        let uid = await currentUid(env, request);
+        if (!uid) {
+          uid = b64url(crypto.getRandomValues(new Uint8Array(12)));
+          await db.prepare("INSERT INTO yt_users (uid, updated_at) VALUES (?1, ?2)").bind(uid, now).run();
         }
-        const sid = b64url(crypto.getRandomValues(new Uint8Array(16)));
+        const current = await db
+          .prepare("SELECT client_id, client_secret, refresh_token FROM yt_users WHERE uid = ?1")
+          .bind(uid)
+          .first();
+        // पुरानी keys से मिला refresh token नई keys के साथ काम नहीं करेगा — बदली keys पर reconnect.
+        const changed = Boolean(current && (current.client_id !== clientId || current.client_secret !== clientSecret));
         await db
-          .prepare("INSERT INTO yt_setups (sid, client_id, client_secret, created_at) VALUES (?1, ?2, ?3, ?4)")
-          .bind(sid, clientId, clientSecret, now)
+          .prepare("UPDATE yt_users SET client_id = ?2, client_secret = ?3, refresh_token = ?4, updated_at = ?5 WHERE uid = ?1")
+          .bind(uid, clientId, clientSecret, changed ? null : current?.refresh_token ?? null, now)
           .run();
-        await db.prepare("DELETE FROM yt_setups WHERE created_at < ?1").bind(new Date(Date.now() - 7 * 86_400_000).toISOString()).run();
+        // login token: page इसे localStorage में रखता है, इसलिए cookie block होने पर भी keys नहीं पूछी जातीं.
+        const token = await issueLogin(env, uid);
         return Response.json(
-          { saved: true, scope: "browser", clientId },
-          { headers: { ...headers, "Cache-Control": "no-store", "Set-Cookie": cookieHeader(COOKIE_SETUP, await signCookie(env, sid), 7 * 24 * 3600) } },
+          { saved: true, scope: "account", clientId, uid, token, needsReconnect: changed && Boolean(current?.refresh_token) },
+          {
+            headers: {
+              ...headers,
+              "Cache-Control": "no-store",
+              "Set-Cookie": cookieHeader(COOKIE_UID, await signCookie(env, uid), COOKIE_AGE),
+            },
+          },
+        );
+      } catch (error) {
+        return Response.json({ error: String(error.message || error) }, { status: 500, headers });
+      }
+    }
+
+    if (url.pathname === "/api/yt/login") {
+      if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से login नहीं हो सकता" }, { status: 403, headers });
+      }
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return Response.json({ error: "JSON body चाहिए" }, { status: 400, headers });
+      }
+      const token = String(body.token || "").trim();
+      if (token.length < 20) return Response.json({ error: "login code अधूरा है — पूरा code copy करें" }, { status: 400, headers });
+      try {
+        const db = await ytDb(env);
+        const row = await db.prepare("SELECT uid FROM yt_logins WHERE token = ?1").bind(token).first();
+        if (!row?.uid) return Response.json({ error: "यह login code नहीं मिला — पुराने device से दोबारा copy करें" }, { status: 401, headers });
+        const keys = await userKeys(env, row.uid);
+        return Response.json(
+          { ok: true, keysSaved: Boolean(keys?.id), clientId: keys?.id || "" },
+          {
+            headers: {
+              ...headers,
+              "Cache-Control": "no-store",
+              "Set-Cookie": cookieHeader(COOKIE_UID, await signCookie(env, row.uid), COOKIE_AGE),
+            },
+          },
+        );
+      } catch (error) {
+        return Response.json({ error: String(error.message || error) }, { status: 500, headers });
+      }
+    }
+
+    if (url.pathname === "/api/yt/connect") {
+      if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से connect नहीं हो सकता" }, { status: 403, headers });
+      }
+      const keys = await clientFor(env, request);
+      if (!keys.id || !keys.secret) {
+        return Response.json({ error: "पहले अपनी GOOGLE_CLIENT_ID और GOOGLE_CLIENT_SECRET सेव करें" }, { status: 409, headers });
+      }
+      let body = {};
+      try {
+        body = await request.json();
+      } catch {
+        body = {};
+      }
+      const requested = String(body.return || "");
+      const returnUrl = isReturnUrl(requested) ? requested : "https://vktechlearn.site/youtube/";
+      try {
+        const db = await ytDb(env);
+        const now = new Date().toISOString();
+        // Google पर जाने वाला URL navigation है (header नहीं भेज सकते), इसलिए एक बार का ticket.
+        const ticket = b64url(crypto.getRandomValues(new Uint8Array(18)));
+        await db.prepare("INSERT INTO yt_tickets (ticket, uid, created_at) VALUES (?1, ?2, ?3)").bind(ticket, keys.uid || null, now).run();
+        await db.prepare("DELETE FROM yt_tickets WHERE created_at < ?1").bind(new Date(Date.now() - 30 * 60_000).toISOString()).run();
+        return Response.json(
+          { url: `${url.origin}/api/yt/oauth/start?t=${ticket}&return=${encodeURIComponent(returnUrl)}` },
+          { headers: { ...headers, "Cache-Control": "no-store" } },
         );
       } catch (error) {
         return Response.json({ error: String(error.message || error) }, { status: 500, headers });
@@ -874,7 +982,23 @@ export default {
     }
 
     if (url.pathname === "/api/yt/oauth/start") {
-      const keys = await clientFor(env, request);
+      const ticket = String(url.searchParams.get("t") || "").trim();
+      let ticketUid = "";
+      let keys = null;
+      if (ticket) {
+        try {
+          const db = await ytDb(env);
+          const row = await db.prepare("SELECT uid FROM yt_tickets WHERE ticket = ?1").bind(ticket).first();
+          if (row) {
+            ticketUid = String(row.uid || "");
+            await db.prepare("DELETE FROM yt_tickets WHERE ticket = ?1").bind(ticket).run();
+            keys = await userKeys(env, ticketUid);
+          }
+        } catch {
+          /* ticket काम न आए तो नीचे सामान्य रास्ता */
+        }
+      }
+      if (!keys) keys = await clientFor(env, request);
       if (!keys.id || !keys.secret) {
         return Response.json(
           { error: "पहले अपनी GOOGLE_CLIENT_ID और GOOGLE_CLIENT_SECRET नीचे box में डालकर Save करें — फिर channel connect होगा" },
@@ -884,7 +1008,7 @@ export default {
       const fallback = "https://vktechlearn.site/youtube/";
       const requested = url.searchParams.get("return") || fallback;
       const returnUrl = isReturnUrl(requested) ? requested : fallback;
-      const state = await signState(env, { r: returnUrl, s: keys.source === "browser" ? keys.sid : "" });
+      const state = await signState(env, { r: returnUrl, s: keys.source === "browser" ? keys.sid : "", u: ticketUid || keys.uid || "" });
       const target = new URL(GOOGLE_AUTH);
       target.searchParams.set("client_id", keys.id);
       target.searchParams.set("redirect_uri", ytRedirect(url));
@@ -918,7 +1042,7 @@ export default {
           const setup = await db.prepare("SELECT client_id, client_secret FROM yt_setups WHERE sid = ?1").bind(state.s).first();
           if (setup?.client_id) keys = { id: setup.client_id, secret: setup.client_secret };
         }
-        if (!keys) keys = await userKeys(env, await currentUid(env, request));
+        if (!keys) keys = await userKeys(env, state.u || (await currentUid(env, request)));
         if (!keys && env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
           keys = { id: env.GOOGLE_CLIENT_ID, secret: env.GOOGLE_CLIENT_SECRET };
         }
@@ -934,8 +1058,16 @@ export default {
         const channel = await ytIdentity(tokens.access_token);
         const email = await googleEmail(tokens.access_token);
         const existing = await db.prepare("SELECT uid FROM yt_users WHERE channel_id = ?1").bind(channel.id).first();
-        const uid = existing?.uid || b64url(crypto.getRandomValues(new Uint8Array(12)));
+        // इसी login (state.u) में channel जोड़ो, ताकि keys और channel एक ही खाते में रहें.
+        const uid = state.u || existing?.uid || b64url(crypto.getRandomValues(new Uint8Array(12)));
         const now = new Date().toISOString();
+        if (existing?.uid && existing.uid !== uid) {
+          // वही channel दो खातों में न दिखे — पुरानी row से channel/token हटा दो.
+          await db
+            .prepare("UPDATE yt_users SET channel_id = NULL, channel_title = NULL, channel_thumb = NULL, refresh_token = NULL, updated_at = ?2 WHERE uid = ?1")
+            .bind(existing.uid, now)
+            .run();
+        }
         await db
           .prepare(
             `INSERT INTO yt_users (uid, channel_id, channel_title, channel_thumb, email, client_id, client_secret, refresh_token, connected_at, updated_at)

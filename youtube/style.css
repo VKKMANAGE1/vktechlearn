@@ -617,6 +617,28 @@ header.top a.brand {
   flex: 0 0 auto;
 }
 
+.login-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.login-more {
+  margin-top: 10px;
+}
+
+.login-more summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: #9fd8f2;
+}
+
+.login-more .copy-row {
+  margin-top: 8px;
+}
+
 @media (max-width: 720px) {
   .pub-head {
     flex-direction: column;

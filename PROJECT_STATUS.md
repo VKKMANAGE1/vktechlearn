@@ -1058,3 +1058,41 @@ studio के box में एक बार सेव करता है औ�
 
 **Not verified:** असली Google consent + callback (live keys नहीं हैं), असली publish, और page
 browser में खोलकर नहीं देखा गया — सिर्फ़ syntax, worker routes और markup.
+
+## 11. M13f — login token, keys दोबारा डालने की ज़रूरत नहीं (2026-11-20)
+
+M13e में पहचान `shavi_uid` cookie से थी, पर वह Worker के दूसरे domain (freebuff.page) की
+third-party cookie है — Safari/Firefox और third-party cookies block करने वाले Chrome में वह सेव
+ही नहीं होती, इसलिए keys हर बार दोबारा डालनी पड़ती थीं. अब असली पहचान login token है.
+
+- `POST /api/yt/keys` अब हमेशा account-scoped है: uid न हो तो बनता है, keys उसी `yt_users` row
+  में जाती हैं, और response में एक बार **login token** (`token`) आता है. client secret वापस
+  नहीं भेजा जाता; बदली keys पर `needsReconnect:true` और refresh token हट जाता है.
+- page token को first-party `localStorage` (`shavi-yt-login-v1`) में रखता है और हर call में
+  `X-YT-Token` header भेजता है (status/keys/run). CORS preflight में वह header allowed है.
+  Worker की cookie अब सिर्फ़ fallback है — token पहले देखा जाता है.
+- नया `POST /api/yt/login` — दूसरे browser/device पर “Login code” डालने से वही खाता (keys +
+  channel) मिल जाता है; गलत code 401, दूसरे origin से 403. पुराना/गलत token मिलने पर status
+  `loggedIn:false` देता है और page उसे localStorage से हटा देता है.
+- नया `POST /api/yt/connect`: Google पर navigation में header नहीं जा सकता, इसलिए एक बार का
+  ticket देता है; `/api/yt/oauth/start?t=…` ticket से uid निकालकर OAuth state में `u` रखता है
+  और ticket तुरंत मिटा देता है. Callback channel + refresh token उसी uid में लिखता है; वही
+  channel पहले किसी दूसरे uid में हो तो उस पुरानी row से channel/token हटा दिए जाते हैं.
+- studio UI: “Google login — keys सिर्फ़ एक बार”, login state line, “Login code copy करें”, और
+  “दूसरे browser/device पर login” का code box. Assets `?v=5`.
+
+**Verified locally** (node:sqlite D1 shim, 44 checks): preflight में `X-YT-Token`; बिना cookie
+keys सेव → 200 + token + HttpOnly cookie; सिर्फ़ token header से status → `loggedIn:true,
+keysSaved:true, keysSource:"account", clientId`; वही keys दोबारा → वही token और
+`needsReconnect:false`; बिना token/cookie → logged out; forged token → logged out; connect
+ticket → 302 Google पर user के client id + 3 scopes, state में uid, दूसरी बार वही ticket → 503;
+login सही code 200 / गलत 401 / foreign origin 403; दूसरे uid के runs/clips नहीं दिखते; run
+बिना login 409, login के साथ dispatch तक (GH_TOKEN नहीं → 502), foreign origin 403; uid cookie
+अब भी वही खाता देती है; बदली keys → `needsReconnect:true` + `connected:false`; mocked Google
+callback → 302 `yt=connected`, channel उसी login खाते में, दूसरे uid का duplicate channel हटा.
+
+**Live (preview + production deploy `succeeded`):** anon status में नए fields, preflight में
+`X-YT-Token`, forged token → `loggedIn:false`, गलत login code → 401, बिना keys connect → 409.
+
+**Not verified:** असली Google consent + callback + publish (live Google keys नहीं), और page
+browser में खोलकर नहीं देखा गया.

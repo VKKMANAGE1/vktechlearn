@@ -9,7 +9,7 @@
       content="अपने YouTube channel का link दें — 11 AI skills और 6 tools खुद चलकर पूरा video package (script, title, thumbnail text, description, Shorts, plan) बना देंगे। मुफ़्त, बिना login."
     />
     <link rel="icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="./style.css?v=4" />
+    <link rel="stylesheet" href="./style.css?v=5" />
   </head>
   <body>
     <header class="top">
@@ -52,12 +52,24 @@
           </div>
 
           <div class="pub-setup" id="pubSetup">
-            <h3>Google login / अपनी OAuth keys — एक ही बार</h3>
+            <h3>Google login — keys सिर्फ़ एक बार</h3>
             <p class="muted">
               नीचे अपनी Google Cloud OAuth client की दो चाबियाँ डालकर <b>Save</b> करें. ये आपके खाते में सेव
-              होती हैं (Worker के database में), इसलिए हर बार डालनी नहीं पड़ेंगी. Client secret browser को
-              कभी वापस नहीं दिखाया जाता.
+              होती हैं (Worker के database में) और इस browser में आपका login बन जाता है — अगली बार page
+              खोलने पर keys नहीं पूछी जाएँगी. Client secret browser को कभी वापस नहीं दिखाया जाता.
             </p>
+            <div class="login-row">
+              <span id="loginState" class="status" aria-live="polite">login जाँचा जा रहा है…</span>
+              <button id="copyLogin" class="ghost" type="button" hidden>Login code copy करें</button>
+            </div>
+            <details class="login-more">
+              <summary>दूसरे browser / device पर login करें</summary>
+              <p class="muted">पहले device पर “Login code copy करें” दबाएँ और यहाँ चिपकाएँ — keys दोबारा डालने की ज़रूरत नहीं.</p>
+              <div class="copy-row">
+                <input id="loginCode" type="text" autocomplete="off" spellcheck="false" placeholder="login code चिपकाएँ" />
+                <button id="loginBtn" class="ghost" type="button">Login करें</button>
+              </div>
+            </details>
             <label class="field">
               <span>Authorized redirect URI — यही Google Cloud → OAuth client में डालें</span>
               <span class="copy-row">
@@ -206,6 +218,6 @@
       </form>
     </dialog>
 
-    <script src="./app.js?v=4" type="module"></script>
+    <script src="./app.js?v=5" type="module"></script>
   </body>
 </html>

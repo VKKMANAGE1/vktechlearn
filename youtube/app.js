@@ -13,6 +13,9 @@ const API_BASE = "https://site-d28594350583452e987524c38e89b7a9.freebuff.page";
 const PYODIDE_BASE = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
 const VOICE_KEY = "shavi-yt-voice-v1";
 const PACKAGE_KEY = "shavi-yt-package-v1";
+// login token: keys एक बार सेव करने पर मिलता है और इसी browser (first-party) में रहता है,
+// इसलिए Worker की cross-site cookie block होने पर भी दोबारा keys नहीं डालनी पड़तीं.
+const LOGIN_KEY = "shavi-yt-login-v1";
 
 const SKILL_IDS = [
   "yt-script",
@@ -674,6 +677,14 @@ function gSay(text, kind) {
   setStatus($("gStatus"), text || "", kind);
 }
 
+const loginToken = () => localStorage.getItem(LOGIN_KEY) || "";
+
+/** हर Worker call में login token (अगर है) — cookies पर निर्भर नहीं. */
+function apiHeaders(extra = {}) {
+  const token = loginToken();
+  return { ...(token ? { "X-YT-Token": token } : {}), ...extra };
+}
+
 function pill(text, kind) {
   const el = $("pubPill");
   el.textContent = text;
@@ -715,6 +726,15 @@ function renderList(el, rows, empty) {
 function renderPublish(data) {
   pill(data.connected ? "जुड़ा हुआ" : data.keysSaved ? "keys सेव" : "शुरू करें", data.connected ? "ok" : "bad");
   renderChannel(data);
+  const tokened = Boolean(loginToken());
+  $("copyLogin").hidden = !tokened;
+  if (data.loggedIn) {
+    setStatus($("loginState"), "✓ इस browser में login सेव है — keys दोबारा नहीं डालनी पड़ेंगी", "ok");
+  } else if (data.keysSource === "worker") {
+    setStatus($("loginState"), "Worker की default keys चल रही हैं — अपनी keys सेव करें तो यही खाता login बनेगा", "");
+  } else {
+    setStatus($("loginState"), "अभी login नहीं — नीचे keys एक बार सेव करें, फिर यह browser हमेशा login रहेगा", "");
+  }
   $("pubConnect").textContent = data.connected ? "दोबारा connect करें" : "Channel connect करें";
   $("pubConnect").disabled = !data.oauth;
   $("pubConnect").title = data.oauth ? "" : "पहले ऊपर client ID और secret सेव करें";
@@ -762,8 +782,11 @@ function renderPublish(data) {
 
 async function loadPublish() {
   try {
-    const res = await fetch(`${API_BASE}/api/yt/status`, { cache: "no-store", credentials: "include" });
-    renderPublish(await res.json());
+    const res = await fetch(`${API_BASE}/api/yt/status`, { cache: "no-store", credentials: "include", headers: apiHeaders() });
+    const data = await res.json();
+    // token पुराना/गलत निकला तो हटा दो, वरना हर बार वही भेजा जाता रहेगा.
+    if (res.ok && !data.loggedIn && loginToken()) localStorage.removeItem(LOGIN_KEY);
+    renderPublish(data);
   } catch (error) {
     pill("Worker से कनेक्ट नहीं", "bad");
     pubSay(`status नहीं आया: ${error.message}`, "error");
@@ -784,13 +807,14 @@ async function saveKeys() {
     const res = await fetch(`${API_BASE}/api/yt/keys`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: apiHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ client_id: clientId, client_secret: clientSecret }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    if (data.token) localStorage.setItem(LOGIN_KEY, data.token);
     $("gSecret").value = "";
-    gSay("सेव हो गया — अब “Channel connect करें” दबाएँ", "ok");
+    gSay("सेव हो गया और login बन गया — अब “Channel connect करें” दबाएँ", "ok");
     await loadPublish();
   } catch (error) {
     gSay(error.message, "error");
@@ -809,9 +833,63 @@ async function copyRedirect() {
   }
 }
 
-function connectChannel() {
+async function connectChannel() {
   const here = location.origin + location.pathname;
-  location.href = `${API_BASE}/api/yt/oauth/start?return=${encodeURIComponent(here)}`;
+  $("pubConnect").disabled = true;
+  pubSay("Google पर भेजा जा रहा है…");
+  try {
+    const res = await fetch(`${API_BASE}/api/yt/connect`, {
+      method: "POST",
+      headers: apiHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ return: here }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || `HTTP ${res.status}`);
+    location.href = data.url;
+  } catch (error) {
+    pubSay(error.message, "error");
+    $("pubConnect").disabled = false;
+  }
+}
+
+async function copyLogin() {
+  const token = loginToken();
+  if (!token) return;
+  try {
+    await navigator.clipboard.writeText(token);
+    gSay("login code copy हो गया — दूसरे device पर इसे डालें", "ok");
+  } catch {
+    $("loginCode").value = token;
+    $("loginCode").select();
+    gSay("code नीचे भर दिया — Ctrl/Cmd + C दबाएँ", "error");
+  }
+}
+
+async function loginWithCode() {
+  const token = $("loginCode").value.trim();
+  if (!token) {
+    gSay("पहले login code डालें", "error");
+    return;
+  }
+  $("loginBtn").disabled = true;
+  gSay("login हो रहा है…");
+  try {
+    const res = await fetch(`${API_BASE}/api/yt/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    localStorage.setItem(LOGIN_KEY, token);
+    $("loginCode").value = "";
+    gSay("login हो गया — इस खाते की keys और channel आ गए", "ok");
+    await loadPublish();
+  } catch (error) {
+    gSay(error.message, "error");
+  } finally {
+    $("loginBtn").disabled = false;
+  }
 }
 
 async function runAutopilot(dryRun) {
@@ -822,7 +900,7 @@ async function runAutopilot(dryRun) {
     const res = await fetch(`${API_BASE}/api/yt/run`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: apiHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ dry_run: Boolean(dryRun) }),
     });
     const data = await res.json();
@@ -900,6 +978,8 @@ $("startPilot").addEventListener("click", runPilot);
 $("pubConnect").addEventListener("click", connectChannel);
 $("gSave").addEventListener("click", saveKeys);
 $("gCopy").addEventListener("click", copyRedirect);
+$("copyLogin").addEventListener("click", copyLogin);
+$("loginBtn").addEventListener("click", loginWithCode);
 $("pubRun").addEventListener("click", () => runAutopilot(false));
 $("pubTest").addEventListener("click", () => runAutopilot(true));
 $("autoBtn").addEventListener("click", () => showMode("auto"));
