@@ -1,8 +1,8 @@
 # PROJECT_STATUS — ShâVì Ai
 
-**Milestone:** M12 — Final QA & Deployment (implemented and audited: **M12 E2E 22/22**, **M11 39/39** after fixing the
-test's SSE predicate, production client build + Docker/HTTPS configuration + a real backup/restore drill verified;
-awaiting approval. M05 still unaudited)
+**Milestone:** M13 — YouTube Studio (youtube-agent-skill pack, added after M12: 11 skills, 6 Python tools and
+voice.md running on this stack; M12 E2E **22/22**, M11 **39/39**). M12 deployment open items still stand.
+M05 still unaudited)
 **Date:** 2026-11-19
 **Audited by:** evidence collected from source, live worker HTTP calls, and browser runs on
 `https://vktechlearn.site/shavi-ai/` (see §7 test log)
@@ -696,6 +696,39 @@ $ node tools/restore-mongo.mjs <dir> --db …/LibreChatRecoveryCheck → RECOVER
    `compose build`.
 6. **Panel origin** still needs a real hostname in `ADMIN_PANEL_URL`/`SHAVI_ADMIN_DOMAIN` (Caddy route is ready,
    DNS is not).
+
+---
+
+## 1m. M13 — YouTube Studio (the Jakeschincariol/youtube-agent-skill pack, running here)
+
+Request: take <https://github.com/Jakeschincariol/youtube-agent-skill> (MIT, eleven Claude skills + six
+dependency-free Python tools) and make it usable on this site for day-to-day YouTube work. The pack is
+vendored unchanged; what was built around it is the surface that makes it run on *this* stack, because a
+Claude skill folder assumes a filesystem agent with bash and there is no such agent inside the web app.
+
+| Requirement | Implementation files | Backend verification | Frontend verification | Test result | Remaining issues |
+| --- | --- | --- | --- | --- | --- |
+| **The eleven skills** | `shavi-youtube/skills/yt-{script,package,edit,comment,plan,viral,retention,shorts,seo,chapters,audit}/SKILL.md` (vendored byte-for-byte, `LICENSE` + `UPSTREAM-README.md` kept) | `GET /api/skills` returns all 11 with parsed `name`/`description` and body; frontmatter `description: >-` folding parsed correctly | Sidebar lists all eleven by command name, description clipped to two lines | **PASS** | Skills are prompts, not agents: they cannot browse or publish, and the pack says so itself |
+| **The six Python tools** | `skills/yt-*/{hookscore,title,deadair,chapters,retention,swipe}.py`, executed by `service.mjs` (`spawnSync('python3', …)`, 60 s timeout, temp input file, `--json`) | All six executed on real sample input: hook panel (`SPECIFICITY/ADDRESS/STAKES/CURIOSITY/BREVITY` + verdict 41 “WEAK”), title pairing (`score 76`, `no-number`, `duplicate`), EDL (filler `um`, 3.5 s dead gap, repeated take), chapters (`valid:true`, 5 chapters from 98 s), retention (`hook_leak 48`, cliffs, `slide_per_unit 0.053`), swipe (`multiple 16`, channel median computed) | Each tool skill shows “Tool चलाओ”; result JSON rendered in the output pane and passed into the model prompt | **PASS (6/6 tools, 32–48 ms each)** | Retention needs Studio's CSV export; chapters/EDL need a timestamped transcript (SRT/VTT/JSON) |
+| **Real model, not a mock** | `service.mjs` `askSkill()` → `POST https://integrate.api.nvidia.com/v1/chat/completions`, model `nvidia/nemotron-3-ultra-550b-a55b`, key from `SHAVI_AI_KEY`/`ai-key.txt` (never logged) | `POST /api/run` for `yt-package` → **HTTP 200, 1,528 tokens**, answer followed the skill: refused to invent a voice because `voice.md` is still the template, asked for three videos, listed the exact next steps | “SHAVI AI से बनवाओ” streams the answer into the pane with elapsed time, model and token count | **PASS** | 30–90 s per answer (Nemotron); one request at a time in this UI |
+| **voice.md** | `shavi-youtube/voice.md` (template copied from `templates/voice.md`), `GET/PUT /api/voice`, editor dialog | `PUT /api/voice` writes the file; every `/api/run` re-reads it and injects it as the voice profile | “मेरी आवाज़ (voice.md)” opens the editor, saves, confirms | **PASS** | Still the unfilled template — the first thing to do is paste three of your own transcripts there |
+| **Usable from the site** | `tools/start-shavi-youtube.sh`, `shavi-youtube/Dockerfile`, compose service `youtube`, Caddy block `{$SHAVI_YOUTUBE_DOMAIN}` with **basic auth** (the studio spends credits) | `docker compose config -q` → exit 0 with **9 services**; `caddy validate` → “Valid configuration” for all three hostnames | Page served on port 3000 for the preview; `GET /` 200 (8,872 b), `app.js` 200, `style.css` 200, `/health` `{skills:11,key:true,python:"Python 3.12.3"}` | **PASS (config + local run)** | Public hostname/DNS not set; containers not started (no Docker daemon, same as M12) |
+| **Not published by the pack** | — | Nothing in the pack or in `service.mjs` uploads to YouTube; the six tools only read pasted text | Output ends in the pack's own “ship it, or change it?” block | **PASS** | Publishing still means uploading yourself — that is deliberate in the upstream pack |
+
+**How it is used:** `bash tools/start-shavi-youtube.sh` → open the studio → pick a command → paste the idea,
+transcript or CSV → *Tool चलाओ* (numbers from the pack's own scripts) → *SHAVI AI से बनवाओ*. Fill `voice.md`
+once and every skill writes in your voice. In Docker the same thing is `SHAVI_YOUTUBE_DOMAIN` + the basic-auth
+user/hash in `.env`, then `docker compose up -d --build`.
+
+**M13 open items**
+
+1. The studio is not behind LibreChat's login — it is a separate service protected by Caddy basic auth on its own
+   hostname. If you would rather have it inside the app's sidebar, that is a LibreChat client change, not a
+   config one; say so and it becomes its own milestone.
+2. Hostname + DNS + ACME still outstanding (same blocker as M12 item 2).
+3. `voice.md` is unedited template text, so skills correctly refuse to write “in your voice” until you fill it.
+4. No conversation history: each answer replaces the previous one in the pane. The skill output is copy-paste
+   material, not a saved project.
 
 ---
 

@@ -80,6 +80,21 @@ services:
       - MESSAGE_IP_WINDOW=${MESSAGE_IP_WINDOW:-1}
     # Reachable through caddy at ${SHAVI_ADMIN_DOMAIN} only.
 
+  youtube:
+    container_name: shavi-youtube
+    # The eleven youtube-agent-skill skills (MIT) + their six Python tools (M13).
+    build:
+      context: ../shavi-youtube
+    restart: always
+    environment:
+      - SHAVI_AI_KEY=${SHAVI_AI_KEY}
+      - SHAVI_YOUTUBE_PORT=4128
+      - SHAVI_YOUTUBE_MODEL=${SHAVI_YOUTUBE_MODEL:-nvidia/nemotron-3-ultra-550b-a55b}
+    volumes:
+      # Your voice profile stays on the host, so editing it does not need a rebuild.
+      - ./youtube-voice.md:/app/voice.md
+    # Reachable through caddy at ${SHAVI_YOUTUBE_DOMAIN} (basic auth) only.
+
   caddy:
     container_name: shavi-caddy
     image: docker.io/library/caddy:2.10-alpine
@@ -87,6 +102,7 @@ services:
     depends_on:
       - api
       - admin
+      - youtube
     ports:
       - "80:80"
       - "443:443"
@@ -94,6 +110,9 @@ services:
     environment:
       - SHAVI_DOMAIN=${SHAVI_DOMAIN:?set SHAVI_DOMAIN in .env}
       - SHAVI_ADMIN_DOMAIN=${SHAVI_ADMIN_DOMAIN:?set SHAVI_ADMIN_DOMAIN in .env}
+      - SHAVI_YOUTUBE_DOMAIN=${SHAVI_YOUTUBE_DOMAIN:?set SHAVI_YOUTUBE_DOMAIN in .env}
+      - SHAVI_YOUTUBE_USER=${SHAVI_YOUTUBE_USER:?set SHAVI_YOUTUBE_USER in .env}
+      - SHAVI_YOUTUBE_HASH=${SHAVI_YOUTUBE_HASH:?set SHAVI_YOUTUBE_HASH in .env}
       - ACME_EMAIL=${ACME_EMAIL:?set ACME_EMAIL in .env}
       - PORT=${PORT:-3080}
     volumes:

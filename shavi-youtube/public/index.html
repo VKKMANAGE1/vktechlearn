@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SHAVI YouTube Studio</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="mark">▶</span>
+        <div>
+          <h1>SHAVI <b>YouTube Studio</b></h1>
+          <p id="health">loading…</p>
+        </div>
+      </div>
+      <button id="voiceBtn" class="ghost" type="button">मेरी आवाज़ (voice.md)</button>
+    </header>
+
+    <div class="layout">
+      <nav id="nav" class="rail" aria-label="Skills"></nav>
+
+      <main class="stage">
+        <section class="head">
+          <h2 id="skillName">—</h2>
+          <p id="skillDesc"></p>
+        </section>
+
+        <label class="field">
+          <span id="inputLabel">Input</span>
+          <textarea id="input" rows="10" spellcheck="false"></textarea>
+        </label>
+
+        <label class="field" id="extraWrap" hidden>
+          <span id="extraLabel">Extra</span>
+          <input id="extra" type="text" />
+        </label>
+
+        <div class="actions">
+          <button id="runTool" class="primary" type="button" hidden>Tool चलाओ</button>
+          <button id="ask" class="primary" type="button">SHAVI AI से बनवाओ</button>
+          <button id="copy" class="ghost" type="button" hidden>Copy</button>
+          <span id="status" class="status"></span>
+        </div>
+
+        <pre id="out" class="out" hidden></pre>
+      </main>
+    </div>
+
+    <dialog id="voiceDialog">
+      <form method="dialog" class="voice">
+        <h2>voice.md</h2>
+        <p class="hint">
+          हर skill यह फ़ाइल पढ़ती है। तीन अपने वीडियो के transcript डालें और "कैसे बोलता/बोलती हूँ" वाला हिस्सा भरें —
+          इससे script आपकी आवाज़ में आएगी।
+        </p>
+        <textarea id="voiceText" rows="18" spellcheck="false"></textarea>
+        <div class="actions">
+          <button id="voiceSave" class="primary" type="button">Save</button>
+          <button class="ghost" value="close" type="submit">Close</button>
+          <span id="voiceStatus" class="status"></span>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

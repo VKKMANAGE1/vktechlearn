@@ -48,3 +48,26 @@
 	# The panel runs on 4127 and proxies every /api/panel/* call to LibreChat itself.
 	reverse_proxy admin:4127
 }
+
+{$SHAVI_YOUTUBE_DOMAIN} {
+	encode zstd gzip
+
+	# The studio calls the paid model, so it is not left open to the internet.
+	# Generate the hash with: caddy hash-password --plaintext 'your-password'
+	basic_auth {
+		{$SHAVI_YOUTUBE_USER} {$SHAVI_YOUTUBE_HASH}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	# Long model answers: do not buffer, and give a 6-minute budget.
+	reverse_proxy youtube:4128 {
+		flush_interval -1
+	}
+}
