@@ -754,6 +754,31 @@ nothing and publishes nothing, so the only cost surface is the Worker, which is 
 
 ---
 
+### M13c — Auto Pilot: एक channel link, पूरा package (live)
+
+Request: “ऐसा tool बने जो 11 agents खुद use करे, मेरे channel का data लेकर सब feed करके रखे, मैं सिर्फ़ post करूँ”.
+
+| टुकड़ा | कैसे काम करता है | सबूत |
+| --- | --- | --- |
+| Channel data | नया Worker endpoint `GET /api/yt/channel?u=…` — `@handle`/link/`UC…` resolve करता है (चैनल पेज का `externalId`), फिर public RSS पढ़ता है; नतीजे: 15 हाल के videos, views, median, upload cadence, आख़िरी upload; 15 मिनट cache | live: `@MrBeast` → 15 videos, median 101,324,771, gap 5.9 दिन; `mkbhd` → “Marques Brownlee”, median 9,232,071, gap 3.8 दिन |
+| Pipeline | Auto Pilot पर एक click → audit → (topic) → 5 hooks → hookscore.py → 10 titles → title.py → script → SEO → Shorts → 7-दिन plan; हर step क्रम से, बीच में tool के असली नतीजे अगले prompt में जाते हैं | live run पूरा हुआ: 9/9 steps done, **16,486 अक्षर** का package (audit + scored hooks + linted titles + script + SEO + Shorts + plan) |
+| Tools pipeline में | Pyodide में `hookscore.py`/`title.py` चलकर model की lines को score करते हैं (model का अंदाज़ा नहीं) | hooks का top score 32 (WEAK) — tool ने सच बताया, model की तारीफ़ नहीं की |
+| Output | एक markdown package: **Download .md**, Copy, और localStorage में पिछला package | download/copy ਬਟन, `पिछला package खोलो` |
+| Deploy | Worker (preview + production) पर नया endpoint; page `youtube/` में Auto Pilot | worker deploy receipts `succeeded`; live page पर channel card + audit step चलते देखा गया |
+
+**सीमाएँ (साफ़ शब्दों में):**
+
+1. **“Viral” की कोई गारंटी नहीं** — कोई tool नहीं दे सकता। यह आपके channel के अपने proven patterns + pack के heuristics
+   पर बनाता है, पर पहला दर्शक आपका ही होगा।
+2. Pipeline में **6–7 model calls** होते हैं → एक run 4–6 मिनट, और Worker की **30 सवाल/घंटा** सीमा में गिने जाते हैं।
+3. Channel data सिर्फ़ **public RSS** (आख़िरी 15 videos) — private analytics, CTR, retention CSV नहीं आते; retention के लिए
+   आपको Studio से CSV डालनी होगी (Manual mode).
+4. **Transcript नहीं होता**, इसलिए chapters/EDL अपने आप नहीं बनते — वे तब बनते हैं जब आप transcript दें।
+5. **Upload नहीं होता** — YouTube Data API से अपलोड अलग OAuth काम है; अभी आप ही post करेंगे (यही pack का इरादा भी है)।
+6. Browser cache: assets अब `?v=` के साथ माँगे जाते हैं, वरना पुराना `app.js` नया button नहीं चलाता (यह bug live पर मिला और ठीक हुआ).
+
+---
+
 ---
 
 ## 2. Requirement audit (evidence-based)
