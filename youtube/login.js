@@ -178,9 +178,15 @@ async function check() {
         location.href = `${API_BASE}/api/auth/google/start?mode=${mode}&return=${encodeURIComponent(back)}`;
       });
     }
-    if (clientId) {
+    if (data.oauth) {
+      // id + secret दोनों मौजूद (Worker या इस browser की keys) — पुराना redirect वाला login सीधा चलता है.
       $("clientSetup").hidden = true;
-      if (!data.loggedIn) say("Google बटन तैयार है — नीचे दबाइए", "");
+      $("gisBox").hidden = true;
+      $("googleBtn").hidden = false;
+      if (!data.loggedIn) say("Google बटन तैयार है — ऊपर दबाइए", "");
+    } else if (clientId) {
+      $("clientSetup").hidden = true;
+      if (!data.loggedIn) say("Google बटन तैयार है — ऊपर दबाइए", "");
       await renderGoogleButton();
     } else {
       $("clientSetup").hidden = false;

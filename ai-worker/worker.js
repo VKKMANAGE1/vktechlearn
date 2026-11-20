@@ -1483,7 +1483,8 @@ export default {
         const account = uid
           ? await db.prepare("SELECT email, name, picture FROM yt_accounts WHERE uid = ?1 LIMIT 1").bind(uid).first()
           : null;
-        const loginClient = await loginClientId(env);
+        // site-level client न हो तो इसी browser/खाते में पहले से सेव client id भी login के लिए चलेगा.
+        const loginClient = (await loginClientId(env)) || keys.id || "";
         return Response.json(
           {
             ...ytBase,
