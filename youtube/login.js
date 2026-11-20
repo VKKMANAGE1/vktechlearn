@@ -172,20 +172,19 @@ async function check() {
       setTimeout(() => location.replace(back), 800);
     }
     if (data.oauth) {
-      // Worker में secret भी है — पुराना redirect वाला रास्ता भी खुला रहता है.
+      // id + secret दोनों मौजूद (Worker या इस browser की keys) — पुराना redirect वाला login सीधा चलता है.
       $("googleBtn").hidden = false;
       $("googleBtn").addEventListener("click", () => {
         location.href = `${API_BASE}/api/auth/google/start?mode=${mode}&return=${encodeURIComponent(back)}`;
       });
-    }
-    if (data.oauth) {
-      // id + secret दोनों मौजूद (Worker या इस browser की keys) — पुराना redirect वाला login सीधा चलता है.
       $("clientSetup").hidden = true;
       $("gisBox").hidden = true;
       $("googleBtn").hidden = false;
       if (!data.loggedIn) say("Google बटन तैयार है — ऊपर दबाइए", "");
     } else if (clientId) {
-      $("clientSetup").hidden = true;
+      // बटन तैयार है, पर client ID/origin की जाँच का रास्ता बंद न हो — card बंद हालत में दिखता रहे.
+      $("clientSetup").hidden = false;
+      $("clientId").value = clientId;
       if (!data.loggedIn) say("Google बटन तैयार है — ऊपर दबाइए", "");
       await renderGoogleButton();
     } else {
