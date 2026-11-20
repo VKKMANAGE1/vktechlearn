@@ -763,6 +763,15 @@ header.top a.brand {
   line-height: 1.6;
 }
 
+.auth-card a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+.auth-card a:hover {
+  text-decoration: underline;
+}
+
 .google-btn {
   display: flex;
   align-items: center;
