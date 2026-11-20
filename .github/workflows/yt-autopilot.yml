@@ -15,6 +15,10 @@ on:
         description: "पहले test करें — clips बनेंगे, publish नहीं होंगे"
         type: boolean
         default: false
+      user:
+        description: "सिर्फ़ एक channel का uid (खाली = सभी connected channels)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -58,11 +62,14 @@ jobs:
         env:
           GITHUB_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
           SHAVI_WORKER_URL: https://site-d28594350583452e987524c38e89b7a9.freebuff.page
+          DRY_RUN: ${{ inputs.dry_run }}
+          YT_USER: ${{ inputs.user }}
         run: |
           set -euo pipefail
-          FLAGS=""
-          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="--dry-run"; fi
-          python tools/yt-autopilot/autopilot.py $FLAGS --out autopilot-out
+          ARGS=()
+          if [ "${DRY_RUN}" = "true" ]; then ARGS+=(--dry-run); fi
+          if [ -n "${YT_USER}" ]; then ARGS+=(--user "${YT_USER}"); else ARGS+=(--all-users); fi
+          python tools/yt-autopilot/autopilot.py "${ARGS[@]}" --out autopilot-out
 
       - name: Clips सुरक्षित रखें (3 दिन)
         if: always()

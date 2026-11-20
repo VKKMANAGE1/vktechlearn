@@ -9,7 +9,7 @@
       content="अपने YouTube channel का link दें — 11 AI skills और 6 tools खुद चलकर पूरा video package (script, title, thumbnail text, description, Shorts, plan) बना देंगे। मुफ़्त, बिना login."
     />
     <link rel="icon" href="../favicon.ico" />
-    <link rel="stylesheet" href="./style.css?v=3" />
+    <link rel="stylesheet" href="./style.css?v=4" />
   </head>
   <body>
     <header class="top">
@@ -36,11 +36,12 @@
         <section class="publish" id="publish">
           <div class="pub-head">
             <div>
-              <h2>Channel जोड़ें — बाकी काम यह खुद करेगा</h2>
+              <h2>Google से जुड़ें — बाकी काम यह खुद करेगा</h2>
               <p>
-                एक बार connect कीजिए. उसके बाद यह खुद अपने ही channel के सबसे अच्छे हिस्सों से 25–50 सेकंड
-                की vertical Shorts काटता है, captions जलाता है, title/description लिखता है और सीधे आपके
-                channel पर publish कर देता है. आपको सिर्फ़ नतीजा देखना है — या "Test run" से पहले जाँच लेना है.
+                अपनी Google OAuth keys नीचे एक बार सेव कीजिए, फिर एक बार channel connect कीजिए. उसके बाद
+                यह खुद अपने ही channel के सबसे अच्छे हिस्सों से 25–50 सेकंड की vertical Shorts काटता है,
+                captions जलाता है, title/description लिखता है और सीधे आपके channel पर publish कर देता है.
+                आपको सिर्फ़ नतीजा देखना है — या "Test run" से पहले जाँच लेना है.
               </p>
             </div>
             <span class="pill" id="pubPill">जाँच हो रही है…</span>
@@ -48,6 +49,36 @@
 
           <div class="pub-channel" id="pubChannel">
             <p class="muted">Channel की जानकारी आ रही है…</p>
+          </div>
+
+          <div class="pub-setup" id="pubSetup">
+            <h3>Google login / अपनी OAuth keys — एक ही बार</h3>
+            <p class="muted">
+              नीचे अपनी Google Cloud OAuth client की दो चाबियाँ डालकर <b>Save</b> करें. ये आपके खाते में सेव
+              होती हैं (Worker के database में), इसलिए हर बार डालनी नहीं पड़ेंगी. Client secret browser को
+              कभी वापस नहीं दिखाया जाता.
+            </p>
+            <label class="field">
+              <span>Authorized redirect URI — यही Google Cloud → OAuth client में डालें</span>
+              <span class="copy-row">
+                <input id="gRedirect" type="text" readonly />
+                <button id="gCopy" class="ghost" type="button">Copy</button>
+              </span>
+            </label>
+            <div class="grid2">
+              <label class="field">
+                <span>GOOGLE_CLIENT_ID</span>
+                <input id="gClientId" type="text" autocomplete="off" spellcheck="false" placeholder="1234567890-abc.apps.googleusercontent.com" />
+              </label>
+              <label class="field">
+                <span>GOOGLE_CLIENT_SECRET</span>
+                <input id="gSecret" type="password" autocomplete="new-password" spellcheck="false" placeholder="GOCSPX-…" />
+              </label>
+            </div>
+            <div class="actions">
+              <button id="gSave" class="primary" type="button">Save करें</button>
+              <span id="gStatus" class="status" aria-live="polite"></span>
+            </div>
           </div>
 
           <div class="actions pub-actions">
@@ -72,9 +103,9 @@
           </div>
 
           <p class="fine">
-            Clips सिर्फ़ आपके ही channel के videos से बनते हैं — किसी और का content नहीं उठाया जाता. Google से
-            सिर्फ़ upload और अपने channel का data पढ़ने की अनुमति माँगी जाती है; token Worker में रहता है,
-            browser में कभी नहीं आता, और आप कभी भी
+            Clips सिर्फ़ आपके ही channel के videos से बनते हैं — किसी और का content नहीं उठाया जाता. आपकी
+            Google keys और token सिर्फ़ आपके खाते के नीचे Worker के database में रहते हैं, browser में
+            कभी नहीं आते, और आप कभी भी
             <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google permissions</a>
             से हटा सकते हैं. “Viral” की गारंटी कोई tool नहीं देता — यह आपके proven हिस्सों को Shorts में बदलकर
             लगातार post करता है, बाकी दर्शक तय करते हैं.
@@ -175,6 +206,6 @@
       </form>
     </dialog>
 
-    <script src="./app.js?v=3" type="module"></script>
+    <script src="./app.js?v=4" type="module"></script>
   </body>
 </html>

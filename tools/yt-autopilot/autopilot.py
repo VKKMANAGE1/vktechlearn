@@ -3,10 +3,11 @@
 
 यह script GitHub Actions में चलता है (.github/workflows/yt-autopilot.yml). हमारा कोई server
 नहीं चाहिए: OAuth refresh token Shavi Worker के D1 में रहता है (देखें ai-worker/worker.js) और
-हर run की शुरुआत में short-lived access token बनकर आता है.
+हर run की शुरुआत में short-lived access token बनकर आता है. हर user का अपना channel + अपनी
+Google OAuth client है (worker में uid के नीचे), इसलिए `--all-users` एक run में सबको एक-एक करके चलाता है.
 
 Pipeline
-  1. access token   <- worker GET /api/yt/token (Bearer AUTOPILOT_KEY)
+  1. access token   <- worker GET /api/yt/token?u=UID (GitHub OIDC या Bearer AUTOPILOT_KEY)
   2. uploads        <- YouTube Data API, सिर्फ़ अपने channel के videos
   3. captions       <- captions API (अपने videos), न मिले तो yt-dlp auto-subs
   4. moments        <- Shavi model 25-50s के सबसे मज़बूत हिस्से चुनता है (fallback: heuristic)
@@ -148,10 +149,18 @@ class Worker:
     AUTOPILOT_KEY. दोनों में से जो मिले, worker उसे जाँचता है.
     """
 
-    def __init__(self, base: str, key: str = "", oidc: str = ""):
+    def __init__(self, base: str, key: str = "", oidc: str = "", user: str = ""):
         self.base = base
         self.key = key
         self.oidc = oidc
+        self.user = user.strip()
+
+    def _url(self, path: str) -> str:
+        """यह run किस channel का है — uid query में, ताकि worker सही keys/token दे."""
+        if not self.user:
+            return f"{self.base}{path}"
+        joiner = "&" if "?" in path else "?"
+        return f"{self.base}{path}{joiner}u={urllib.parse.quote(self.user)}"
 
     @property
     def auth(self) -> dict:
@@ -163,22 +172,30 @@ class Worker:
         return headers
 
     def access_token(self) -> dict:
-        status, data = json_request(f"{self.base}/api/yt/token", headers=self.auth)
+        status, data = json_request(self._url("/api/yt/token"), headers=self.auth)
         if status == 409:
             raise RuntimeError("channel फिर से connect करना होगा: " + str(data.get("error")))
         if status != 200 or not data.get("access_token"):
             raise RuntimeError(f"token नहीं मिला (HTTP {status}): {data.get('error') or data}")
         return data
 
+    def users(self) -> list[dict]:
+        status, data = json_request(f"{self.base}/api/yt/users", headers=self.auth)
+        if status != 200:
+            raise RuntimeError(f"users नहीं मिले (HTTP {status}): {data.get('error') or data}")
+        return [row for row in (data.get("users") or []) if row.get("uid")]
+
     def ledger(self) -> dict:
-        status, data = json_request(f"{self.base}/api/yt/ledger", headers=self.auth)
+        status, data = json_request(self._url("/api/yt/ledger"), headers=self.auth)
         if status != 200:
             log(f"ledger पढ़ा नहीं गया (HTTP {status}) — dedupe इस run में कमज़ोर रहेगा")
             return {"sources": [], "clips": []}
         return data
 
     def log_run(self, run: dict, clips: list[dict]) -> None:
-        status, data = json_request(f"{self.base}/api/yt/log", payload={"run": run, "clips": clips}, headers=self.auth)
+        status, data = json_request(
+            f"{self.base}/api/yt/log", payload={"u": self.user, "run": run, "clips": clips}, headers=self.auth
+        )
         if status != 200:
             log(f"run log नहीं हुआ (HTTP {status}): {data}")
 
@@ -763,6 +780,8 @@ def main() -> int:
     parser.add_argument("--config", default=str(HERE / "config.json"))
     parser.add_argument("--dry-run", action="store_true", help="clips बनाओ, publish मत करो")
     parser.add_argument("--self-test", action="store_true", help="Google keys के बिना pipeline जाँचो")
+    parser.add_argument("--user", default=os.environ.get("SHAVI_YT_USER", "").strip(), help="सिर्फ़ इस uid/channel के लिए चलाओ")
+    parser.add_argument("--all-users", action="store_true", help="हर connected channel के लिए एक-एक करके (schedule)")
     parser.add_argument("--out", default="autopilot-out")
     args = parser.parse_args()
 
@@ -780,7 +799,29 @@ def main() -> int:
         log("config में enabled=false है — यह run skip.")
         return 0
 
-    worker = Worker(WORKER, key, oidc)
+    if args.all_users and not args.user:
+        roster = Worker(WORKER, key, oidc).users()
+        if not roster:
+            log("कोई channel connected नहीं — studio में एक बार Google से जोड़ें.")
+            step_summary("### कुछ नहीं चला\nWorker में कोई connected channel नहीं मिला.")
+            return 0
+        log(f"{len(roster)} channels — एक-एक करके")
+        failures = 0
+        for row in roster:
+            uid = str(row.get("uid") or "")
+            if not uid:
+                continue
+            log(f"--- {row.get('channel_title') or uid}")
+            try:
+                failures += run_one(Worker(WORKER, key, oidc, uid), args, config)
+            except Exception as error:  # noqa: BLE001
+                log(f"इस channel पर रुक गए: {error}")
+                failures += 1
+        return 1 if failures else 0
+    return run_one(Worker(WORKER, key, oidc, args.user), args, config)
+
+
+def run_one(worker: Worker, args, config: dict) -> int:
     token = worker.access_token()
     access = token["access_token"]
     log(f"channel: {token.get('channel_title') or token.get('channel_id')}")

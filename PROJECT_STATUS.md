@@ -1027,3 +1027,34 @@ bug found on first live deploy                D1 exec() splits on newlines → C
   Actions tab "Run workflow" is the fallback path.
 - YouTube quota: `videos.insert` ≈1600 units → 4–6 uploads/day; `clips_per_run` stays 2.
 - Not a viral guarantee: the pipeline reuses proven moments and posts consistently; reach is the audience's call.
+
+## 10. M13e — per-user Google login (2026-11-20)
+
+Studio अब सिर्फ़ एक owner के लिए नहीं. हर user अपनी Google OAuth client (client id + secret)
+studio के box में एक बार सेव करता है और एक बार channel connect करता है; उसके बाद page खोलने पर
+उसका channel अपने आप दिखता है और दोबारा keys डालनी नहीं पड़तीं.
+
+- `POST /api/yt/keys` — keys को D1 में रखता है: पहले browser-scoped `yt_setups` row + signed
+  `shavi_setup` cookie, connect के बाद उसी user के `yt_users` row में. client secret कभी वापस
+  नहीं भेजा जाता — response में सिर्फ़ client id. keys बदलने पर पुराना refresh token हट जाता है
+  (`needsReconnect`), क्योंकि दूसरी client की keys से वह token काम नहीं करता.
+- signed httpOnly `shavi_uid` cookie — HMAC key D1 के `yt_settings` में एक बार बनती है, इसलिए
+  Worker में `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` सेट किए बिना भी सब चलता है (env keys
+  सिर्फ़ default fallback हैं). callback `SameSite=None; Secure; HttpOnly` cookie सेट करता है.
+- schema: `yt_users` (uid, channel, email, client keys, refresh token), `yt_runs.uid`,
+  `yt_clips.uid`; status/ledger/log/run सब उसी uid के हिसाब से — एक user का data दूसरे को नहीं.
+- `GET /api/yt/users` (GitHub OIDC या `AUTOPILOT_KEY`) + `autopilot.py --all-users`: schedule हर
+  जुड़े channel को एक-एक करके चलाता है; `--user <uid>` से सिर्फ़ एक. `/api/yt/run` भी उसी
+  cookie वाले user का channel dispatch करता है.
+- studio UI: redirect URI का readonly box + Copy, `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` के
+  box + Save, keys सेव होने पर ही connect active. Assets `?v=4`.
+
+**Verified locally** (node:sqlite D1 shim): bad client id → 400; foreign origin → 403; keys save →
+200 + `shavi_setup` cookie; status उसी cookie पर → `oauth:true, keysSource:"browser"`; oauth start
+→ 302 Google पर उसी client id और 3 scopes के साथ; keys न होने पर 503; forged `shavi_uid` →
+`loggedIn:false`; असली uid cookie → channel + runs + clips + shorts URL; `/api/yt/users` बिना key
+401 / key के 200; ledger uid-scoped; run बिना cookie → 409; वही keys दोबारा → `needsReconnect:false`,
+बदली keys → `true` और `connected:false`.
+
+**Not verified:** असली Google consent + callback (live keys नहीं हैं), असली publish, और page
+browser में खोलकर नहीं देखा गया — सिर्फ़ syntax, worker routes और markup.

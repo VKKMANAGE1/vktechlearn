@@ -664,9 +664,14 @@ function downloadPackage() {
 /* ------------------------------------------------------- channel + publish */
 
 const ACTIONS_URL = "https://github.com/VKKMANAGE1/vktechlearn/actions/workflows/yt-autopilot.yml";
+const REDIRECT_URI = `${API_BASE}/api/yt/oauth/callback`;
 
 function pubSay(text, kind) {
   setStatus($("pubStatus"), text || "", kind);
+}
+
+function gSay(text, kind) {
+  setStatus($("gStatus"), text || "", kind);
 }
 
 function pill(text, kind) {
@@ -708,24 +713,45 @@ function renderList(el, rows, empty) {
 }
 
 function renderPublish(data) {
-  pill(data.connected ? "जुड़ा हुआ" : "जुड़ा नहीं", data.connected ? "ok" : "bad");
+  pill(data.connected ? "जुड़ा हुआ" : data.keysSaved ? "keys सेव" : "शुरू करें", data.connected ? "ok" : "bad");
   renderChannel(data);
   $("pubConnect").textContent = data.connected ? "दोबारा connect करें" : "Channel connect करें";
   $("pubConnect").disabled = !data.oauth;
+  $("pubConnect").title = data.oauth ? "" : "पहले ऊपर client ID और secret सेव करें";
   $("pubRun").disabled = !data.connected;
   $("pubTest").disabled = !data.connected;
   renderList($("pubRuns"), data.runs || [], "अभी कोई run नहीं");
   renderList($("pubClips"), data.clips || [], "अभी कुछ publish नहीं हुआ");
 
+  $("gRedirect").value = data.redirectUri || REDIRECT_URI;
+  if (data.clientId && !$("gClientId").value.trim()) $("gClientId").value = data.clientId;
+  $("gSecret").placeholder = data.keysSaved ? "सेव है — बदलनी हो तो नई डालें" : "GOCSPX-…";
+  if (data.keysSource === "account") {
+    gSay("आपके खाते में सेव — दोबारा डालने की ज़रूरत नहीं", "ok");
+  } else if (data.keysSource === "browser") {
+    gSay("इस browser में सेव — अब “Channel connect करें” दबाएँ", "ok");
+  } else if (!data.keysSaved) {
+    gSay("", "");
+  }
+
   const notes = [];
-  if (!data.oauth) {
+  if (!data.keysSaved) {
     notes.push(
-      `Worker में <code>GOOGLE_CLIENT_ID</code> / <code>GOOGLE_CLIENT_SECRET</code> सेट नहीं हैं. Google Cloud → APIs &amp; Services → Credentials → OAuth client (Web application) बनाइए, “Authorized redirect URI” में यह डालिए: <code>${API_BASE}/api/yt/oauth/callback</code> — फिर दोनों keys Sites → Secrets में जोड़ दीजिए.`,
+      `ऊपर अपनी Google Cloud OAuth client की दोनों चाबियाँ डालकर <b>Save</b> करें. Google Cloud → APIs &amp; Services → Credentials → OAuth client (Web application) में “Authorized redirect URI” यही रखें: <code>${data.redirectUri || REDIRECT_URI}</code>.`,
+    );
+  } else if (!data.connected) {
+    notes.push(
+      "Keys सेव हैं — अब <b>Channel connect करें</b> दबाएँ. Google खुलेगा; अनुमति देते ही आपका channel इसी खाते में सेव हो जाएगा, दोबारा keys डालनी नहीं पड़ेंगी.",
     );
   }
-  if (!data.storage) notes.push("Worker में <code>DB</code> (D1) binding नहीं है — token कहीं सेव नहीं हो पाएगा.");
+  if (!data.storage) notes.push("Worker में <code>DB</code> (D1) binding नहीं है — keys/token सेव नहीं हो पाएँगे.");
+  if (data.keysSource === "worker") {
+    notes.push("अभी Worker की default Google keys चल रही हैं — अपनी keys सेव करने पर वही इस्तेमाल होंगी.");
+  }
   if (data.connected) {
-    notes.push("Schedule: रोज़ 09:10 और 21:10 IST (GitHub Actions). Settings: <code>tools/yt-autopilot/config.json</code> — privacy, clips per run, length, hashtags.");
+    notes.push(
+      "Schedule: रोज़ 09:10 और 21:10 IST (GitHub Actions) — हर जुड़ा हुआ channel अपनी बारी से चलता है. Settings: <code>tools/yt-autopilot/config.json</code>",
+    );
   }
   if (data.connected && !data.dispatch) {
     notes.push(`“अभी चलाओ” के लिए Worker में <code>GH_TOKEN</code> चाहिए — तब तक <a href="${ACTIONS_URL}" target="_blank" rel="noopener noreferrer">Actions tab</a> से Run workflow दबाएँ.`);
@@ -736,11 +762,50 @@ function renderPublish(data) {
 
 async function loadPublish() {
   try {
-    const res = await fetch(`${API_BASE}/api/yt/status`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE}/api/yt/status`, { cache: "no-store", credentials: "include" });
     renderPublish(await res.json());
   } catch (error) {
     pill("Worker से कनेक्ट नहीं", "bad");
     pubSay(`status नहीं आया: ${error.message}`, "error");
+  }
+}
+
+/** Google client id + secret एक बार — खाते में सेव, दोबारा डालने की ज़रूरत नहीं. */
+async function saveKeys() {
+  const clientId = $("gClientId").value.trim();
+  const clientSecret = $("gSecret").value.trim();
+  if (!clientId || !clientSecret) {
+    gSay("दोनों चाहिए — client ID और client secret", "error");
+    return;
+  }
+  $("gSave").disabled = true;
+  gSay("सेव हो रहा है…");
+  try {
+    const res = await fetch(`${API_BASE}/api/yt/keys`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ client_id: clientId, client_secret: clientSecret }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    $("gSecret").value = "";
+    gSay("सेव हो गया — अब “Channel connect करें” दबाएँ", "ok");
+    await loadPublish();
+  } catch (error) {
+    gSay(error.message, "error");
+  } finally {
+    $("gSave").disabled = false;
+  }
+}
+
+async function copyRedirect() {
+  try {
+    await navigator.clipboard.writeText($("gRedirect").value || REDIRECT_URI);
+    gSay("redirect URI copy हो गया", "ok");
+  } catch {
+    $("gRedirect").select();
+    gSay("select हो गया — Ctrl/Cmd + C दबाएँ", "error");
   }
 }
 
@@ -756,6 +821,7 @@ async function runAutopilot(dryRun) {
   try {
     const res = await fetch(`${API_BASE}/api/yt/run`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ dry_run: Boolean(dryRun) }),
     });
@@ -810,6 +876,7 @@ function saveVoice() {
 /* -------------------------------------------------------------------- boot */
 
 async function boot() {
+  $("gRedirect").value = REDIRECT_URI;
   $("health").textContent = "skills load हो रहे हैं…";
   try {
     await loadSkills();
@@ -831,6 +898,8 @@ $("voiceBtn").addEventListener("click", openVoice);
 $("voiceSave").addEventListener("click", saveVoice);
 $("startPilot").addEventListener("click", runPilot);
 $("pubConnect").addEventListener("click", connectChannel);
+$("gSave").addEventListener("click", saveKeys);
+$("gCopy").addEventListener("click", copyRedirect);
 $("pubRun").addEventListener("click", () => runAutopilot(false));
 $("pubTest").addEventListener("click", () => runAutopilot(true));
 $("autoBtn").addEventListener("click", () => showMode("auto"));

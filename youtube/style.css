@@ -582,6 +582,41 @@ header.top a.brand {
   white-space: nowrap;
 }
 
+.pub-setup {
+  border: 1px dashed #24536e;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  background: rgba(0, 229, 255, 0.03);
+}
+
+.pub-setup h3 {
+  margin: 0 0 4px;
+  font-size: 13.5px;
+  letter-spacing: 0.2px;
+  color: #cfe6f7;
+}
+
+.pub-setup .field {
+  margin-top: 10px;
+}
+
+.copy-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.copy-row input {
+  flex: 1 1 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.copy-row button {
+  flex: 0 0 auto;
+}
+
 @media (max-width: 720px) {
   .pub-head {
     flex-direction: column;

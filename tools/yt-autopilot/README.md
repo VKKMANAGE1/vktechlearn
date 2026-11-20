@@ -1,7 +1,9 @@
 # YouTube Autopilot — जोड़ो एक बार, फिर यह खुद Shorts बनाकर publish करता है
 
-`youtube/` page का **Channel connect** बटन OAuth पूरा करता है; उसके बाद यह pipeline
-सिर्फ़ आपके channel की uploads से क्लिप काटकर Shorts publish करता रहता है.
+`youtube/` page पर हर user अपनी Google OAuth keys एक बार सेव करता है और एक बार channel connect
+करता है; उसके बाद यह pipeline सिर्फ़ उसी channel की uploads से क्लिप काटकर Shorts publish करता
+रहता है. हर user का channel + keys उसके अपने uid के नीचे Worker के D1 में रहते हैं, इसलिए कई
+users एक ही page/Worker इस्तेमाल कर सकते हैं और दोबारा keys डालनी नहीं पड़ती.
 
 ```
 channel connect (एक बार, browser से)
@@ -25,26 +27,31 @@ YouTube पर #Shorts  →  worker ledger में हिसाब (वही 
 
 ## एक बार का setup (3 काम)
 
-1. **Google OAuth client** — [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+1. **अपनी Google OAuth client बनाइए** — [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
    में project बनाइए, *YouTube Data API v3* enable कीजिए, फिर **Create credentials → OAuth client ID →
-   Web application**. “Authorized redirect URI” में यही डालिए:
+   Web application**. “Authorized redirect URI” में वही URI डालिए जो page के box में दिखता है (Copy
+   बटन से copy कीजिए) — यह यही है:
 
    ```
    https://site-d28594350583452e987524c38e89b7a9.freebuff.page/api/yt/oauth/callback
    ```
 
-   मिली दो values को **Sites → Shavi AI API → Secrets** में `GOOGLE_CLIENT_ID` और
-   `GOOGLE_CLIENT_SECRET` नाम से सेव कीजिए (chat में कभी paste नहीं करनी).
+   मिली दो values (client ID + client secret) **studio के box में डालकर Save** कीजिए — वे आपके ही
+   खाते में Worker के D1 में सेव होती हैं, इसलिए दोबारा डालनी नहीं पड़ेंगी. Worker में
+   `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` सेट करना ज़रूरी नहीं; वे सिर्फ़ default के तौर पर
+   काम करते हैं.
 
-2. **D1 database** — उसी Sites project में `DB` नाम से D1 जोड़ा हुआ है (token + history).
+2. **D1 database** — उसी Sites project में `DB` नाम से D1 जोड़ा हुआ है (हर user की keys, token + history).
    नया environment बनाएँ तो उसे भी जोड़ना होगा.
 
 3. **Connect** — [vktechlearn.site/youtube/](https://vktechlearn.site/youtube/) खोलिए,
-   *Channel connect करें* दबाइए, Google से वही channel चुनिए जिस पर post करना है, और सारी
-   permissions Allow कीजिए. वापस आकर panel में channel का नाम दिख जाएगा.
+   keys सेव कीजिए, फिर *Channel connect करें* दबाइए, Google से वही channel चुनिए जिस पर post करना है,
+   और सारी permissions Allow कीजिए. वापस आकर panel में channel का नाम दिख जाएगा — उसके बाद page
+   खोलने पर आपका channel अपने आप दिखता रहेगा (signed login cookie).
 
-उसके बाद कुछ नहीं करना. (“अभी चलाओ” बटन के लिए Worker में `GH_TOKEN` — fine-grained PAT,
-Actions: read & write — चाहिए; न हो तो Actions tab → *YouTube autopilot* → *Run workflow*.)
+उसके बाद कुछ नहीं करना. Schedule हर जुड़े हुए channel को एक-एक करके चलाता है (`--all-users`).
+(“अभी चलाओ” बटन के लिए Worker में `GH_TOKEN` — fine-grained PAT, Actions: read & write — चाहिए;
+न हो तो Actions tab → *YouTube autopilot* → *Run workflow*.)
 
 ## Settings — `config.json`
 
@@ -67,8 +74,11 @@ Actions: read & write — चाहिए; न हो तो Actions tab → *Yo
 # pipeline की असली जाँच — ffmpeg render, captions, metadata (Google keys नहीं चाहिए)
 python3 tools/yt-autopilot/autopilot.py --self-test
 
-# clips बनाओ, publish मत करो
-python3 tools/yt-autopilot/autopilot.py --dry-run --out autopilot-out
+# clips बनाओ, publish मत करो (सिर्फ़ एक channel)
+python3 tools/yt-autopilot/autopilot.py --dry-run --user <uid> --out autopilot-out
+
+# हर connected channel के लिए एक-एक करके (schedule यही चलाता है)
+python3 tools/yt-autopilot/autopilot.py --all-users --out autopilot-out
 ```
 
 Local machine पर `ffmpeg` (या `pip install imageio-ffmpeg`) और `pip install yt-dlp` चाहिए.

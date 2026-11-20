@@ -62,12 +62,31 @@ function rateLimited(ip) {
   return false;
 }
 
+function allowedOrigins(env) {
+  return (env.ALLOWED_ORIGINS || "https://vktechlearn.site,https://www.vktechlearn.site")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function originOk(env, origin) {
+  if (!origin) return true;
+  return (
+    allowedOrigins(env).includes(origin) ||
+    origin.endsWith(".style.dev") ||
+    origin.endsWith(".freebuff.page") ||
+    origin.startsWith("http://localhost") ||
+    origin.startsWith("http://127.0.0.1")
+  );
+}
+
 function cors(env, request) {
-  const configured = (env.ALLOWED_ORIGINS || "https://vktechlearn.site,https://www.vktechlearn.site").split(",").map((value) => value.trim()).filter(Boolean);
+  const configured = allowedOrigins(env);
   const origin = request.headers.get("Origin") || "";
-  const allowed = configured.includes(origin) || origin.endsWith(".style.dev") || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1");
+  const allowed = originOk(env, origin);
   return {
-    "Access-Control-Allow-Origin": allowed ? origin : configured[0],
+    "Access-Control-Allow-Origin": allowed && origin ? origin : configured[0],
+    ...(allowed && origin ? { "Access-Control-Allow-Credentials": "true" } : {}),
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "600",
@@ -437,12 +456,18 @@ async function readChannel(channelId) {
  * /api/yt/token से छोटा access token लेता है, अपने ही channel के videos से clips बनाकर
  * upload करता है और /api/yt/log में हिसाब लिखता है.
  *
- * Secrets (Sites → Secrets):
- *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET  OAuth client की चाबियाँ
- *   YT_STATE_KEY                            optional, OAuth state sign करने के लिए
+ * हर user का अपना खाता: वह studio में अपनी Google OAuth client (client id + secret) एक बार
+ * सेव करता है, Google से जुड़ता है, और उसका channel + refresh token उसी uid के नीचे D1 में
+ * रहता है. पहचान एक signed httpOnly cookie ("shavi_uid") से होती है — secret D1 में बनता है,
+ * इसलिए Worker में कोई Google key सेट किए बिना भी कई users चल सकते हैं. client secret
+ * browser को कभी वापस नहीं भेजा जाता.
+ *
+ * Secrets (Sites → Secrets) — सब optional:
+ *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET  default OAuth client (user अपनी न डाले तो)
+ *   YT_STATE_KEY                            optional, OAuth state/cookie sign करने के लिए
  *   AUTOPILOT_KEY                           optional shared key (GitHub OIDC न हो तो)
  *   GH_TOKEN, GH_REPO                       optional, "अभी चलाओ" बटन workflow चलाने के लिए
- * Binding: DB (D1) — token, run history और dedupe ledger.
+ * Binding: DB (D1) — हर user की keys, token, run history और dedupe ledger.
  *
  * Actions किसी secret के बिना खुद को साबित करता है: workflow GitHub OIDC token भेजता है
  * (audience shavi-autopilot) और यहाँ JWT की signature, issuer, audience और repository
@@ -456,23 +481,145 @@ const YT_SCOPES = [
   "https://www.googleapis.com/auth/youtube.readonly",
   "https://www.googleapis.com/auth/youtube.force-ssl",
 ];
-// D1 का exec एक-एक line को अलग statement मानता है, इसलिए हर CREATE एक ही line में अलग से.
+// D1 का exec एक-एक line को अलग statement मानता है, इसलिए हर statement अलग prepare().run().
+// yt_auth सिर्फ़ पुराने (single-channel) setup के लिए बचा है; नया सब कुछ yt_users में uid के नीचे.
 const YT_SCHEMA = [
   "CREATE TABLE IF NOT EXISTS yt_auth (id INTEGER PRIMARY KEY, channel_id TEXT, channel_title TEXT, channel_thumb TEXT, refresh_token TEXT, connected_at TEXT)",
+  "CREATE TABLE IF NOT EXISTS yt_users (uid TEXT PRIMARY KEY, channel_id TEXT, channel_title TEXT, channel_thumb TEXT, email TEXT, client_id TEXT, client_secret TEXT, refresh_token TEXT, connected_at TEXT, updated_at TEXT)",
+  "CREATE TABLE IF NOT EXISTS yt_setups (sid TEXT PRIMARY KEY, client_id TEXT, client_secret TEXT, created_at TEXT)",
+  "CREATE TABLE IF NOT EXISTS yt_settings (key TEXT PRIMARY KEY, value TEXT)",
   "CREATE TABLE IF NOT EXISTS yt_runs (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, source_id TEXT, source_title TEXT, status TEXT, note TEXT, clips INTEGER DEFAULT 0)",
   "CREATE TABLE IF NOT EXISTS yt_clips (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT, source_id TEXT, source_title TEXT, start_s REAL, end_s REAL, video_id TEXT, title TEXT)",
+  "ALTER TABLE yt_runs ADD COLUMN uid TEXT",
+  "ALTER TABLE yt_clips ADD COLUMN uid TEXT",
 ];
 
 let ytSchemaReady = false;
+let ytCookieKey = "";
 const runHits = new Map();
 
 async function ytDb(env) {
   if (!env.DB) throw new Error("D1 binding 'DB' नहीं है — Sites → Storage में database जोड़ें");
   if (!ytSchemaReady) {
-    for (const sql of YT_SCHEMA) await env.DB.prepare(sql).run();
+    for (const sql of YT_SCHEMA) {
+      try {
+        await env.DB.prepare(sql).run();
+      } catch (error) {
+        if (!/duplicate column|already exists/i.test(String(error?.message || error))) throw error;
+      }
+    }
     ytSchemaReady = true;
   }
   return env.DB;
+}
+
+/* ---- पहचान: signed httpOnly cookie; signing key D1 में एक बार बनती है ---- */
+
+const COOKIE_UID = "shavi_uid";
+const COOKIE_SETUP = "shavi_setup";
+const COOKIE_AGE = 365 * 24 * 3600;
+
+function parseCookies(request) {
+  const jar = {};
+  for (const part of String(request.headers.get("Cookie") || "").split(";")) {
+    const cut = part.indexOf("=");
+    if (cut < 1) continue;
+    const name = part.slice(0, cut).trim();
+    const raw = part.slice(cut + 1).trim();
+    try {
+      jar[name] = decodeURIComponent(raw);
+    } catch {
+      jar[name] = raw;
+    }
+  }
+  return jar;
+}
+
+async function cookieSecret(env) {
+  if (ytCookieKey) return ytCookieKey;
+  const db = await ytDb(env);
+  let row = await db.prepare("SELECT value FROM yt_settings WHERE key = 'cookie_secret'").first();
+  if (!row?.value) {
+    await db
+      .prepare("INSERT INTO yt_settings (key, value) VALUES ('cookie_secret', ?1) ON CONFLICT(key) DO NOTHING")
+      .bind(b64url(crypto.getRandomValues(new Uint8Array(32))))
+      .run();
+    row = await db.prepare("SELECT value FROM yt_settings WHERE key = 'cookie_secret'").first();
+  }
+  ytCookieKey = String(row?.value || "");
+  if (!ytCookieKey) throw new Error("session key नहीं बन पाई");
+  return ytCookieKey;
+}
+
+async function signCookie(env, value) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(await cookieSecret(env)),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = b64url(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value)));
+  return `${value}.${signature}`;
+}
+
+async function readCookie(env, request, name) {
+  const raw = parseCookies(request)[name];
+  if (!raw) return "";
+  const cut = raw.lastIndexOf(".");
+  if (cut < 1) return "";
+  const value = raw.slice(0, cut);
+  if ((await signCookie(env, value)) !== raw) return "";
+  return value;
+}
+
+function cookieHeader(name, value, maxAge) {
+  return `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=None`;
+}
+
+async function currentUid(env, request) {
+  try {
+    const uid = await readCookie(env, request, COOKIE_UID);
+    if (!uid) return "";
+    const row = await (await ytDb(env)).prepare("SELECT uid FROM yt_users WHERE uid = ?1").bind(uid).first();
+    return row ? uid : "";
+  } catch {
+    return "";
+  }
+}
+
+const cleanKey = (value, limit = 300) => String(value || "").replace(/\s+/g, "").slice(0, limit);
+
+async function userKeys(env, uid) {
+  if (!uid) return null;
+  const row = await (await ytDb(env)).prepare("SELECT client_id, client_secret FROM yt_users WHERE uid = ?1").bind(uid).first();
+  if (row?.client_id && row?.client_secret) return { id: row.client_id, secret: row.client_secret, source: "account" };
+  return null;
+}
+
+async function setupKeys(env, request) {
+  try {
+    const sid = await readCookie(env, request, COOKIE_SETUP);
+    if (!sid) return null;
+    const row = await (await ytDb(env)).prepare("SELECT sid, client_id, client_secret FROM yt_setups WHERE sid = ?1").bind(sid).first();
+    if (row?.client_id && row?.client_secret) return { id: row.client_id, secret: row.client_secret, source: "browser", sid: row.sid };
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+/** इस request के लिए कौन-सी OAuth client: खाते की → इस browser की → Worker env की. */
+async function clientFor(env, request) {
+  const uid = await currentUid(env, request);
+  const own = await userKeys(env, uid);
+  if (own) return { ...own, uid };
+  const setup = await setupKeys(env, request);
+  if (setup) return { ...setup, uid };
+  if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+    return { id: env.GOOGLE_CLIENT_ID, secret: env.GOOGLE_CLIENT_SECRET, source: "worker", uid };
+  }
+  return { id: "", secret: "", source: "", uid };
 }
 
 const b64url = (bytes) =>
@@ -486,7 +633,7 @@ const unb64url = (text) =>
 async function stateHmac(env, payload) {
   const key = await crypto.subtle.importKey(
     "raw",
-    new TextEncoder().encode(env.YT_STATE_KEY || env.GOOGLE_CLIENT_SECRET || "shavi-yt-state"),
+    new TextEncoder().encode(env.YT_STATE_KEY || (await cookieSecret(env))),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
@@ -494,8 +641,8 @@ async function stateHmac(env, payload) {
   return b64url(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload)));
 }
 
-async function signState(env, returnUrl) {
-  const payload = JSON.stringify({ r: returnUrl, t: Date.now() });
+async function signState(env, data) {
+  const payload = JSON.stringify({ ...data, t: Date.now() });
   return `${b64url(new TextEncoder().encode(payload))}.${await stateHmac(env, payload)}`;
 }
 
@@ -505,12 +652,32 @@ async function verifyState(env, state) {
   const payload = unb64url(encoded);
   if ((await stateHmac(env, payload)) !== signature) throw new Error("OAuth state का हस्ताक्षर गलत है");
   const data = JSON.parse(payload);
-  if (Date.now() - Number(data.t) > 15 * 60_000) throw new Error("OAuth state पुराना है, दोबारा connect करें");
-  return String(data.r || "");
+  if (Date.now() - Number(data.t) > 30 * 60_000) throw new Error("OAuth state पुराना है, दोबारा connect करें");
+  return { r: String(data.r || ""), s: String(data.s || "") };
 }
 
 function ytRedirect(url) {
   return `${url.origin}/api/yt/oauth/callback`;
+}
+
+function isReturnUrl(value) {
+  const text = String(value || "");
+  return (
+    /^https:\/\/(vktechlearn\.site|www\.vktechlearn\.site|[a-z0-9-]+\.style\.dev|[a-z0-9-]+\.freebuff\.page)\//i.test(text) ||
+    /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i.test(text)
+  );
+}
+
+/** Google खाते का email — सिर्फ़ दिखाने के लिए; scope न मिले तो खाली छोड़ दो. */
+async function googleEmail(access) {
+  try {
+    const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", { headers: { Authorization: `Bearer ${access}` } });
+    if (!res.ok) return "";
+    const data = await res.json();
+    return String(data.email || "").slice(0, 160);
+  } catch {
+    return "";
+  }
 }
 
 async function googleToken(env, body) {
@@ -605,7 +772,7 @@ async function authorized(request, env) {
   return oidcOk(request, env);
 }
 
-async function dispatchAutopilot(env, dryRun) {
+async function dispatchAutopilot(env, dryRun, uid) {
   if (!env.GH_TOKEN) throw new Error("GH_TOKEN सेट नहीं है — Actions tab से ‘Run workflow’ चलाएँ");
   const repo = env.GH_REPO || "VKKMANAGE1/vktechlearn";
   const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/yt-autopilot.yml/dispatches`, {
@@ -616,7 +783,7 @@ async function dispatchAutopilot(env, dryRun) {
       "Content-Type": "application/json",
       "User-Agent": "ShaviAutopilot/1.0",
     },
-    body: JSON.stringify({ ref: env.GH_REF || "main", inputs: { dry_run: dryRun ? "true" : "false" } }),
+    body: JSON.stringify({ ref: env.GH_REF || "main", inputs: { dry_run: dryRun ? "true" : "false", user: String(uid || "") } }),
   });
   if (res.status !== 204) {
     const detail = (await res.text().catch(() => "")).slice(0, 200);
@@ -652,21 +819,74 @@ export default {
       }
     }
 
-    if (url.pathname === "/api/yt/oauth/start") {
-      if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) {
+    if (url.pathname === "/api/yt/keys") {
+      if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से keys सेव नहीं हो सकतीं" }, { status: 403, headers });
+      }
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return Response.json({ error: "JSON body चाहिए" }, { status: 400, headers });
+      }
+      const clientId = cleanKey(body.client_id, 220);
+      const clientSecret = cleanKey(body.client_secret, 220);
+      if (clientId.length < 20 || !clientId.includes(".apps.googleusercontent.com")) {
+        return Response.json({ error: "client ID गलत लग रहा है — वह …apps.googleusercontent.com पर खत्म होता है" }, { status: 400, headers });
+      }
+      if (clientSecret.length < 10) {
+        return Response.json({ error: "client secret छोटा/खाली है — Google Cloud में बनाई गई GOCSPX-… value डालें" }, { status: 400, headers });
+      }
+      try {
+        const db = await ytDb(env);
+        const now = new Date().toISOString();
+        const uid = await currentUid(env, request);
+        if (uid) {
+          const current = await db
+            .prepare("SELECT client_id, client_secret, refresh_token FROM yt_users WHERE uid = ?1")
+            .bind(uid)
+            .first();
+          // पुरानी keys से मिला refresh token नई keys के साथ काम नहीं करेगा — बदली keys पर reconnect.
+          const changed = Boolean(current && (current.client_id !== clientId || current.client_secret !== clientSecret));
+          await db
+            .prepare("UPDATE yt_users SET client_id = ?2, client_secret = ?3, refresh_token = ?4, updated_at = ?5 WHERE uid = ?1")
+            .bind(uid, clientId, clientSecret, changed ? null : current?.refresh_token ?? null, now)
+            .run();
+          return Response.json(
+            { saved: true, scope: "account", clientId, needsReconnect: changed && Boolean(current?.refresh_token) },
+            { headers: { ...headers, "Cache-Control": "no-store" } },
+          );
+        }
+        const sid = b64url(crypto.getRandomValues(new Uint8Array(16)));
+        await db
+          .prepare("INSERT INTO yt_setups (sid, client_id, client_secret, created_at) VALUES (?1, ?2, ?3, ?4)")
+          .bind(sid, clientId, clientSecret, now)
+          .run();
+        await db.prepare("DELETE FROM yt_setups WHERE created_at < ?1").bind(new Date(Date.now() - 7 * 86_400_000).toISOString()).run();
         return Response.json(
-          { error: "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET सेट नहीं हैं — Sites → Secrets में जोड़ें" },
+          { saved: true, scope: "browser", clientId },
+          { headers: { ...headers, "Cache-Control": "no-store", "Set-Cookie": cookieHeader(COOKIE_SETUP, await signCookie(env, sid), 7 * 24 * 3600) } },
+        );
+      } catch (error) {
+        return Response.json({ error: String(error.message || error) }, { status: 500, headers });
+      }
+    }
+
+    if (url.pathname === "/api/yt/oauth/start") {
+      const keys = await clientFor(env, request);
+      if (!keys.id || !keys.secret) {
+        return Response.json(
+          { error: "पहले अपनी GOOGLE_CLIENT_ID और GOOGLE_CLIENT_SECRET नीचे box में डालकर Save करें — फिर channel connect होगा" },
           { status: 503, headers },
         );
       }
       const fallback = "https://vktechlearn.site/youtube/";
       const requested = url.searchParams.get("return") || fallback;
-      const returnUrl = /^https:\/\/(vktechlearn\.site|www\.vktechlearn\.site|[a-z0-9-]+\.style\.dev)\//i.test(requested) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i.test(requested)
-        ? requested
-        : fallback;
-      const state = await signState(env, returnUrl);
+      const returnUrl = isReturnUrl(requested) ? requested : fallback;
+      const state = await signState(env, { r: returnUrl, s: keys.source === "browser" ? keys.sid : "" });
       const target = new URL(GOOGLE_AUTH);
-      target.searchParams.set("client_id", env.GOOGLE_CLIENT_ID);
+      target.searchParams.set("client_id", keys.id);
       target.searchParams.set("redirect_uri", ytRedirect(url));
       target.searchParams.set("response_type", "code");
       target.searchParams.set("scope", YT_SCOPES.join(" "));
@@ -678,57 +898,110 @@ export default {
     }
 
     if (url.pathname === "/api/yt/oauth/callback") {
-      let returnUrl = "https://vktechlearn.site/youtube/";
+      let state;
       try {
-        returnUrl = (await verifyState(env, url.searchParams.get("state"))) || returnUrl;
+        state = await verifyState(env, url.searchParams.get("state"));
       } catch (error) {
         return Response.json({ error: String(error.message || error) }, { status: 400, headers });
       }
+      const returnUrl = isReturnUrl(state.r) ? state.r : "https://vktechlearn.site/youtube/";
       const denied = url.searchParams.get("error");
       if (denied) {
-        return Response.redirect(`${returnUrl}${returnUrl.includes("?") ? "&" : "?"}yt=denied`, 302);
+        return new Response(null, { status: 302, headers: { Location: `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}yt=denied` } });
       }
       const code = url.searchParams.get("code");
       if (!code) return Response.json({ error: "code नहीं मिला" }, { status: 400, headers });
       try {
+        const db = await ytDb(env);
+        let keys = null;
+        if (state.s) {
+          const setup = await db.prepare("SELECT client_id, client_secret FROM yt_setups WHERE sid = ?1").bind(state.s).first();
+          if (setup?.client_id) keys = { id: setup.client_id, secret: setup.client_secret };
+        }
+        if (!keys) keys = await userKeys(env, await currentUid(env, request));
+        if (!keys && env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+          keys = { id: env.GOOGLE_CLIENT_ID, secret: env.GOOGLE_CLIENT_SECRET };
+        }
+        if (!keys) throw new Error("OAuth keys नहीं मिलीं — दोबारा keys सेव करके connect करें");
         const tokens = await googleToken(env, {
           code,
-          client_id: env.GOOGLE_CLIENT_ID,
-          client_secret: env.GOOGLE_CLIENT_SECRET,
+          client_id: keys.id,
+          client_secret: keys.secret,
           redirect_uri: ytRedirect(url),
           grant_type: "authorization_code",
         });
         if (!tokens.refresh_token) throw new Error("Google ने refresh token नहीं दिया — दोबारा connect करें");
         const channel = await ytIdentity(tokens.access_token);
-        const db = await ytDb(env);
+        const email = await googleEmail(tokens.access_token);
+        const existing = await db.prepare("SELECT uid FROM yt_users WHERE channel_id = ?1").bind(channel.id).first();
+        const uid = existing?.uid || b64url(crypto.getRandomValues(new Uint8Array(12)));
+        const now = new Date().toISOString();
         await db
           .prepare(
-            `INSERT INTO yt_auth (id, channel_id, channel_title, channel_thumb, refresh_token, connected_at)
-             VALUES (1, ?1, ?2, ?3, ?4, ?5)
-             ON CONFLICT(id) DO UPDATE SET channel_id = ?1, channel_title = ?2, channel_thumb = ?3,
-               refresh_token = ?4, connected_at = ?5`,
+            `INSERT INTO yt_users (uid, channel_id, channel_title, channel_thumb, email, client_id, client_secret, refresh_token, connected_at, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?9)
+             ON CONFLICT(uid) DO UPDATE SET channel_id = ?2, channel_title = ?3, channel_thumb = ?4,
+               email = COALESCE(?5, email), client_id = ?6, client_secret = ?7, refresh_token = ?8, updated_at = ?9`,
           )
-          .bind(channel.id, channel.title, channel.thumb, tokens.refresh_token, new Date().toISOString())
+          .bind(uid, channel.id, channel.title, channel.thumb, email || null, keys.id, keys.secret, tokens.refresh_token, now)
           .run();
-        return Response.redirect(`${returnUrl}${returnUrl.includes("?") ? "&" : "?"}yt=connected&ch=${encodeURIComponent(channel.title)}`, 302);
+        const response = new Response(null, {
+          status: 302,
+          headers: { Location: `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}yt=connected&ch=${encodeURIComponent(channel.title)}` },
+        });
+        response.headers.append("Set-Cookie", cookieHeader(COOKIE_UID, await signCookie(env, uid), COOKIE_AGE));
+        if (state.s) {
+          response.headers.append("Set-Cookie", cookieHeader(COOKIE_SETUP, "", 0));
+          await db.prepare("DELETE FROM yt_setups WHERE sid = ?1").bind(state.s).run();
+        }
+        return response;
       } catch (error) {
         return Response.json({ error: `connect पूरा नहीं हुआ: ${String(error.message || error)}` }, { status: 502, headers });
       }
     }
 
     if (url.pathname === "/api/yt/status") {
-      const ytBase = { connected: false, oauth: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET), storage: Boolean(env.DB), dispatch: Boolean(env.GH_TOKEN) };
+      const ytBase = {
+        connected: false,
+        oauth: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
+        storage: Boolean(env.DB),
+        dispatch: Boolean(env.GH_TOKEN),
+        loggedIn: false,
+        keysSaved: false,
+        keysSource: "",
+        clientId: "",
+        redirectUri: ytRedirect(url),
+      };
       try {
         const db = await ytDb(env);
-        const auth = await db.prepare("SELECT channel_id, channel_title, channel_thumb, connected_at FROM yt_auth WHERE id = 1").first();
-        const runs = (await db.prepare("SELECT at, source_title, status, note, clips FROM yt_runs ORDER BY id DESC LIMIT 5").all()).results || [];
-        const clips = (await db.prepare("SELECT at, source_title, start_s AS start, end_s AS end, video_id, title FROM yt_clips ORDER BY id DESC LIMIT 12").all()).results || [];
-        const totals = await db.prepare("SELECT COUNT(*) AS clips FROM yt_clips").first();
+        const uid = await currentUid(env, request);
+        const keys = await clientFor(env, request);
+        const auth = uid
+          ? await db
+              .prepare("SELECT uid, channel_id, channel_title, channel_thumb, email, connected_at, refresh_token FROM yt_users WHERE uid = ?1")
+              .bind(uid)
+              .first()
+          : null;
+        const live = Boolean(auth?.refresh_token);
+        const runs = uid
+          ? (await db.prepare("SELECT at, source_title, status, note, clips FROM yt_runs WHERE uid = ?1 ORDER BY id DESC LIMIT 5").bind(uid).all()).results || []
+          : [];
+        const clips = uid
+          ? (await db.prepare("SELECT at, source_title, start_s AS start, end_s AS end, video_id, title FROM yt_clips WHERE uid = ?1 ORDER BY id DESC LIMIT 12").bind(uid).all()).results || []
+          : [];
+        const totals = uid ? await db.prepare("SELECT COUNT(*) AS clips FROM yt_clips WHERE uid = ?1").bind(uid).first() : null;
         return Response.json(
           {
             ...ytBase,
-            connected: Boolean(auth),
-            channel: auth ? { id: auth.channel_id, title: auth.channel_title, thumb: auth.channel_thumb, connectedAt: auth.connected_at } : null,
+            oauth: Boolean(keys.id && keys.secret),
+            loggedIn: Boolean(uid),
+            keysSaved: Boolean(keys.id),
+            keysSource: keys.source,
+            clientId: keys.id || "",
+            connected: live,
+            channel: live
+              ? { id: auth.channel_id, title: auth.channel_title, thumb: auth.channel_thumb, email: auth.email, connectedAt: auth.connected_at }
+              : null,
             published: totals?.clips ?? 0,
             runs,
             clips: clips.map((clip) => ({ ...clip, url: clip.video_id ? `https://youtube.com/shorts/${clip.video_id}` : "" })),
@@ -740,27 +1013,60 @@ export default {
       }
     }
 
-    if (url.pathname === "/api/yt/token") {
+    if (url.pathname === "/api/yt/users") {
       if (!(await authorized(request, env))) return Response.json({ error: "unauthorized" }, { status: 401, headers });
       try {
         const db = await ytDb(env);
-        const auth = await db.prepare("SELECT channel_id, channel_title, refresh_token FROM yt_auth WHERE id = 1").first();
+        const rows =
+          (await db
+            .prepare("SELECT uid, channel_id, channel_title FROM yt_users WHERE refresh_token IS NOT NULL AND client_id IS NOT NULL ORDER BY connected_at")
+            .all()).results || [];
+        return Response.json({ users: rows }, { headers: { ...headers, "Cache-Control": "no-store" } });
+      } catch (error) {
+        return Response.json({ error: String(error.message || error) }, { status: 500, headers });
+      }
+    }
+
+    if (url.pathname === "/api/yt/token") {
+      if (!(await authorized(request, env))) return Response.json({ error: "unauthorized" }, { status: 401, headers });
+      try {
+        const uid = String(url.searchParams.get("u") || "").trim();
+        const db = await ytDb(env);
+        const auth = uid
+          ? await db
+              .prepare("SELECT uid, channel_id, channel_title, refresh_token, client_id, client_secret FROM yt_users WHERE uid = ?1")
+              .bind(uid)
+              .first()
+          : await db
+              .prepare("SELECT channel_id, channel_title, refresh_token, client_id, client_secret FROM yt_auth WHERE id = 1")
+              .first();
         if (!auth?.refresh_token) {
-          return Response.json({ error: "channel connect नहीं है — studio में Connect दबाएँ" }, { status: 409, headers });
+          return Response.json({ error: "channel connect नहीं है — studio में Google से जोड़ें" }, { status: 409, headers });
+        }
+        const clientId = auth.client_id || env.GOOGLE_CLIENT_ID;
+        const clientSecret = auth.client_secret || env.GOOGLE_CLIENT_SECRET;
+        if (!clientId || !clientSecret) {
+          return Response.json({ error: "इस channel के Google keys नहीं हैं — studio में दोबारा जोड़ें" }, { status: 409, headers });
         }
         let tokens;
         try {
           tokens = await googleToken(env, {
             refresh_token: auth.refresh_token,
-            client_id: env.GOOGLE_CLIENT_ID,
-            client_secret: env.GOOGLE_CLIENT_SECRET,
+            client_id: clientId,
+            client_secret: clientSecret,
             grant_type: "refresh_token",
           });
         } catch (error) {
           return Response.json({ error: `reconnect: ${String(error.message || error)}` }, { status: 409, headers });
         }
         return Response.json(
-          { access_token: tokens.access_token, expires_in: tokens.expires_in ?? 3600, channel_id: auth.channel_id, channel_title: auth.channel_title },
+          {
+            access_token: tokens.access_token,
+            expires_in: tokens.expires_in ?? 3600,
+            uid: auth.uid ?? null,
+            channel_id: auth.channel_id,
+            channel_title: auth.channel_title,
+          },
           { headers: { ...headers, "Cache-Control": "no-store" } },
         );
       } catch (error) {
@@ -771,9 +1077,14 @@ export default {
     if (url.pathname === "/api/yt/ledger") {
       if (!(await authorized(request, env))) return Response.json({ error: "unauthorized" }, { status: 401, headers });
       try {
+        const uid = String(url.searchParams.get("u") || "").trim();
         const db = await ytDb(env);
-        const sources = await db.prepare("SELECT DISTINCT source_id FROM yt_clips WHERE source_id IS NOT NULL").all();
-        const clips = await db.prepare("SELECT source_id, start_s AS start, end_s AS end FROM yt_clips ORDER BY id DESC LIMIT 200").all();
+        const sources = uid
+          ? await db.prepare("SELECT DISTINCT source_id FROM yt_clips WHERE uid = ?1 AND source_id IS NOT NULL").bind(uid).all()
+          : await db.prepare("SELECT DISTINCT source_id FROM yt_clips WHERE uid IS NULL AND source_id IS NOT NULL").all();
+        const clips = uid
+          ? await db.prepare("SELECT source_id, start_s AS start, end_s AS end FROM yt_clips WHERE uid = ?1 ORDER BY id DESC LIMIT 200").bind(uid).all()
+          : await db.prepare("SELECT source_id, start_s AS start, end_s AS end FROM yt_clips WHERE uid IS NULL ORDER BY id DESC LIMIT 200").all();
         return Response.json({ sources: (sources.results || []).map((row) => row.source_id), clips: clips.results || [] }, { headers });
       } catch (error) {
         return Response.json({ error: String(error.message || error) }, { status: 500, headers });
@@ -791,15 +1102,16 @@ export default {
       try {
         const db = await ytDb(env);
         const now = new Date().toISOString();
+        const uid = String(body.u || "").trim() || null;
         const run = body.run || {};
         await db
-          .prepare("INSERT INTO yt_runs (at, source_id, source_title, status, note, clips) VALUES (?1, ?2, ?3, ?4, ?5, ?6)")
-          .bind(now, run.source_id ?? null, run.source_title ?? null, run.status ?? "unknown", String(run.note ?? "").slice(0, 400), Number(run.clips ?? 0))
+          .prepare("INSERT INTO yt_runs (at, source_id, source_title, status, note, clips, uid) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)")
+          .bind(now, run.source_id ?? null, run.source_title ?? null, run.status ?? "unknown", String(run.note ?? "").slice(0, 400), Number(run.clips ?? 0), uid)
           .run();
         for (const clip of Array.isArray(body.clips) ? body.clips : []) {
           await db
-            .prepare("INSERT INTO yt_clips (at, source_id, source_title, start_s, end_s, video_id, title) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)")
-            .bind(now, clip.source_id ?? null, clip.source_title ?? null, Number(clip.start ?? 0), Number(clip.end ?? 0), clip.video_id ?? null, String(clip.title ?? "").slice(0, 200))
+            .prepare("INSERT INTO yt_clips (at, source_id, source_title, start_s, end_s, video_id, title, uid) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+            .bind(now, clip.source_id ?? null, clip.source_title ?? null, Number(clip.start ?? 0), Number(clip.end ?? 0), clip.video_id ?? null, String(clip.title ?? "").slice(0, 200), uid)
             .run();
         }
         return Response.json({ ok: true }, { headers });
@@ -810,6 +1122,14 @@ export default {
 
     if (url.pathname === "/api/yt/run") {
       if (request.method !== "POST") return Response.json({ error: "Use POST" }, { status: 405, headers });
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से run नहीं हो सकता" }, { status: 403, headers });
+      }
+      const uid = await currentUid(env, request);
+      if (!uid) return Response.json({ error: "पहले अपनी Google keys सेव करके channel जोड़ें — फिर ‘अभी चलाओ’ काम करेगा" }, { status: 409, headers });
+      const db = await ytDb(env);
+      const auth = await db.prepare("SELECT refresh_token FROM yt_users WHERE uid = ?1").bind(uid).first();
+      if (!auth?.refresh_token) return Response.json({ error: "channel जुड़ा नहीं — पहले खाते से Google जोड़ें" }, { status: 409, headers });
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
       const last = runHits.get(ip) || 0;
       if (Date.now() - last < 10 * 60_000) {
@@ -822,7 +1142,7 @@ export default {
         dryRun = false;
       }
       try {
-        const link = await dispatchAutopilot(env, dryRun);
+        const link = await dispatchAutopilot(env, dryRun, uid);
         runHits.set(ip, Date.now());
         if (runHits.size > 2000) runHits.clear();
         return Response.json({ dispatched: true, dry_run: dryRun, actions: link }, { headers });
