@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YouTube Studio — ShâVì Ai</title>
+    <meta
+      name="description"
+      content="YouTube channel चलाने के 11 AI skills और 6 tools — script, hook score, title-thumbnail lint, chapters, edit list, retention और viral ranking. मुफ़्त, बिना login."
+    />
+    <link rel="icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <a class="back" href="../" aria-label="होम">←</a>
+        <span class="mark">▶</span>
+        <div>
+          <h1>YouTube <b>Studio</b></h1>
+          <p id="health">loading…</p>
+        </div>
+      </div>
+      <button id="voiceBtn" class="ghost" type="button">मेरी आवाज़</button>
+    </header>
+
+    <div class="layout">
+      <nav id="nav" class="rail" aria-label="Skills"></nav>
+
+      <main class="stage">
+        <section class="head">
+          <h2 id="skillName">—</h2>
+          <p id="skillDesc"></p>
+        </section>
+
+        <label class="field">
+          <span id="inputLabel">Input</span>
+          <textarea id="input" rows="10" spellcheck="false"></textarea>
+        </label>
+
+        <label class="field" id="extraWrap" hidden>
+          <span id="extraLabel">Thumbnail text</span>
+          <input id="extra" type="text" />
+        </label>
+
+        <div class="actions">
+          <button id="runTool" class="primary" type="button" hidden>Tool चलाओ</button>
+          <button id="ask" class="primary" type="button">ShâVì AI से बनवाओ</button>
+          <button id="copy" class="ghost" type="button" hidden>Copy</button>
+          <span id="status" class="status" aria-live="polite"></span>
+        </div>
+
+        <pre id="out" class="out" hidden></pre>
+
+        <p class="fine">
+          Tool असली Python में, आपके browser में ही चलते हैं (Pyodide) — कुछ भी server पर नहीं जाता। जवाब
+          ShâVì Ai के model से आता है (30 सवाल/घंटा की सीमा)। यह pack कुछ publish नहीं करता; upload आप खुद करते हैं।
+          Skills और tools: <a href="https://github.com/Jakeschincariol/youtube-agent-skill" target="_blank" rel="noopener noreferrer">youtube-agent-skill</a> (MIT)।
+        </p>
+      </main>
+    </div>
+
+    <dialog id="voiceDialog">
+      <form method="dialog" class="voice">
+        <h2>मेरी आवाज़ (voice.md)</h2>
+        <p class="hint">
+          हर skill यह पढ़ती है। अपने 2–3 वीडियो के transcript और "कैसे बोलता/बोलती हूँ" वाला हिस्सा भरें — script
+          तभी आपकी भाषा में आएगा। यह आपके browser में ही सेव होता है।
+        </p>
+        <textarea id="voiceText" rows="16" spellcheck="false"></textarea>
+        <div class="actions">
+          <button id="voiceSave" class="primary" type="button">Save</button>
+          <button class="ghost" value="close" type="submit">Close</button>
+          <span id="voiceStatus" class="status"></span>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
