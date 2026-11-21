@@ -10,6 +10,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { ShaviMark } from "@/components/shavi-mark";
+import { VisitorCounter } from "@/components/visitor-counter";
 
 const VIDEO =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4";
@@ -145,6 +146,8 @@ export function Landing({
                   <span className="text-[0.6rem] uppercase tracking-[0.3em] text-white/50">VK Tech Learn</span>
                   <span className="h-px w-10 bg-white/20" />
                 </div>
+
+                <VisitorCounter />
               </div>
             </div>
           </section>

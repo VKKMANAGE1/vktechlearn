@@ -1004,6 +1004,37 @@ async function dispatchAutopilot(env, dryRun, uid) {
   return `https://github.com/${repo}/actions/workflows/yt-autopilot.yml`;
 }
 
+/* ------------------------------------------------------------ visitor counter
+ *
+ * Site-wide count (ek hi row, site_visits) — har page load / refresh par +1.
+ * 203233 se shuru hota hai, isliye pehla visit 203234 dikhata hai. GET sirf padhta
+ * hai (kuch badhta nahi), POST badha kar naya number lauta deta hai.
+ */
+const VISITS_SEED = 203233;
+let visitsReady = false;
+
+async function visitsDb(env) {
+  if (!env.DB) throw new Error("D1 binding 'DB' नहीं है — Sites → Storage में database जोड़ें");
+  if (!visitsReady) {
+    await env.DB.prepare("CREATE TABLE IF NOT EXISTS site_visits (id INTEGER PRIMARY KEY, count INTEGER NOT NULL)").run();
+    await env.DB.prepare("INSERT INTO site_visits (id, count) VALUES (1, ?1) ON CONFLICT(id) DO NOTHING").bind(VISITS_SEED).run();
+    visitsReady = true;
+  }
+  return env.DB;
+}
+
+async function visitsRead(env) {
+  const db = await visitsDb(env);
+  const row = await db.prepare("SELECT count FROM site_visits WHERE id = 1").first();
+  return Number(row?.count ?? VISITS_SEED);
+}
+
+async function visitsBump(env) {
+  const db = await visitsDb(env);
+  await db.prepare("UPDATE site_visits SET count = count + 1 WHERE id = 1").run();
+  return visitsRead(env);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -1019,6 +1050,18 @@ export default {
         { status: "ok", model, vision: env.AI_VISION_MODEL || DEFAULT_VISION_MODEL, image: IMAGE_MODEL, demo: !env.AI_API_KEY, search: true, news: "gdelt+rss", exa: Boolean(env.EXA_API_KEY), tavily: Boolean(env.TAVILY_API_KEY) },
         { headers },
       );
+    }
+
+    if (url.pathname === "/api/visits") {
+      if (!originOk(env, request.headers.get("Origin") || "")) {
+        return Response.json({ error: "इस origin से counter नहीं चलता" }, { status: 403, headers });
+      }
+      try {
+        const count = request.method === "POST" ? await visitsBump(env) : await visitsRead(env);
+        return Response.json({ count }, { headers: { ...headers, "Cache-Control": "no-store" } });
+      } catch (error) {
+        return Response.json({ error: String(error.message || error) }, { status: 503, headers });
+      }
     }
 
     if (url.pathname === "/api/yt/channel") {
