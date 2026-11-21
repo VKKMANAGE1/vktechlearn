@@ -46,6 +46,7 @@ import {
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
+import { Landing } from "@/components/landing";
 import { ShaviMark } from "@/components/shavi-mark";
 import { Button } from "@/components/ui/button";
 import {
@@ -479,12 +480,14 @@ export function App() {
           </div>
         ) : (
           <ChatView
+            aiState={aiState}
             key={active ? active.id : "home"}
-            thread={active}
-            pending={pending}
+            onOpenMenu={() => setSidebar(true)}
             onPendingDone={() => setPending(null)}
             onPersist={persist}
             onStart={startWith}
+            pending={pending}
+            thread={active}
           />
         )}
       </main>
@@ -495,12 +498,16 @@ export function App() {
 function ChatView({
   thread,
   pending,
+  aiState,
+  onOpenMenu,
   onPendingDone,
   onPersist,
   onStart,
 }: {
   thread: Thread | null;
   pending: { text: string; images: string[] } | null;
+  aiState: AiState;
+  onOpenMenu: () => void;
   onPendingDone: () => void;
   onPersist: (messages: UIMessage[]) => void;
   onStart: (text: string, images?: string[]) => void;
@@ -518,6 +525,7 @@ function ChatView({
     onError: (err) => toast.error(err.message),
   });
   const busy = status === "submitted" || status === "streaming";
+  const showLanding = messages.length === 0 && generated.length === 0 && !makingImage;
 
   useEffect(() => {
     if (busy) return;
@@ -638,13 +646,23 @@ function ChatView({
 
   return (
     <>
-      <div className="flex shrink-0 justify-end px-4 pt-2 sm:px-6">
-        {messages.length > 0 && (
-          <Button aria-label="चैट डाउनलोड करें" size="icon-sm" variant="ghost" onClick={exportChat}>
-            <Download className="size-4" />
-          </Button>
-        )}
-      </div>
+      {!showLanding && (
+        <div className="flex shrink-0 justify-end px-4 pt-2 sm:px-6">
+          {messages.length > 0 && (
+            <Button aria-label="चैट डाउनलोड करें" size="icon-sm" variant="ghost" onClick={exportChat}>
+              <Download className="size-4" />
+            </Button>
+          )}
+        </div>
+      )}
+      {showLanding ? (
+        <Landing
+          aiState={aiState}
+          onFocusInput={() => inputRef.current?.focus()}
+          onOpenMenu={onOpenMenu}
+          onPick={pickPrompt}
+        />
+      ) : (
       <Conversation className="min-h-0">
         <ConversationContent className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6">
           {messages.length === 0 ? (
@@ -729,11 +747,16 @@ function ChatView({
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
+      )}
 
-      <div className="shrink-0 bg-background px-3 pb-4 pt-2 sm:px-6">
+      <div className={`shrink-0 px-3 pb-4 pt-2 sm:px-6 ${showLanding ? "" : "bg-background"}`}>
         <div className="mx-auto max-w-3xl">
           <PromptInput
-            className="border-border bg-card shadow-lg"
+            className={
+              showLanding
+                ? "border-white/10 bg-black/30 shadow-2xl backdrop-blur-2xl"
+                : "border-border bg-card shadow-lg"
+            }
             accept={FILE_ACCEPT}
             multiple
             maxFiles={3}
