@@ -56,8 +56,8 @@ export function Landing({
         <div className="flex min-h-full w-full flex-col lg:flex-row">
 
           {/* ---------- Left panel ---------- */}
-          <section className="relative flex w-full flex-col lg:w-[52%]">
-            <div className="liquid-glass-strong m-3 flex flex-1 flex-col rounded-3xl px-6 py-6 lg:m-5 lg:px-12 lg:py-9">
+          <section className="relative flex min-h-full w-full flex-col lg:w-[52%]">
+            <div className="liquid-glass-strong @container m-3 flex min-h-fit flex-1 flex-col rounded-3xl px-5 py-5 sm:px-6 sm:py-6 lg:m-5 lg:px-12 lg:py-8">
 
               {/* Nav */}
               <nav className="flex items-center justify-between">
@@ -80,21 +80,21 @@ export function Landing({
               </nav>
 
               {/* Hero */}
-              <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
-                <ShaviMark className="mb-6 text-[2.3rem]" />
+              <div className="flex flex-col items-center justify-center py-6 text-center lg:flex-1 lg:py-10">
+                <ShaviMark className="mb-4 text-[1.9rem] lg:mb-6 lg:text-[2.3rem]" />
 
-                <h1 className="font-poppins max-w-xl text-[2.6rem] font-medium leading-[0.95] tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl">
+                <h1 className="font-poppins max-w-xl text-[clamp(2rem,10cqw,3.5rem)] font-medium leading-[1.02] tracking-[-0.04em] text-white sm:leading-[0.95] sm:tracking-[-0.05em]">
                   Intelligence that
                   <br />
                   <em className="font-source italic text-white/80">speaks your</em> language
                 </h1>
 
-                <p className="mt-5 max-w-md text-sm leading-relaxed text-white/50">
+                <p className="mt-4 max-w-md text-[0.8rem] leading-relaxed text-white/50 sm:mt-5 sm:text-sm">
                   कोडिंग, पढ़ाई, लिखाई, अनुवाद, रिसर्च और दस्तावेज़ — हिंदी या English, बिना लॉगिन, बिल्कुल मुफ़्त।
                 </p>
 
                 <button
-                  className="liquid-glass-strong mt-8 flex items-center gap-3 rounded-full py-2 pl-6 pr-2 text-sm text-white transition-transform hover:scale-105 active:scale-95"
+                  className="liquid-glass-strong mt-6 flex items-center gap-3 rounded-full py-2 pl-5 pr-2 text-sm text-white transition-transform hover:scale-105 active:scale-95 sm:mt-8 sm:pl-6"
                   onClick={onFocusInput}
                   type="button"
                 >
@@ -104,9 +104,9 @@ export function Landing({
                   </span>
                 </button>
 
-                <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5 sm:mt-7 sm:gap-2">
                   <a
-                    className="liquid-glass rounded-full px-4 py-2 text-xs text-white/80 transition-transform hover:scale-105"
+                    className="liquid-glass rounded-full px-3 py-1.5 text-[0.7rem] text-white/80 transition-transform hover:scale-105 sm:px-4 sm:py-2 sm:text-xs"
                     href="/pdf/"
                     rel="noopener noreferrer"
                     target="_blank"
@@ -114,7 +114,7 @@ export function Landing({
                     PDF टूल्स
                   </a>
                   <a
-                    className="liquid-glass rounded-full px-4 py-2 text-xs text-white/80 transition-transform hover:scale-105"
+                    className="liquid-glass rounded-full px-3 py-1.5 text-[0.7rem] text-white/80 transition-transform hover:scale-105 sm:px-4 sm:py-2 sm:text-xs"
                     href="/img/"
                     rel="noopener noreferrer"
                     target="_blank"
@@ -122,7 +122,7 @@ export function Landing({
                     इमेज टूल्स
                   </a>
                   <button
-                    className="liquid-glass rounded-full px-4 py-2 text-xs text-white/80 transition-transform hover:scale-105"
+                    className="liquid-glass rounded-full px-3 py-1.5 text-[0.7rem] text-white/80 transition-transform hover:scale-105 sm:px-4 sm:py-2 sm:text-xs"
                     onClick={onOpenMenu}
                     type="button"
                   >
@@ -132,11 +132,11 @@ export function Landing({
               </div>
 
               {/* Quote */}
-              <div className="space-y-3 text-center">
-                <p className="text-[0.7rem] uppercase tracking-widest text-white/50">
-                  मुफ़्त · बिना लॉगिन · हिंदी + English
+              <div className="space-y-2 pb-1 text-center sm:space-y-3">
+                <p className="text-[0.6rem] uppercase tracking-[0.25em] text-white/50 sm:text-[0.7rem]">
+                  Free · No login · Hindi + English
                 </p>
-                <p className="mx-auto max-w-sm text-lg leading-snug text-white/80">
+                <p className="mx-auto max-w-sm text-base leading-snug text-white/80 sm:text-lg">
                   <span className="font-poppins">Every answer begins with a </span>
                   <span className="font-source italic">question.</span>
                 </p>
