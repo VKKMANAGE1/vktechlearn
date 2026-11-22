@@ -117,10 +117,17 @@
     </main>
 
     <footer class="page-footer">
+      <div class="visit-pill" id="visit-pill" role="group" aria-label="कुल विज़िटर">
+        <span class="v-eye" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.8"></circle></svg></span>
+        <span class="v-label">Visitors</span>
+        <span class="v-count" id="visit-count">—</span>
+        <span class="v-live" aria-hidden="true"></span>
+      </div>
       © <span id="year"></span> <a href="./">VK Tech Learn</a> · by Vïnâý Kúshwâhå · All rights reserved. Design &amp; code may not be reused without permission.
     </footer>
   </div>
 
   <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script src="visits.js" defer></script>
 </body>
 </html>
