@@ -159,15 +159,152 @@ function bindKeyPanel(provider) {
   aiKeyNote(provider);
 }
 
-/* Output box me streaming text dikhane ke chhote helpers. */
+/* ---------------- Markdown → HTML (koi library nahi, sirf vanilla JS) ----------------
+ * AI ke jawab me headings, lists, table aur code blocks aate hain; output box unhe theek
+ * dikhaye isliye yahan chhota renderer hai. Har text pehle escape hota hai (jawab ke andar
+ * ka HTML nahi chalta), aur link sirf http(s) URL ka banta hai. Adhoora markdown — jaise
+ * streaming ke beech khula ``` fence — bhi kharab nahi dikhta, khula code block ban jata hai.
+ */
+function aiEscapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function aiMdInline(text) {
+  return text
+    .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[\s(])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+    .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+}
+
+function aiMdCells(line) {
+  return line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => cell.trim());
+}
+function aiMdTableSep(line) {
+  return /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(line);
+}
+
+function aiMarkdown(source) {
+  const lines = String(source || '').replace(/\r\n?/g, '\n').split('\n');
+  const out = [];
+  const para = [];
+  let list = null;
+  const md = (text) => aiMdInline(aiEscapeHtml(text));
+  const flushPara = () => {
+    if (!para.length) return;
+    out.push('<p>' + para.map(md).join('<br>') + '</p>');
+    para.length = 0;
+  };
+  const flushList = () => {
+    if (!list) return;
+    out.push('<' + list.tag + '>' + list.items.map((item) => '<li>' + md(item) + '</li>').join('') + '</' + list.tag + '>');
+    list = null;
+  };
+  const flushAll = () => { flushPara(); flushList(); };
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i].replace(/\s+$/, '');
+    if (!line.trim()) { flushAll(); i++; continue; }
+
+    if (/^\s*```/.test(line)) {
+      flushAll();
+      const lang = (line.match(/^\s*```\s*([\w+#.-]*)/) || [])[1] || '';
+      const code = [];
+      i++;
+      while (i < lines.length && !/^\s*```/.test(lines[i])) { code.push(lines[i]); i++; }
+      if (i < lines.length) i++;
+      out.push('<pre' + (lang ? ' data-lang="' + aiEscapeHtml(lang) + '"' : '') + '><code>' + aiEscapeHtml(code.join('\n')) + '</code></pre>');
+      continue;
+    }
+
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) {
+      flushAll();
+      const tag = heading[1].length <= 1 ? 'h3' : 'h4';
+      out.push('<' + tag + '>' + md(heading[2]) + '</' + tag + '>');
+      i++;
+      continue;
+    }
+
+    if (/^\s*([-*_])\s*\1\s*\1[\s\-*_]*$/.test(line)) {
+      flushAll();
+      out.push('<hr>');
+      i++;
+      continue;
+    }
+
+    if (line.includes('|') && i + 1 < lines.length && aiMdTableSep(lines[i + 1])) {
+      flushAll();
+      const head = aiMdCells(line);
+      i += 2;
+      const rows = [];
+      while (i < lines.length && lines[i].includes('|') && lines[i].trim()) { rows.push(aiMdCells(lines[i])); i++; }
+      out.push('<div class="md-table"><table><thead><tr>' + head.map((cell) => '<th>' + md(cell) + '</th>').join('') + '</tr></thead><tbody>' +
+        rows.map((row) => '<tr>' + head.map((_, index) => '<td>' + md(row[index] || '') + '</td>').join('') + '</tr>').join('') +
+        '</tbody></table></div>');
+      continue;
+    }
+
+    if (/^\s*>/.test(line)) {
+      flushAll();
+      const quote = [];
+      while (i < lines.length) {
+        const q = /^\s*>\s?(.*)$/.exec(lines[i]);
+        if (!q) break;
+        quote.push(md(q[1]));
+        i++;
+      }
+      out.push('<blockquote><p>' + quote.join('<br>') + '</p></blockquote>');
+      continue;
+    }
+
+    const bullet = /^\s*[-*+]\s+(.*)$/.exec(line);
+    const numbered = /^\s*\d+[.)]\s+(.*)$/.exec(line);
+    if (bullet || numbered) {
+      flushPara();
+      const tag = bullet ? 'ul' : 'ol';
+      if (list && list.tag !== tag) flushList();
+      if (!list) list = { tag, items: [] };
+      list.items.push((bullet || numbered)[1]);
+      i++;
+      continue;
+    }
+
+    flushList();
+    para.push(line);
+    i++;
+  }
+  flushAll();
+  return out.join('');
+}
+
+/* Output box me streaming markdown dikhane ke helpers. */
 function aiStreamBox(id) {
   const el = document.getElementById(id);
   let streamed = false;
+  let latest = '';
+  let timer = 0;
+  const stop = () => { if (timer) { clearTimeout(timer); timer = 0; } };
   return {
-    begin() { streamed = false; if (el) el.textContent = 'जवाब आ रहा है…'; },
-    delta(full) { streamed = true; if (el) el.textContent = full; },
-    done(text) { if (el) el.textContent = text || 'खाली जवाब मिला।'; },
-    fail() { if (el && !streamed) el.textContent = ''; }
+    begin() {
+      streamed = false;
+      latest = '';
+      stop();
+      if (el) el.innerHTML = '<p class="ai-wait">जवाब आ रहा है…</p>';
+    },
+    delta(full) {
+      streamed = true;
+      latest = full;
+      // Har delta par poora HTML dobara banane ke bajaye thoda throttle.
+      if (timer) return;
+      timer = setTimeout(() => { timer = 0; if (el) el.innerHTML = aiMarkdown(latest); }, 70);
+    },
+    done(text) { stop(); if (el) el.innerHTML = aiMarkdown(text || 'खाली जवाब मिला।'); },
+    fail() { stop(); if (el && !streamed) el.innerHTML = ''; }
   };
 }
 function copyText(text, button) {

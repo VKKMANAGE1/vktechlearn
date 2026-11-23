@@ -1,0 +1,62 @@
+/* Markdown rendering for the AI tool answer boxes (toolkit/ai.js). */
+.output.md { line-height: 1.7; overflow-wrap: anywhere; }
+.output.md > :first-child { margin-top: 0; }
+.output.md p { margin: 0 0 .85rem; }
+.output.md p.ai-wait { color: var(--muted); }
+.output.md h3,
+.output.md h4 { margin: 1.15rem 0 .5rem; line-height: 1.3; color: var(--text); }
+.output.md h3 { font-size: 1.06rem; }
+.output.md h4 { font-size: .97rem; }
+.output.md ul,
+.output.md ol { margin: 0 0 .9rem; padding-left: 1.35rem; }
+.output.md li { margin: .25rem 0; }
+.output.md code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .85em;
+  background: #0b1120;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: .08rem .3rem;
+}
+.output.md pre {
+  margin: 0 0 1rem;
+  padding: .85rem 1rem;
+  background: #0b1120;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+.output.md pre code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: .84rem;
+  line-height: 1.6;
+  white-space: pre;
+}
+.output.md pre[data-lang]::before {
+  content: attr(data-lang);
+  display: block;
+  margin-bottom: .45rem;
+  font-size: .72rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #7f8ea8;
+}
+.output.md blockquote {
+  margin: 0 0 .9rem;
+  padding: .55rem .9rem;
+  border-left: 3px solid var(--brand);
+  border-radius: 0 8px 8px 0;
+  background: #94a3b80f;
+  color: var(--muted);
+}
+.output.md blockquote p { margin: 0; }
+.output.md a { color: var(--brand-2); }
+.output.md hr { border: 0; border-top: 1px solid var(--line); margin: 1.1rem 0; }
+.output.md .md-table { margin: 0 0 1rem; overflow-x: auto; }
+.output.md table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.output.md th,
+.output.md td { border: 1px solid var(--line); padding: .45rem .6rem; text-align: left; vertical-align: top; }
+.output.md th { background: #94a3b80f; color: var(--muted); font-weight: 600; }
