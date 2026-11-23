@@ -1,0 +1,11 @@
+{
+  "slug": "legacy-system-modernization-roadmap-guide",
+  "title": "Legacy System Modernization: Cost, Strategy aur 6-Step Roadmap",
+  "description": "Legacy system modernization kaise karein — strategies, asli cost, risk aur 6-step roadmap, strangler pattern aur migration ke practical tips ki Hindi guide.",
+  "published": "2026-11-10T10:00:00+05:30",
+  "labels": ["Enterprise Tech", "Software Architecture", "Business Guide"],
+  "hero": "img/posts/legacy-system-modernization-roadmap-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Legacy को एक झटके में बदलने की कोशिश सबसे महंगी होती है — टुकड़ों में बदलना टिकाऊ रास्ता है"
+}

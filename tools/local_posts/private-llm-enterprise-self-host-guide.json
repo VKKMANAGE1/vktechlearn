@@ -1,0 +1,11 @@
+{
+  "slug": "private-llm-enterprise-self-host-guide",
+  "title": "Private LLM for Enterprise: Self-Host AI Without Data Leak",
+  "description": "Private LLM enterprise ke liye kaise self-host karein — model chunav, GPU planning, security controls, cost aur 6-step rollout ki practical Hindi guide.",
+  "published": "2026-11-12T10:00:00+05:30",
+  "labels": ["AI", "Enterprise Tech", "Cloud"],
+  "hero": "img/posts/private-llm-enterprise-self-host-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Private LLM का मतलब है आपका data आपके ही नेटवर्क में रहे — model किसी और के सर्वर पर न चले"
+}
