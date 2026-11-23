@@ -1,0 +1,11 @@
+{
+  "slug": "aws-cloud-kya-hai-guide",
+  "title": "AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide",
+  "description": "AWS cloud kya hai, EC2/S3/RDS/Lambda/IAM ka kaam, pricing ka asli hisaab, pehla setup, kharcha kam karne ke 8 tarike aur 5 aam galtiyan — Hindi guide.",
+  "published": "2026-07-06T10:00:00+05:30",
+  "labels": ["AWS", "Cloud", "Business Guide"],
+  "hero": "img/posts/aws-cloud-kya-hai-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "AWS में ताकत भी है और जाल भी — फैसला सेवा के नाम से नहीं, उपयोग और खर्च के हिसाब से लेना चाहिए"
+}

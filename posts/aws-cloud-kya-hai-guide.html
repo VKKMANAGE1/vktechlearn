@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide — VK Tech Learn</title>
+<meta name="description" content="AWS cloud kya hai, EC2/S3/RDS/Lambda/IAM ka kaam, pricing ka asli hisaab, pehla setup, kharcha kam karne ke 8 tarike aur 5 aam galtiyan — Hindi guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide">
+<meta property="og:description" content="AWS cloud kya hai, EC2/S3/RDS/Lambda/IAM ka kaam, pricing ka asli hisaab, pehla setup, kharcha kam karne ke 8 tarike aur 5 aam galtiyan — Hindi guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/aws-cloud-kya-hai-guide.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/aws-cloud-kya-hai-guide.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="AWS, Cloud, Business Guide">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/aws-cloud-kya-hai-guide.jpg">
+<meta property="og:image:alt" content="AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide">
+<meta property="article:published_time" content="2026-07-06T10:00:00+05:30">
+<meta property="article:modified_time" content="2026-07-06T10:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="AWS">
+<meta property="article:tag" content="AWS">
+<meta property="article:tag" content="Cloud">
+<meta property="article:tag" content="Business Guide">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide">
+<meta name="twitter:description" content="AWS cloud kya hai, EC2/S3/RDS/Lambda/IAM ka kaam, pricing ka asli hisaab, pehla setup, kharcha kam karne ke 8 tarike aur 5 aam galtiyan — Hindi guide.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/aws-cloud-kya-hai-guide.jpg">
+<meta name="twitter:image:alt" content="AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide","description":"AWS cloud kya hai, EC2/S3/RDS/Lambda/IAM ka kaam, pricing ka asli hisaab, pehla setup, kharcha kam karne ke 8 tarike aur 5 aam galtiyan — Hindi guide.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/aws-cloud-kya-hai-guide.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/aws-cloud-kya-hai-guide.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/aws-cloud-kya-hai-guide.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/aws-cloud-kya-hai-guide.jpg","datePublished":"2026-07-06T10:00:00+05:30","dateModified":"2026-07-06T10:00:00+05:30","articleSection":"AWS","keywords":"AWS, Cloud, Business Guide"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide","item":"https://vktechlearn.site/posts/aws-cloud-kya-hai-guide.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">AWS</span><span class="tag">Cloud</span>
+      <time datetime="2026-07-06T10:00:00+05:30">6 July 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/aws-cloud-kya-hai-guide.jpg" alt="AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>AWS में ताकत भी है और जाल भी — फैसला सेवा के नाम से नहीं, उपयोग और खर्च के हिसाब से लेना चाहिए</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>AWS आज दुनिया का सबसे बड़ा cloud platform है, और भारत में भी छोटी startups से लेकर बड़े enterprises तक इसका इस्तेमाल होता है। पर पहली बार अंदर जाने पर सबसे बड़ी दिक्कत सेवाओं की संख्या नहीं, यह समझना होता है कि कौन सी सेवा किस काम के लिए है और बिल आखिर इतना बड़ा कैसे बन जाता है।</p>
+
+      <p>इस आर्टिकल में मैं बताऊँगा कि AWS cloud क्या है, region और availability zone का मतलब, वे छह सेवाएँ जो शुरुआत में 90 प्रतिशत काम के लिए काफी हैं, pricing का असली गणित, पहला setup किन छह कदमों में करें, खर्च कम करने के आठ व्यावहारिक तरीके, कब AWS ज़रूरत से ज़्यादा हो जाता है, और वे पाँच गलतियाँ जो नए लोग सबसे ज़्यादा करते हैं।</p>
+
+      <blockquote>
+      <p><strong>छोटा जवाब:</strong> AWS एक cloud platform है जहाँ आप servers, storage, database और कई सेवाएँ किराए पर लेते हैं और उपयोग के हिसाब से भुगतान करते हैं। शुरुआत के लिए EC2 (server), S3 (storage), RDS (database), IAM (access) और VPC (network) समझ लेना काफी है। सबसे ज़रूरी कदम है — पहले दिन से billing alarm लगाना।</p>
+      </blockquote>
+
+      <h2>AWS cloud kya hai</h2>
+
+      <p>AWS का मतलब Amazon Web Services है। इसमें सैकड़ों सेवाएँ हैं, पर उनका ढाँचा एक ही है — आप एक account बनाते हैं, एक region चुनते हैं, और जो चीज़ चाहिए उसे चालू करते हैं। उपयोग के हिसाब से बिल बनता है।</p>
+
+      <p>पारंपरिक hosting में आप महीने के हिसाब से एक server लेते थे, चाहे उस पर काम हो या न हो। यहाँ आप घंटे या सेकंड के हिसाब से देते हैं, और जब ज़रूरत न हो तो बंद कर सकते हैं। यही लचीलापन AWS का सबसे बड़ा फायदा है — और सबसे बड़ा जोखिम भी, क्योंकि भूली हुई चीज़ें चुपचाप बिल बढ़ाती रहती हैं।</p>
+
+      <h3>Region aur availability zone</h3>
+
+      <p>Region एक भौगोलिक क्षेत्र है, जैसे मुंबई। हर region के अंदर कई availability zones होते हैं — अलग data centres जो बिजली और network में एक-दूसरे से स्वतंत्र होते हैं।</p>
+
+      <p>यह बँटवारा इसलिए है कि अगर एक data centre में दिक्कत आए, तो सेवा न रुके। इसलिए production में कम से कम दो availability zones में चीज़ें रखने की सलाह दी जाती है। साथ ही region का चुनाव data के कानूनी पक्ष और latency, दोनों से जुड़ा होता है।</p>
+
+      <h3>Console, CLI aur API</h3>
+
+      <p>एक ही काम तीन तरह से हो सकता है — browser में console से, command line से, या code में API के ज़रिए। शुरुआत में console सीखना आसान है, पर असली काम CLI और code से होता है, क्योंकि वही दोहराया जा सकता है और version control में रखा जा सकता है।</p>
+
+      <p>यह आदत शुरू से बनाएँ — जो चीज़ console से बनाई है, उसे बाद में code या template में लिखें। वरना कुछ महीनों बाद आपको याद नहीं रहेगा कि कौन सी setting कहाँ बदली थी।</p>
+
+      <h2>Chhe services jo shuruaat me kaafi hain</h2>
+
+      <table>
+      <thead>
+      <tr><th>सेवा</th><th>काम</th><th>आम गलती</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>EC2</td><td>Virtual server</td><td>बंद न करना, बड़ा size चुनना</td></tr>
+      <tr><td>S3</td><td>File storage</td><td>Public bucket बना देना</td></tr>
+      <tr><td>RDS</td><td>Managed database</td><td>Backup और retention न देखना</td></tr>
+      <tr><td>Lambda</td><td>बिना server code चलाना</td><td>हर काम के लिए इसे चुनना</td></tr>
+      <tr><td>IAM</td><td>Access और permissions</td><td>सबको admin देना</td></tr>
+      <tr><td>VPC</td><td>Network का ढाँचा</td><td>Default VPC को production मान लेना</td></tr>
+      </tbody>
+      </table>
+
+      <p><strong>EC2</strong> वह virtual machine है जिस पर आप कुछ भी चला सकते हैं। इसे उसी तरह संभालें जैसे अपने server को — updates, firewall, backup।</p>
+
+      <p><strong>S3</strong> files रखने की जगह है — images, backups, documents। यह बहुत सस्ता और टिकाऊ है, पर इसकी permissions गलत सेट हों तो data सार्वजनिक हो सकता है।</p>
+
+      <p><strong>RDS</strong> database को manage करता है — backup, patching और replication provider संभालता है। इससे समय बचता है, पर इसकी कीमत और सीमाएँ समझ लेनी चाहिए।</p>
+
+      <p><strong>Lambda</strong> तब अच्छा है जब काम कभी-कभी आता हो और लंबा चलने वाला server बनाना बेकार हो। हर request पर बिल बनता है, इसलिए लगातार भारी काम के लिए यह महंगा पड़ सकता है।</p>
+
+      <p><strong>IAM</strong> तय करता है कि कौन क्या कर सकता है। इसे शुरुआत में ही ठीक करें — एक admin account, बाकी काम के लिए सीमित अनुमतियाँ, और root account पर MFA।</p>
+
+      <p><strong>VPC</strong> आपका निजी network है। इसमें subnets, route tables और security groups आते हैं। शुरुआत में default VPC से काम चल जाता है, पर production में अपना ढाँचा बनाना बेहतर रहता है।</p>
+
+      <figure>
+      <img src="../img/posts/aws-console-laptop.jpg" alt="AWS console और terminal खोले लैपटॉप पर काम करता developer" loading="lazy" decoding="async">
+      <figcaption>Console सीखने के लिए ठीक है, पर असली काम वह है जो code या template में दोहराया जा सके।</figcaption>
+      </figure>
+
+      <h2>Pricing kaise kaam karti hai</h2>
+
+      <p>AWS का बिल चार चीज़ों से बनता है — compute (server का समय), storage (जगह), network (data transfer) और अतिरिक्त services (database, queue, monitoring)। सबसे ज़्यादा चौंकाने वाला हिस्सा अक्सर network होता है, क्योंकि data transfer का हिसाब लोग भूल जाते हैं।</p>
+
+      <h3>Compute ke chaar tarike</h3>
+
+      <ul>
+      <li><strong>On-demand</strong> — जितना चलाएँ, उतना दें। लचीला, पर सबसे महंगा।</li>
+      <li><strong>Savings plan / reserved</strong> — एक या तीन साल की प्रतिबद्धता पर कम दाम।</li>
+      <li><strong>Spot</strong> — खाली क्षमता सस्ते में, पर कभी भी बंद हो सकती है।</li>
+      <li><strong>Serverless</strong> — request के हिसाब से, बिना server सोचे।</li>
+      </ul>
+
+      <p>शुरुआत में on-demand ठीक है, क्योंकि आपको अपना उपयोग पता ही नहीं होता। दो-तीन महीने के आंकड़े आने के बाद देखें कि कौन सी चीज़ लगातार चल रही है — उसी पर savings plan लें।</p>
+
+      <h3>Free tier की सच्चाई</h3>
+
+      <p>AWS का free tier कुछ सेवाओं को सीमित समय या सीमित मात्रा में मुफ्त देता है। यह सीखने के लिए अच्छा है, पर दो बातें याद रखें — पहली, हर सेवा मुफ्त नहीं है; दूसरी, सीमा पार होते ही सामान्य दाम शुरू हो जाते हैं।</p>
+
+      <p>कई लोगों का पहला बिल इसी वजह से बड़ा आता है कि उन्होंने एक बड़ा server चालू छोड़ दिया या NAT gateway जैसी चीज़ बनाकर भूल गए। free tier का मतलब "सब मुफ्त" कभी न समझें।</p>
+
+      <figure>
+      <img src="../img/posts/aws-cost-dashboard.jpg" alt="लैपटॉप पर cloud खर्च का dashboard और कागज़ पर बजट के नोट" loading="lazy" decoding="async">
+      <figcaption>खर्च पर नज़र रखने का सबसे सस्ता तरीका है — पहले दिन से budget और alarm लगाना।</figcaption>
+      </figure>
+
+      <h2>Pehla setup: chhe kadam</h2>
+
+      <p><strong>कदम 1 — account और root सुरक्षा।</strong> Account बनाएँ, root पर मजबूत password और MFA लगाएँ, और रोज़ के काम के लिए root का इस्तेमाल कभी न करें।</p>
+
+      <p><strong>कदम 2 — billing alarm।</strong> महीने का एक छोटा बजट तय करें, जैसे 500 रुपये, और उसके 50 प्रतिशत पर alert लगाएँ। यह पाँच मिनट का काम है और हज़ारों का बचाव कर सकता है।</p>
+
+      <p><strong>कदम 3 — IAM user।</strong> अपने लिए एक अलग user बनाएँ, जिसे सिर्फ ज़रूरी अनुमतियाँ हों। बाद में जब टीम बढ़े, तो हर व्यक्ति के लिए अलग पहचान रखें।</p>
+
+      <p><strong>कदम 4 — region तय करें।</strong> भारत के उपयोगकर्ताओं के लिए मुंबई region आम चुनाव है। ध्यान रखें कि region बदलने पर कीमतें और सेवाएँ दोनों बदल सकती हैं।</p>
+
+      <p><strong>कदम 5 — एक छोटा server।</strong> सबसे छोटे size से शुरू करें, security group में सिर्फ ज़रूरी ports खोलें, और काम खत्म होने पर बंद करें।</p>
+
+      <p><strong>कदम 6 — storage और backup।</strong> एक S3 bucket बनाएँ, public access बंद रखें, और versioning चालू करें। पहले ही दिन से backup की आदत बनाएँ।</p>
+
+      <h2>Kharcha kam karne ke 8 tarike</h2>
+
+      <ol>
+      <li>जो server चल नहीं रहा, उसे बंद करें — बिल घंटे के हिसाब से बनता है।</li>
+      <li>सही size चुनें; बड़ा server हमेशा ज़रूरी नहीं होता।</li>
+      <li>Storage को सही class में रखें — पुराने backup सस्ते tier में जा सकते हैं।</li>
+      <li>Data transfer की दिशा देखें; एक ही region में रखने से कई बार बचत होती है।</li>
+      <li>Snapshot और पुराने images साफ करें, वरना वे सालों तक बिल बढ़ाते रहेंगे।</li>
+      <li>Budget और alarm हर अलग environment पर लगाएँ।</li>
+      <li>महीने में एक बार बिल का breakdown पढ़ें, सिर्फ कुल रकम नहीं।</li>
+      <li>जो चीज़ लगातार चल रही है, उसके लिए savings plan लें।</li>
+      </ol>
+
+      <p>इनमें पहला और पाँचवाँ सबसे ज़्यादा बचत देते हैं। पर उनका फायदा तभी है जब आप महीने में एक बार बिल खोलकर देखें — वरना पता ही नहीं चलेगा कि कहाँ से पैसा जा रहा है।</p>
+
+      <h2>AWS kab zaroorat se zyada hai</h2>
+
+      <p>अगर आपकी वेबसाइट पर महीने में कुछ हज़ार लोग आते हैं, एक छोटा database है और कोई जटिल infrastructure नहीं, तो एक साधारण VPS या managed hosting सस्ता और आसान रहेगा। AWS की ताकत बड़े पैमाने, अलग-अलग सेवाओं और लचीलेपन में है — जहाँ उनकी ज़रूरत नहीं, वहाँ जटिलता ही मिलती है।</p>
+
+      <p>यह भी देखें कि क्या आपके पास इसे संभालने वाला कोई है। Cloud का बिल और security दोनों ध्यान माँगते हैं। बिना मालिक वाला cloud account धीरे-धीरे अनियंत्रित हो जाता है।</p>
+
+      <h2>Monitoring aur support</h2>
+
+      <p>Cloud में सबसे खतरनाक स्थिति वह है जब कुछ टूटा हो और किसी को पता न हो। इसलिए शुरुआत में तीन चीज़ें लगाएँ — CloudWatch जैसे metrics, एक alert जो email या phone पर जाए, और एक साधारण dashboard जो रोज़ देखा जाए।</p>
+
+      <p>Alert कम रखें, पर सही रखें। चार चीज़ों पर नज़र रखें — server का CPU और memory, disk की जगह, error rate और billing। इनमें से कोई भी तय सीमा पार करे, तो सूचना मिले।</p>
+
+      <p>Support plan का चुनाव भी सोच-समझकर करें। बुनियादी plan में जवाब देर से आता है, जो सीखने के लिए ठीक है पर production के लिए नहीं। अगर आपका काम ग्राहक पर निर्भर है, तो भुगतान वाला plan उस एक रात के इंतज़ार से सस्ता पड़ सकता है।</p>
+
+      <h2>Domain, certificate aur backup</h2>
+
+      <p>कई लोग server बना लेते हैं पर domain और HTTPS भूल जाते हैं। Route 53 जैसी सेवा से domain जोड़ें, और certificate manager से free certificate लगाएँ। इसके बाद ही site भरोसेमंद दिखती है और browser चेतावनी नहीं देता।</p>
+
+      <p>Backup को अलग रखें — अलग region या अलग account में। जो backup उसी account में है जहाँ गलती हुई, वह अक्सर उसी गलती में चला जाता है। महीने में एक बार restore करके देखें, वरना backup होने का भरोसा सिर्फ कागज़ी रहेगा।</p>
+
+      <h2>5 galtiyan jo sabse aam hain</h2>
+
+      <p><strong>पहली —</strong> root account से रोज़ का काम करना। <strong>दूसरी —</strong> billing alarm न लगाना। <strong>तीसरी —</strong> S3 bucket को public कर देना। <strong>चौथी —</strong> security group में सब ports खोल देना। <strong>पाँचवीं —</strong> console में बदलाव करके उसे कहीं दर्ज न करना।</p>
+
+      <p>तीसरी गलती सबसे खतरनाक है, क्योंकि उसका पता कभी-कभी महीनों बाद चलता है। S3 में public access block चालू रखें और bucket policy समय-समय पर जाँचें।</p>
+
+      <h2>मैंने इससे क्या सीखा</h2>
+
+      <p>सबसे बड़ी सीख यह रही कि cloud में खर्च अनुशासन से काबू में रहता है, तकनीक से नहीं। जिन accounts में हमने पहले दिन से budget, tags और monthly review रखा, उनका बिल कभी चौंकाने वाला नहीं आया। जहाँ सिर्फ "बाद में देखेंगे" चला, वहाँ कुछ महीनों में ऐसी सेवाएँ चालू मिलीं जिनकी ज़रूरत ही नहीं थी।</p>
+
+      <p>दूसरी सीख — छोटी शुरुआत हमेशा बेहतर है। सबसे छोटे server और सबसे साधारण setup से शुरू करें, फिर ज़रूरत दिखने पर बढ़ाएँ। बड़े setup से शुरू करने पर न सिर्फ बिल बढ़ता है, बल्कि यह समझना भी मुश्किल हो जाता है कि कौन सा हिस्सा ज़रूरी है।</p>
+
+      <p>तीसरी सीख — AWS सीखना एक हफ्ते का काम नहीं, पर शुरुआत के लिए पाँच सेवाएँ काफी हैं। जो लोग पहले दिन से हर सेवा समझने की कोशिश करते हैं, वे अक्सर कुछ भी पूरा नहीं कर पाते।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या AWS सीखने के लिए पैसे लगते हैं?</h3>
+      <p>कुछ सेवाएँ free tier में आती हैं, पर पूरी तरह मुफ्त नहीं। छोटे server और थोड़े storage पर महीने का खर्च कम रखा जा सकता है, बशर्ते आप चीज़ें बंद करना न भूलें।</p>
+
+      <h3>क्या AWS छोटी website के लिए ठीक है?</h3>
+      <p>तकनीकी रूप से हाँ, पर ज़रूरी नहीं। छोटी site के लिए सस्ता VPS या managed hosting अक्सर आसान और सस्ता रहता है।</p>
+
+      <h3>सबसे पहले कौन सी सेवा सीखें?</h3>
+      <p>EC2 और S3 से शुरुआत करें, साथ में IAM की बुनियादी समझ लें। इसके बाद RDS और VPC पर आएँ।</p>
+
+      <h3>बिल अचानक बढ़ जाए तो क्या करें?</h3>
+      <p>Cost explorer में सेवा के हिसाब से breakdown देखें, बिना इस्तेमाल हो रहे resources बंद करें, और snapshot तथा पुराने storage साफ करें।</p>
+
+      <h3>क्या AWS में data भारत में रहेगा?</h3>
+      <p>अगर आप मुंबई region चुनते हैं और backup भी उसी region में रखते हैं, तो data भारत में रहता है। इसे contract और settings, दोनों में जाँचें।</p>
+
+      <p>Infrastructure की बुनियादी समझ के लिए <a href="server-cluster-kya-hai-guide.html">server cluster की गाइड</a> पढ़ें, containers के साथ आगे बढ़ने के लिए <a href="container-orchestration-kya-hai-guide.html">orchestration वाला आर्टिकल</a> देखें, और data कहाँ रहेगा यह तय करने के लिए <a href="sovereign-cloud-kya-hai-india-guide.html">sovereign cloud की गाइड</a> पढ़ें।</p>
+
+      <p><strong>आगे पढ़ें:</strong> सेवाओं की आधिकारिक जानकारी <a href="https://docs.aws.amazon.com" target="_blank" rel="noopener nofollow">AWS documentation</a> पर और कीमतों का ताज़ा हिसाब <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener nofollow">AWS pricing</a> पेज पर देखें। कीमतें और free tier की शर्तें बदलती रहती हैं।</p>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>
