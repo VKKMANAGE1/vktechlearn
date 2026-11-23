@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Story Writer — Short Story Generator | VK Tech Learn</title>
 <link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="AI story writer — character, setting aur genre chunkar Hindi ya Hinglish me chhoti kahani likhwayen, apni Gemini/OpenAI key ke saath.">
+<meta name="description" content="AI story writer — character, setting aur mood chunkar Hindi ya Hinglish me chhoti kahani likhwayen. Shavi AI se free, ya apni Gemini/OpenAI key ke saath.">
 <link rel="canonical" href="https://vktechlearn.site/toolkit/story-writer.html">
 <link rel="stylesheet" href="/pdf/style.min.css">
 <script src="/toolkit/ai.js"></script>
@@ -20,17 +20,18 @@
   <div class="tool-head">
     <div class="eyebrow">Tools</div>
     <h1>🤖 AI Story Writer</h1>
-    <p>किरदार, जगह और मूड बताइए — AI एक छोटी कहानी लिख देगा। अपनी key से चलता है, इसलिए कोई महीने का plan नहीं।</p>
+    <p>किरदार, जगह और मूड बताइए — AI एक छोटी कहानी लिख देगा। Shavi AI से मुफ़्त चलता है, इसलिए कोई key या महीने का plan नहीं।</p>
     <div class="related"><a href="/toolkit/aura-ai.html">Aura AI</a><a href="/toolkit/article-rewriter.html">Article Rewriter</a></div>
   </div>
 
   <div class="two-col">
     <section class="panel">
-      <h2><span>1</span>Key</h2>
+      <h2><span>1</span>Provider और key</h2>
       <div class="field">
         <label for="provider">Provider</label>
         <select id="provider">
-          <option value="gemini" selected>Google Gemini</option>
+          <option value="shavi" selected>Shavi AI (मुफ़्त)</option>
+          <option value="gemini">Google Gemini</option>
           <option value="openai">OpenAI</option>
         </select>
       </div>
@@ -83,7 +84,7 @@
 </main>
 
 <script>
-  let provider = 'gemini';
+  let provider = 'shavi';
   bindKeyPanel(provider);
   document.getElementById('provider').addEventListener('change', (e) => {
     provider = e.target.value;

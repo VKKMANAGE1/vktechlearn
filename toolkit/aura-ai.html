@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aura AI — Free AI Chat With Your Own Key | VK Tech Learn</title>
 <link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Aura AI — browser में AI chat, apni Gemini या OpenAI key ke saath. Key sirf aapke browser me save hoti hai, koi signup nahi.">
+<meta name="description" content="Aura AI — Shavi AI se free AI chat, bina key aur bina signup. Chahein to apni Gemini ya OpenAI key bhi laga sakte hain, jo sirf browser me rehti hai.">
 <link rel="canonical" href="https://vktechlearn.site/toolkit/aura-ai.html">
 <link rel="stylesheet" href="/pdf/style.min.css">
 <script src="/toolkit/ai.js"></script>
@@ -20,17 +20,18 @@
   <div class="tool-head">
     <div class="eyebrow">Tools</div>
     <h1>🤖 Aura AI</h1>
-    <p>Apni Gemini या OpenAI API key डालकर सीधे browser से AI chat करें — कोई signup नहीं, key आपके device से बाहर नहीं जाती।</p>
+    <p><strong>Shavi AI</strong> से मुफ़्त chat करें — कोई key नहीं, कोई signup नहीं। या अपनी Gemini/OpenAI key लगाकर उसी model से बात करें; key आपके device से बाहर नहीं जाती।</p>
     <div class="related"><a href="/toolkit/story-writer.html">AI Story Writer</a><a href="/toolkit/article-rewriter.html">AI Article Rewriter</a><a href="/toolkit/gemini-cheat-code.html">Gemini Cheat Code</a></div>
   </div>
 
   <div class="two-col">
     <section class="panel">
-      <h2><span>1</span>API key</h2>
+      <h2><span>1</span>Provider और key</h2>
       <div class="field">
         <label for="provider">Provider</label>
         <select id="provider">
-          <option value="gemini" selected>Google Gemini</option>
+          <option value="shavi" selected>Shavi AI (मुफ़्त)</option>
+          <option value="gemini">Google Gemini</option>
           <option value="openai">OpenAI</option>
         </select>
       </div>
@@ -62,13 +63,14 @@
 </main>
 
 <script>
-  let activeProvider = 'gemini';
+  const PROVIDER_LABEL = { shavi: 'Shavi AI', gemini: 'Gemini', openai: 'OpenAI' };
+  let activeProvider = 'shavi';
   bindKeyPanel(activeProvider);
 
   document.getElementById('provider').addEventListener('change', (e) => {
     activeProvider = e.target.value;
     bindKeyPanel(activeProvider);
-    aiStatus('info', activeProvider === 'gemini' ? 'Gemini चुना गया।' : 'OpenAI चुना गया।');
+    aiStatus('info', PROVIDER_LABEL[activeProvider] + ' चुना गया।');
   });
 
   document.getElementById('clear-key').addEventListener('click', () => {

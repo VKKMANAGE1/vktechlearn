@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Article Rewriter — Rewrite Text in Any Tone | VK Tech Learn</title>
 <link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="AI article rewriter — apna paragraph simple, formal, short ya Hinglish tone me badlein, apni Gemini/OpenAI key ke saath, bina signup.">
+<meta name="description" content="AI article rewriter — paragraph ko simple, formal, short ya Hinglish tone me badlein. Shavi AI se free, ya apni Gemini/OpenAI key ke saath, bina signup.">
 <link rel="canonical" href="https://vktechlearn.site/toolkit/article-rewriter.html">
 <link rel="stylesheet" href="/pdf/style.min.css">
 <script src="/toolkit/ai.js"></script>
@@ -26,11 +26,12 @@
 
   <div class="two-col">
     <section class="panel">
-      <h2><span>1</span>Key</h2>
+      <h2><span>1</span>Provider और key</h2>
       <div class="field">
         <label for="provider">Provider</label>
         <select id="provider">
-          <option value="gemini" selected>Google Gemini</option>
+          <option value="shavi" selected>Shavi AI (मुफ़्त)</option>
+          <option value="gemini">Google Gemini</option>
           <option value="openai">OpenAI</option>
         </select>
       </div>
@@ -76,7 +77,7 @@
 </main>
 
 <script>
-  let provider = 'gemini';
+  let provider = 'shavi';
   bindKeyPanel(provider);
   document.getElementById('provider').addEventListener('change', (e) => { provider = e.target.value; bindKeyPanel(provider); });
 
