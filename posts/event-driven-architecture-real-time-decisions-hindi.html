@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain — VK Tech Learn</title>
+<meta name="description" content="Event-driven architecture kya hai aur enterprise me real-time decision kaise bante hain — broker, latency, design rules aur kamzoriyon ki aasan Hindi guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain">
+<meta property="og:description" content="Event-driven architecture kya hai aur enterprise me real-time decision kaise bante hain — broker, latency, design rules aur kamzoriyon ki aasan Hindi guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/event-driven-architecture-real-time-decisions-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/event-driven-architecture-real-time-decisions-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="Software Architecture, Enterprise Tech, Backend">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/event-driven-architecture-real-time-decisions-hindi.jpg">
+<meta property="og:image:alt" content="Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain">
+<meta property="article:published_time" content="2026-09-24T10:00:00+05:30">
+<meta property="article:modified_time" content="2026-09-24T10:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="Software Architecture">
+<meta property="article:tag" content="Software Architecture">
+<meta property="article:tag" content="Enterprise Tech">
+<meta property="article:tag" content="Backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision…">
+<meta name="twitter:description" content="Event-driven architecture kya hai aur enterprise me real-time decision kaise bante hain — broker, latency, design rules aur kamzoriyon ki aasan Hindi guide.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/event-driven-architecture-real-time-decisions-hindi.jpg">
+<meta name="twitter:image:alt" content="Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain","description":"Event-driven architecture kya hai aur enterprise me real-time decision kaise bante hain — broker, latency, design rules aur kamzoriyon ki aasan Hindi guide.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/event-driven-architecture-real-time-decisions-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/event-driven-architecture-real-time-decisions-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/event-driven-architecture-real-time-decisions-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/event-driven-architecture-real-time-decisions-hindi.jpg","datePublished":"2026-09-24T10:00:00+05:30","dateModified":"2026-09-24T10:00:00+05:30","articleSection":"Software Architecture","keywords":"Software Architecture, Enterprise Tech, Backend"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate…","item":"https://vktechlearn.site/posts/event-driven-architecture-real-time-decisions-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">Software Architecture</span><span class="tag">Enterprise Tech</span>
+      <time datetime="2026-09-24T10:00:00+05:30">24 September 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/event-driven-architecture-real-time-decisions-hindi.jpg" alt="Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>Event-driven system में कोई एक टुकड़ा दूसरे को बुलाता नहीं — हर टुकड़ा घटना सुनता है और अपना काम करता है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>एक बड़े ऑर्गनाइजेशन में रोज़ ऐसा होता है: पेमेंट आता है, ऑर्डर बनता है, स्टॉक घटता है, इनवॉइस जाता है, नोटिफिकेशन निकलता है, और fraud team को अलर्ट मिलता है। अगर ये सारे काम एक ही प्रोग्राम में लाइन-दर-लाइन चलें, तो हर नया काम जोड़ने पर पूरा सिस्टम धीमा होता जाता है। एक जगह अटकाव आया तो सब रुक जाता है। Event-driven architecture इसी दिक्कत का जवाब है — हर हिस्सा अपना काम खुद करता है और बाकी हिस्सों को सिर्फ यह बताता है कि "कुछ हुआ है"।</p>
+
+      <p>इस आर्टिकल में मैं यह समझाने की कोशिश करूँगा कि यह pattern असल में कैसे काम करता है, enterprise में real-time decision कहाँ से आते हैं, कौन से design नियम टूटने पर सबसे बड़ी गड़बड़ होती है, और कब आपको यह रास्ता नहीं चुनना चाहिए। भाषा जितनी आसान रख सकूँ, रखूँगा — क्योंकि इस विषय पर ज़्यादातर लेख सीधे Kafka के topics से शुरू हो जाते हैं और पढ़ने वाले को यह समझ नहीं आता कि असली फायदा क्या है।</p>
+
+      <blockquote>
+      <p><strong>छोटा जवाब:</strong> Event-driven architecture में सिस्टम के हिस्से एक-दूसरे को सीधे call नहीं करते। वे "घटना" (event) के रूप में संदेश भेजते हैं और बाकी हिस्से उन्हें सुनकर अपना काम करते हैं। इससे हर हिस्सा अलग से scale हो सकता है, एक हिस्सा बंद होने पर बाकी चलते रहते हैं, और नया consumer जोड़ना आसान हो जाता है। कीमत यह है कि आपको ordering, duplicate और failure की सोच पहले से रखनी पड़ती है।</p>
+      </blockquote>
+
+      <h2>Event क्या होता है — बुनियादी शब्दावली</h2>
+
+      <p>Event का मतलब है "कुछ हो चुका" की सूचना। ध्यान दें, यह command नहीं है। Command कहता है "यह करो", event कहता है "यह हो गया"। यह फर्क छोटा लगता है पर पूरे design को बदल देता है, क्योंकि event भेजने वाले को यह जानने की ज़रूरत नहीं कि उसे कौन-कौन सुन रहा है।</p>
+
+      <table>
+      <thead>
+      <tr><th>हिस्सा</th><th>काम</th><th>उदाहरण</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>Event</td><td>घटना का रिकॉर्ड, साथ में थोड़ा data</td><td>order.placed, payment.failed</td></tr>
+      <tr><td>Producer</td><td>event बनाकर भेजता है</td><td>checkout service</td></tr>
+      <tr><td>Broker</td><td>event रखता है और आगे बाँटता है</td><td>Kafka, RabbitMQ, cloud queue</td></tr>
+      <tr><td>Consumer</td><td>event सुनकर अपना काम करता है</td><td>invoice service, fraud engine</td></tr>
+      <tr><td>Schema</td><td>event के fields का तय ढाँचा</td><td>order_id, amount, currency</td></tr>
+      <tr><td>Dead-letter queue</td><td>वे events जो बार-बार fail हों</td><td>अलग जगह जमा, बाद में देखें</td></tr>
+      </tbody>
+      </table>
+
+      <p>Broker एक तरह का डाकघर है। Producer चिट्ठी डालता है, broker उसे संभालकर रखता है, और जो भी consumer सुन रहा है उसे देता है। ज़्यादातर brokers में एक खास बात होती है — चिट्ठी पढ़ने के बाद भी वह कुछ समय तक रखी रहती है। इसका मतलब यह है कि नया consumer जोड़ने पर वह पुराने events भी पढ़ सकता है, जो नई service बनाते समय बहुत काम आता है।</p>
+
+      <h2>Request-response और event-driven में असली फर्क</h2>
+
+      <p>पुराना तरीका सीधा है: Service A, Service B को call करती है और जवाब का इंतज़ार करती है। इसमें समझना आसान है, debug करना आसान है, और छोटे सिस्टम के लिए यही सही है। पर जैसे ही सेवाओं की संख्या बढ़ती है, यह जंजीर बन जाती है — अगर बीच में कोई एक धीमा हुआ, तो पूरी जंजीर धीमी।</p>
+
+      <table>
+      <thead>
+      <tr><th>पहलू</th><th>Request-response</th><th>Event-driven</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>जुड़ाव</td><td>सीधा — A को B पता होना चाहिए</td><td>ढीला — A को सिर्फ event पता है</td></tr>
+      <tr><td>नया consumer जोड़ना</td><td>Producer का code बदलना पड़ता है</td><td>अलग service जोड़ दें, producer वही रहता है</td></tr>
+      <tr><td>एक हिस्सा बंद हो तो</td><td>पूरा flow रुक सकता है</td><td>event जमा रहता है, बाद में process होता है</td></tr>
+      <tr><td>जवाब का समय</td><td>सीधा और तय</td><td>async — थोड़ी देर बाद</td></tr>
+      <tr><td>Debug करना</td><td>आसान</td><td>मुश्किल, tracing चाहिए</td></tr>
+      <tr><td>सबसे अच्छा कब</td><td>छोटा सिस्टम, तुरंत जवाब चाहिए</td><td>कई टीमें, अलग-अलग scale, लंबा flow</td></tr>
+      </tbody>
+      </table>
+
+      <p>इसीलिए असली सवाल "कौन सा बेहतर है" नहीं होता। असली सवाल यह होता है — कहाँ तुरंत जवाब चाहिए और कहाँ "थोड़ी देर में हो जाए" चलेगा। जहाँ उपयोगकर्ता स्क्रीन पर इंतज़ार कर रहा है, वहाँ request-response ठीक है। जहाँ इनवॉइस बनना, ईमेल जाना, रिपोर्ट अपडेट होना है, वहाँ event बेहतर है।</p>
+
+      <figure>
+      <img src="../img/posts/event-driven-dashboard-alerts.jpg" alt="डार्क डैशबोर्ड पर उड़ते हुए लाइव ग्राफ़, पल्स रिंग्स और अलर्ट बैज" loading="lazy" decoding="async">
+      <figcaption>Real-time dashboard अपने आप सच नहीं बोलता — उसके पीछे हर event का एक साफ schema और एक तय नियम होना चाहिए।</figcaption>
+      </figure>
+
+      <h2>Real-time decision असल में बनता कैसे है</h2>
+
+      <p>जब कोई कहता है "हमारा सिस्टम real-time decision लेता है", उसके पीछे आम तौर पर चार परतें होती हैं। यह क्रम समझ लेने पर आप अपने सिस्टम में ठीक जगह सुधार कर सकते हैं।</p>
+
+      <p><strong>पहली परत — इकट्ठा करना।</strong> अलग-अलग जगहों से events आते हैं: ऐप, वेबसाइट, POS, बैंक, लॉजिस्टिक्स पार्टनर। यहाँ सबसे बड़ी चुनौती volume है, और दूसरी चुनौती यह कि हर स्रोत का data अलग ढाँचे में आता है।</p>
+
+      <p><strong>दूसरी परत — पहचानना।</strong> हर event पर नियम चलते हैं। जैसे "एक ही कार्ड से 10 मिनट में तीन शहरों से पेमेंट" या "स्टॉक 5 से नीचे" या "डिलीवरी SLA से 20 मिनट बाहर"। यहाँ नियम जितने साफ और छोटे हों, उतना अच्छा।</p>
+
+      <p><strong>तीसरी परत — फैसला लेना।</strong> पहचान के बाद तय होता है कि क्या करना है — पेमेंट रोकना, मैन्युअल review में भेजना, ऑटो-अप्रूव करना, या सिर्फ लॉग करना। इस परत में अक्सर नियम + model दोनों होते हैं, और हर फैसले का कारण दर्ज होना चाहिए।</p>
+
+      <p><strong>चौथी परत — कार्रवाई।</strong> फैसले से नए events निकलते हैं: alert भेजो, refund शुरू करो, ticket बनाओ। यहीं event-driven डिज़ाइन सबसे ज़्यादा फायदा देता है, क्योंकि एक फैसले से कई टीमें अपना-अपना काम शुरू कर सकती हैं, बिना एक-दूसरे का इंतज़ार किए।</p>
+
+      <p>इस पूरे flow में सबसे ज़्यादा समय अक्सर पहली और दूसरी परत में जाता है, पर सबसे ज़्यादा गड़बड़ चौथी परत में होती है — क्योंकि वहीं असली पैसा और असली ग्राहक जुड़ा होता है।</p>
+
+      <h2>Broker चुनने के विकल्प</h2>
+
+      <p>हर broker एक जैसा नहीं होता। आपकी ज़रूरत के हिसाब से चुनाव बदलता है — कितने messages, कितनी देर रखने हैं, कितने consumers, और क्या ordering चाहिए।</p>
+
+      <table>
+      <thead>
+      <tr><th>विकल्प</th><th>किसके लिए अच्छा</th><th>ध्यान रखें</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>Kafka</td><td>बहुत बड़ा volume, event log, replay</td><td>Operations और monitoring पर खर्चा</td></tr>
+      <tr><td>RabbitMQ</td><td>Task queue, routing, छोटा-मध्यम सिस्टम</td><td>बहुत लंबा retention इसका काम नहीं</td></tr>
+      <tr><td>Cloud queue (SQS आदि)</td><td>शुरुआत करना, managed रखरखाव</td><td>Ordering और replay की सीमाएँ</td></tr>
+      <tr><td>Managed Kafka</td><td>टीम छोटी हो, पर volume बड़ा</td><td>Cost और vendor निर्भरता</td></tr>
+      <tr><td>Database outbox</td><td>पहले से DB वाला सिस्टम</td><td>एक और चीज़ नहीं, बल्कि pattern है</td></tr>
+      </tbody>
+      </table>
+
+      <p>मेरी सलाह यह है कि छोटी शुरुआत करें। अगर आपके पास रोज़ 50 हज़ार events हैं, तो बड़े cluster की ज़रूरत नहीं। पहले एक managed queue से शुरू करें, pattern सीखें, और जब replay या बहुत consumers की ज़रूरत पड़े तभी भारी tool पर जाएँ।</p>
+
+      <h2>पाँच design नियम जो टूटने पर सबसे बड़ी गड़बड़ होती है</h2>
+
+      <p><strong>1. Idempotency।</strong> हर consumer ऐसा होना चाहिए कि एक ही event दो बार आ जाए तो नतीजा वही रहे। Network की दुनिया में duplicate सामान्य है, अपवाद नहीं। इसके लिए event में एक unique id रखें और consumer उसे याद रखे।</p>
+
+      <p><strong>2. Ordering की सच्चाई।</strong> ज़्यादातर brokers ordering की गारंटी सिर्फ एक partition या एक key के अंदर देते हैं। अगर आपको "पहले payment, फिर invoice" चाहिए, तो दोनों events को एक ही key पर भेजें, वरना क्रम बिगड़ सकता है।</p>
+
+      <p><strong>3. Schema का अनुशासन।</strong> Event का ढाँचा बदलना सबसे आसान तरीका है पूरे सिस्टम को तोड़ने का। नियम रखें — नए field जोड़ सकते हैं, पुराने हटाएँ नहीं। और schema का version रखें।</p>
+
+      <p><strong>4. Dead-letter queue।</strong> जो event बार-बार fail हो, उसे हमेशा के लिए retry करते रहना सबसे बड़ी गलती है। उसे अलग queue में भेजें, alert बनाएँ, और तय करें कि उसे कौन देखेगा।</p>
+
+      <p><strong>5. Backpressure।</strong> अगर consumer उतना तेज़ नहीं जितना producer, तो queue बढ़ती जाती है और देर से पता चलता है। इसलिए queue की लंबाई पर alert रखें, और तय करें कि सीमा पार होने पर क्या होगा।</p>
+
+      <h2>Latency budget: "real-time" का मतलब क्या है</h2>
+
+      <p>"Real-time" शब्द बहुत लचीले ढंग से इस्तेमाल होता है। पेमेंट fraud में 200 मिलीसेकंड मायने रखते हैं, पर स्टॉक replenishment में 5 मिनट भी ठीक है। इसलिए पहले तय करें कि आपकी संख्या क्या है, फिर उसे हिस्सों में बाँटें।</p>
+
+      <table>
+      <thead>
+      <tr><th>चरण</th><th>आम लक्ष्य</th><th>टिप्पणी</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>Event producer से broker तक</td><td>10–50 ms</td><td>Network और batching पर निर्भर</td></tr>
+      <tr><td>Broker से consumer तक</td><td>20–100 ms</td><td>Consumer busy हो तो बढ़ जाता है</td></tr>
+      <tr><td>नियम या model का फैसला</td><td>10–300 ms</td><td>बाहरी API call सबसे धीमा हिस्सा</td></tr>
+      <tr><td>कार्रवाई शुरू होना</td><td>50 ms–2 s</td><td>अलग service के call पर निर्भर</td></tr>
+      </tbody>
+      </table>
+
+      <p>एक आदत जो बहुत काम आती है — हर event में एक timestamp रखें कि वह कब पैदा हुआ, और हर परत पर यह नापें कि कितनी देर लगी। जब कभी कोई कहे "सिस्टम धीमा है", तो आपके पास अनुमान नहीं, संख्या होगी।</p>
+
+      <h2>तीन जाल जिनमें टीमें अक्सर फँसती हैं</h2>
+
+      <p><strong>पहला — dual write।</strong> Service पहले database में लिखती है और फिर event भेजती है। अगर बीच में कुछ टूटा, तो data बचा रह जाता है और event नहीं जाता। इसका इलाज outbox pattern है: event को उसी transaction में एक table में लिखें, और एक अलग process उसे broker तक पहुँचाए।</p>
+
+      <p><strong>दूसरा — event storm।</strong> एक event सुनकर service दूसरा event भेजती है, वह तीसरा, और गिनती तेज़ी से बढ़ती जाती है। कुछ ही मिनटों में सिस्टम अपने ही events से भर जाता है। इलाज — हर flow के लिए एक सीमा तय करें और एक ही event के loop पर alert रखें।</p>
+
+      <p><strong>तीसरा — ordering की गलत धारणा।</strong> "Events तो क्रम से आते हैं" — यह मान लेना सबसे महंगा है। जब consumer parallel चलते हैं, तो क्रम की गारंटी सिर्फ key के अंदर रहती है। जहाँ क्रम ज़रूरी है, वहाँ version number या timestamp से जाँचें और पुराना event आए तो छोड़ दें।</p>
+
+      <h2>कब event-driven नहीं चुनना चाहिए</h2>
+
+      <p>अगर आपका सिस्टम छोटा है, टीम में दो-तीन लोग हैं, और सारा flow एक ही database पर चलता है, तो simple request-response से काम चल जाएगा और आपका समय बचेगा। Event-driven की कीमत monitoring, tracing और सोच में चुकानी पड़ती है।</p>
+
+      <p>दूसरी स्थिति — जहाँ उपयोगकर्ता को तुरंत जवाब चाहिए और उसे async का कोई फायदा नहीं। जैसे login, search, form submit। इन्हें event में डालने से सिर्फ देरी बढ़ती है।</p>
+
+      <p>तीसरी स्थिति — जहाँ टीम के पास अभी tracing और logging की बुनियाद नहीं है। बिना इसके event-driven सिस्टम debug करना बहुत मुश्किल हो जाता है, क्योंकि आपको यह देखना ही नहीं आएगा कि एक order किन-किन सेवाओं से गुज़रा।</p>
+
+      <h2>एक छोटा उदाहरण: order placed का event</h2>
+
+      <p>नीचे एक साधारण event का ढाँचा है। इसमें ध्यान दें कि event में सिर्फ वह जानकारी है जो सुनने वालों को चाहिए, और एक unique id तथा timestamp है। पूरा order object भेजना आम गलती है, क्योंकि फिर consumer को आपके internal ढाँचे पर निर्भर होना पड़ता है।</p>
+
+      <pre><code>{
+        "event_id": "evt_9f21c",
+        "type": "order.placed",
+        "version": 2,
+        "occurred_at": "2026-09-24T10:15:32Z",
+        "order_id": "ord_77231",
+        "amount": 2499.00,
+        "currency": "INR",
+        "channel": "app",
+        "items_count": 2
+      }</code></pre>
+
+      <p>इस event को सुनने वाली हर service अपना काम करती है — inventory घटाती है, invoice बनाती है, loyalty points जोड़ती है, और analytics में भेजती है। चारों में से कोई भी नहीं जानती कि बाकी तीन क्या कर रही हैं। यही इस pattern की असली ताकत है।</p>
+
+      <h2>अपनी टीम के लिए छोटी चेकलिस्ट</h2>
+
+      <p>अगर आप आज event-driven शुरू करने की सोच रहे हैं, तो इन सवालों के जवाब पहले लिख लें। कौन से events होंगे और उनके नाम क्या होंगे? हर event का schema कौन रखेगा? Duplicate आने पर consumer क्या करेगा? Fail होने पर event कहाँ जाएगा और उसे कौन देखेगा? किस चीज़ की निगरानी होगी — queue लंबाई, देरी, या error दर?</p>
+
+      <p>मेरे अनुभव में जो टीमें यह चार पन्ने पहले लिख लेती हैं, उनका सिस्टम बाद में बहुत कम दर्द देता है। जो सीधे code से शुरू करती हैं, उन्हें छह महीने बाद पता चलता है कि आधे events का मतलब ही तय नहीं है।</p>
+
+      <h2>मैंने इस pattern से क्या सीखा</h2>
+
+      <p>पहली सीख यह रही कि event-driven का सबसे बड़ा फायदा performance नहीं, बल्कि टीमों का अलग होना है। जब दो टीमें एक ही flow पर काम करती हैं, तो सीधे call वाला ढाँचा हर हफ्ते टकराव पैदा करता है। Event के ज़रिए वे एक-दूसरे का इंतज़ार किए बिना आगे बढ़ सकती हैं।</p>
+
+      <p>दूसरी सीख — सबसे ज़्यादा समय design में नहीं, observability में लगता है। मैंने शुरू में सोचा था कि events बहने लगे तो काम खत्म। असल में तब काम शुरू होता है — जब आपको यह देखना होता है कि एक order कहाँ अटका।</p>
+
+      <p>तीसरी सीख — कम events बेहतर। शुरुआत में हमने हर छोटी चीज़ का event बना दिया। कुछ महीनों बाद पता चला कि 70% events किसी काम के नहीं थे और उन्हीं की वजह से monitoring शोर बन गया था। अब हम पहले तय करते हैं कि कौन सा event सच में किसी फैसले या कार्रवाई से जुड़ा है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या event-driven architecture microservices के बिना चल सकता है?</h3>
+      <p>हाँ। Event-driven एक संचार का तरीका है, deployment का नहीं। आपके पास तीन अलग services हो सकती हैं या एक ही application के तीन modules — दोनों में events काम करते हैं। कई टीमें पहले एक ही app के अंदर events से शुरुआत करती हैं।</p>
+
+      <h3>क्या इससे data duplicate होने का खतरा रहता है?</h3>
+      <p>हाँ, और यह सामान्य है। इसका इलाज duplicate न होना नहीं, बल्कि consumer का idempotent होना है। हर event में unique id रखें और consumer उसे याद रखे, ताकि दोबारा आने पर काम दोहराया न जाए।</p>
+
+      <h3>Kafka ज़रूरी है क्या?</h3>
+      <p>नहीं। Kafka बहुत अच्छा tool है, पर छोटे और मध्यम सिस्टम के लिए managed queue या RabbitMQ काफी है और संभालना आसान है। Tool चुनने से पहले अपनी ज़रूरत लिखें — volume, retention, ordering।</p>
+
+      <h3>Real-time का दावा कैसे जाँचें?</h3>
+      <p>हर परत पर समय नापें और उसे dashboard पर दिखाएँ। अगर किसी event को पैदा होने से कार्रवाई तक पहुँचने में लगने वाला समय आपके तय लक्ष्य के अंदर है, तभी "real-time" कहें। बिना नापे यह शब्द marketing बन जाता है।</p>
+
+      <h3>क्या इसे बाद में बदलना मुश्किल है?</h3>
+      <p>Pattern बदलना मुश्किल है, पर events का ढाँचा संभालना आसान है अगर आप शुरू से schema का version रखें और पुराने fields न हटाएँ। इस एक आदत से बाद के बदलाव बहुत सस्ते हो जाते हैं।</p>
+
+      <p>अगर आप backend और system design की बुनियादी बातें दोहराना चाहते हैं, तो <a href="basic-computer-fundamentals-in-hindi.html">Basic Computer Fundamentals के नोट्स</a> और <a href="computer-network-what-is-computer.html">Computer Network क्या है</a> वाला आर्टिकल पहले पढ़ लें। Database की तुलना के लिए <a href="what-is-the-difference-between-dbms-and-rdbms.html">DBMS और RDBMS का फर्क</a> भी काम आएगा।</p>
+
+      <p><strong>स्रोत:</strong> इस विषय पर आधारभूत चर्चा Tvisha Technologies के blog लेख <a href="https://www.tvisha.com/blog/event-driven-architecture-real-time-decision-making" target="_blank" rel="noopener nofollow">event-driven architecture और real-time decision-making</a> (24 सितंबर 2026) से प्रेरित है। ऊपर के उदाहरण, tables, latency के आँकड़े और design नियम इस साइट के अपने हैं।</p>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

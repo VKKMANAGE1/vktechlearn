@@ -1,0 +1,11 @@
+{
+  "slug": "event-driven-architecture-real-time-decisions-hindi",
+  "title": "Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision Kaise Aate Hain",
+  "description": "Event-driven architecture kya hai aur enterprise me real-time decision kaise bante hain — broker, latency, design rules aur kamzoriyon ki aasan Hindi guide.",
+  "published": "2026-09-24T10:00:00+05:30",
+  "labels": ["Software Architecture", "Enterprise Tech", "Backend"],
+  "hero": "img/posts/event-driven-architecture-real-time-decisions-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Event-driven system में कोई एक टुकड़ा दूसरे को बुलाता नहीं — हर टुकड़ा घटना सुनता है और अपना काम करता है"
+}
