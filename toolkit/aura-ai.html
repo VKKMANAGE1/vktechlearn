@@ -86,11 +86,14 @@
     if (!prompt) { aiStatus('err', 'पहले सवाल लिखें।'); return; }
     aiBusy(askBtn, true, 'Ask AI', 'सोच रहा है…');
     aiStatus('info', 'जवाब आ रहा है…');
+    const box = aiStreamBox('answer');
+    box.begin();
     try {
-      const text = await aiAsk(prompt, activeProvider);
-      document.getElementById('answer').textContent = text || 'खाली जवाब मिला।';
+      const text = await aiAsk(prompt, activeProvider, box.delta);
+      box.done(text);
       aiStatus('ok', 'तैयार।');
     } catch (err) {
+      box.fail();
       aiStatus('err', err.message);
     } finally {
       aiBusy(askBtn, false, 'Ask AI');

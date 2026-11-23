@@ -17,7 +17,7 @@ function aiSetKey(name, value) {
 }
 function aiHasKey(name) { return Boolean(aiGetKeys()[name]); }
 
-async function aiAskShavi(prompt) {
+async function aiAskShavi(prompt, onDelta) {
   let res;
   try {
     res = await fetch(AI_SHAVI_API + '/api/chat', {
@@ -33,22 +33,53 @@ async function aiAskShavi(prompt) {
     try { detail = (await res.json()).error || ''; } catch (e) {}
     throw new Error(detail || ('Shavi AI error ' + res.status + ' — थोड़ी देर बाद कोशिश करें।'));
   }
-  const raw = await res.text();
+
   let out = '';
-  for (const line of raw.split('\n')) {
-    const text = line.trim();
-    if (!text.startsWith('data:')) continue;
+  const take = (payload) => {
     let chunk;
-    try { chunk = JSON.parse(text.slice(5).trim()); } catch (e) { continue; }
+    try { chunk = JSON.parse(payload); } catch (e) { return; }
     if (chunk.error) throw new Error(chunk.error);
-    if (chunk.delta) out += chunk.delta;
+    if (!chunk.delta) return;
+    out += chunk.delta;
+    if (onDelta) { try { onDelta(out); } catch (e) {} }
+  };
+
+  if (res.body && typeof res.body.getReader === 'function') {
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let cut;
+        while ((cut = buffer.indexOf('\n')) >= 0) {
+          const line = buffer.slice(0, cut).trim();
+          buffer = buffer.slice(cut + 1);
+          if (line.startsWith('data:')) take(line.slice(5).trim());
+        }
+      }
+      buffer += decoder.decode();
+      const last = buffer.trim();
+      if (last.startsWith('data:')) take(last.slice(5).trim());
+    } finally {
+      try { reader.releaseLock(); } catch (e) {}
+    }
+  } else {
+    const raw = await res.text();
+    for (const line of raw.split('\n')) {
+      const text = line.trim();
+      if (text.startsWith('data:')) take(text.slice(5).trim());
+    }
   }
+
   if (!out.trim()) throw new Error('Shavi AI से खाली जवाब मिला — फिर कोशिश करें।');
   return out.trim();
 }
 
-async function aiAsk(prompt, provider) {
-  if (provider === 'shavi') return aiAskShavi(prompt);
+async function aiAsk(prompt, provider, onDelta) {
+  if (provider === 'shavi') return aiAskShavi(prompt, onDelta);
   const keys = aiGetKeys();
   if (provider === 'openai') {
     if (!keys.openai) throw new Error('OpenAI key सेव नहीं है। पहले key डालें।');
@@ -85,12 +116,32 @@ function aiBusy(button, busy, idle, working) {
   button.disabled = busy;
   button.textContent = busy ? (working || 'Working…') : (idle || 'Run');
 }
+function aiKeyNote(provider) {
+  const note = document.getElementById('key-note');
+  if (!note) return;
+  note.textContent = aiHasKey(provider)
+    ? 'Key इस browser में सेव है — कहीं भेजी नहीं जाती।'
+    : 'कोई key नहीं है। अपनी key डालें, वह सिर्फ इस browser में रहेगी।';
+}
 function bindKeyPanel(provider) {
   const input = document.getElementById('api-key');
   const save = document.getElementById('save-key');
   const note = document.getElementById('key-note');
   if (!input || !save || !note) return;
   if (!input.dataset.defaultPlaceholder) input.dataset.defaultPlaceholder = input.placeholder;
+  // Save का listener सिर्फ एक बार — provider बदलने पर सिर्फ dataset.provider बदलता है,
+  // वरना हर switch पर नया listener जुड़कर key कई बार सेव होती और status बार-बार बदलता।
+  save.dataset.provider = provider;
+  if (!save.dataset.bound) {
+    save.dataset.bound = '1';
+    save.addEventListener('click', () => {
+      const current = save.dataset.provider || '';
+      if (!current || AI_FREE_PROVIDERS[current]) return;
+      aiSetKey(current, input.value.trim());
+      aiKeyNote(current);
+      aiStatus('ok', 'Key सेव हो गई।');
+    });
+  }
   const freeText = AI_FREE_PROVIDERS[provider];
   if (freeText) {
     input.value = '';
@@ -104,18 +155,20 @@ function bindKeyPanel(provider) {
   save.disabled = false;
   input.placeholder = input.dataset.defaultPlaceholder;
   const keys = aiGetKeys();
-  if (keys[provider]) input.value = keys[provider];
-  const paint = () => {
-    note.textContent = aiHasKey(provider)
-      ? 'Key इस browser में सेव है — कहीं भेजी नहीं जाती।'
-      : 'कोई key नहीं है। अपनी key डालें, वह सिर्फ इस browser में रहेगी।';
+  input.value = keys[provider] || '';
+  aiKeyNote(provider);
+}
+
+/* Output box me streaming text dikhane ke chhote helpers. */
+function aiStreamBox(id) {
+  const el = document.getElementById(id);
+  let streamed = false;
+  return {
+    begin() { streamed = false; if (el) el.textContent = 'जवाब आ रहा है…'; },
+    delta(full) { streamed = true; if (el) el.textContent = full; },
+    done(text) { if (el) el.textContent = text || 'खाली जवाब मिला।'; },
+    fail() { if (el && !streamed) el.textContent = ''; }
   };
-  save.addEventListener('click', () => {
-    aiSetKey(provider, input.value.trim());
-    paint();
-    aiStatus('ok', 'Key सेव हो गई।');
-  });
-  paint();
 }
 function copyText(text, button) {
   const done = () => { if (button) { const old = button.textContent; button.textContent = 'Copied ✓'; setTimeout(() => { button.textContent = old; }, 1400); } };

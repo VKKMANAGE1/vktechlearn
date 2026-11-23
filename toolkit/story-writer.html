@@ -100,11 +100,14 @@
     const prompt = 'Write a short story of about 350 words in ' + lang + '. Main character: ' + who + '. Setting: ' + where + '. Mood: ' + genre + '. Give it a clear beginning, a small turning point and a quiet ending. No headings, no bullet points, only the story text.';
     aiBusy(btn, true, 'Story likho', 'लिख रहा है…');
     aiStatus('info', 'कहानी बन रही है…');
+    const box = aiStreamBox('story');
+    box.begin();
     try {
-      const text = await aiAsk(prompt, provider);
-      document.getElementById('story').textContent = text || 'खाली जवाब मिला।';
+      const text = await aiAsk(prompt, provider, box.delta);
+      box.done(text);
       aiStatus('ok', 'तैयार — पढ़कर बदलाव कर सकते हैं।');
     } catch (err) {
+      box.fail();
       aiStatus('err', err.message);
     } finally {
       aiBusy(btn, false, 'Story likho');
