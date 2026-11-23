@@ -1,0 +1,11 @@
+{
+  "slug": "container-orchestration-kya-hai-guide",
+  "title": "Container Orchestration Kya Hai? Kubernetes, Swarm aur Nomad",
+  "description": "Container orchestration kya hai, scheduling se rollout tak kaise kaam karta hai, Kubernetes vs Swarm vs Nomad, aur kab ye setup aapke liye overkill hai.",
+  "published": "2026-07-13T10:00:00+05:30",
+  "labels": ["DevOps", "Kubernetes", "Software Architecture"],
+  "hero": "img/posts/container-orchestration-kya-hai-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Orchestration का काम एक ही है — containers को सही जगह, सही संख्या में और सही समय पर चलाए रखना"
+}

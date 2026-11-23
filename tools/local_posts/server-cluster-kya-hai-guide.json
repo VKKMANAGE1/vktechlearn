@@ -1,0 +1,11 @@
+{
+  "slug": "server-cluster-kya-hai-guide",
+  "title": "Server Cluster Kya Hai? HA, Load Balancing aur Failover Guide",
+  "description": "Server cluster kya hai, high availability kaise banti hai, load balancer ke tarike, active-passive aur active-active failover aur cluster banane ke steps.",
+  "published": "2026-07-08T10:00:00+05:30",
+  "labels": ["DevOps", "Infrastructure", "High Availability"],
+  "hero": "img/posts/server-cluster-kya-hai-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Cluster का मतलब सिर्फ कई servers नहीं — उनके बीच काम बाँटने और एक के बंद होने पर संभालने की व्यवस्था"
+}
