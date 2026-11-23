@@ -1,0 +1,11 @@
+{
+  "slug": "self-service-apps-kya-hai-guide",
+  "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam",
+  "description": "Self-service apps kya hain, kaun se 6 building blocks chahiye, design aur security ke rules, aur woh metrics jo batate hain app waqai kaam kar raha hai.",
+  "published": "2026-08-01T10:00:00+05:30",
+  "labels": ["Product Management", "UX", "Business Guide"],
+  "hero": "img/posts/self-service-apps-kya-hai-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "अच्छा self-service app उपयोगकर्ता से वही पूछता है जो ज़रूरी है — बाकी सब खुद संभालता है"
+}

@@ -1,0 +1,11 @@
+{
+  "slug": "digital-signature-kya-hai-guide-hindi",
+  "title": "Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide",
+  "description": "Digital signature kya hai, DSC aur eSign me farq, hash aur certificate kaise kaam karte hain, documents, banwane ke steps aur security ki poori guide.",
+  "published": "2026-07-15T10:00:00+05:30",
+  "labels": ["Digital India", "Security", "Business Guide"],
+  "hero": "img/posts/digital-signature-kya-hai-guide-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Digital signature सिर्फ हस्ताक्षर की तस्वीर नहीं — यह document और हस्ताक्षरकर्ता, दोनों को गणित से जोड़ता है"
+}

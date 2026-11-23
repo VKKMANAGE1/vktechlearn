@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide — VK Tech Learn</title>
+<meta name="description" content="Digital signature kya hai, DSC aur eSign me farq, hash aur certificate kaise kaam karte hain, documents, banwane ke steps aur security ki poori guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide">
+<meta property="og:description" content="Digital signature kya hai, DSC aur eSign me farq, hash aur certificate kaise kaam karte hain, documents, banwane ke steps aur security ki poori guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/digital-signature-kya-hai-guide-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/digital-signature-kya-hai-guide-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="Digital India, Security, Business Guide">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/digital-signature-kya-hai-guide-hindi.jpg">
+<meta property="og:image:alt" content="Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide">
+<meta property="article:published_time" content="2026-07-15T10:00:00+05:30">
+<meta property="article:modified_time" content="2026-07-15T10:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="Digital India">
+<meta property="article:tag" content="Digital India">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Business Guide">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide">
+<meta name="twitter:description" content="Digital signature kya hai, DSC aur eSign me farq, hash aur certificate kaise kaam karte hain, documents, banwane ke steps aur security ki poori guide.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/digital-signature-kya-hai-guide-hindi.jpg">
+<meta name="twitter:image:alt" content="Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide","description":"Digital signature kya hai, DSC aur eSign me farq, hash aur certificate kaise kaam karte hain, documents, banwane ke steps aur security ki poori guide.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/digital-signature-kya-hai-guide-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/digital-signature-kya-hai-guide-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/digital-signature-kya-hai-guide-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/digital-signature-kya-hai-guide-hindi.jpg","datePublished":"2026-07-15T10:00:00+05:30","dateModified":"2026-07-15T10:00:00+05:30","articleSection":"Digital India","keywords":"Digital India, Security, Business Guide"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide","item":"https://vktechlearn.site/posts/digital-signature-kya-hai-guide-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">Digital India</span><span class="tag">Security</span>
+      <time datetime="2026-07-15T10:00:00+05:30">15 July 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/digital-signature-kya-hai-guide-hindi.jpg" alt="Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>Digital signature सिर्फ हस्ताक्षर की तस्वीर नहीं — यह document और हस्ताक्षरकर्ता, दोनों को गणित से जोड़ता है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>GST return भरना हो, tender में bid डालनी हो, या कंपनी की कोई फाइल MCA पर जमा करनी हो — हर जगह एक ही चीज़ माँगी जाती है: digital signature। बहुत लोग इसे सिर्फ "USB token" समझते हैं और तब परेशान होते हैं जब token है फिर भी फाइल reject हो जाती है। असल में digital signature एक तकनीक है, token सिर्फ उसे सुरक्षित रखने का डिब्बा है।</p>
+
+      <p>इस आर्टिकल में मैं आसान भाषा में बताऊँगा कि digital signature क्या है और स्कैन किए हुए हस्ताक्षर से कैसे अलग है, यह अंदर से कैसे काम करता है, DSC और eSign में क्या फर्क है, कहाँ-कहाँ यह ज़रूरी है, नया DSC बनवाने के कदम और दस्तावेज़, token की सुरक्षा, और कानूनी पक्ष। साथ में वे गलतियाँ भी, जिनकी वजह से लोग बार-बार दफ्तरों के चक्कर लगाते हैं।</p>
+
+      <blockquote>
+      <p><strong>छोटा जवाब:</strong> digital signature एक cryptographic प्रक्रिया है जो document के content का hash बनाकर उसे आपकी private key से साइन करती है। इसे सत्यापित करने के लिए public key और certificate इस्तेमाल होते हैं। अगर document में एक अक्षर भी बदले, तो signature अमान्य हो जाता है। DSC एक digital certificate है जो token में रहता है, और eSign उसी काम का ऑनलाइन, Aadhaar-आधारित तरीका है।</p>
+      </blockquote>
+
+      <h2>Digital signature kya hai</h2>
+
+      <p>कागज़ पर हस्ताक्षर यह बताते हैं कि व्यक्ति ने document देखा और सहमति दी। digital signature इससे आगे जाता है — यह यह भी साबित करता है कि document में हस्ताक्षर के बाद कोई बदलाव नहीं हुआ। यही अंतर इसे कानूनी और तकनीकी दोनों रूप से भरोसेमंद बनाता है।</p>
+
+      <h3>स्कैन किए हुए हस्ताक्षर से फर्क</h3>
+
+      <p>अगर आप कागज़ पर हस्ताक्षर करके उसे scan कर लेते हैं, तो वह सिर्फ एक तस्वीर है। उसे किसी भी दस्तावेज़ पर चिपकाया जा सकता है, और कोई नहीं बता सकता कि मूल कौन सा था। digital signature में ऐसा नहीं हो सकता, क्योंकि signature उस विशेष document के content से गणितीय रूप से जुड़ा होता है।</p>
+
+      <p>इसीलिए सरकारी portals स्कैन किए हस्ताक्षर को मान्य नहीं मानते। वहाँ DSC या eSign ही चलता है, क्योंकि वहाँ सत्यापन (verification) संभव है — कोई भी तीसरा पक्ष जाँच सकता है कि signature असली है या नहीं।</p>
+
+      <h3>e-sign और digital signature में अंतर</h3>
+
+      <p>रोज़मर्रा की भाषा में लोग "e-sign" शब्द का इस्तेमाल हर ऑनलाइन हस्ताक्षर के लिए करते हैं, जिसमें email के नीचे टाइप किया नाम भी शामिल है। कानूनी रूप से यह अलग है। साधारण electronic signature सबूत के तौर पर काम आ सकता है, पर जहाँ कानून या portal विशेष रूप से digital signature माँगता है, वहाँ DSC या Aadhaar eSign ही चलेगा।</p>
+
+      <h2>यह अंदर से कैसे काम करता है</h2>
+
+      <p>इस प्रक्रिया को समझने के लिए तीन चीज़ें याद रखें — hash, private key और public key। hash document का एक छोटा, अनोखा "fingerprint" है। private key सिर्फ आपके पास रहती है, और public key आपके certificate में सबके लिए उपलब्ध होती है।</p>
+
+      <ol>
+      <li>signing software document का hash बनाता है।</li>
+      <li>वह hash आपकी private key से encrypt होता है — यही digital signature है।</li>
+      <li>signature document के साथ जुड़ जाता है, और आपका certificate भी साथ भेजा जाता है।</li>
+      <li>सामने वाला public key से signature खोलकर hash निकालता है।</li>
+      <li>वही document से दोबारा hash बनाकर दोनों की तुलना करता है।</li>
+      <li>दोनों hash मिलें तो signature सही; एक अक्षर बदला तो मेल नहीं खाएगा।</li>
+      </ol>
+
+      <table>
+      <thead>
+      <tr><th>हिस्सा</th><th>किसके पास</th><th>काम</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>Hash</td><td>दोनों पक्ष</td><td>Document का बदलाव पकड़ना</td></tr>
+      <tr><td>Private key</td><td>सिर्फ हस्ताक्षरकर्ता</td><td>Signature बनाना</td></tr>
+      <tr><td>Public key</td><td>Certificate में सबके लिए</td><td>Signature जाँचना</td></tr>
+      <tr><td>Certificate</td><td>Certifying Authority जारी करता है</td><td>यह जोड़ना कि key किसकी है</td></tr>
+      </tbody>
+      </table>
+
+      <p>यहाँ एक ज़रूरी बात है — digital signature document को गुप्त नहीं करता। वह यह साबित करता है कि document किसने भेजा और उसमें बदलाव हुआ या नहीं। गोपनीयता के लिए encryption अलग चीज़ है, और दोनों साथ इस्तेमाल हो सकते हैं।</p>
+
+      <h2>DSC, eSign aur token: कौन क्या है</h2>
+
+      <p>बाजार में कई नाम सुनने को मिलते हैं, इसलिए यह साफ कर लेना ज़रूरी है।</p>
+
+      <table>
+      <thead>
+      <tr><th>प्रकार</th><th>कहाँ रहता है</th><th>कहाँ काम आता है</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>DSC (USB token)</td><td>एक hardware token में</td><td>GST, MCA, tender, income tax portals</td></tr>
+      <tr><td>Aadhaar eSign</td><td>ऑनलाइन, OTP से</td><td>कई सरकारी और निजी सेवाएँ</td></tr>
+      <tr><td>Document Signer</td><td>संगठन के लिए</td><td>बड़ी संख्या में documents पर मुहर</td></tr>
+      <tr><td>Encryption certificate</td><td>Token या software में</td><td>Email और files को गुप्त करना</td></tr>
+      </tbody>
+      </table>
+
+      <p>DSC में भी classes होती हैं और उनका इस्तेमाल अलग-अलग जगहों पर होता है। नया certificate लेने से पहले यह देखें कि जिस portal पर आपको काम करना है, वह कौन सा प्रकार माँगता है — कई बार लोग गलत certificate ले लेते हैं और फिर दोबारा बनवाना पड़ता है।</p>
+
+      <figure>
+      <img src="../img/posts/digital-signature-document-signing.jpg" alt="USB token और laptop से business document पर digital signature करते हुए" loading="lazy" decoding="async">
+      <figcaption>Token सिर्फ key रखता है — असली सत्यापन document के hash से होता है, इसलिए file में बदलाव तुरंत पकड़ा जाता है।</figcaption>
+      </figure>
+
+      <h2>कहाँ-कहाँ ज़रूरी है</h2>
+
+      <p><strong>GST।</strong> कंपनियों और LLPs के लिए कई returns और forms पर DSC अनिवार्य है।</p>
+
+      <p><strong>MCA।</strong> कंपनी के incorporation, annual filings और कई forms पर director का DSC लगता है।</p>
+
+      <p><strong>Income Tax।</strong> कुछ cases में return और forms पर digital signature चाहिए, खासकर कंपनियों और audit वाले मामलों में।</p>
+
+      <p><strong>Tenders और e-procurement।</strong> सरकारी और कई निजी portals पर bid जमा करने के लिए DSC ज़रूरी होता है; कुछ जगह encryption certificate भी माँगा जाता है।</p>
+
+      <p><strong>e-Way bill और अन्य portals।</strong> कई राज्य और विभाग अब पूरी प्रक्रिया ऑनलाइन कर चुके हैं, जहाँ हस्ताक्षर का यही तरीका चलता है।</p>
+
+      <p><strong>बैंक और वित्तीय सेवाएँ।</strong> कॉर्पोरेट खातों और कुछ loan documents में भी अब digital signing आम हो रही है।</p>
+
+      <h2>नया DSC बनवाने के 6 कदम</h2>
+
+      <p>यह काम एक बार का है, पर इसमें छोटी-छोटी चूकें समय खराब करती हैं। यह क्रम अपनाएँ।</p>
+
+      <p><strong>कदम 1 — ज़रूरत तय करें।</strong> पहले देखें कि portal कौन सा certificate माँगता है और कितने साल के लिए। यह जानकारी portal के help section में मिल जाती है।</p>
+
+      <p><strong>कदम 2 — सही CA चुनें।</strong> भारत में certifying authorities लाइसेंस प्राप्त होते हैं। उनकी सूची और मान्यता आधिकारिक स्रोत पर जाँचें, और ऐसी जगह से न लें जो सिर्फ सस्ता दाम दिखाए।</p>
+
+      <p><strong>कदम 3 — दस्तावेज़ तैयार रखें।</strong> आम तौर पर PAN, Aadhaar, पता प्रमाण, फोटो और संगठन के लिए registration के कागज़ चाहिए होते हैं। नाम की spelling सब जगह एक जैसी रखें।</p>
+
+      <p><strong>कदम 4 — verification पूरा करें।</strong> कई जगह video verification या in-person verification होता है। इस चरण में दिए गए नंबर और email सक्रिय होने चाहिए।</p>
+
+      <p><strong>कदम 5 — token और installation।</strong> certificate token में आता है। उसे चलाने के लिए driver और signing utility install करनी पड़ती है। पहले एक बार छोटे document पर test करें।</p>
+
+      <p><strong>कदम 6 — backup और expiry याद रखें।</strong> certificate की validity और renewal की तारीख नोट करें। expiry से पहले renewal करें, वरना फाइलिंग के दिन दिक्कत होगी।</p>
+
+      <h3>ज़रूरी दस्तावेज़ों की सूची</h3>
+
+      <ul>
+      <li>PAN card और Aadhaar card</li>
+      <li>पते का प्रमाण — बिजली बिल, बैंक statement या rent agreement</li>
+      <li>पासपोर्ट साइज़ फोटो</li>
+      <li>मोबाइल नंबर और email, जो verification के समय उपलब्ध हों</li>
+      <li>संगठन के लिए — incorporation certificate, GST certificate या partnership deed</li>
+      <li>पहले से DSC हो तो उसका विवरण (कुछ मामलों में)</li>
+      </ul>
+
+      <h2>Token की सुरक्षा: 6 आदतें</h2>
+
+      <p>Token के अंदर private key होती है। अगर वह किसी और के हाथ लगे और password पता हो, तो वह आपके नाम पर documents साइन कर सकता है। इसलिए यह सिर्फ device नहीं, पहचान है।</p>
+
+      <ol>
+      <li>Token को हमेशा अपने पास रखें, दूसरों को उधार न दें।</li>
+      <li>Password किसी file, chat या diary में साफ शब्दों में न रखें।</li>
+      <li>सार्वजनिक कंप्यूटर पर signing न करें।</li>
+      <li>Token खोने पर तुरंत CA को सूचित करें और revoke कराएँ।</li>
+      <li>Signing के बाद software बंद करें और token निकाल लें।</li>
+      <li>Expiry से पहले renewal करें, और पुराने token को सुरक्षित तरीके से retire करें।</li>
+      </ol>
+
+      <p>एक व्यावहारिक आदत यह भी रखें — token और उसका password अलग-अलग जगह रखें, और renewal की तारीख उसी महीने calendar में डालें जिस महीने में token खरीदा गया था। जब कई लोगों के tokens हों, तो एक साधारण शीट में नाम, token का क्रमांक, जारी होने की तारीख और expiry लिखें। यह शीट फाइलिंग के दिन सबसे ज़्यादा काम आती है, खासकर जब किसी कर्मचारी की जगह नया व्यक्ति काम संभालता है।</p>
+
+      <figure>
+      <img src="../img/posts/digital-signature-verification-seal.jpg" alt="Document पर digital signature सत्यापन का प्रतीकात्मक सील" loading="lazy" decoding="async">
+      <figcaption>सत्यापन का मतलब यह नहीं कि document भरोसेमंद है — यह सिर्फ इतना बताता है कि उसे किसने और बिना बदलाव के साइन किया।</figcaption>
+      </figure>
+
+      <h2>कानूनी पक्ष: कितना मान्य है</h2>
+
+      <p>भारत में electronic records और digital signatures को Information Technology Act, 2000 के तहत मान्यता मिली है। कानून के अनुसार जहाँ किसी दस्तावेज़ पर हस्ताक्षर की ज़रूरत होती है, वहाँ निर्धारित तरीके से किया गया electronic signature उस शर्त को पूरा करता है, बशर्ते उस दस्तावेज़ के लिए कोई अपवाद लागू न हो।</p>
+
+      <p>कुछ दस्तावेज़ ऐसे हैं जिनके लिए कानून अलग नियम बताता है — जैसे will, trust या कुछ विशेष प्रकार के agreements। ऐसे मामलों में डिजिटल हस्ताक्षर पर्याप्त नहीं हो सकता। इसलिए बड़े या संवेदनशील लेन-देन में वकील से एक बार पुष्टि करा लें, खासकर अगर विवाद की संभावना हो।</p>
+
+      <p>एक और बात — signature की validity इस बात पर भी निर्भर करती है कि certificate उस समय मान्य था या नहीं। अगर certificate expire हो चुका है या revoke हो गया है, तो बाद में सत्यापन में दिक्कत आ सकती है। इसलिए पुराने documents के साथ signature की तारीख और certificate की validity दोनों सुरक्षित रखें।</p>
+
+      <h2>5 गलतियाँ जो सबसे ज़्यादा होती हैं</h2>
+
+      <p><strong>पहली —</strong> गलत class या गलत प्रकार का certificate लेना, क्योंकि portal कुछ और माँगता है। <strong>दूसरी —</strong> token का driver पहले से install न करना और deadline के दिन परेशान होना। <strong>तीसरी —</strong> नाम की spelling या पते का मेल न होना, जिससे verification अटक जाती है। <strong>चौथी —</strong> expiry की तारीख न याद रखना। <strong>पाँचवीं —</strong> signed document का मूल copy और certificate विवरण संभालकर न रखना।</p>
+
+      <p>इनमें पाँचवीं का असर सबसे देर से दिखता है। दो साल बाद जब किसी पुराने agreement की जाँच होती है, तब पता चलता है कि signature की तारीख या certificate का विवरण कहीं दर्ज ही नहीं था।</p>
+
+      <h2>मैंने इस process से क्या सीखा</h2>
+
+      <p>सबसे बड़ी सीख यह रही कि digital signature को "खरीदने की चीज़" नहीं, "संभालने की चीज़" मानना चाहिए। जिन टीमों ने एक जगह सारे tokens, उनकी expiry और renewal की सूची रखी, उनके काम कभी deadline पर नहीं अटके। जहाँ हर व्यक्ति अपना token अलग संभालता था, वहाँ हर साल कुछ न कुछ छूट जाता था।</p>
+
+      <p>दूसरी सीख — पहले portal की ज़रूरत पढ़ें, फिर certificate खरीदें। मैंने ऐसे कई मामले देखे जहाँ एक ही व्यक्ति के पास दो tokens थे, सिर्फ इसलिए कि पहला खरीदते समय यह जाँचा नहीं गया कि कौन सा प्रकार चाहिए।</p>
+
+      <p>तीसरी सीख — सत्यापन के बारे में साफ समझ रखें। Signature यह साबित करता है कि document किसने और बिना बदलाव के भेजा; यह नहीं कि दस्तावेज़ का हर दावा सच है। यह अंतर समझने से गलत भरोसा टूटता है और जाँच की आदत बनती है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या मोबाइल से digital signature किया जा सकता है?</h3>
+      <p>हाँ, Aadhaar eSign जैसे ऑनलाइन तरीकों से बिना token हस्ताक्षर हो सकते हैं, अगर portal उसे स्वीकार करता है। जहाँ portal सिर्फ token वाला DSC माँगता है, वहाँ मोबाइल से काम नहीं चलेगा।</p>
+
+      <h3>DSC और digital signature एक ही चीज़ हैं?</h3>
+      <p>नहीं। DSC एक certificate है जो आपकी पहचान और key को जोड़ता है। Digital signature वह प्रक्रिया है जिससे document पर हस्ताक्षर बनता है। DSC उस प्रक्रिया का हिस्सा है, पूरी प्रक्रिया नहीं।</p>
+
+      <h3>क्या एक certificate कई portals पर चलता है?</h3>
+      <p>अक्सर हाँ, अगर वह उस portal की ज़रूरत के प्रकार का है। पर कुछ portals अलग class या अलग प्रकार माँगते हैं, इसलिए पहले जाँच लें।</p>
+
+      <h3>Token खो जाए तो क्या करें?</h3>
+      <p>तुरंत CA को सूचित करके certificate revoke कराएँ और नया बनवाएँ। देर करने पर कोई और आपके नाम पर documents साइन कर सकता है।</p>
+
+      <h3>क्या PDF पर भी signature लगता है?</h3>
+      <p>हाँ, PDF पर digital signature लगाया और सत्यापित किया जा सकता है। कई readers सीधे बता देते हैं कि signature मान्य है या document बदला गया है।</p>
+
+      <h2>आगे क्या करें</h2>
+
+      <p>अगर आप अपनी कंपनी के कागज़ी काम को डिजिटल कर रहे हैं, तो सिर्फ signature लेना काफी नहीं — process भी साथ में बदलना पड़ता है। हमारी <a href="legacy-system-modernization-roadmap-guide.html">legacy system modernization की गाइड</a> और <a href="self-service-apps-kya-hai-guide.html">self-service apps वाला आर्टिकल</a> यह क्रम समझने में मदद करेंगे। बाहरी tools के फैसले के लिए <a href="saas-outsourcing-guide-hindi.html">SaaS outsourcing की गाइड</a> पढ़ें।</p>
+
+      <p><strong>आगे पढ़ें:</strong> certifying authorities की आधिकारिक जानकारी <a href="https://www.cca.gov.in" target="_blank" rel="noopener nofollow">Controller of Certifying Authorities</a> पर, कंपनी फाइलिंग के नियम <a href="https://www.mca.gov.in" target="_blank" rel="noopener nofollow">MCA</a> पर और GST से जुड़े forms <a href="https://www.gst.gov.in" target="_blank" rel="noopener nofollow">GST portal</a> पर देखें। नियम और फीस बदलती रहती हैं, इसलिए ताज़ा जानकारी वहीं से लें।</p>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

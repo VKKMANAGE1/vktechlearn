@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kubernetes Architecture Explained: Control Plane, Nodes aur Pods — VK Tech Learn</title>
+<meta name="description" content="Kubernetes architecture आसान हिंदी में — control plane के चार components, worker node, pod, deployment, service और ek apply से pod चलने तक का पूरा सफर।">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes Architecture Explained: Control Plane, Nodes aur Pods">
+<meta property="og:description" content="Kubernetes architecture आसान हिंदी में — control plane के चार components, worker node, pod, deployment, service और ek apply से pod चलने तक का पूरा सफर।">
+<meta property="og:url" content="https://vktechlearn.site/posts/kubernetes-architecture-explained-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/kubernetes-architecture-explained-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="Kubernetes, DevOps, Software Architecture">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/kubernetes-architecture-explained-hindi.jpg">
+<meta property="og:image:alt" content="Kubernetes Architecture Explained: Control Plane, Nodes aur Pods">
+<meta property="article:published_time" content="2026-07-14T10:00:00+05:30">
+<meta property="article:modified_time" content="2026-07-14T10:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="Kubernetes">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="Software Architecture">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kubernetes Architecture Explained: Control Plane, Nodes aur Pods">
+<meta name="twitter:description" content="Kubernetes architecture आसान हिंदी में — control plane के चार components, worker node, pod, deployment, service और ek apply से pod चलने तक का पूरा सफर।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/kubernetes-architecture-explained-hindi.jpg">
+<meta name="twitter:image:alt" content="Kubernetes Architecture Explained: Control Plane, Nodes aur Pods">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Kubernetes Architecture Explained: Control Plane, Nodes aur Pods","description":"Kubernetes architecture आसान हिंदी में — control plane के चार components, worker node, pod, deployment, service और ek apply से pod चलने तक का पूरा सफर।","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/kubernetes-architecture-explained-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/kubernetes-architecture-explained-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/kubernetes-architecture-explained-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/kubernetes-architecture-explained-hindi.jpg","datePublished":"2026-07-14T10:00:00+05:30","dateModified":"2026-07-14T10:00:00+05:30","articleSection":"Kubernetes","keywords":"Kubernetes, DevOps, Software Architecture"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Kubernetes Architecture Explained: Control Plane, Nodes aur Pods","item":"https://vktechlearn.site/posts/kubernetes-architecture-explained-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">Kubernetes</span><span class="tag">DevOps</span>
+      <time datetime="2026-07-14T10:00:00+05:30">14 July 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">Kubernetes Architecture Explained: Control Plane, Nodes aur Pods</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/kubernetes-architecture-explained-hindi.jpg" alt="Kubernetes Architecture Explained: Control Plane, Nodes aur Pods" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>Kubernetes का काम एक ही है — आपकी बताई हुई state और cluster की असली state में फर्क खत्म करना</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>Kubernetes सीखते समय सबसे पहली दिक्कत यह आती है कि शब्द बहुत हैं — cluster, node, pod, deployment, service, ingress — और हर ट्यूटोरियल मान लेता है कि आपको पता है कि ये एक-दूसरे से कैसे जुड़े हैं। जब तक यह नक्शा साफ न हो, कमांड याद होने से भी काम नहीं चलता।</p>
+
+      <p>इस आर्टिकल में मैं Kubernetes की architecture को ऊपर से नीचे खोलूँगा — control plane के चार components क्या करते हैं, worker node पर क्या चलता है, pod और deployment में क्या फर्क है, एक <code>kubectl apply</code> से pod चालू होने तक क्या-क्या होता है, networking की बुनियादी बातें, और production में कौन सी चीज़ें ज़रूरी हैं। कोड की जगह समझ पर ज़ोर रहेगा, क्योंकि commands तो बदलते रहते हैं।</p>
+
+      <blockquote>
+      <p><strong>छोटा जवाब:</strong> Kubernetes एक container orchestration platform है। इसका दो हिस्सा है — control plane, जो फैसले लेता है, और worker nodes, जो containers चलाते हैं। आप YAML में मनचाही state लिखते हैं; control plane उसे etcd में रखता है और controllers मिलाकर असली state वैसी बनाते रहते हैं।</p>
+      </blockquote>
+
+      <h2>Kubernetes kya hai, ek line me</h2>
+
+      <p>Kubernetes का काम इतना सीधा है कि इसे एक वाक्य में कहा जा सकता है — आप बताते हैं कि क्या चलना चाहिए, और Kubernetes उसे चलाए रखता है। अगर कोई container बंद हो जाए, तो नया शुरू हो जाता है। अगर load बढ़े, तो संख्या बढ़ जाती है। अगर node खराब हो, तो काम दूसरी जगह चला दिया जाता है।</p>
+
+      <p>इस सोच को declarative कहते हैं। पुराने तरीके में आप लिखते थे "यह service शुरू करो", और फिर उसे ज़िंदा रखना आपका काम था। यहाँ आप लिखते हैं "तीन replicas हमेशा चलते रहें" — और यह सुनिश्चित करना platform का काम है।</p>
+
+      <h3>Cluster का मतलब क्या है</h3>
+
+      <p>Cluster का मतलब है control plane और कई worker nodes का एक समूह, जो मिलकर एक ही तरह का काम संभालता है। आप बतौर developer cluster के अंदर नहीं जाते — आप API के ज़रिए request भेजते हैं और cluster अपने अंदर तय करता है कि काम कहाँ चलेगा। यही अलगाव इसे scalable बनाता है।</p>
+
+      <h2>Architecture ke do hisse</h2>
+
+      <p>पहला हिस्सा control plane है — cluster का दिमाग। इसमें API server, etcd, scheduler और controller manager आते हैं। दूसरा हिस्सा worker nodes हैं — मांसपेशियाँ, जहाँ containers असल में चलते हैं। हर node पर kubelet, kube-proxy और एक container runtime होता है।</p>
+
+      <p>यह बँटवारा सिर्फ सैद्धांतिक नहीं है। इसका सीधा फायदा यह है कि control plane छोटा और स्थिर रह सकता है, जबकि nodes की संख्या ज़रूरत के हिसाब से बढ़ती-घटती रहती है। जब आप सुनते हैं कि "cluster upgrade", तो इसका मतलब control plane और nodes के versions को क्रम से बदलना होता है।</p>
+
+      <figure>
+      <img src="../img/posts/kubernetes-cluster-components.jpg" alt="Kubernetes cluster में control plane और दो worker nodes का diagram" loading="lazy" decoding="async">
+      <figcaption>Control plane फैसले लेता है और हालत याद रखता है; worker nodes वह हालत असल में चलाते हैं।</figcaption>
+      </figure>
+
+      <h2>Control plane ke 4 components</h2>
+
+      <p>ये चारों मिलकर cluster की "सोच" बनाते हैं। इनमें से किसी एक का बंद होना cluster के व्यवहार को बदल देता है।</p>
+
+      <h3>API server — सबका दरवाज़ा</h3>
+
+      <p>हर request, चाहे वह <code>kubectl</code> से आए, कोई dashboard हो, या कोई internal controller, API server से ही गुज़रती है। यह request की जाँच करता है, authentication और authorization देखता है, और फिर state को etcd में लिखवाता है। इसे cluster का front door मानें।</p>
+
+      <p>यही वजह है कि जब cluster "hang" जैसा लगता है, तो पहली जाँच API server की होती है। अगर वह जवाब नहीं दे रहा, तो बाकी सब बेकार है — चाहे pods चल रहे हों।</p>
+
+      <h3>etcd — cluster की याददाश्त</h3>
+
+      <p>etcd एक key-value store है जिसमें cluster की पूरी state रहती है — कौन से objects हैं, उनकी settings क्या हैं, कौन सा node किस हाल में है। यह Kubernetes का सबसे संवेदनशील हिस्सा है, क्योंकि इसे खोना cluster की याद खोने जैसा है।</p>
+
+      <p>इसीलिए production में etcd का backup नियमित लिया जाता है, और उसे अलग disk पर रखा जाता है। यह वह चीज़ है जिसे "बाद में देख लेंगे" नहीं कहना चाहिए।</p>
+
+      <h3>Scheduler — काम किस node पर जाए</h3>
+
+      <p>जब कोई नया pod बनता है और उसे किसी node पर चलना होता है, तो scheduler तय करता है कि कौन सा node सही है। यह खाली जगह, CPU और memory की माँग, affinity के नियम, और तमाम constraints देखता है।</p>
+
+      <p>अगर सcheduler को कोई उपयुक्त node नहीं मिलता, तो pod "Pending" रहता है। यह अक्सर resource की कमी का संकेत होता है, न कि कोड की गलती का — इसलिए पहले describe करके कारण देखें।</p>
+
+      <h3>Controller manager — मनचाही state बनाए रखना</h3>
+
+      <p>Controllers छोटे-छोटे loops की तरह होते हैं, जो असली state को मनचाही state से मिलाते रहते हैं। Deployment controller तय करता है कि सही संख्या में replicas चलें, node controller देखता है कि कोई node जवाब न दे तो क्या हो, और job controller एक बार वाला काम पूरा कराता है।</p>
+
+      <p>यही वह हिस्सा है जो Kubernetes को "self-healing" बनाता है। कोई जादू नहीं होता — बस हर कुछ सेकंड में एक loop चलता है और फर्क दिखे तो सुधार करता है।</p>
+
+      <h2>Worker node ke 3 components</h2>
+
+      <h3>kubelet — node का प्रबंधक</h3>
+
+      <p>kubelet हर node पर चलता है और API server से बात करता है। उसे बताया जाता है कि इस node पर कौन से pods चलने चाहिए; वह उन्हें container runtime के ज़रिए चालू करता है और उनकी हालत वापस भेजता रहता है। अगर pod बंद हो जाए, तो वह नया बनाने की कोशिश करता है।</p>
+
+      <h3>kube-proxy — network का नियम</h3>
+
+      <p>kube-proxy node पर network rules बनाता है, ताकि service का traffic सही pod तक पहुँचे। जब आप किसी service को call करते हैं, तो असल में यही नियम तय करते हैं कि request किस pod तक जाएगी।</p>
+
+      <h3>Container runtime</h3>
+
+      <p>यह वह software है जो container असल में चलाता है — जैसे containerd या CRI-O। Kubernetes खुद container नहीं चलाता; वह runtime को निर्देश देता है। इसलिए runtime का ठीक होना उतना ही ज़रूरी है जितना cluster का।</p>
+
+      <h2>Object model: कौन क्या है</h2>
+
+      <p>Kubernetes में सब कुछ object है, और हर object का एक काम है। यह तालिका शुरुआत में सबसे ज़्यादा काम आती है।</p>
+
+      <table>
+      <thead>
+      <tr><th>Object</th><th>काम</th><th>आम गलतफहमी</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>Pod</td><td>एक या अधिक containers का सबसे छोटा समूह</td><td>इसे सीधे बनाना production में ठीक नहीं</td></tr>
+      <tr><td>ReplicaSet</td><td>pod की गिनती बनाए रखना</td><td>इसे हाथ से manage नहीं करते</td></tr>
+      <tr><td>Deployment</td><td>rollout, rollback और replicas का प्रबंधन</td><td>यह pod नहीं है, यह निर्देश है</td></tr>
+      <tr><td>Service</td><td>pods तक स्थिर network पहुँच</td><td>Pod का IP बदलता रहता है, service का नहीं</td></tr>
+      <tr><td>Ingress</td><td>बाहर से आने वाले HTTP traffic का रास्ता</td><td>इसे चलाने के लिए controller चाहिए</td></tr>
+      <tr><td>ConfigMap / Secret</td><td>settings और संवेदनशील मान</td><td>Secret encrypted नहीं होता, सिर्फ अलग रखा जाता है</td></tr>
+      <tr><td>Namespace</td><td>एक cluster के अंदर तार्किक बँटवारा</td><td>यह security की सीमा नहीं है</td></tr>
+      </tbody>
+      </table>
+
+      <p>सबसे ज़रूरी बात — Deployment बनाएँ, Pod नहीं। Pod अस्थायी है; उसका नाम और IP दोनों बदलते हैं। Deployment आपके लिए ReplicaSet बनाता है, और ReplicaSet pods बनाता है। इसी क्रम से rollout और rollback संभव होते हैं।</p>
+
+      <h2>Ek apply ka safar</h2>
+
+      <p>यह समझ लेने के बाद बहुत सी error messages अपने आप मतलब देने लगती हैं।</p>
+
+      <ol>
+      <li><code>kubectl</code> आपकी YAML फाइल API server को भेजता है।</li>
+      <li>API server जाँचता है कि आपको यह करने की अनुमति है और फाइल सही है।</li>
+      <li>State etcd में दर्ज हो जाती है — अभी कोई container नहीं चला।</li>
+      <li>Deployment controller ReplicaSet बनाता है, जो pod objects बनाता है।</li>
+      <li>Scheduler हर नए pod के लिए उपयुक्त node चुनता है।</li>
+      <li>उस node का kubelet image खींचता है, container चलाता है और हालत वापस भेजता है।</li>
+      </ol>
+
+      <pre><code># एक छोटा deployment: तीन replicas, हर pod में एक container
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: web
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: web
+        template:
+          metadata:
+            labels:
+              app: web
+          spec:
+            containers:
+              - name: web
+                image: nginx:stable
+                ports:
+                  - containerPort: 80</code></pre>
+
+      <p>इस फाइल में सबसे ज़रूरी पंक्ति <code>replicas: 3</code> है। इसका मतलब यह नहीं कि "तीन शुरू करो", बल्कि यह कि "हमेशा तीन चलते रहें"। अगर एक बंद हुआ, तो controller नया बनाएगा — यही declarative का असली फायदा है।</p>
+
+      <figure>
+      <img src="../img/posts/kubernetes-request-flow.jpg" alt="kubectl apply से pod चलने तक के छह कदमों का diagram" loading="lazy" decoding="async">
+      <figcaption>apply करते ही pod नहीं चलता — पहले state दर्ज होती है, फिर controllers और scheduler मिलकर उसे असली बनाते हैं।</figcaption>
+      </figure>
+
+      <h2>Networking ki buniyadi baat</h2>
+
+      <p>Pod का IP अस्थायी होता है, इसलिए उसे सीधे call नहीं करना चाहिए। Service एक स्थिर नाम और IP देती है, और अपने पीछे के pods तक traffic पहुँचाती है।</p>
+
+      <ul>
+      <li><strong>ClusterIP</strong> — सिर्फ cluster के अंदर पहुँच। सबसे आम और सुरक्षित विकल्प।</li>
+      <li><strong>NodePort</strong> — हर node के एक port पर service खोलता है। शुरुआती testing के लिए ठीक।</li>
+      <li><strong>LoadBalancer</strong> — cloud का load balancer बनाता है। सीधा और साफ, पर हर service का अपना खर्च।</li>
+      <li><strong>Ingress</strong> — एक ही entry point से कई services तक HTTP routing, domain और path के हिसाब से।</li>
+      </ul>
+
+      <p>इनके नीचे CNI plugin काम करता है, जो pods के बीच network बनाता है। यहीं सबसे ज़्यादा cluster-विशिष्ट अंतर होते हैं, इसलिए managed service चुनते समय देखें कि वह कौन सा CNI इस्तेमाल करता है और क्या आपको network policy चाहिए होगी।</p>
+
+      <h2>Production ke 6 checks</h2>
+
+      <ol>
+      <li><strong>Resource requests और limits।</strong> इनके बिना scheduler अंधेरे में फैसला करता है और एक pod पूरा node खा जाता है।</li>
+      <li><strong>Liveness और readiness probes।</strong> पहला बंद pod को दोबारा चालू करता है, दूसरा तब तक traffic नहीं भेजता जब तक app तैयार न हो।</li>
+      <li><strong>Horizontal Pod Autoscaler।</strong> load के हिसाब से replicas बढ़ाना, पर तभी जब metrics उपलब्ध हों।</li>
+      <li><strong>PodDisruptionBudget।</strong> node upgrade के समय एक साथ सारे pods बंद न हों।</li>
+      <li><strong>Logs और metrics।</strong> cluster के बाहर भेजें, वरना pod के साथ logs भी चले जाएँगे।</li>
+      <li><strong>Image tags और secrets।</strong> <code>latest</code> की जगह तय version रखें, और secrets को env में सीधे न लिखें।</li>
+      </ol>
+
+      <p>इनमें पहला सबसे ज़्यादा नज़रअंदाज़ होता है। जब तक requests तय नहीं हैं, autoscaling और scheduling दोनों अनुमान पर चलते हैं — और अनुमान production में महंगा पड़ता है।</p>
+
+      <h2>5 galtiyan jo sabse aam hain</h2>
+
+      <p><strong>पहली —</strong> सीधे pod बनाना और उसे production मान लेना। <strong>दूसरी —</strong> resource limits न रखना, फिर "cluster धीमा है" कहना। <strong>तीसरी —</strong> readiness probe न रखना, जिससे traffic ऐसे pod तक जाता है जो अभी तैयार नहीं। <strong>चौथी —</strong> etcd का backup न लेना। <strong>पाँचवीं —</strong> सब कुछ एक namespace में रखना, जिससे permissions और limits बेमतलब हो जाते हैं।</p>
+
+      <p>चौथी गलती का पता तब चलता है जब सबसे ज़्यादा ज़रूरत होती है। Managed Kubernetes में भी यह ज़िम्मेदारी कहीं न कहीं आपकी ही रहती है — सेवा provider hardware चलाता है, आपकी configuration और data की ज़िम्मेदारी नहीं उठाता।</p>
+
+      <h2>मैंने इस architecture से क्या सीखा</h2>
+
+      <p>सबसे बड़ी सीख यह रही कि Kubernetes की समस्या अक्सर cluster में नहीं, हमारी अपेक्षाओं में होती है। जब कोई pod "Pending" दिखता है, तो 90 प्रतिशत मामलों में कारण resource की कमी, गलत selector या node पर लगी restriction होती है — कोड की गलती नहीं।</p>
+
+      <p>दूसरी सीख — declarative होने का फायदा तभी मिलता है जब आप state को version control में रखें। जो टीम YAML git में रखती है, उसके लिए rollback एक command है; जो console से बदलाव करती है, उसके लिए वही काम घंटों का पहेली बन जाता है।</p>
+
+      <p>तीसरी सीख — छोटे cluster से शुरू करें। एक namespace, दो services, तीन checks। जो टीम पहले दिन से multi-cluster और service mesh में घुस जाती है, वह अक्सर basics पर ही अटक जाती है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या Kubernetes सीखने से पहले Docker ज़रूरी है?</h3>
+      <p>हाँ, कम से कम बुनियादी स्तर पर। Image, container और registry की समझ के बिना Kubernetes की error messages समझना मुश्किल होता है।</p>
+
+      <h3>क्या छोटे project के लिए Kubernetes ज़रूरी है?</h3>
+      <p>नहीं। एक-दो services और कम load वाले project के लिए साधारण container hosting या managed platform सस्ता और आसान रहता है। Kubernetes तब समझदारी है जब scale, availability या अलग-अलग टीमों की ज़रूरत बने।</p>
+
+      <h3>Pod और container में क्या फर्क है?</h3>
+      <p>Container एक चलने वाली इकाई है। Pod उसका cover है, जिसमें एक या अधिक containers एक साथ चलते हैं और network तथा storage साझा करते हैं।</p>
+
+      <h3>Control plane बंद हो जाए तो चल रहे pods बंद होते हैं?</h3>
+      <p>नहीं। चल रहे pods चलते रहते हैं, पर नए बनाना, बदलाव करना और state देखना रुक जाता है। इसलिए control plane की availability अलग से महत्वपूर्ण है।</p>
+
+      <h3>Managed Kubernetes में क्या हमारा काम कम हो जाता है?</h3>
+      <p>हाँ, control plane का रखरखाव provider करता है। पर application की configuration, resource planning, security, backup और cost — ये सब आपके ही ज़िम्मे रहते हैं।</p>
+
+      <h2>आगे क्या पढ़ें</h2>
+
+      <p>अगर आप अपने platform को आगे बढ़ा रहे हैं, तो <a href="event-driven-architecture-real-time-decisions-hindi.html">event-driven architecture</a> वाला आर्टिकल बताता है कि services आपस में कैसे बात करें, और <a href="legacy-system-modernization-roadmap-guide.html">legacy modernization की गाइड</a> यह तय करने में मदद करती है कि पुराने system को किस क्रम में cluster पर ले जाएँ। GPU वाले workloads के लिए <a href="private-llm-enterprise-self-host-guide.html">private LLM setup की गाइड</a> देखें।</p>
+
+      <p><strong>आगे पढ़ें:</strong> आधिकारिक जानकारी <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank" rel="noopener nofollow">Kubernetes components</a> और <a href="https://kubernetes.io/docs/concepts/architecture/" target="_blank" rel="noopener nofollow">cluster architecture</a> के दस्तावेज़ों में है। Version और feature बदलते रहते हैं, इसलिए अपने cluster के version के हिसाब से दस्तावेज़ पढ़ें।</p>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

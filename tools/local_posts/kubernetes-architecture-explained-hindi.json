@@ -1,0 +1,11 @@
+{
+  "slug": "kubernetes-architecture-explained-hindi",
+  "title": "Kubernetes Architecture Explained: Control Plane, Nodes aur Pods",
+  "description": "Kubernetes architecture आसान हिंदी में — control plane के चार components, worker node, pod, deployment, service और ek apply से pod चलने तक का पूरा सफर।",
+  "published": "2026-07-14T10:00:00+05:30",
+  "labels": ["Kubernetes", "DevOps", "Software Architecture"],
+  "hero": "img/posts/kubernetes-architecture-explained-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Kubernetes का काम एक ही है — आपकी बताई हुई state और cluster की असली state में फर्क खत्म करना"
+}
