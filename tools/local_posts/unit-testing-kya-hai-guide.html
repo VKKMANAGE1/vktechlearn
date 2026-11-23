@@ -1,0 +1,179 @@
+<p>किसी senior developer से पूछें कि सबसे ज़्यादा समय किस चीज़ में जाता है, तो अक्सर जवाब आता है — "पुराना code तोड़े बिना नया जोड़ने में"। unit testing इसी डर को कम करती है। यह कोई औपचारिकता नहीं, बल्कि एक छोटी आदत है जो हर बदलाव के बाद भरोसा देती है कि जो पहले चल रहा था, वह अब भी चल रहा है।</p>
+
+<p>इस आर्टिकल में मैं समझाऊँगा कि unit testing kya hai, यह integration और end-to-end testing से कैसे अलग है, पहला test कैसे लिखें, AAA pattern क्या है, mock और stub कब चाहिए, coverage का कितना भरोसा करें, कौन से tools आम हैं, और वे पाँच गलतियाँ जो tests को बोझ बना देती हैं।</p>
+
+<blockquote>
+<p><strong>छोटा जवाब:</strong> unit test एक छोटे code unit — आमतौर पर एक function या method — के लिए लिखा गया स्वचालित जाँच है, जो तेज़ चलता है और बताता है कि उसका व्यवहार बदला है या नहीं। पहला test लिखने के लिए एक function चुनें, उसका एक अपेक्षित नतीजा लिखें, और चलाकर देखें कि test पहले fail होता है।</p>
+</blockquote>
+
+<h2>Unit testing kya hai, ek line me</h2>
+
+<p>unit test वह code है जो आपके code को चलाकर देखता है और तय करता है कि नतीजा सही है या नहीं। "unit" का मतलब सबसे छोटा अर्थपूर्ण हिस्सा है — जैसे price में discount लगाने वाला function, या date को format करने वाला function।</p>
+
+<p>इसका सबसे बड़ा फायदा गति है। एक अच्छा unit test मिलीसेकंड में चलता है, इसलिए आप सौ बार चला सकते हैं। जब आप कोई बदलाव करते हैं और पाँच मिनट बाद 200 tests हरे दिखते हैं, तो आपको भरोसा होता है — अनुमान नहीं, प्रमाण।</p>
+
+<p>दूसरा फायदा यह है कि test एक तरह का दस्तावेज़ बन जाता है। नया developer code पढ़कर नहीं, tests पढ़कर समझ जाता है कि function से क्या उम्मीद है। "जब cart खाली हो तो delivery charge शून्य होगा" — यह वाक्य किसी comment से ज़्यादा भरोसेमंद है, क्योंकि यह चलता है।</p>
+
+<h2>Unit, integration aur end-to-end me farq</h2>
+
+<p>तीनों testing के स्तर हैं, और तीनों की ज़रूरत है। फर्क यह है कि हर स्तर कितना कवर करता है और कितना महंगा है।</p>
+
+<table>
+<thead>
+<tr><th>स्तर</th><th>क्या जाँचता है</th><th>गति</th><th>कब fail होता है</th></tr>
+</thead>
+<tbody>
+<tr><td>Unit</td><td>एक function या class</td><td>मिलीसेकंड</td><td>logic बदला</td></tr>
+<tr><td>Integration</td><td>दो या ज़्यादा हिस्से साथ</td><td>सेकंड</td><td>जुड़ाव टूटा, query गलत</td></tr>
+<tr><td>End-to-end</td><td>पूरा user flow</td><td>मिनट</td><td>screen, network या config</td></tr>
+</tbody>
+</table>
+
+<p>एक उदाहरण — login का flow। unit test जाँचेगा कि password hash सही बनता है या नहीं। integration test जाँचेगा कि database से user मिलता है और session बनता है। end-to-end test जाँचेगा कि असली browser में form भरने पर dashboard खुलता है।</p>
+
+<p>तीनों को एक जैसा न समझें। unit test तेज़ और सस्ता है, इसलिए उसकी संख्या सबसे ज़्यादा होनी चाहिए। end-to-end test धीमा और नाज़ुक होता है, इसलिए सिर्फ सबसे ज़रूरी flows के लिए।</p>
+
+<figure>
+<img src="../img/posts/test-pyramid-levels.jpg" alt="unit testing pyramid — नीचे ज़्यादा unit tests, ऊपर कम end-to-end tests" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>पिरामिड का आकार संयोग नहीं — नीचे के tests तेज़ और सस्ते हैं, इसलिए उनकी संख्या ज़्यादा रहती है।</figcaption>
+</figure>
+
+<h2>Pehla test kaise likhen</h2>
+
+<p>शुरुआत में पूरे project को test से ढकने की कोशिश न करें। एक function चुनें जो सबसे ज़्यादा बदलता है या जिसमें गलती सबसे महंगी है — जैसे discount, tax, या date की गणना।</p>
+
+<ol>
+<li><strong>function का एक साफ उदाहरण लिखें।</strong> इनपुट क्या है और अपेक्षित आउटपुट क्या है — यह कागज़ पर लिखें।</li>
+<li><strong>test लिखें और चलाएँ।</strong> पहली बार वह fail होना चाहिए, क्योंकि अभी जाँचने वाला code नहीं है या आपने गलत उम्मीद लिखी है। fail देखना ज़रूरी है, वरना पता नहीं चलेगा कि test सच में कुछ जाँच रहा है।</li>
+<li><strong>अब function को पूरा करें</strong> ताकि test पास हो।</li>
+<li><strong>एक और केस जोड़ें</strong> — जैसे खाली इनपुट, या ऋणात्मक संख्या।</li>
+<li><strong>code साफ करें</strong> और tests फिर चलाएँ।</li>
+</ol>
+
+<p>यह क्रम TDD (test-driven development) कहलाता है। ज़रूरी नहीं कि हर बार इसी क्रम में चलें, पर शुरुआत में यह मदद करता है — क्योंकि यह सोचने पर मजबूर करता है कि function से क्या उम्मीद है।</p>
+
+<h2>AAA pattern — test ka dhancha</h2>
+
+<p>हर अच्छा test तीन हिस्सों में होता है — Arrange, Act, Assert। पहले हालात बनाएँ, फिर काम करें, फिर नतीजा जाँचें।</p>
+
+<pre><code>// Arrange
+const cart = { items: [{ price: 500, qty: 2 }], coupon: null };
+
+// Act
+const total = calculateTotal(cart);
+
+// Assert
+expect(total).toBe(1000);
+</code></pre>
+
+<p>यह ढाँचा छोटा लगता है, पर इसका फायदा बड़ा है — जब test fail हो, तो तुरंत पता चलता है कि गड़बड़ हालात बनाने में है, काम करने में है, या उम्मीद में। तीनों को मिलाकर लिखने से पढ़ना मुश्किल हो जाता है।</p>
+
+<p>आगे दो बातें जोड़ें — test का नाम ऐसा हो कि वह व्यवहार बताए ("खाली cart पर delivery charge शून्य होता है"), और एक test में एक ही बात जाँचें। जो test पाँच चीज़ें जाँचता है, वह fail होने पर पाँच में से कौन सी टूटी, यह नहीं बताता।</p>
+
+<h2>Mock, stub aur fake — kab chahiye</h2>
+
+<p>असली code अकेला नहीं चलता; वह database, API, email service और समय पर निर्भर होता है। unit test में इन सबको असली रूप में चलाना महंगा और धीमा है, इसलिए उनकी नकल लगाई जाती है।</p>
+
+<p><strong>stub</strong> एक तय जवाब देता है — जैसे "user मिल गया"। <strong>mock</strong> यह भी जाँचता है कि उसे सही तरीके से बुलाया गया या नहीं। <strong>fake</strong> एक हल्का असली जैसा काम करता है, जैसे memory में चलने वाला database।</p>
+
+<p>सावधानी यह है कि ज़्यादा mock करने से test उस चीज़ को जाँचने लगता है जो असल में हो ही नहीं रही। अगर आपने database का mock बनाया और उसी mock की गलत मान्यता पर test पास हो गया, तो असली database पर गड़बड़ होगी।</p>
+
+<p>एक साधारण नियम — अपने ही code को mock न करें। जो code आप खुद लिख रहे हैं, उसे असली रूप में चलाएँ; बाहरी सेवाओं को नकल से बदलें।</p>
+
+<h2>Kya test karen aur kya na karen</h2>
+
+<p>हर function के लिए test लिखना ज़रूरी नहीं। जिन चीज़ों को test करना सबसे ज़्यादा फायदा देता है, वे ये हैं —</p>
+
+<ul>
+<li>पैसे, tax, discount और commission की गणना।</li>
+<li>date, timezone और महीने के अंत जैसे मामले।</li>
+<li>अनुमति और भूमिका के नियम — कौन क्या देख सकता है।</li>
+<li>data का बदलना — format, validation और सीमाएँ।</li>
+<li>वे जगहें जहाँ पहले bug आ चुका है। हर bug के लिए एक test लिखें, ताकि वह लौटकर न आए।</li>
+</ul>
+
+<p>जिन चीज़ों पर समय बर्बाद होता है — सिर्फ getter और setter, framework का अपना काम, और वह code जो हफ्ते में बदलता है और जिसकी गलती सस्ती है (जैसे किसी button का रंग)।</p>
+
+<p>एक और बात — जो code test करना मुश्किल लगे, वह अक्सर बहुत ज़्यादा काम एक साथ कर रहा होता है। test लिखने में अटकना design का संकेत भी हो सकता है।</p>
+
+<p>regression test का नाम सुनकर घबराएँ नहीं। यह कोई अलग किस्म का test नहीं होता — यह वही unit test है जो किसी पुराने bug के बाद लिखा गया, ताकि वही गलती दोबारा न हो। हर बार जब किसी bug का कारण मिले, उसी दिन एक छोटा test जोड़ दें। साल भर में यही छोटी आदत सबसे मज़बूत सुरक्षा बन जाती है।</p>
+
+<h2>Coverage ka sahi matlab</h2>
+
+<p>coverage बताता है कि आपके code की कितनी lines test के दौरान चलीं। यह एक उपयोगी संकेत है, पर लक्ष्य नहीं। 100 प्रतिशत coverage वाला code भी गलत हो सकता है, क्योंकि coverage यह नहीं बताता कि आपने सही चीज़ जाँची।</p>
+
+<p>व्यवहार में 70–85 प्रतिशत coverage ज़्यादातर projects के लिए ठीक है, बशर्ते ज़रूरी हिस्से — पैसा, अनुमति, data — पूरे ढके हों। बाकी lines के लिए test लिखने में जो समय जाता है, वह अक्सर कहीं और ज़्यादा फायदा देता है।</p>
+
+<p>coverage को लक्ष्य बनाने का एक नुकसान यह है कि लोग ऐसे test लिखने लगते हैं जो सिर्फ line चलाते हैं, कुछ जाँचते नहीं। ऐसे test हरे दिखते हैं और किसी काम के नहीं होते।</p>
+
+<h2>Tools jo aam hain</h2>
+
+<p>भाषा के हिसाब से tool बदलता है, पर काम एक ही है — test लिखना, चलाना और नतीजा दिखाना।</p>
+
+<ul>
+<li><strong>JavaScript / TypeScript:</strong> Jest, Vitest, Mocha।</li>
+<li><strong>Python:</strong> pytest, unittest।</li>
+<li><strong>Java:</strong> JUnit, TestNG।</li>
+<li><strong>PHP:</strong> PHPUnit, Pest।</li>
+<li><strong>C#:</strong> NUnit, xUnit।</li>
+</ul>
+
+<p>इनके साथ एक coverage tool और CI जोड़ दें, ताकि हर push पर tests अपने आप चलें। जो test किसी के अपने laptop पर ही चलता है, वह असल में कभी नहीं चलता।</p>
+
+<figure>
+<img src="../img/posts/unit-testing-pair-review.jpg" alt="दो developers साथ बैठकर test के नतीजे देखते हुए" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>test fail होने पर सवाल यह नहीं होता कि test गलत है — पहले यह देखें कि code क्या बता रहा है।</figcaption>
+</figure>
+
+<h2>Test ko padhne layak kaise rakhen</h2>
+
+<p>test भी code है, और उसे पढ़ा जाएगा — अक्सर छह महीने बाद, खुद आप। तीन आदतें इसे आसान रखती हैं।</p>
+
+<p><strong>नाम में व्यवहार लिखें।</strong> "test1", "test2" किसी काम के नहीं। "खाली सूची पर कुल शून्य होता है" — यह नाम fail होने पर भी समझा देता है कि क्या टूटा।</p>
+
+<p><strong>एक test, एक कारण।</strong> अगर test में तीन अलग जाँच हैं, तो उसे तीन tests में बाँटें। इससे पता चलता है कि कौन सा व्यवहार बदला।</p>
+
+<p><strong>जादुई संख्याएँ हटाएँ।</strong> अगर test में 1000 लिखा है, तो एक चर बनाएँ जिसका नाम बताए कि 1000 क्या है — जैसे कर की दर या इकाइयों की संख्या।</p>
+
+<p>एक और बात — test के लिए अलग मददगार function बनाना ठीक है, जैसे test user बनाने वाला helper। इससे हर test में पाँच लाइन का setup दोहराना नहीं पड़ता।</p>
+
+<h2>5 galtiyan jo tests ko bekaar bana deti hain</h2>
+
+<p><strong>पहली — test को code के बाद छोड़ देना।</strong> जब deadline नज़दीक हो, तो test पहली चीज़ है जो हटती है। नतीजा — छह महीने बाद कोई भी बदलाव डर के साथ होता है।</p>
+
+<p><strong>दूसरी — बहुत ज़्यादा mock।</strong> जब test असली code की जगह नकली दुनिया जाँचने लगे, तो वह भरोसा नहीं देता।</p>
+
+<p><strong>तीसरी — धीमे tests।</strong> जो suite दो मिनट में खत्म न हो, लोग उसे बीच में रोक देते हैं। unit tests का पूरा फायदा गति में है।</p>
+
+<p><strong>चौथी — अस्थिर tests (flaky)।</strong> जो test कभी पास और कभी fail हो, वह टीम का भरोसा खत्म कर देता है। उसे तुरंत ठीक करें या हटाएँ — बीच का रास्ता नहीं।</p>
+
+<p><strong>पाँचवीं — fail होने पर test बदल देना।</strong> यह सबसे खतरनाक आदत है। test fail हो तो पहले यह देखें कि code सही है या नहीं। अगर उम्मीद गलत थी, तो बदलें — पर कारण लिखकर।</p>
+
+<h2>मैंने unit testing से क्या सीखा</h2>
+
+<p>सबसे बड़ी सीख यह रही कि test लिखने का असली फायदा bug पकड़ना नहीं, डिज़ाइन सुधरना है। जब मैंने एक बड़े function का test लिखना शुरू किया, तो पता चला कि उसे चलाने के लिए आठ चीज़ें तैयार करनी पड़ती हैं। उसी दिन समझ आया कि function बहुत काम एक साथ कर रहा है। टुकड़ों में बाँटने के बाद test आसान हो गए और code भी साफ।</p>
+
+<p>दूसरी सीख — जो test पहले fail नहीं हुआ, वह कुछ जाँच ही नहीं रहा। शुरू में मैंने कुछ tests लिखे जो हमेशा पास होते थे; बाद में पता चला कि उनमें गलत value compare हो रही थी। अब मैं हर नए test को पहले जान-बूझकर fail देखता हूँ।</p>
+
+<p>तीसरी सीख — 100 प्रतिशत coverage का पीछा समय की बर्बादी है। जब हमने लक्ष्य 75 प्रतिशत रखा और पैसे तथा अनुमति वाले हिस्सों पर पूरा ध्यान दिया, तो असली bugs पकड़ने की दर बढ़ी, जबकि test लिखने का समय घटा।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या हर function का test लिखना चाहिए?</h3>
+<p>नहीं। जहाँ logic है, पैसा है, अनुमति है या पहले bug आ चुका है — वहाँ ज़रूर लिखें। सीधे getter और framework के काम छोड़ सकते हैं।</p>
+
+<h3>unit test और integration test में क्या चुनें?</h3>
+<p>दोनों। unit test ज़्यादा और तेज़ रखें, integration test कुछ ज़रूरी जोड़ों के लिए। सिर्फ एक पर निर्भर रहना अधूरा है।</p>
+
+<h3>test लिखने में समय ज़्यादा लगता है?</h3>
+<p>पहली बार हाँ, पर वह समय बाद में bug ढूँढने से बचता है। जो टीम test लिखती है, उसका debugging समय आमतौर पर कम होता है।</p>
+
+<h3>क्या AI से test लिखवा सकते हैं?</h3>
+<p>ड्राफ्ट के लिए मदद ली जा सकती है, पर हर test को खुद पढ़ें — खासकर अपेक्षित नतीजा। AI अक्सर ऐसा test लिख देता है जो code की गलती को भी सही मान लेता है।</p>
+
+<h3>पुराने project में test कहाँ से शुरू करें?</h3>
+<p>उस हिस्से से जो सबसे ज़्यादा बदलता है या जिसमें सबसे ज़्यादा शिकायतें आती हैं। एक-एक function लें; पूरे project को एक साथ ढकने की कोशिश न करें।</p>
+
+<p>अगर आप software टीम के साथ काम कर रहे हैं, तो <a href="agile-methodology-complete-guide-hindi.html">Agile methodology की गाइड</a> और <a href="project-management-tools-guide.html">project management tools वाला आर्टिकल</a> काम आएंगे। तकनीकी ढाँचे के लिए <a href="kubernetes-architecture-explained-hindi.html">Kubernetes architecture</a> पढ़ें।</p>
+
+<p><strong>आगे पढ़ें:</strong> test लिखने के सिद्धांत <a href="https://martinfowler.com/testing/" target="_blank" rel="noopener nofollow">Martin Fowler की testing सूची</a> पर पढ़ें, और test pyramid की चर्चा <a href="https://martinfowler.com/articles/practical-test-pyramid.html" target="_blank" rel="noopener nofollow">Practical Test Pyramid</a> में देखें। हर tool का तरीका अलग होता है, इसलिए अपनी भाषा का आधिकारिक दस्तावेज़ देखें।</p>

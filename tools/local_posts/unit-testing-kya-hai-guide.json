@@ -1,0 +1,15 @@
+{
+  "slug": "unit-testing-kya-hai-guide",
+  "title": "Unit Testing Kya Hai? Pehla Test Kaise Likhen",
+  "description": "Unit testing kya hai — pehla test likhne ka tarika, AAA pattern, mocking, coverage ki hadd, aam tools, team practice aur 5 galtiyan, simple Hinglish guide.",
+  "published": "2026-06-16T10:00:00+05:30",
+  "labels": [
+    "Testing",
+    "Software Development",
+    "Guide"
+  ],
+  "hero": "img/posts/unit-testing-kya-hai-guide.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "अच्छा unit test छोटा होता है — एक function, एक behaviour, और एक साफ जवाब"
+}

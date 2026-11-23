@@ -1,0 +1,163 @@
+<p>जब आप laptop खोलते हैं, तो सबसे पहले वह चीज़ चलती है जिसे आप देखते भी नहीं। Screen पर logo आता है, पासवर्ड माँगा जाता है, फिर desktop दिखता है — और उसके बाद आप browser खोलते हैं। बीच में जो कुछ हुआ, वह system software का काम था।</p>
+
+<p>इस आर्टिकल में मैं समझाऊँगा कि system software kya hai, यह application software से किस तरह अलग है, इसके तीन मुख्य हिस्से — operating system, device drivers और utilities — क्या करते हैं, कुछ असली उदाहरण, और छोटी कंपनी या दुकान के लिए इसे सही रखने के तरीके। साथ में यह भी बताऊँगा कि कब update करना चाहिए और कब रुक जाना चाहिए।</p>
+
+<blockquote>
+<p><strong>छोटा जवाब:</strong> system software वह software है जो computer के hardware को चलाता और संभालता है — जैसे Windows, Linux, macOS, device drivers और backup तथा antivirus जैसी utilities। application software वह है जिससे आप असली काम करते हैं, जैसे browser, Word या Tally।</p>
+</blockquote>
+
+<h2>System software kya hai</h2>
+
+<p>system software उन programs का समूह है जो computer के संसाधन — processor, memory, disk, network और screen — को प्रबंधित करते हैं। यह सीधे user के काम के लिए नहीं, बल्कि user के काम को संभव बनाने के लिए होता है।</p>
+
+<p>एक साधारण उदाहरण लें। आप Word में एक file save करते हैं। Word को नहीं पता कि file disk के किस हिस्से में लिखी जाएगी, कितनी जगह है, या अगर बिजली चली जाए तो क्या होगा। यह सब operating system का file system करता है। Word सिर्फ इतना कहता है — "यह data इस नाम से रख दो"।</p>
+
+<p>इसी तरह जब आप print करते हैं, तो application सिर्फ print का आदेश देता है; printer को समझने वाला कोड driver में होता है। जब आप कई apps एक साथ चलाते हैं, तो किसको कितनी memory और कितना processor time मिलेगा, यह scheduler तय करता है। यह सब system software की परत है।</p>
+
+<h2>System software aur application software me farq</h2>
+
+<p>यह फर्क समझना ज़रूरी है, क्योंकि दोनों की ज़रूरत, कीमत और रखरखाव अलग होते हैं।</p>
+
+<table>
+<thead>
+<tr><th>पहलू</th><th>System software</th><th>Application software</th></tr>
+</thead>
+<tbody>
+<tr><td>काम</td><td>machine को चलाना और संभालना</td><td>user का काम करना</td></tr>
+<tr><td>उदाहरण</td><td>Windows, Linux, drivers, backup tool</td><td>Browser, Word, Tally, WhatsApp</td></tr>
+<tr><td>कौन चलाता है</td><td>खुद, background में</td><td>user जब चाहे</td></tr>
+<tr><td>बंद करना</td><td>मुश्किल, पूरा system रुक जाएगा</td><td>आसान, बस window बंद करें</td></tr>
+<tr><td>गड़बड़ी का असर</td><td>पूरा computer प्रभावित</td><td>आमतौर पर एक ही app</td></tr>
+</tbody>
+</table>
+
+<p>एक सरल तरीका याद रखने का — system software वह फर्श है जिस पर आप चलते हैं; application software वह सामान है जो आप उठाते हैं। फर्श खराब हो तो सामान किसी काम का नहीं।</p>
+
+<h2>System software ke teen hisse</h2>
+
+<h3>1. Operating system</h3>
+
+<p>यह सबसे बड़ा हिस्सा है। इसमें kernel होता है, जो memory, processor और devices के बीच समन्वय करता है; file system होता है, जो disk पर data का ढाँचा संभालता है; और user interface होता है — command line या desktop।</p>
+
+<p>आम उदाहरण — Windows, Linux (Ubuntu, Fedora), macOS, Android और iOS। हर एक का काम एक ही है, पर तरीका अलग। Windows और macOS desktop के लिए बने, Android और iOS फोन के लिए, और Linux सर्वर से लेकर छोटे devices तक हर जगह चलता है।</p>
+
+<h3>2. Device drivers</h3>
+
+<p>driver वह छोटा program है जो operating system को बताता है कि किसी खास hardware से कैसे बात करनी है — printer, scanner, graphics card, WiFi adapter या बायोमेट्रिक device। बिना सही driver के hardware मौजूद होकर भी काम नहीं करता।</p>
+
+<p>यही कारण है कि नया printer लगाने पर कभी-कभी software डाउनलोड करना पड़ता है। operating system के पास हर device की जानकारी नहीं होती, इसलिए निर्माता driver देता है।</p>
+
+<h3>3. Utilities</h3>
+
+<p>utilities वे छोटे tools हैं जो system को स्वस्थ रखते हैं — backup, antivirus, disk cleanup, compression, file manager, task manager, और update tools। ये अनिवार्य नहीं होते, पर इनके बिना system धीरे-धीरे भरता और धीमा होता जाता है।</p>
+
+<figure>
+<img src="../img/posts/system-software-layers.jpg" alt="system software की परतें — hardware, drivers, operating system, utilities और applications" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>हर परत नीचे वाली परत पर टिकी है — इसलिए नीचे की गड़बड़ी ऊपर के सारे काम को रोक देती है।</figcaption>
+</figure>
+
+<h2>Kaam kaise baantta hai — ek asli example</h2>
+
+<p>मान लें आपके पास 8 GB RAM वाला laptop है और आप एक साथ browser में 15 tabs, WhatsApp, एक spreadsheet और एक video call चला रहे हैं। इन सबको एक साथ चलाने के लिए system software चार काम करता है।</p>
+
+<p><strong>पहला — memory का बँटवारा।</strong> हर app को ज़रूरत के हिसाब से जगह मिलती है। जब जगह कम पड़ती है, तो कुछ data disk पर भेजा जाता है, जिससे सब कुछ थोड़ा धीमा होता है — यही अनुभव "laptop hang हो रहा है" जैसा लगता है।</p>
+
+<p><strong>दूसरा — processor का समय।</strong> एक ही processor कई कामों को इतनी तेज़ी से बदलकर चलाता है कि लगता है सब साथ चल रहे हैं। यह scheduling है।</p>
+
+<p><strong>तीसरा — network और storage।</strong> video call का data आना-जाना, spreadsheet का autosave, और browser का cache — सब अलग-अलग devices से बात करते हैं, और यह काम drivers तथा file system करते हैं।</p>
+
+<p><strong>चौथा — सुरक्षा।</strong> हर app को सीमित अधिकार मिलते हैं। एक app दूसरे की files नहीं पढ़ सकता, जब तक अनुमति न हो। यही सीमा किसी गलत software को पूरा system खराब करने से रोकती है।</p>
+
+<figure>
+<img src="../img/posts/system-software-data-center.jpg" alt="data center में server racks — वहाँ Linux और उसके utilities लगातार चलते रहते हैं" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>वही परतें सर्वर पर भी काम करती हैं — फर्क सिर्फ पैमाने और ज़िम्मेदारी का है।</figcaption>
+</figure>
+
+<h2>Examples jo rozana dikhte hain</h2>
+
+<p><strong>Windows:</strong> घर और दफ्तर के desktop पर सबसे आम। आसान interface, बहुत सारे software का support, और wide hardware compatibility। कमज़ोरी — समय के साथ धीमा होना और licence की कीमत।</p>
+
+<p><strong>Linux:</strong> सर्वर, cloud और embedded devices की पहली पसंद। free है, हल्का चलता है, और इसे ज़रूरत के हिसाब से बदला जा सकता है। desktop पर इसका इस्तेमाल बढ़ रहा है, पर कुछ खास software अभी भी नहीं चलते।</p>
+
+<p><strong>macOS:</strong> Apple के hardware के साथ आता है। hardware और software एक ही कंपनी का होने से अनुभव साफ रहता है, पर कीमत और मरम्मत का विकल्प सीमित होता है।</p>
+
+<p><strong>Android और iOS:</strong> फोन के operating system। इनमें apps को सीमित अधिकार मिलते हैं, इसलिए सुरक्षा का ढाँचा desktop से अलग है।</p>
+
+<p><strong>Utilities के उदाहरण:</strong> Windows का Disk Cleanup और Task Manager, Linux का <code>top</code>, <code>rsync</code> और <code>cron</code>, backup के लिए Veeam या Macrium, और antivirus के लिए Windows Defender।</p>
+
+<h2>Chhoti company ke liye system software ka setup</h2>
+
+<p>अगर आपकी टीम 5 से 20 लोगों की है, तो system software पर बहुत खर्च करने की ज़रूरत नहीं, पर कुछ बातें तय होनी चाहिए।</p>
+
+<ol>
+<li><strong>एक जैसा system रखें।</strong> सब लोगों के laptop पर एक ही operating system का एक ही version हो, तो मदद करना आसान होता है। मिला-जुला रखना भी चल सकता है, पर तब हर समस्या दो बार सुलझानी पड़ती है।</li>
+<li><strong>Automatic update चालू रखें।</strong> security updates बंद रखना सबसे आम और सबसे महंगी गलती है। update का समय रात या lunch break में तय करें।</li>
+<li><strong>Backup की एक ही आदत।</strong> हफ्ते में एक बार पूरा backup और रोज़ का छोटा backup। कम से कम एक copy ऐसी जगह रखें जो ransomware से जुड़ी न हो।</li>
+<li><strong>Antivirus अनिवार्य।</strong> Windows Defender काफी है; ज़रूरत हो तो एक भुगतान वाला tool लें, पर दो antivirus एक साथ न चलाएँ।</li>
+<li><strong>Admin अधिकार सीमित रखें।</strong> सबको administrator account न दें। जो इंसान software install नहीं करता, उसे admin अधिकार की ज़रूरत नहीं।</li>
+</ol>
+
+<p>यह पाँच आदतें किसी भी बड़े tool से ज़्यादा सुरक्षा देती हैं, और इनमें खर्च लगभग शून्य है।</p>
+
+<h2>Update kab karen aur kab ruken</h2>
+
+<p>security update में देरी नहीं करनी चाहिए। पर feature update — यानी नया version — के साथ थोड़ा इंतज़ार ठीक है, खासकर जब उस पर रोज़ का काम टिका हो।</p>
+
+<p>एक साधारण नियम — security patch तुरंत, बड़ा version update दो हफ्ते बाद, और production server पर पहले एक test machine पर। जो update सब जगह एक साथ लगाया जाता है, वह एक ही रात में पूरा दफ्तर रोक सकता है।</p>
+
+<p>पुराने system को भी अनदेखा न करें। जो Windows या Linux version अब support में नहीं है, उसे security update नहीं मिलते। ऐसे system पर चलाना दरवाज़ा खुला छोड़ने जैसा है।</p>
+
+<h2>System software aur cloud ka rishta</h2>
+
+<p>जब आप किसी website का इस्तेमाल करते हैं, तो आपका system software सिर्फ browser चलाता है; बाकी सारा काम सर्वर पर होता है। वहाँ भी वही परतें हैं — Linux, drivers, utilities और monitoring। फर्क यह है कि वह ज़िम्मेदारी अब आपकी नहीं, service देने वाले की है।</p>
+
+<p>इसका फायदा यह है कि छोटी टीम को server के patch और backup की चिंता नहीं करनी पड़ती। नुकसान यह है कि आपको पता नहीं होता कि data कहाँ है और कब क्या बदला। इसलिए ऐसे सेवा देने वाले चुनते समय यह ज़रूर पूछें कि data किस देश में रहेगा।</p>
+
+<p>अगर आप खुद server चलाते हैं, तो system software का काम बढ़ जाता है — update, monitoring, log rotation और disk की जगह, सब आपके ज़िम्मे। यही वजह है कि ज़्यादातर छोटी टीमें managed service चुनती हैं।</p>
+
+<h2>Mobile aur embedded devices me</h2>
+
+<p>आपके फोन में भी वही ढाँचा है, पर सीमाएँ कड़ी हैं। हर app को अलग जगह चलाया जाता है, camera या contacts तक पहुँच के लिए अनुमति माँगी जाती है, और background में चलने की सीमा होती है। यही कारण है कि फोन कम memory में भी ठीक चलता है।</p>
+
+<p>embedded devices — router, smart TV, ATM, billing machine — में system software अक्सर हल्का Linux होता है, जिसे firmware कहते हैं। इनमें update का विकल्प सीमित होता है, इसलिए खरीदते समय पूछें कि अगले तीन साल update मिलेंगे या नहीं। जो device update नहीं ले सकता, वह समय के साथ जोखिम बन जाता है।</p>
+
+<h2>Performance slow ho to kya dekhen</h2>
+
+<p>धीमा system हमेशा पुराने hardware की वजह से नहीं होता। तीन चीज़ें पहले जाँचें।</p>
+
+<ul>
+<li><strong>Disk भरा हुआ।</strong> अगर system drive में 10 प्रतिशत से कम जगह बची है, तो सब कुछ धीमा हो जाता है।</li>
+<li><strong>Startup पर बहुत सारे programs।</strong> जो app रोज़ काम नहीं आता, उसे startup से हटा दें।</li>
+<li><strong>Memory की कमी।</strong> अगर task manager में memory लगातार 90 प्रतिशत पर है, तो RAM बढ़ाना सबसे सस्ता सुधार है।</li>
+</ul>
+
+<p>इनके बाद भी धीमापन रहे, तो storage को SSD में बदलना सबसे बड़ा फर्क डालता है। पुराने laptop में SSD लगाने से वह अक्सर नए जैसा महसूस होता है।</p>
+
+<h2>मैंने system software के बारे में क्या सीखा</h2>
+
+<p>सबसे बड़ी सीख यह रही कि system software की अनदेखी सबसे महंगी पड़ती है, क्योंकि उसका असर एक साथ सब पर होता है। जब एक दफ्तर में update बंद रखे गए, तो एक ही हफ्ते में तीन मशीनें रुकीं और दो दिन का काम जोखिम में पड़ा। उसके बाद हमने update का समय तय किया और हर मशीन का हफ्तावार backup शुरू किया।</p>
+
+<p>दूसरी सीख — नया हमेशा बेहतर नहीं होता। बड़े version update से पहले एक मशीन पर दो हफ्ते चलाना अच्छी आदत है, खासकर जब उस पर billing या accounts का काम टिका हो।</p>
+
+<p>तीसरी सीख — जो चीज़ मुफ्त में मिलती है, उसे संभालना पड़ता है। Linux मुफ्त है, पर उसका patch, backup और monitoring आपका काम है। कुल लागत देखें, सिर्फ licence की कीमत नहीं।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या Windows system software है?</h3>
+<p>हाँ। Windows एक operating system है, जो system software की सबसे बड़ी श्रेणी है।</p>
+
+<h3>क्या antivirus system software है?</h3>
+<p>यह utility की श्रेणी में आता है, यानी system software का ही हिस्सा — क्योंकि यह सीधे user का काम नहीं, system की सुरक्षा करता है।</p>
+
+<h3>क्या browser system software है?</h3>
+<p>नहीं। browser application software है, क्योंकि उससे आप काम करते हैं। हाँ, वह system software की सेवाओं पर निर्भर रहता है।</p>
+
+<h3>System software के बिना computer चल सकता है?</h3>
+<p>नहीं। hardware को चलाने, memory बाँटने और files संभालने का काम system software ही करता है। बिना उसके computer सिर्फ धातु और plastic है।</p>
+
+<h3>क्या मुफ्त system software सुरक्षित है?</h3>
+<p>Linux जैसे open source system सुरक्षित माने जाते हैं, बशर्ते आप official source से लें और update करते रहें। सुरक्षा की गारंटी कीमत से नहीं, रखरखाव से आती है।</p>
+
+<p>अगर आप अपनी टीम का तकनीकी ढाँचा समझ रहे हैं, तो <a href="kubernetes-architecture-explained-hindi.html">Kubernetes architecture की गाइड</a> और <a href="aws-cloud-kya-hai-guide.html">AWS cloud वाला आर्टिकल</a> काम आएंगे। Software लिखने वालों के लिए <a href="unit-testing-kya-hai-guide.html">unit testing की बुनियाद</a> पढ़ें।</p>
+
+<p><strong>आगे पढ़ें:</strong> Linux kernel और उसके हिस्सों की जानकारी <a href="https://www.kernel.org" target="_blank" rel="noopener nofollow">kernel.org</a> पर, और operating system की बुनियादी बातें <a href="https://www.gnu.org/software/software.html" target="_blank" rel="noopener nofollow">GNU Project</a> पर पढ़ें। हर version का support समय बदलता रहता है, इसलिए update से पहले निर्माता की आधिकारिक सूची देखें।</p>
