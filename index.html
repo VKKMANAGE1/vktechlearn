@@ -429,7 +429,7 @@
     .popular-list a { display: flex; gap: .7rem; padding: .65rem 0; font-size: .89rem; font-weight: 600; }
     .popular-list a:hover { color: var(--neon); }
     .popular-list .idx { font-family: 'Orbitron', sans-serif; font-size: .78rem; color: var(--pink); }
-    .cat-list { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .cat-list { display: flex; flex-wrap: wrap; gap: .4rem; max-height: 14rem; overflow-y: auto; scrollbar-width: thin; }
     .cat-chip {
       display: inline-flex; align-items: center; gap: .4rem; font-family: 'Sora', 'Mukta', sans-serif;
       font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
@@ -506,7 +506,7 @@
 
     @media (min-width: 700px) {
       .hero-grid { grid-template-columns: minmax(0, 1fr) 330px; }
-      .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1.2fr; }
+      .footer-grid { grid-template-columns: 1.6fr 1fr 1.2fr; }
     }
     @media (min-width: 1024px) {
       .content-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 2rem; }
@@ -709,7 +709,6 @@
             </div>
 
             <div class="toolbar">
-              <div class="chips" id="chips" role="group" aria-label="पोस्ट श्रेणी फ़िल्टर"></div>
               <p class="result-count" id="result-count" role="status" aria-live="polite"></p>
             </div>
 
@@ -847,10 +846,6 @@
           <p data-en="VK Tech Learn is a trusted Hindi tech blog where you get Make Money Online, BlogSpot, WordPress, Internet Tips, Computer Tricks, EPF/Provident Fund and Tech News explained in simple language." data-hi="VK Tech Learn एक भरोसेमंद हिंदी टेक ब्लॉग है जहाँ Make Money Online, BlogSpot, WordPress, Internet Tips, Computer Tricks, EPF/Provident Fund और Tech News की जानकारी आसान भाषा में मिलती है।">VK Tech Learn is a trusted Hindi tech blog where you get Make Money Online, BlogSpot, WordPress, Internet Tips, Computer Tricks, EPF/Provident Fund and Tech News explained in simple language.</p>
         </div>
         <div>
-          <h2 data-en="Categories" data-hi="श्रेणियाँ">Categories</h2>
-          <div class="footer-links" id="footer-cats"></div>
-        </div>
-        <div>
           <h2 data-en="Important Links" data-hi="महत्वपूर्ण लिंक">Important Links</h2>
           <div class="footer-links">
             <a href="/about.html" data-en="About Us" data-hi="हमारे बारे में">About Us</a>
@@ -956,9 +951,7 @@
 
     const els = {
       grid: document.getElementById("post-grid"),
-      chips: document.getElementById("chips"),
       catList: document.getElementById("cat-list"),
-      footerCats: document.getElementById("footer-cats"),
       resultCount: document.getElementById("result-count"),
       emptyState: document.getElementById("empty-state"),
       loadWrap: document.getElementById("load-more-wrap"),
@@ -1226,20 +1219,9 @@
           count: POSTS.filter((post) => labelsOf(post).includes(name)).length
         }))
       );
-      els.chips.replaceChildren();
       els.catList.replaceChildren();
-      els.footerCats.replaceChildren();
 
       options.forEach((option) => {
-        const chip = document.createElement("button");
-        chip.type = "button";
-        chip.className = "chip";
-        chip.dataset.filter = option.name;
-        chip.setAttribute("aria-pressed", String(state.category === option.name));
-        chip.textContent = option.label + " (" + option.count + ")";
-        chip.addEventListener("click", () => setCategory(option.name));
-        els.chips.append(chip);
-
         const catChip = document.createElement("button");
         catChip.type = "button";
         catChip.className = "cat-chip";
@@ -1253,14 +1235,6 @@
         catChip.append(count);
         catChip.addEventListener("click", () => setCategory(option.name));
         els.catList.append(catChip);
-
-        if (option.name !== "all") {
-          const footerLink = document.createElement("a");
-          footerLink.href = "#latest";
-          footerLink.textContent = option.label + " (" + option.count + ")";
-          footerLink.addEventListener("click", () => setCategory(option.name));
-          els.footerCats.append(footerLink);
-        }
       });
     }
 
