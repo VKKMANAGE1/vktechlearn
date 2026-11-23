@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instagram Marketing Toolkit — 6 Free Mini Tools | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Instagram marketing toolkit — free hashtag generator, caption length checker, bio ideas, emoji copy aur post prompts, sab ek page par.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/instagram-toolkit.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🧩 Instagram Marketing Toolkit</h1>
+    <p>एक ही जगह चार काम के छोटे tools — hashtags, caption की लंबाई, bio ideas और emoji copy।</p>
+    <div class="related"><a href="/img/meme.html">Meme Generator</a><a href="/img/resize.html">Image Resizer</a></div>
+  </div>
+
+  <section class="panel">
+    <h2><span>1</span>Hashtag generator</h2>
+    <div class="row-3">
+      <div class="field">
+        <label for="topic">Topic / keyword</label>
+        <input id="topic" placeholder="जैसे: hindi tech blog" value="tech">
+      </div>
+      <div class="field">
+        <label for="style">Style</label>
+        <select id="style">
+          <option value="general" selected>General</option>
+          <option value="india">India</option>
+          <option value="reels">Reels</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" id="tags">Generate hashtags</button>
+      <button class="btn secondary" type="button" id="copy-tags">Copy</button>
+    </div>
+    <div class="output" id="tag-out">Hashtags यहाँ आएंगे।</div>
+  </section>
+
+  <section class="panel">
+    <h2><span>2</span>Caption checker</h2>
+    <div class="field">
+      <label for="caption">अपना caption paste करें</label>
+      <textarea id="caption" rows="4" placeholder="caption..."></textarea>
+      <div class="hint" id="cap-info">0 characters · 0 words</div>
+    </div>
+    <p class="hint">Instagram caption की सीमा 2,200 characters है; पहले 125 characters “more” से पहले दिखते हैं।</p>
+  </section>
+
+  <section class="panel">
+    <h2><span>3</span>Bio ideas</h2>
+    <div class="field">
+      <label for="niche">आपका काम / niche</label>
+      <input id="niche" placeholder="जैसे: computer classes" value="computer classes">
+    </div>
+    <div class="actions"><button class="btn" type="button" id="bio">Bio ideas</button></div>
+    <ul class="list" id="bio-list"></ul>
+  </section>
+
+  <section class="panel">
+    <h2><span>4</span>Emoji quick copy</h2>
+    <div class="chips" id="emojis"></div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+</main>
+
+<script>
+  const BASE = {
+    general: ['tech', 'tips', 'howto', 'learning', 'digitalindia', 'blogging', 'productivity', 'smartphone', 'ai', 'tutorial', 'explorepage', 'instagood'],
+    india: ['india', 'indianblogger', 'hinditech', 'makeinindia', 'delhi', 'mumbai', 'bharat', 'desi', 'indianyoutuber', 'techindia', 'hindiblog', 'reelsindia'],
+    reels: ['reels', 'reelsindia', 'reelsvideo', 'trending', 'viral', 'explore', 'reelitfeelit', 'shortvideo', 'reelsinstagram', 'foryou', 'trendingreels', 'contentcreator']
+  };
+
+  document.getElementById('tags').addEventListener('click', () => {
+    const raw = document.getElementById('topic').value.trim().toLowerCase();
+    if (!raw) { aiStatus('err', 'पहले topic लिखें।'); return; }
+    const words = raw.split(/\s+/).filter(Boolean);
+    const key = words.join('');
+    const style = document.getElementById('style').value;
+    const made = new Set();
+    const add = (t) => { t = t.replace(/[^a-z0-9]/g, ''); if (t.length > 2) made.add('#' + t); };
+    add(key);
+    words.forEach(add);
+    words.forEach((w) => { add(w + 'tips'); add(w + 'india'); add('daily' + w); });
+    BASE[style].forEach(add);
+    add('vktechlearn');
+    document.getElementById('tag-out').textContent = Array.from(made).join(' ');
+    aiStatus('ok', made.size + ' hashtags तैयार।');
+  });
+  document.getElementById('copy-tags').addEventListener('click', (e) => copyText(document.getElementById('tag-out').textContent, e.currentTarget));
+
+  const cap = document.getElementById('caption');
+  cap.addEventListener('input', () => {
+    const t = cap.value;
+    const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+    const preview = t.slice(0, 125);
+    document.getElementById('cap-info').textContent = t.length + ' characters · ' + words + ' words · preview: “' + preview + (t.length > 125 ? '…' : '') + '”';
+  });
+
+  document.getElementById('bio').addEventListener('click', () => {
+    const n = document.getElementById('niche').value.trim() || 'my work';
+    const ideas = [
+      n + ' सीखें, आसान भाषा में 👇',
+      'रोज़ एक नई चीज़ — ' + n + ' 🔧',
+      n + ' | practical tips, no jargon ✅',
+      'Beginner से confident — ' + n + ' के लिए 🚀',
+      'नई video हर हफ्ते · ' + n + ' 📚'
+    ];
+    const list = document.getElementById('bio-list');
+    list.replaceChildren(...ideas.map((text) => {
+      const li = document.createElement('li');
+      const span = document.createElement('span');
+      span.textContent = text;
+      const btn = document.createElement('button');
+      btn.className = 'btn secondary';
+      btn.type = 'button';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', () => copyText(text, btn));
+      li.style.display = 'flex';
+      li.style.gap = '.6rem';
+      li.style.alignItems = 'center';
+      li.style.flexWrap = 'wrap';
+      li.append(span, btn);
+      return li;
+    }));
+    aiStatus('ok', '5 bio ideas तैयार।');
+  });
+
+  const EMOJIS = ['🔥','✅','🚀','💡','📌','👇','🎯','📱','💻','⚡','🙌','😮','❤️','✨','🧠','📚','🛠️','⭐','🎉','👉'];
+  const box = document.getElementById('emojis');
+  box.replaceChildren(...EMOJIS.map((em) => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.type = 'button';
+    b.textContent = em;
+    b.addEventListener('click', () => { copyText(em, b); aiStatus('ok', em + ' copy हो गया।'); });
+    return b;
+  }));
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IP Address Lookup — Location aur ISP Details | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="IP address lookup — apna IP ya kisi bhi IP ka country, city, ISP aur timezone dekhen, bina signup, seedha browser me.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/ip-lookup.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🧩 IP Address Lookup</h1>
+    <p>अपना public IP देखें या किसी IP का देश, शहर, ISP और timezone पता करें। VPN चालू हो तो नतीजा उसी देश का आएगा।</p>
+    <div class="related"><a href="/toolkit/currency-converter.html">Currency Converter</a><a href="/toolkit/grammar-checker.html">Grammar Checker</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Lookup</h2>
+      <div class="field">
+        <label for="ip">IP address (खाली छोड़ें तो आपका अपना)</label>
+        <input id="ip" placeholder="जैसे: 8.8.8.8" autocomplete="off">
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="run">Look up</button>
+        <button class="btn secondary" type="button" id="mine">मेरा IP</button>
+      </div>
+      <div class="status" id="status" role="status"></div>
+      <p class="hint">जानकारी ipapi.co से आती है। मोबाइल नेटवर्क पर शहर का अनुमान कभी-कभी दूर होता है।</p>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Result</h2>
+      <div class="output" id="result">Look up दबाएँ।</div>
+      <ul class="list" id="details"></ul>
+    </section>
+  </div>
+</main>
+
+<script>
+  const result = document.getElementById('result');
+  const details = document.getElementById('details');
+
+  function rows(items) {
+    details.replaceChildren(...items.filter(([, v]) => v).map(([k, v]) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<strong></strong> <span></span>';
+      li.querySelector('strong').textContent = k;
+      li.querySelector('span').textContent = v;
+      return li;
+    }));
+  }
+
+  async function lookup(ip) {
+    aiStatus('info', 'जानकारी आ रही है…');
+    const url = 'https://ipapi.co/' + (ip ? encodeURIComponent(ip) + '/' : '') + 'json/';
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error) throw new Error(data.reason || 'IP नहीं मिला');
+      result.textContent = (data.ip || ip) + ' — ' + [data.city, data.region, data.country_name].filter(Boolean).join(', ');
+      rows([
+        ['IP', data.ip],
+        ['देश', data.country_name + (data.country_code ? ' (' + data.country_code + ')' : '')],
+        ['राज्य / शहर', [data.region, data.city].filter(Boolean).join(', ')],
+        ['ISP', data.org],
+        ['Timezone', data.timezone],
+        ['अक्षांश, देशांतर', data.latitude && data.longitude ? data.latitude + ', ' + data.longitude : ''],
+        ['Postal', data.postal]
+      ]);
+      aiStatus('ok', 'मिल गया।');
+    } catch (err) {
+      result.textContent = 'नतीजा नहीं आया।';
+      details.replaceChildren();
+      aiStatus('err', err.message + ' — internet या ad-blocker जाँचें।');
+    }
+  }
+
+  document.getElementById('run').addEventListener('click', () => {
+    const ip = document.getElementById('ip').value.trim();
+    if (ip && !/^[0-9a-fA-F:.]+$/.test(ip)) { aiStatus('err', 'IP का format ठीक नहीं।'); return; }
+    lookup(ip);
+  });
+  document.getElementById('mine').addEventListener('click', () => {
+    document.getElementById('ip').value = '';
+    lookup('');
+  });
+  lookup('');
+</script>
+</body>
+</html>

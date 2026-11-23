@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASCII Art Generator — Image to Text Art | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="ASCII art generator — koi bhi photo chunein aur text art me badal dein, width aur characters chunne ke saath, browser me hi.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/ascii-art.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<style>
+  #art { background: #05070d; color: #d7e6f7; border: 1px solid rgba(0,229,255,.25); border-radius: 12px; padding: 1rem; overflow: auto; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; line-height: 1; white-space: pre; }
+</style>
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🧩 ASCII Art Generator</h1>
+    <p>फोटो को अक्षरों वाली कला में बदलें — width चुनें और text copy या download करें।</p>
+    <div class="related"><a href="/img/resize.html">Image Resizer</a><a href="/toolkit/drawing.html">Drawing App</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Image</h2>
+      <div class="field">
+        <label for="file">Image चुनें</label>
+        <input type="file" id="file" accept="image/*">
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="width">Width (अक्षर)</label>
+          <input type="number" id="width" value="90" min="20" max="200">
+        </div>
+        <div class="field">
+          <label for="invert">Invert</label>
+          <select id="invert">
+            <option value="0" selected>Dark background</option>
+            <option value="1">Light background</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="chars">Characters</label>
+          <select id="chars">
+            <option value="standard" selected>Standard</option>
+            <option value="blocks">Blocks</option>
+            <option value="dots">Dots</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="make">Generate</button>
+        <button class="btn secondary" type="button" id="copy">Copy art</button>
+        <button class="btn secondary" type="button" id="download">Download .txt</button>
+      </div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Preview</h2>
+      <div id="art">Image चुनकर Generate दबाएँ।</div>
+    </section>
+  </div>
+</main>
+
+<script>
+  const SETS = {
+    standard: '@%#*+=-:. ',
+    blocks: '█▓▒░ ',
+    dots: '@●◉○· '
+  };
+  const fileInput = document.getElementById('file');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  let img = null;
+  let art = '';
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      img = new Image();
+      img.onload = () => { generate(); aiStatus('ok', 'Image load हो गई।'); };
+      img.onerror = () => aiStatus('err', 'यह image नहीं खुली। दूसरी file चुनें।');
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function generate() {
+    if (!img) { aiStatus('err', 'पहले image चुनें।'); return; }
+    const chars = SETS[document.getElementById('chars').value];
+    const width = Math.min(200, Math.max(20, Number(document.getElementById('width').value) || 90));
+    const ratio = img.height / img.width;
+    const height = Math.max(1, Math.round(width * ratio * 0.5));
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(img, 0, 0, width, height);
+    const data = ctx.getImageData(0, 0, width, height).data;
+    const invert = document.getElementById('invert').value === '1';
+    let out = '';
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const i = (y * width + x) * 4;
+        const lum = (0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]) / 255;
+        const v = invert ? lum : 1 - lum;
+        out += chars[Math.min(chars.length - 1, Math.floor(v * chars.length))];
+      }
+      out += '\n';
+    }
+    art = out;
+    const pre = document.getElementById('art');
+    pre.textContent = out;
+    pre.style.color = invert ? '#0b1020' : '#d7e6f7';
+    pre.style.background = invert ? '#f5f7fa' : '#05070d';
+  }
+
+  document.getElementById('make').addEventListener('click', generate);
+  document.getElementById('copy').addEventListener('click', (e) => {
+    if (!art) { aiStatus('err', 'पहले Generate दबाएँ।'); return; }
+    copyText(art, e.currentTarget);
+  });
+  document.getElementById('download').addEventListener('click', () => {
+    if (!art) { aiStatus('err', 'पहले Generate दबाएँ।'); return; }
+    const blob = new Blob([art], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ascii-art.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Story Writer — Short Story Generator | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="AI story writer — character, setting aur genre chunkar Hindi ya Hinglish me chhoti kahani likhwayen, apni Gemini/OpenAI key ke saath.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/story-writer.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🤖 AI Story Writer</h1>
+    <p>किरदार, जगह और मूड बताइए — AI एक छोटी कहानी लिख देगा। अपनी key से चलता है, इसलिए कोई महीने का plan नहीं।</p>
+    <div class="related"><a href="/toolkit/aura-ai.html">Aura AI</a><a href="/toolkit/article-rewriter.html">Article Rewriter</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Key</h2>
+      <div class="field">
+        <label for="provider">Provider</label>
+        <select id="provider">
+          <option value="gemini" selected>Google Gemini</option>
+          <option value="openai">OpenAI</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="api-key">API key</label>
+        <input type="password" id="api-key" autocomplete="off" placeholder="AIza… या sk-…">
+        <div class="hint" id="key-note"></div>
+      </div>
+      <div class="actions"><button class="btn" type="button" id="save-key">Save key</button></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Story brief</h2>
+      <div class="row-3">
+        <div class="field">
+          <label for="who">मुख्य किरदार</label>
+          <input id="who" placeholder="जैसे: 12 साल की मीरा">
+        </div>
+        <div class="field">
+          <label for="where">जगह</label>
+          <input id="where" placeholder="जैसे: बारिश वाला पुराना रेलवे स्टेशन">
+        </div>
+        <div class="field">
+          <label for="genre">मूड</label>
+          <select id="genre">
+            <option>रोमांच</option>
+            <option selected>भावुक</option>
+            <option>हास्य</option>
+            <option>रहस्य</option>
+            <option>प्रेरणादायक</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="lang">भाषा</label>
+        <select id="lang">
+          <option value="Hindi" selected>हिंदी</option>
+          <option value="Hinglish">Hinglish</option>
+          <option value="English">English</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="write">Story likho</button>
+        <button class="btn secondary" type="button" id="copy">Copy</button>
+      </div>
+      <div class="output" id="story" aria-live="polite">कहानी यहाँ दिखेगी।</div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+  let provider = 'gemini';
+  bindKeyPanel(provider);
+  document.getElementById('provider').addEventListener('change', (e) => {
+    provider = e.target.value;
+    bindKeyPanel(provider);
+  });
+
+  const btn = document.getElementById('write');
+  btn.addEventListener('click', async () => {
+    const who = document.getElementById('who').value.trim() || 'एक आम इंसान';
+    const where = document.getElementById('where').value.trim() || 'एक छोटा शहर';
+    const genre = document.getElementById('genre').value;
+    const lang = document.getElementById('lang').value;
+    const prompt = 'Write a short story of about 350 words in ' + lang + '. Main character: ' + who + '. Setting: ' + where + '. Mood: ' + genre + '. Give it a clear beginning, a small turning point and a quiet ending. No headings, no bullet points, only the story text.';
+    aiBusy(btn, true, 'Story likho', 'लिख रहा है…');
+    aiStatus('info', 'कहानी बन रही है…');
+    try {
+      const text = await aiAsk(prompt, provider);
+      document.getElementById('story').textContent = text || 'खाली जवाब मिला।';
+      aiStatus('ok', 'तैयार — पढ़कर बदलाव कर सकते हैं।');
+    } catch (err) {
+      aiStatus('err', err.message);
+    } finally {
+      aiBusy(btn, false, 'Story likho');
+    }
+  });
+
+  document.getElementById('copy').addEventListener('click', (e) => copyText(document.getElementById('story').textContent, e.currentTarget));
+</script>
+</body>
+</html>

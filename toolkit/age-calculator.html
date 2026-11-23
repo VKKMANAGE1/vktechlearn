@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Age Calculator — Exact Age in Years, Months, Days | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Age calculator — apni exact age years, months, days aur total weeks me nikalen, next birthday countdown ke saath.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/age-calculator.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🧩 Age Calculator</h1>
+    <p>जन्मतिथि डालकर साल, महीने और दिन में ठीक उम्र देखें — साथ में कुल हफ्ते और अगला जन्मदिन कितने दिन बाद।</p>
+    <div class="related"><a href="/toolkit/currency-converter.html">Currency Converter</a><a href="/toolkit/ip-lookup.html">IP Lookup</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Dates</h2>
+      <div class="field">
+        <label for="dob">जन्मतिथि</label>
+        <input type="date" id="dob">
+      </div>
+      <div class="field">
+        <label for="on">इस तारीख पर उम्र (खाली छोड़ें तो आज)</label>
+        <input type="date" id="on">
+      </div>
+      <div class="actions"><button class="btn" type="button" id="calc">Calculate age</button></div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Result</h2>
+      <div class="output" id="result">तारीख डालकर Calculate दबाएँ।</div>
+      <ul class="list" id="details"></ul>
+    </section>
+  </div>
+</main>
+
+<script>
+  const dayMs = 24 * 60 * 60 * 1000;
+  const parse = (v) => { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; };
+
+  function diffParts(from, to) {
+    let years = to.getFullYear() - from.getFullYear();
+    let months = to.getMonth() - from.getMonth();
+    let days = to.getDate() - from.getDate();
+    if (days < 0) {
+      months -= 1;
+      days += new Date(to.getFullYear(), to.getMonth(), 0).getDate();
+    }
+    if (months < 0) { years -= 1; months += 12; }
+    return { years, months, days };
+  }
+
+  document.getElementById('calc').addEventListener('click', () => {
+    const dob = parse(document.getElementById('dob').value);
+    const to = document.getElementById('on').value ? parse(document.getElementById('on').value) : new Date();
+    if (!dob) { aiStatus('err', 'पहले जन्मतिथि चुनें।'); return; }
+    if (dob > to) { aiStatus('err', 'जन्मतिथि आज से आगे नहीं हो सकती।'); return; }
+
+    const { years, months, days } = diffParts(dob, to);
+    const totalDays = Math.floor((to - dob) / dayMs);
+    const next = new Date(to.getFullYear(), dob.getMonth(), dob.getDate());
+    if (next < to) next.setFullYear(next.getFullYear() + 1);
+    const toNext = Math.ceil((next - to) / dayMs);
+
+    document.getElementById('result').textContent = years + ' साल, ' + months + ' महीने, ' + days + ' दिन';
+    const rows = [
+      ['कुल दिन', totalDays.toLocaleString('en-IN') + ' दिन'],
+      ['कुल हफ्ते', Math.floor(totalDays / 7).toLocaleString('en-IN') + ' हफ्ते'],
+      ['कुल महीने', (years * 12 + months).toLocaleString('en-IN') + ' महीने'],
+      ['कुल घंटे', (totalDays * 24).toLocaleString('en-IN') + ' घंटे'],
+      ['अगला जन्मदिन', toNext === 0 ? 'आज 🎉' : toNext + ' दिन बाद (' + next.toLocaleDateString('en-IN') + ')']
+    ];
+    document.getElementById('details').replaceChildren(...rows.map(([k, v]) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<strong></strong> <span></span>';
+      li.querySelector('strong').textContent = k;
+      li.querySelector('span').textContent = v;
+      return li;
+    }));
+    aiStatus('ok', 'उम्र निकाल दी गई।');
+  });
+</script>
+</body>
+</html>

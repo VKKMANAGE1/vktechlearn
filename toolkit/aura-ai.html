@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aura AI — Free AI Chat With Your Own Key | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Aura AI — browser में AI chat, apni Gemini या OpenAI key ke saath. Key sirf aapke browser me save hoti hai, koi signup nahi.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/aura-ai.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🤖 Aura AI</h1>
+    <p>Apni Gemini या OpenAI API key डालकर सीधे browser से AI chat करें — कोई signup नहीं, key आपके device से बाहर नहीं जाती।</p>
+    <div class="related"><a href="/toolkit/story-writer.html">AI Story Writer</a><a href="/toolkit/article-rewriter.html">AI Article Rewriter</a><a href="/toolkit/gemini-cheat-code.html">Gemini Cheat Code</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>API key</h2>
+      <div class="field">
+        <label for="provider">Provider</label>
+        <select id="provider">
+          <option value="gemini" selected>Google Gemini</option>
+          <option value="openai">OpenAI</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="api-key">API key</label>
+        <input type="password" id="api-key" autocomplete="off" placeholder="AIza… या sk-…">
+        <div class="hint" id="key-note"></div>
+      </div>
+      <div class="actions"><button class="btn" type="button" id="save-key">Save key</button></div>
+      <p class="hint">Key सिर्फ इस browser के localStorage में रहती है। साझा कंप्यूटर पर काम के बाद Clear दबाएँ।</p>
+      <div class="actions"><button class="btn secondary" type="button" id="clear-key">Clear key</button></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Chat</h2>
+      <div class="field">
+        <label for="prompt">आपका सवाल</label>
+        <textarea id="prompt" rows="5" placeholder="उदाहरण: Hinglish में 5 tips likho jo naye blogger ke liye kaam aayen."></textarea>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="ask">Ask AI</button>
+        <button class="btn secondary" type="button" id="copy">Copy answer</button>
+        <button class="btn secondary" type="button" id="reset">Clear chat</button>
+      </div>
+      <div class="output" id="answer" aria-live="polite">जवाब यहाँ दिखेगा।</div>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+  let activeProvider = 'gemini';
+  bindKeyPanel(activeProvider);
+
+  document.getElementById('provider').addEventListener('change', (e) => {
+    activeProvider = e.target.value;
+    bindKeyPanel(activeProvider);
+    aiStatus('info', activeProvider === 'gemini' ? 'Gemini चुना गया।' : 'OpenAI चुना गया।');
+  });
+
+  document.getElementById('clear-key').addEventListener('click', () => {
+    aiSetKey(activeProvider, '');
+    document.getElementById('api-key').value = '';
+    bindKeyPanel(activeProvider);
+    aiStatus('warn', 'Key हटा दी गई।');
+  });
+
+  const askBtn = document.getElementById('ask');
+  askBtn.addEventListener('click', async () => {
+    const prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) { aiStatus('err', 'पहले सवाल लिखें।'); return; }
+    aiBusy(askBtn, true, 'Ask AI', 'सोच रहा है…');
+    aiStatus('info', 'जवाब आ रहा है…');
+    try {
+      const text = await aiAsk(prompt, activeProvider);
+      document.getElementById('answer').textContent = text || 'खाली जवाब मिला।';
+      aiStatus('ok', 'तैयार।');
+    } catch (err) {
+      aiStatus('err', err.message);
+    } finally {
+      aiBusy(askBtn, false, 'Ask AI');
+    }
+  });
+
+  document.getElementById('copy').addEventListener('click', (e) => copyText(document.getElementById('answer').textContent, e.currentTarget));
+  document.getElementById('reset').addEventListener('click', () => {
+    document.getElementById('prompt').value = '';
+    document.getElementById('answer').textContent = 'जवाब यहाँ दिखेगा।';
+    aiStatus('info', 'चैट साफ।');
+  });
+</script>
+</body>
+</html>

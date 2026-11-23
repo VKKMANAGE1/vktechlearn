@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drawing App — Free Online Paint Pad | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Free drawing app — browser me brush, color, eraser aur undo ke saath sketch banayen, PNG me download karein. Kuch upload nahi hota.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/drawing.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<style>
+  #pad-wrap { position: relative; border: 1px solid rgba(0,229,255,.25); border-radius: 14px; overflow: hidden; background: #fff; }
+  #pad { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+</style>
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🖼️ Drawing App</h1>
+    <p>Mouse, pen या उँगली से स्केच बनाएँ — रंग, brush size, eraser और undo के साथ। PNG के रूप में सेव करें।</p>
+    <div class="related"><a href="/img/">Image Toolbox</a><a href="/img/meme.html">Meme Generator</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Tool</h2>
+      <div class="field">
+        <label for="color">रंग</label>
+        <input type="color" id="color" value="#111827">
+      </div>
+      <div class="field">
+        <label for="size">Brush size: <span id="size-label">4</span> px</label>
+        <input type="range" id="size" min="1" max="40" value="4">
+      </div>
+      <div class="field">
+        <label for="mode">Mode</label>
+        <select id="mode">
+          <option value="brush" selected>Brush</option>
+          <option value="eraser">Eraser</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" type="button" id="undo">Undo</button>
+        <button class="btn secondary" type="button" id="clear">Clear</button>
+      </div>
+      <div class="field" style="margin-top:.9rem">
+        <label for="bg">Background</label>
+        <select id="bg">
+          <option value="#ffffff" selected>White</option>
+          <option value="#0b1020">Dark</option>
+          <option value="transparent">Transparent</option>
+        </select>
+      </div>
+      <div class="actions"><button class="btn" type="button" id="save">Download PNG</button></div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Canvas</h2>
+      <div id="pad-wrap"><canvas id="pad" width="1000" height="640"></canvas></div>
+      <p class="hint">मोबाइल पर उँगली से ड्रॉ करें। Undo आखिरी stroke हटाता है।</p>
+    </section>
+  </div>
+</main>
+
+<script>
+  const pad = document.getElementById('pad');
+  const ctx = pad.getContext('2d');
+  const history = [];
+  let drawing = false, last = null;
+
+  function paintBackground() {
+    const choice = document.getElementById('bg').value;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, pad.width, pad.height);
+    if (choice !== 'transparent') { ctx.fillStyle = choice; ctx.fillRect(0, 0, pad.width, pad.height); }
+    ctx.restore();
+  }
+  function snapshot() {
+    history.push(ctx.getImageData(0, 0, pad.width, pad.height));
+    if (history.length > 20) history.shift();
+  }
+  function pos(e) {
+    const r = pad.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * (pad.width / r.width), y: (e.clientY - r.top) * (pad.height / r.height) };
+  }
+  function stroke(from, to) {
+    const mode = document.getElementById('mode').value;
+    ctx.strokeStyle = mode === 'eraser' ? (document.getElementById('bg').value === 'transparent' ? '#ffffff' : document.getElementById('bg').value) : document.getElementById('color').value;
+    ctx.globalCompositeOperation = mode === 'eraser' ? 'destination-out' : 'source-over';
+    ctx.lineWidth = Number(document.getElementById('size').value);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  pad.addEventListener('pointerdown', (e) => {
+    snapshot();
+    drawing = true;
+    last = pos(e);
+    pad.setPointerCapture(e.pointerId);
+  });
+  pad.addEventListener('pointermove', (e) => {
+    if (!drawing) return;
+    const p = pos(e);
+    stroke(last, p);
+    last = p;
+  });
+  pad.addEventListener('pointerup', () => { drawing = false; });
+  pad.addEventListener('pointerleave', () => { drawing = false; });
+
+  document.getElementById('size').addEventListener('input', (e) => {
+    document.getElementById('size-label').textContent = e.target.value;
+  });
+  document.getElementById('bg').addEventListener('change', () => {
+    const img = ctx.getImageData(0, 0, pad.width, pad.height);
+    paintBackground();
+    ctx.putImageData(img, 0, 0);
+  });
+  document.getElementById('undo').addEventListener('click', () => {
+    const data = history.pop();
+    if (!data) { aiStatus('warn', 'Undo के लिए कुछ नहीं है।'); return; }
+    ctx.putImageData(data, 0, 0);
+  });
+  document.getElementById('clear').addEventListener('click', () => {
+    snapshot();
+    paintBackground();
+    aiStatus('ok', 'Canvas साफ।');
+  });
+  document.getElementById('save').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = pad.toDataURL('image/png');
+    a.download = 'drawing.png';
+    a.click();
+    aiStatus('ok', 'PNG download हो गई।');
+  });
+
+  paintBackground();
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemini Cheat Code — 24 Ready Prompts | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Gemini cheat code — 24 ready-made prompts for writing, study, coding aur business, search ke saath, ek click me copy karein.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/gemini-cheat-code.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>✨ Gemini Cheat Code</h1>
+    <p>24 तैयार prompts — copy करें, अपनी जानकारी भरें, और साफ जवाब पाएँ। हर prompt में role, काम और output का format लिखा है।</p>
+    <div class="related"><a href="/toolkit/aura-ai.html">Aura AI</a><a href="/toolkit/article-rewriter.html">Article Rewriter</a></div>
+  </div>
+
+  <section class="panel">
+    <h2><span>1</span>Prompt खोजें</h2>
+    <div class="field">
+      <label for="q">Keyword</label>
+      <input id="q" placeholder="जैसे: blog, email, study, excel" autocomplete="off">
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2><span>2</span>Prompts</h2>
+    <div class="chips" id="cats"></div>
+    <ul class="list" id="prompts"></ul>
+    <div class="status" id="status" role="status"></div>
+  </section>
+</main>
+
+<script>
+  const PROMPTS = [
+    { cat: 'Writing', text: 'Act as a Hindi tech blogger. Write a 600-word explainer on [topic] for beginners. Use simple Hinglish, add one table and a 3-question FAQ. No fluff.' },
+    { cat: 'Writing', text: 'Rewrite the text below in a friendly tone, keep all facts, cut 30% words. Return only the final text.\n\nText: [paste]' },
+    { cat: 'Writing', text: 'Give me 10 headline options for a post about [topic]. Each under 60 characters, no clickbait, keyword near the start.' },
+    { cat: 'Writing', text: 'Turn these notes into a structured article outline with H2s and H3s.\n\nNotes: [paste]' },
+    { cat: 'Study', text: 'Explain [concept] to a 15-year-old in Hindi with one everyday example, then give 5 practice questions with answers.' },
+    { cat: 'Study', text: 'Make a 7-day revision plan for [subject] with 45-minute daily blocks and a small test on day 7.' },
+    { cat: 'Study', text: 'I do not understand this paragraph. Explain it line by line in simple Hindi and point out any assumption it makes.\n\nParagraph: [paste]' },
+    { cat: 'Study', text: 'Create 15 flashcards (question + one-line answer) from this chapter: [paste]' },
+    { cat: 'Coding', text: 'Act as a senior developer. Review this code for bugs, security issues and readability. Give a short list of fixes, then the corrected code.\n\n[paste code]' },
+    { cat: 'Coding', text: 'Explain what this error means and give the two most likely fixes, in order.\n\nError: [paste]' },
+    { cat: 'Coding', text: 'Write a function in [language] that does [task]. Add input validation and two test cases.' },
+    { cat: 'Coding', text: 'Convert this snippet from [language A] to [language B], keeping the same behaviour and comments.\n\n[paste]' },
+    { cat: 'Business', text: 'Act as a small-business consultant. My business is [describe]. Give 5 low-cost ways to get the next 20 customers in 30 days.' },
+    { cat: 'Business', text: 'Write a polite payment reminder email for an invoice that is 15 days late. Keep it under 120 words, firm but friendly.' },
+    { cat: 'Business', text: 'Compare [option A] and [option B] for a team of 8 people. Use a table with cost, setup time, lock-in and risks.' },
+    { cat: 'Business', text: 'Turn this customer complaint into: 1) an apology reply, 2) a root-cause checklist.\n\nComplaint: [paste]' },
+    { cat: 'Social', text: 'Write 3 Instagram captions for a post about [topic]. One short, one story-style, one question. Add 8 relevant hashtags.' },
+    { cat: 'Social', text: 'Give me a 30-day content calendar for [niche] with post type, hook and best day for each week.' },
+    { cat: 'Social', text: 'Write a YouTube title and 5-line description for a video about [topic]. Title under 60 characters.' },
+    { cat: 'Social', text: 'Rewrite this WhatsApp broadcast so it feels personal and is under 80 words.\n\n[paste]' },
+    { cat: 'Thinking', text: 'Argue both sides of this decision and end with the three questions I should answer before choosing: [decision].' },
+    { cat: 'Thinking', text: 'Find the weak points in this plan and rank them by how much damage they can cause.\n\nPlan: [paste]' },
+    { cat: 'Thinking', text: 'Explain [topic] using the Feynman method: simple words, then a gap check, then a 5-line summary.' },
+    { cat: 'Thinking', text: 'Given these constraints, suggest three options with trade-offs in a table: [constraints].' }
+  ];
+
+  const q = document.getElementById('q');
+  const list = document.getElementById('prompts');
+  const cats = document.getElementById('cats');
+  let activeCat = 'All';
+  const categories = ['All'].concat(Array.from(new Set(PROMPTS.map((p) => p.cat))));
+
+  function paintCats() {
+    cats.replaceChildren(...categories.map((c) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = c;
+      b.setAttribute('aria-pressed', String(c === activeCat));
+      b.addEventListener('click', () => { activeCat = c; paintCats(); paint(); });
+      return b;
+    }));
+  }
+
+  function paint() {
+    const term = q.value.trim().toLowerCase();
+    const rows = PROMPTS.filter((p) => (activeCat === 'All' || p.cat === activeCat) && (!term || p.text.toLowerCase().includes(term)));
+    if (!rows.length) {
+      const li = document.createElement('li');
+      li.textContent = 'कोई prompt नहीं मिला।';
+      list.replaceChildren(li);
+      return;
+    }
+    list.replaceChildren(...rows.map((p) => {
+      const li = document.createElement('li');
+      li.style.display = 'grid';
+      li.style.gap = '.4rem';
+      const eyebrow = document.createElement('div');
+      eyebrow.className = 'hint';
+      eyebrow.textContent = p.cat;
+      const body = document.createElement('pre');
+      body.style.whiteSpace = 'pre-wrap';
+      body.style.font = 'inherit';
+      body.style.margin = '0';
+      body.textContent = p.text;
+      const btn = document.createElement('button');
+      btn.className = 'btn secondary';
+      btn.type = 'button';
+      btn.textContent = 'Copy prompt';
+      btn.addEventListener('click', () => { copyText(p.text, btn); aiStatus('ok', 'Prompt copy हो गया।'); });
+      li.append(eyebrow, body, btn);
+      return li;
+    }));
+  }
+
+  q.addEventListener('input', paint);
+  paintCats();
+  paint();
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammar Checker — Spelling aur Punctuation Fix | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Grammar checker — double space, punctuation, repeated words aur capital letters ki galtiyan browser me turant pakren, saath me fixed text copy karein.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/grammar-checker.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🤖 Grammar Checker</h1>
+    <p>अंग्रेज़ी और Hinglish लेख में spacing, punctuation, दोहराए शब्द और capital letters की आम गलतियाँ पकड़ें — सब कुछ browser में, बिना upload।</p>
+    <div class="related"><a href="/toolkit/case-converter.html">Case Converter</a><a href="/toolkit/article-rewriter.html">Article Rewriter</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Text</h2>
+      <div class="field">
+        <label for="input">अपना text paste करें</label>
+        <textarea id="input" rows="10" placeholder="paste your paragraph here..."></textarea>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="check">Check text</button>
+        <button class="btn secondary" type="button" id="fix">Auto-fix</button>
+        <button class="btn secondary" type="button" id="copy">Copy fixed text</button>
+      </div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Report</h2>
+      <div class="output" id="summary">Text डालकर Check दबाएँ।</div>
+      <ul class="list" id="issues"></ul>
+      <div class="field">
+        <label for="fixed">Fixed text</label>
+        <textarea id="fixed" rows="8" readonly></textarea>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  const input = document.getElementById('input');
+  const fixed = document.getElementById('fixed');
+  const issuesEl = document.getElementById('issues');
+  const summary = document.getElementById('summary');
+
+  const RULES = [
+    { name: 'दोहरा space', re: / {2,}/g, fix: (t) => t.replace(/ {2,}/g, ' ') },
+    { name: 'comma/period से पहले space', re: /\s+([,.;:!?])/g, fix: (t) => t.replace(/\s+([,.;:!?])/g, '$1') },
+    { name: 'punctuation के बाद space नहीं', re: /([,.;:!?])(?=[A-Za-z])/g, fix: (t) => t.replace(/([,.;:!?])(?=[A-Za-z])/g, '$1 ') },
+    { name: 'दोहराया हुआ शब्द', re: /\b(\w+)\s+\1\b/gi, fix: (t) => t.replace(/\b(\w+)\s+\1\b/gi, '$1') },
+    { name: 'छोटा "i"', re: /\bi\b/g, fix: (t) => t.replace(/\bi\b/g, 'I') },
+    { name: 'वाक्य की शुरुआत छोटे अक्षर से', re: /(^|[.!?]\s+)([a-z])/g, fix: (t) => t.replace(/(^|[.!?]\s+)([a-z])/g, (m, p, c) => p + c.toUpperCase()) },
+    { name: 'ज़्यादा !!! या ???', re: /([!?])\1{2,}/g, fix: (t) => t.replace(/([!?])\1{2,}/g, '$1') },
+    { name: 'हफ्ते/साल जैसी गलत spelling', re: /\b(recieve|seperate|definately|occured|untill|wich|teh|adress)\b/gi, fix: (t) => t.replace(/\brecieve\b/gi, 'receive').replace(/\bseperate\b/gi, 'separate').replace(/\bdefinately\b/gi, 'definitely').replace(/\boccured\b/gi, 'occurred').replace(/\buntill\b/gi, 'until').replace(/\bwich\b/gi, 'which').replace(/\bteh\b/gi, 'the').replace(/\badress\b/gi, 'address') }
+  ];
+
+  function scan(text) {
+    return RULES.map((rule) => ({ name: rule.name, hits: (text.match(rule.re) || []).length })).filter((r) => r.hits > 0);
+  }
+
+  document.getElementById('check').addEventListener('click', () => {
+    const text = input.value;
+    if (!text.trim()) { aiStatus('err', 'पहले text डालें।'); return; }
+    const found = scan(text);
+    const words = text.trim().split(/\s+/).length;
+    summary.textContent = found.length
+      ? words + ' शब्दों में ' + found.reduce((n, r) => n + r.hits, 0) + ' संभावित गलतियाँ ' + found.length + ' तरह की मिलीं।'
+      : words + ' शब्दों में कोई साफ गलती नहीं मिली।';
+    issuesEl.replaceChildren(...found.map((r) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<strong></strong> <span></span>';
+      li.querySelector('strong').textContent = r.name;
+      li.querySelector('span').textContent = r.hits + ' जगह';
+      return li;
+    }));
+    aiStatus(found.length ? 'warn' : 'ok', found.length ? 'Auto-fix दबाकर सुधार देखें।' : 'Text साफ लग रहा है।');
+  });
+
+  document.getElementById('fix').addEventListener('click', () => {
+    let text = input.value;
+    if (!text.trim()) { aiStatus('err', 'पहले text डालें।'); return; }
+    RULES.forEach((rule) => { text = rule.fix(text); });
+    fixed.value = text;
+    const left = scan(text);
+    aiStatus(left.length ? 'warn' : 'ok', left.length ? 'कुछ चीज़ें हाथ से देखनी पड़ेंगी।' : 'सारी आम गलतियाँ ठीक हो गईं।');
+  });
+
+  document.getElementById('copy').addEventListener('click', (e) => {
+    if (!fixed.value) { aiStatus('err', 'पहले Auto-fix चलाएँ।'); return; }
+    copyText(fixed.value, e.currentTarget);
+  });
+</script>
+</body>
+</html>

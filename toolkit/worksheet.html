@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worksheet Generator — Kids Math Practice Sheets | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Free worksheet generator — bachchon ke liye jod, ghatav, guna aur bhaag ke practice sheets banayen aur seedha print karein.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/worksheet.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<style>
+  .sheet { background: #fff; color: #111; border-radius: 12px; padding: 1.4rem; }
+  .sheet h3 { margin: 0 0 .2rem; color: #111; }
+  .sheet .sub { color: #555; font-size: .85rem; margin: 0 0 1rem; }
+  .qgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .9rem 1.4rem; }
+  .q { border-bottom: 1px dashed #bbb; padding: .35rem 0 .7rem; font-size: 1.05rem; }
+  .q small { float: right; color: #16a34a; }
+  @media print {
+    header.top, .tool-head, .panel:first-of-type, footer, .hint, .status { display: none !important; }
+    body { background: #fff; }
+    .sheet { box-shadow: none; padding: 0; }
+    .two-col { display: block; }
+  }
+</style>
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🎓 Worksheet Generator</h1>
+    <p>बच्चों के लिए जोड़, घटाव, गुणा और भाग के practice sheets — सवाल अपने आप बनते हैं, जवाब अलग से दिखते हैं।</p>
+    <div class="related"><a href="/toolkit/typing-master.html">Typing Master</a><a href="/toolkit/gemini-cheat-code.html">Gemini Prompts</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Settings</h2>
+      <div class="field">
+        <label for="ops">Operation</label>
+        <select id="ops">
+          <option value="+" selected>जोड़ (+)</option>
+          <option value="-">घटाव (−)</option>
+          <option value="x">गुणा (×)</option>
+          <option value="/">भाग (÷)</option>
+          <option value="mix">मिला-जुला</option>
+        </select>
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="min">सबसे छोटी संख्या</label>
+          <input type="number" id="min" value="1" min="0">
+        </div>
+        <div class="field">
+          <label for="max">सबसे बड़ी संख्या</label>
+          <input type="number" id="max" value="20" min="2">
+        </div>
+        <div class="field">
+          <label for="count">कितने सवाल</label>
+          <input type="number" id="count" value="20" min="5" max="60">
+        </div>
+      </div>
+      <div class="field">
+        <label for="name">बच्चे का नाम (optional)</label>
+        <input id="name" placeholder="जैसे: Aarav">
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="make">New worksheet</button>
+        <button class="btn secondary" type="button" id="answers">Answers दिखाएँ</button>
+        <button class="btn secondary" type="button" id="print">Print</button>
+      </div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Worksheet</h2>
+      <div class="sheet" id="sheet">
+        <h3>Math Practice</h3>
+        <p class="sub">Name: ____________ &nbsp; Date: ____________</p>
+        <div class="qgrid" id="qgrid"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  const qgrid = document.getElementById('qgrid');
+  const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+  let showAnswers = false, current = [];
+
+  function build() {
+    const min = Math.max(0, Number(document.getElementById('min').value) || 0);
+    const max = Math.max(min + 1, Number(document.getElementById('max').value) || 20);
+    const count = Math.min(60, Math.max(5, Number(document.getElementById('count').value) || 20));
+    const pick = document.getElementById('ops').value;
+    current = [];
+
+    for (let i = 0; i < count; i++) {
+      const op = pick === 'mix' ? ['+', '-', 'x', '/'][rnd(0, 3)] : pick;
+      let a = rnd(min, max), b = rnd(min, max), answer;
+      if (op === '-') { if (b > a) { const t = a; a = b; b = t; } answer = a - b; }
+      else if (op === 'x') { a = rnd(min, Math.min(max, 12)); b = rnd(min, Math.min(max, 12)); answer = a * b; }
+      else if (op === '/') {
+        b = rnd(Math.max(1, min), Math.max(2, Math.min(max, 12)));
+        answer = rnd(min, Math.max(min + 1, Math.min(max, 12)));
+        a = b * answer;
+      } else answer = a + b;
+      current.push({ text: a + ' ' + (op === 'x' ? '×' : op === '/' ? '÷' : op) + ' ' + b + ' =', answer });
+    }
+    paint();
+    const name = document.getElementById('name').value.trim();
+    document.querySelector('#sheet h3').textContent = name ? 'Math Practice — ' + name : 'Math Practice';
+    aiStatus('ok', count + ' सवाल तैयार।');
+  }
+
+  function paint() {
+    qgrid.replaceChildren(...current.map((q) => {
+      const div = document.createElement('div');
+      div.className = 'q';
+      div.textContent = q.text + ' ____';
+      if (showAnswers) {
+        const small = document.createElement('small');
+        small.textContent = q.answer;
+        div.append(small);
+      }
+      return div;
+    }));
+  }
+
+  document.getElementById('make').addEventListener('click', build);
+  document.getElementById('answers').addEventListener('click', () => {
+    showAnswers = !showAnswers;
+    paint();
+    aiStatus('info', showAnswers ? 'जवाब दिख रहे हैं।' : 'जवाब छिप गए।');
+  });
+  document.getElementById('print').addEventListener('click', () => window.print());
+  build();
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typing Master Pro — Free Typing Speed Test | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Typing test — 60 second me apni WPM aur accuracy naapen, Hindi aur English sentences ke saath, bina signup.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/typing-master.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<style>
+  #target { font-size: 1.15rem; line-height: 1.9; background: #0b1020; border: 1px solid rgba(0,229,255,.25); border-radius: 12px; padding: 1rem; }
+  #target span.ok { color: #4ade80; }
+  #target span.bad { color: #ff6b81; background: rgba(255,107,129,.16); border-radius: 3px; }
+  #target span.now { border-bottom: 2px solid #00e5ff; }
+  #typed { width: 100%; min-height: 6rem; font: inherit; color: #dbe6f5; background: #0b1020; border: 1px solid rgba(0,229,255,.25); border-radius: 12px; padding: .8rem; }
+</style>
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🧩 Typing Master Pro</h1>
+    <p>एक मिनट में अपनी typing speed (WPM) और accuracy नापें — रोज़ पाँच मिनट का अभ्यास सबसे बड़ा फर्क डालता है।</p>
+    <div class="related"><a href="/toolkit/worksheet.html">Worksheet Generator</a><a href="/toolkit/case-converter.html">Case Converter</a></div>
+  </div>
+
+  <section class="panel">
+    <h2><span>1</span>Test</h2>
+    <div class="field">
+      <label for="lang">भाषा</label>
+      <select id="lang">
+        <option value="en" selected>English</option>
+        <option value="hi">Hinglish</option>
+      </select>
+    </div>
+    <div id="target">Start दबाने के बाद timer चलेगा।</div>
+    <div class="field" style="margin-top:.9rem">
+      <label for="typed">यहाँ टाइप करें</label>
+      <textarea id="typed" spellcheck="false" disabled placeholder="Start दबाएँ…"></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" id="start">Start 60s test</button>
+      <button class="btn secondary" type="button" id="reset">Reset</button>
+    </div>
+    <div class="output" id="stats">WPM — · Accuracy — · Time —</div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2><span>2</span>Tips</h2>
+    <ul class="list">
+      <li><strong>अंगुलियाँ home row पर</strong> — left hand ASDF, right hand JKL; से शुरू करें।</li>
+      <li><strong>स्क्रीन नहीं, text देखें</strong> — keyboard देखने से speed 10–15 WPM रुक जाती है।</li>
+      <li><strong>पहले accuracy</strong> — 95% accuracy के बाद ही speed बढ़ाएँ।</li>
+      <li><strong>रोज़ 10 मिनट</strong> — हफ्ते में एक घंटे से ज़्यादा फायदा देता है।</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+  const TEXTS = {
+    en: [
+      'The best way to learn typing is to type a little every day and keep your eyes on the screen instead of the keyboard. Speed comes later, accuracy comes first.',
+      'Small habits build big results. If you spend ten minutes each morning practising the same paragraph, your fingers slowly learn where every key lives.',
+      'A clear plan saves more time than a fast keyboard. Write down the three tasks that matter today and start with the hardest one before opening any chat app.'
+    ],
+    hi: [
+      'Computer par kaam karte waqt sabse zaroori cheez hai saaf aadat. Roz das minute typing practice karein aur screen par nazar rakhein, keyboard par nahi.',
+      'Jo log dheere par sahi type karte hain, wo jaldi wale logon se aage nikal jaate hain kyunki unhe galtiyan sudharni nahi padti.',
+      'Ek chhota target set karein, use poora karein, phir agla target lein. Isi tarah mahine bhar me speed apne aap badh jaati hai.'
+    ]
+  };
+  const targetEl = document.getElementById('target');
+  const typed = document.getElementById('typed');
+  const stats = document.getElementById('stats');
+  const startBtn = document.getElementById('start');
+  let text = '', started = 0, timer = null, finished = false;
+
+  function render() {
+    const value = typed.value;
+    targetEl.replaceChildren();
+    let badAt = -1;
+    for (let i = 0; i < text.length; i++) {
+      const span = document.createElement('span');
+      span.textContent = text[i];
+      if (i < value.length) span.className = value[i] === text[i] ? 'ok' : 'bad';
+      else if (i === value.length) span.className = 'now';
+      targetEl.append(span);
+      if (i < value.length && value[i] !== text[i] && badAt < 0) badAt = i;
+    }
+    return badAt;
+  }
+
+  function correctCount() {
+    const value = typed.value;
+    let ok = 0;
+    for (let i = 0; i < value.length; i++) if (value[i] === text[i]) ok++;
+    return ok;
+  }
+
+  function tick() {
+    const seconds = Math.min(60, (Date.now() - started) / 1000);
+    const chars = correctCount();
+    const wpm = seconds > 1 ? Math.round((chars / 5) / (seconds / 60)) : 0;
+    const accuracy = typed.value.length ? Math.round((chars / typed.value.length) * 100) : 100;
+    stats.textContent = 'WPM ' + wpm + ' · Accuracy ' + accuracy + '% · Time ' + Math.round(seconds) + 's';
+    if (seconds >= 60 && !finished) finish(wpm, accuracy);
+  }
+
+  function finish(wpm, accuracy) {
+    finished = true;
+    clearInterval(timer);
+    typed.disabled = true;
+    startBtn.disabled = false;
+    aiStatus('ok', 'Test पूरा — ' + wpm + ' WPM, ' + accuracy + '% accuracy।');
+  }
+
+  function reset() {
+    clearInterval(timer);
+    finished = false;
+    typed.value = '';
+    typed.disabled = true;
+    targetEl.textContent = 'Start दबाने के बाद timer चलेगा।';
+    stats.textContent = 'WPM — · Accuracy — · Time —';
+    startBtn.disabled = false;
+    startBtn.textContent = 'Start 60s test';
+  }
+
+  startBtn.addEventListener('click', () => {
+    const pool = TEXTS[document.getElementById('lang').value];
+    text = pool[Math.floor(Math.random() * pool.length)];
+    typed.value = '';
+    typed.disabled = false;
+    typed.focus();
+    render();
+    finished = false;
+    started = Date.now();
+    startBtn.disabled = true;
+    startBtn.textContent = 'Running…';
+    clearInterval(timer);
+    timer = setInterval(tick, 250);
+    aiStatus('info', 'टाइपिंग शुरू — 60 सेकंड।');
+  });
+
+  typed.addEventListener('input', () => {
+    render();
+    if (started) tick();
+  });
+  document.getElementById('reset').addEventListener('click', reset);
+</script>
+</body>
+</html>

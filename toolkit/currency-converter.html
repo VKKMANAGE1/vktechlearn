@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Currency Converter — Live Exchange Rates | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Currency converter — INR, USD, EUR, GBP aur 30+ currencies ke live exchange rates se turant conversion karein, bina signup.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/currency-converter.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>💹 Currency Converter</h1>
+    <p>₹ से $ तक — ताज़ा exchange rates से तुरंत conversion। रेट internet से आते हैं, इसलिए दाम रोज़ बदलते रहते हैं।</p>
+    <div class="related"><a href="/toolkit/age-calculator.html">Age Calculator</a><a href="/toolkit/instagram-toolkit.html">Instagram Toolkit</a></div>
+  </div>
+
+  <section class="panel">
+    <h2><span>1</span>Amount</h2>
+    <div class="row-3">
+      <div class="field">
+        <label for="amount">रकम</label>
+        <input type="number" id="amount" value="1000" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label for="from">से</label>
+        <select id="from"></select>
+      </div>
+      <div class="field">
+        <label for="to">में</label>
+        <select id="to"></select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" id="convert">Convert</button>
+      <button class="btn secondary" type="button" id="swap">Swap ⇄</button>
+    </div>
+    <div class="output" id="result">रकम डालकर Convert दबाएँ।</div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2><span>2</span>Popular rates</h2>
+    <ul class="list" id="quick"></ul>
+    <p class="hint">Rates <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener nofollow">exchangerate-api.com</a> से आते हैं और एक घंटा तक cache रहते हैं। बैंक का रेट थोड़ा अलग हो सकता है।</p>
+  </section>
+</main>
+
+<script>
+  const CURRENCIES = ['INR','USD','EUR','GBP','AED','SGD','AUD','CAD','JPY','CNY','CHF','SAR','QAR','KWD','MYR','THB','NPR','BDT','LKR','IDR','PHP','KRW','HKD','NZD','ZAR','BRL','MXN','TRY','RUB','PLN'];
+  const FALLBACK = { USD: 0.0119, EUR: 0.0110, GBP: 0.0094, AED: 0.0437, SGD: 0.0160, AUD: 0.0181, CAD: 0.0165, JPY: 1.79, CNY: 0.0864, CHF: 0.0105, SAR: 0.0446, QAR: 0.0433, KWD: 0.00365, MYR: 0.0528, THB: 0.409, NPR: 1.60, BDT: 1.45, LKR: 3.47, IDR: 190, PHP: 0.696, KRW: 16.2, HKD: 0.0928, NZD: 0.0198, ZAR: 0.218, BRL: 0.0648, MXN: 0.221, TRY: 0.407, RUB: 1.05, PLN: 0.0472 };
+  const rateCache = { at: 0, rates: null };
+
+  const from = document.getElementById('from'), to = document.getElementById('to');
+  CURRENCIES.forEach((c) => {
+    from.append(new Option(c, c));
+    to.append(new Option(c, c));
+  });
+  from.value = 'INR';
+  to.value = 'USD';
+
+  async function ratesFor(base) {
+    const now = Date.now();
+    if (rateCache.rates && rateCache.base === base && now - rateCache.at < 3600 * 1000) return rateCache.rates;
+    const res = await fetch('https://open.er-api.com/v6/latest/' + base);
+    if (!res.ok) throw new Error('rates ' + res.status);
+    const data = await res.json();
+    if (data.result !== 'success') throw new Error('rates unavailable');
+    rateCache.base = base;
+    rateCache.at = now;
+    rateCache.rates = data.rates;
+    return data.rates;
+  }
+
+  async function getRates(base) {
+    try { return { rates: await ratesFor(base), live: true }; }
+    catch (e) {
+      if (base === 'INR') return { rates: FALLBACK, live: false };
+      return { rates: null, live: false };
+    }
+  }
+
+  function money(n, cur) {
+    try { return new Intl.NumberFormat('en-IN', { maximumFractionDigits: n < 10 ? 4 : 2 }).format(n) + ' ' + cur; }
+    catch (e) { return n + ' ' + cur; }
+  }
+
+  async function convert() {
+    const amount = Number(document.getElementById('amount').value);
+    if (!(amount >= 0)) { aiStatus('err', 'सही रकम डालें।'); return; }
+    aiStatus('info', 'रेट आ रहे हैं…');
+    const { rates, live } = await getRates(from.value);
+    if (!rates) { aiStatus('err', 'इस currency के रेट नहीं मिले। दुबारा कोशिश करें।'); return; }
+    const rate = from.value === to.value ? 1 : rates[to.value];
+    if (!rate) { aiStatus('err', 'इस जोड़ी के लिए रेट नहीं मिला।'); return; }
+    document.getElementById('result').textContent = money(amount, from.value) + ' = ' + money(amount * rate, to.value);
+    aiStatus(live ? 'ok' : 'warn', live ? 'Live rate लगा।' : 'ऑफ़लाइन अनुमानित rate लगा — internet जाँचें।');
+    paintQuick(rates, live);
+  }
+
+  function paintQuick(rates, live) {
+    const base = from.value;
+    const picks = ['USD','EUR','GBP','AED'].filter((c) => c !== base);
+    const list = document.getElementById('quick');
+    list.replaceChildren(...picks.map((c) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<strong></strong> <span></span>';
+      li.querySelector('strong').textContent = '1 ' + base;
+      li.querySelector('span').textContent = rates[c] ? '≈ ' + money(rates[c], c) : '—';
+      return li;
+    }));
+  }
+
+  document.getElementById('convert').addEventListener('click', convert);
+  document.getElementById('swap').addEventListener('click', () => {
+    const a = from.value;
+    from.value = to.value;
+    to.value = a;
+    convert();
+  });
+  document.getElementById('amount').addEventListener('keydown', (e) => { if (e.key === 'Enter') convert(); });
+  convert();
+</script>
+</body>
+</html>

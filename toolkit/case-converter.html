@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Converter — UPPER, lower, Title Case Free | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="Case converter — text ko UPPER, lower, Title, Sentence aur camelCase me turant badlein, copy ya download karein.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/case-converter.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🔤 Case Converter</h1>
+    <p>एक ही text को छह तरह के case में बदलें — heading, code variable, या साफ sentence के लिए।</p>
+    <div class="related"><a href="/toolkit/grammar-checker.html">Grammar Checker</a><a href="/toolkit/article-rewriter.html">Article Rewriter</a></div>
+  </div>
+
+  <section class="panel">
+    <h2><span>1</span>Text</h2>
+    <div class="field">
+      <label for="input">अपना text लिखें या paste करें</label>
+      <textarea id="input" rows="7" placeholder="yahan apna text paste karein..."></textarea>
+      <div class="hint" id="count">0 characters · 0 words</div>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" data-mode="upper">UPPER CASE</button>
+      <button class="btn" type="button" data-mode="lower">lower case</button>
+      <button class="btn" type="button" data-mode="title">Title Case</button>
+      <button class="btn secondary" type="button" data-mode="sentence">Sentence case</button>
+      <button class="btn secondary" type="button" data-mode="camel">camelCase</button>
+      <button class="btn secondary" type="button" data-mode="snake">snake_case</button>
+    </div>
+    <div class="output" id="output">नतीजा यहाँ दिखेगा।</div>
+    <div class="actions">
+      <button class="btn" type="button" id="copy">Copy</button>
+      <button class="btn secondary" type="button" id="download">Download .txt</button>
+      <button class="btn secondary" type="button" id="reset">Clear</button>
+    </div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+</main>
+
+<script>
+  const input = document.getElementById('input');
+  const output = document.getElementById('output');
+  const count = document.getElementById('count');
+
+  const SMALL = new Set(['a','an','and','as','at','but','by','for','in','of','on','or','the','to','vs','via']);
+  const words = (t) => t.trim().split(/\s+/).filter(Boolean);
+
+  function titleCase(t) {
+    return words(t.toLowerCase()).map((w, i) => {
+      const clean = w.replace(/[^a-z0-9']/gi, '');
+      if (i > 0 && SMALL.has(clean)) return w;
+      return w.replace(/[a-z]/i, (c) => c.toUpperCase());
+    }).join(' ');
+  }
+  function sentenceCase(t) {
+    return t.toLowerCase().replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, p, c) => p + c.toUpperCase());
+  }
+  const transforms = {
+    upper: (t) => t.toUpperCase(),
+    lower: (t) => t.toLowerCase(),
+    title: titleCase,
+    sentence: sentenceCase,
+    camel: (t) => words(t.toLowerCase()).map((w, i) => {
+      const clean = w.replace(/[^a-z0-9]/gi, '');
+      return i === 0 ? clean : clean.charAt(0).toUpperCase() + clean.slice(1);
+    }).join(''),
+    snake: (t) => words(t.toLowerCase()).map((w) => w.replace(/[^a-z0-9]/gi, '')).filter(Boolean).join('_')
+  };
+
+  function updateCount() {
+    const t = input.value;
+    count.textContent = t.length + ' characters · ' + words(t).length + ' words';
+  }
+  input.addEventListener('input', updateCount);
+
+  document.querySelectorAll('[data-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!input.value.trim()) { aiStatus('err', 'पहले text लिखें।'); return; }
+      output.textContent = transforms[btn.dataset.mode](input.value);
+      aiStatus('ok', btn.textContent + ' लागू हुआ।');
+    });
+  });
+
+  document.getElementById('copy').addEventListener('click', (e) => {
+    copyText(output.textContent, e.currentTarget);
+    aiStatus('ok', 'Copy हो गया।');
+  });
+  document.getElementById('download').addEventListener('click', () => {
+    const blob = new Blob([output.textContent], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'case-converted.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById('reset').addEventListener('click', () => {
+    input.value = '';
+    output.textContent = 'नतीजा यहाँ दिखेगा।';
+    updateCount();
+    aiStatus('info', 'साफ।');
+  });
+</script>
+</body>
+</html>

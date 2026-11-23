@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Article Rewriter — Rewrite Text in Any Tone | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<meta name="description" content="AI article rewriter — apna paragraph simple, formal, short ya Hinglish tone me badlein, apni Gemini/OpenAI key ke saath, bina signup.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/article-rewriter.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<script src="/toolkit/ai.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tool-head">
+    <div class="eyebrow">Tools</div>
+    <h1>🤖 AI Article Rewriter</h1>
+    <p>वही बात, नए शब्दों में — tone बदलें, छोटा करें, या Hinglish में लिखवाएँ। फैक्ट आपके ही text से आते हैं, इसलिए कुछ जोड़ना नहीं पड़ता।</p>
+    <div class="related"><a href="/toolkit/grammar-checker.html">Grammar Checker</a><a href="/toolkit/aura-ai.html">Aura AI</a></div>
+  </div>
+
+  <div class="two-col">
+    <section class="panel">
+      <h2><span>1</span>Key</h2>
+      <div class="field">
+        <label for="provider">Provider</label>
+        <select id="provider">
+          <option value="gemini" selected>Google Gemini</option>
+          <option value="openai">OpenAI</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="api-key">API key</label>
+        <input type="password" id="api-key" autocomplete="off" placeholder="AIza… या sk─…">
+        <div class="hint" id="key-note"></div>
+      </div>
+      <div class="actions"><button class="btn" type="button" id="save-key">Save key</button></div>
+      <p class="hint">Rewrite किए text को publish करने से पहले खुद पढ़ें — तथ्य, नाम और संख्याएँ जाँच लें।</p>
+    </section>
+
+    <section class="panel">
+      <h2><span>2</span>Rewrite</h2>
+      <div class="field">
+        <label for="source">मूल text</label>
+        <textarea id="source" rows="8" placeholder="यहाँ अपना paragraph paste करें..."></textarea>
+      </div>
+      <div class="row-3">
+        <div class="field">
+          <label for="tone">Tone</label>
+          <select id="tone">
+            <option value="simple aur natural" selected>Simple</option>
+            <option value="professional aur formal">Formal</option>
+            <option value="short aur crisp, maximum 120 words">Short</option>
+            <option value="Hinglish">Hinglish</option>
+            <option value="friendly aur conversational">Friendly</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="keep">क्या नहीं बदलना</label>
+          <input id="keep" placeholder="जैसे: tool के नाम, कीमत">
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="rewrite">Rewrite</button>
+        <button class="btn secondary" type="button" id="copy">Copy result</button>
+      </div>
+      <div class="output" id="result" aria-live="polite">नया text यहाँ दिखेगा।</div>
+      <div class="status" id="status" role="status"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+  let provider = 'gemini';
+  bindKeyPanel(provider);
+  document.getElementById('provider').addEventListener('change', (e) => { provider = e.target.value; bindKeyPanel(provider); });
+
+  const btn = document.getElementById('rewrite');
+  btn.addEventListener('click', async () => {
+    const source = document.getElementById('source').value.trim();
+    if (source.length < 40) { aiStatus('err', 'कम से कम 40 अक्षर का text डालें।'); return; }
+    const tone = document.getElementById('tone').value;
+    const keep = document.getElementById('keep').value.trim();
+    const prompt = 'Rewrite the text below in ' + tone + ' tone. Keep the meaning and all facts the same. Do not add new claims. Return only the rewritten text without notes or headings.' + (keep ? ' Keep these unchanged: ' + keep + '.' : '') + '\n\nTEXT:\n' + source;
+    aiBusy(btn, true, 'Rewrite', 'लिख रहा है…');
+    aiStatus('info', 'नया version बन रहा है…');
+    try {
+      const text = await aiAsk(prompt, provider);
+      document.getElementById('result').textContent = text || 'खाली जवाब मिला।';
+      aiStatus('ok', 'तैयार।');
+    } catch (err) {
+      aiStatus('err', err.message);
+    } finally {
+      aiBusy(btn, false, 'Rewrite');
+    }
+  });
+
+  document.getElementById('copy').addEventListener('click', (e) => copyText(document.getElementById('result').textContent, e.currentTarget));
+</script>
+</body>
+</html>
