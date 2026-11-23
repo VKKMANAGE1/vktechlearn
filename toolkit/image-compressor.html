@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+
+        /* Hide the file input but keep the label clickable */
+        .file-input-label {
+            cursor: pointer;
+        }
+
+        .file-input-label:hover {
+            border-color: #60a5fa; /* border-blue-400 */
+        }
+
+        .file-input {
+            display: none;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex items-center justify-center flex-col">
+
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl w-full max-w-7xl mx-auto flex flex-col items-center">
+
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 text-center tracking-tight">
+            <i class="fas fa-images text-blue-400 mr-3"></i>Image Compressor
+        </h1>
+        <p class="text-gray-400 text-center mb-8 max-w-2xl">
+            Compress your images right in the browser, no server upload required.
+        </p>
+
+        <!-- Ad Placement -->
+        <div class="w-full my-6 flex justify-center">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'bce46cf45f4cb88d5f00f106757e43b4',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/bce46cf45f4cb88d5f00f106757e43b4/invoke.js"></script>
+        </div>
+
+        <!-- Upload Area -->
+        <div class="w-full mb-8">
+            <label for="fileInput" class="file-input-label flex flex-col items-center justify-center w-full h-40 border-2 border-gray-600 border-dashed rounded-xl bg-gray-700 hover:bg-gray-600 transition-colors duration-300">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                    <p class="mt-2 text-lg text-gray-400 font-semibold">
+                        Drag & Drop Image or <span class="text-blue-400 underline">Click to Upload</span>
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">JPEG, PNG, GIF</p>
+                </div>
+            </label>
+            <input id="fileInput" type="file" class="file-input" accept="image/jpeg, image/png, image/gif" />
+        </div>
+
+        <!-- Two-column layout for comparison -->
+        <div id="image-container" class="w-full flex flex-col md:flex-row gap-8 hidden">
+            <!-- Original Image Column -->
+            <div class="w-full md:w-1/2 p-6 bg-gray-700 rounded-xl shadow-md flex flex-col items-center">
+                <h2 class="text-xl font-semibold text-gray-300 mb-4">Original Image</h2>
+                <img id="originalImage" src="" alt="Original Image" class="w-full h-auto rounded-lg mb-4 object-contain max-h-96">
+                <span id="originalSize" class="text-gray-400 text-sm"></span>
+            </div>
+
+            <!-- Compressed Image Column -->
+            <div class="w-full md:w-1/2 p-6 bg-gray-700 rounded-xl shadow-md flex flex-col items-center">
+                <h2 class="text-xl font-semibold text-gray-300 mb-4">Compressed Preview</h2>
+                <img id="compressedImage" src="" alt="Compressed Image" class="w-full h-auto rounded-lg mb-4 object-contain max-h-96">
+                <span id="compressedSize" class="text-gray-400 text-sm"></span>
+            </div>
+        </div>
+
+        <!-- Controls Section -->
+        <div id="controls-container" class="w-full mt-8 hidden">
+            <!-- Compression Quality Slider -->
+            <div class="flex items-center justify-between gap-4 mb-6">
+                <label for="qualitySlider" class="text-lg font-medium text-gray-300 whitespace-nowrap">Compression Quality:</label>
+                <input type="range" id="qualitySlider" min="0.1" max="1.0" value="0.7" step="0.05" class="w-full accent-blue-500 rounded-lg h-2 bg-gray-700 border-transparent">
+                <span id="qualityValue" class="text-blue-400 font-bold text-lg">70%</span>
+            </div>
+
+            <!-- Download Button -->
+            <button id="downloadButton" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                <i class="fas fa-download mr-2"></i> Download Compressed Image
+            </button>
+        </div>
+
+        <!-- Notification Message Area -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full max-w-2xl hidden"></div>
+
+    </div>
+
+    <!-- Instructions on how to use the tool -->
+    <div class="mt-12 w-full max-w-7xl text-left p-6 rounded-2xl bg-gray-800 shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">How to Use this Image Compressor? (इस इमेज कंप्रेसर का उपयोग कैसे करें?)</h2>
+        <p class="text-gray-400 mb-6">
+            This tool is designed to be simple and easy to use. Just follow these steps: <br/>
+            यह टूल उपयोग करने में बहुत आसान है। बस इन चरणों का पालन करें:
+        </p>
+
+        <ol class="list-decimal list-inside text-gray-300 space-y-4">
+            <li>
+                <strong class="text-blue-400">Select or Drag & Drop Image (इमेज चुनें या Drag & Drop करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click on the "Click to Upload" button or simply drag and drop your image file onto the dotted area. <br/>
+                    "Click to Upload" बटन पर क्लिक करें या अपनी इमेज फ़ाइल को सीधे dotted area पर Drag करके छोड़ दें।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Adjust Compression Quality (कंप्रेशन क्वालिटी एडजस्ट करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Use the "Compression Quality" slider to change the quality of the compressed image. A lower value means more compression and a smaller file size, while a higher value results in better image quality and a larger file size. The compressed preview will update automatically. <br/>
+                    "Compression Quality" स्लाइडर का उपयोग करके कंप्रेस्ड इमेज की क्वालिटी को कम या ज्यादा करें। कम वैल्यू का मतलब है ज्यादा कंप्रेशन और छोटा फाइल साइज, जबकि ज्यादा वैल्यू से अच्छी क्वालिटी और बड़ा फाइल साइज मिलेगा। कंप्रेस्ड प्रीव्यू अपने आप अपडेट होगा।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Download Compressed Image (कंप्रेस्ड इमेज डाउनलोड करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Once you are satisfied with the preview, click the "Download Compressed Image" button to save the new image to your computer. <br/>
+                    जब आप प्रीव्यू से संतुष्ट हो जाएं, तो नई इमेज को अपने कंप्यूटर पर सेव करने के लिए "Download Compressed Image" बटन पर क्लिक करें।
+                </p>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // DOM Element references
+        const fileInput = document.getElementById('fileInput');
+        const imageContainer = document.getElementById('image-container');
+        const originalImageEl = document.getElementById('originalImage');
+        const originalSizeEl = document.getElementById('originalSize');
+        const compressedImageEl = document.getElementById('compressedImage');
+        const compressedSizeEl = document.getElementById('compressedSize');
+        const controlsContainer = document.getElementById('controls-container');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValueEl = document.getElementById('qualityValue');
+        const downloadButton = document.getElementById('downloadButton');
+        const messageArea = document.getElementById('messageArea');
+
+        let originalFile = null;
+        let originalImageDimensions = {};
+
+        // --- Utility Functions ---
+
+        // Show a temporary message to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full max-w-2xl block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0';
+                messageArea.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'opacity' && messageArea.style.opacity === '0') {
+                        messageArea.classList.add('hidden');
+                    }
+                }, { once: true });
+            }, 3000);
+        };
+
+        // Formats a file size in bytes to a human-readable string (KB, MB)
+        const formatBytes = (bytes, decimals = 2) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        };
+
+        // --- Core Functionality ---
+
+        // Main function to compress the image based on the quality slider value
+        const compressImage = () => {
+            if (!originalFile) return;
+
+            const quality = parseFloat(qualitySlider.value);
+            qualityValueEl.textContent = `${Math.round(quality * 100)}%`;
+
+            // Create an off-screen canvas for compression
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas dimensions to match the original image
+            canvas.width = originalImageDimensions.width;
+            canvas.height = originalImageDimensions.height;
+
+            // Draw the original image onto the canvas
+            const img = new Image();
+            img.src = originalImageEl.src;
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // Get the data URL for the compressed image
+                // The toDataURL method handles the compression
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                
+                // Display the compressed image and its size
+                compressedImageEl.src = compressedDataUrl;
+                
+                // Calculate size from Base64 string length
+                const base64Length = compressedDataUrl.length - 'data:image/jpeg;base64,'.length;
+                const compressedSize = base64Length * 0.75; // Approximately, as each 4 Base64 chars represent 3 bytes
+                compressedSizeEl.textContent = formatBytes(compressedSize);
+            };
+        };
+
+        // --- Event Listeners ---
+
+        // Handle file selection from the input
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                showMessage("Please upload a valid image file (JPEG, PNG, GIF).", true);
+                return;
+            }
+
+            originalFile = file;
+            imageContainer.classList.remove('hidden');
+            controlsContainer.classList.remove('hidden');
+            
+            // Use FileReader to get the data URL
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImageEl.src = e.target.result;
+                
+                // Get image dimensions once loaded
+                originalImageEl.onload = () => {
+                    originalImageDimensions.width = originalImageEl.naturalWidth;
+                    originalImageDimensions.height = originalImageEl.naturalHeight;
+                    // Trigger initial compression
+                    compressImage();
+                };
+            };
+            reader.readAsDataURL(file);
+
+            // Display original file size
+            originalSizeEl.textContent = formatBytes(file.size);
+            showMessage("Image loaded successfully!", false);
+        });
+
+        // Listen for changes on the quality slider to update the preview
+        qualitySlider.addEventListener('input', compressImage);
+
+        // Handle the download button click
+        downloadButton.addEventListener('click', () => {
+            if (!compressedImageEl.src || compressedImageEl.src.length < 100) {
+                showMessage("No compressed image to download.", true);
+                return;
+            }
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = compressedImageEl.src;
+            downloadLink.download = 'VK_Tech_Learn_compress.jpeg';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            showMessage("Image downloaded successfully!", false);
+        });
+    </script>
+</body>
+</html>

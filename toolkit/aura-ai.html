@@ -1,112 +1,1046 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en" class="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aura AI — Free AI Chat With Your Own Key | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Aura AI — Shavi AI se free AI chat, bina key aur bina signup. Chahein to apni Gemini ya OpenAI key bhi laga sakte hain, jo sirf browser me rehti hai.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/aura-ai.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<link rel="stylesheet" href="/toolkit/ai.css">
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura AI Chat Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.puter.com/v2/"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#0f0f0f',
+                        'dark-sidebar': '#1a1a1a',
+                        'dark-chat': '#262626',
+                        'dark-input': '#2d2d2d',
+                        'user-bg': '#2563eb',
+                        'bot-bg': '#374151',
+                        'accent': '#8b5cf6',
+                        'premium-dark': '#121212',
+                        'premium-card': '#1e1e1e',
+                        'premium-border': '#2e2e2e'
+                    },
+                    animation: {
+                        'gradient': 'gradient 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 1.5s linear infinite',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .typing-animation {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+            animation: typing 1.4s infinite ease-in-out both;
+            margin: 0 2px;
+        }
+        .typing-animation:nth-child(1) { animation-delay: -0.32s; }
+        .typing-animation:nth-child(2) { animation-delay: -0.16s; }
+        .typing-animation:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.3); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .message-fade-in { animation: messageSlideIn 0.4s ease-out; }
+
+        @keyframes messageSlideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(-45deg, #8b5cf6, #06b6d4, #10b981, #f59e0b);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar { width: 6px; }
+        .scrollbar-custom::-webkit-scrollbar-track { background: transparent; }
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+            border-radius: 3px;
+        }
+
+        .chat-message { word-wrap: break-word; overflow-wrap: anywhere; }
+
+        .premium-card {
+            background: linear-gradient(145deg, #1e1e1e, #252525);
+            border: 1px solid #2e2e2e;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        html:not(.dark) .premium-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .premium-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #ff8c00, #ff4500);
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            font-weight: bold; margin-top: 1em; margin-bottom: 0.5em;
+        }
+        .markdown-content h1 { font-size: 1.5em; border-bottom: 1px solid rgba(128,128,128,0.25); padding-bottom: 0.3em; }
+        .markdown-content h2 { font-size: 1.3em; }
+        .markdown-content h3 { font-size: 1.1em; }
+        .markdown-content p { margin-bottom: 0.8em; line-height: 1.6; }
+        .markdown-content p:last-child { margin-bottom: 0; }
+        .markdown-content ul, .markdown-content ol { margin-bottom: 1em; padding-left: 1.5em; }
+        .markdown-content ul { list-style-type: disc; }
+        .markdown-content ol { list-style-type: decimal; }
+        .markdown-content li { margin-bottom: 0.25em; }
+        .markdown-content code {
+            background-color: rgba(0, 0, 0, 0.25);
+            padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; font-size: 0.9em;
+        }
+        .markdown-content pre {
+            background-color: rgba(0, 0, 0, 0.35);
+            padding: 1em; border-radius: 8px; overflow-x: auto; margin-bottom: 1em;
+        }
+        .markdown-content pre code { background: none; padding: 0; }
+        .markdown-content blockquote {
+            border-left: 3px solid rgba(139, 92, 246, 0.5);
+            padding-left: 1em; margin-left: 0; opacity: 0.85; font-style: italic;
+        }
+        .markdown-content a { color: #8b5cf6; text-decoration: none; }
+        .markdown-content a:hover { text-decoration: underline; }
+        .markdown-content table { border-collapse: collapse; margin-bottom: 1em; }
+        .markdown-content th, .markdown-content td { border: 1px solid rgba(128,128,128,0.35); padding: 0.4em 0.7em; }
+
+        .cursor-blink::after {
+            content: '▋';
+            margin-left: 2px;
+            animation: blink 1s steps(2, start) infinite;
+        }
+        @keyframes blink { to { visibility: hidden; } }
+
+        @media (max-width: 1023px) {
+            #sidebar { position: fixed; inset: 0 auto 0 0; z-index: 30; }
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="bg-gray-50 dark:bg-premium-dark text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="w-80 bg-white dark:bg-premium-card border-r border-gray-200 dark:border-premium-border flex flex-col transition-transform duration-300 shadow-xl">
+            <!-- Profile Section -->
+            <div class="p-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                <div class="flex items-center gap-3 mb-4">
+                    <div id="userAvatar" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                        <div id="userName" class="font-bold text-lg">Aura AI Assistant</div>
+                        <div id="userStatus" class="text-sm opacity-90">By <a href="https://www.vktechlearn.online/" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">Vìñâý Kúshwâhå</a></div>
+                    </div>
+                </div>
+                <button id="newChatBtn" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white bg-opacity-20 rounded-xl hover:bg-opacity-30 transition-all duration-200 backdrop-blur-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    New Conversation
+                </button>
+            </div>
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🤖 Aura AI</h1>
-    <p><strong>Shavi AI</strong> से मुफ़्त chat करें — कोई key नहीं, कोई signup नहीं। या अपनी Gemini/OpenAI key लगाकर उसी model से बात करें; key आपके device से बाहर नहीं जाती।</p>
-    <div class="related"><a href="/toolkit/story-writer.html">AI Story Writer</a><a href="/toolkit/article-rewriter.html">AI Article Rewriter</a><a href="/toolkit/gemini-cheat-code.html">Gemini Cheat Code</a></div>
-  </div>
+            <!-- Model / Provider Selection -->
+            <div class="p-4 border-b border-gray-200 dark:border-premium-border space-y-3">
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="modelSelector">AI Engine</label>
+                    <select id="modelSelector" class="w-full bg-gray-50 dark:bg-premium-card border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                        <option value="free">Aura Free (no API key)</option>
+                        <option value="gemini-2.0-flash">Gemini 2.0 Flash (your key)</option>
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash (your key)</option>
+                        <option value="gemini-1.5-flash">Gemini 1.5 Flash (your key)</option>
+                    </select>
+                </div>
+                <div id="apiKeyWrap" class="hidden">
+                    <label class="block text-sm font-medium mb-2" for="apiKeyInput">Google AI Studio API key</label>
+                    <input id="apiKeyInput" type="password" placeholder="Paste your Gemini API key"
+                        class="w-full bg-gray-50 dark:bg-premium-card border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Only stored in your browser. Get one free at
+                        <a class="text-purple-500 hover:underline" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com</a>.
+                    </p>
+                </div>
+            </div>
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Provider और key</h2>
-      <div class="field">
-        <label for="provider">Provider</label>
-        <select id="provider">
-          <option value="shavi" selected>Shavi AI (मुफ़्त)</option>
-          <option value="gemini">Google Gemini</option>
-          <option value="openai">OpenAI</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="api-key">API key</label>
-        <input type="password" id="api-key" autocomplete="off" placeholder="AIza… या sk-…">
-        <div class="hint" id="key-note"></div>
-      </div>
-      <div class="actions"><button class="btn" type="button" id="save-key">Save key</button></div>
-      <p class="hint">Key सिर्फ इस browser के localStorage में रहती है। साझा कंप्यूटर पर काम के बाद Clear दबाएँ।</p>
-      <div class="actions"><button class="btn secondary" type="button" id="clear-key">Clear key</button></div>
-    </section>
+            <!-- Chat History -->
+            <div class="flex-1 overflow-y-auto scrollbar-custom">
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Recent Conversations</h3>
+                        <button id="clearHistoryBtn" class="text-xs text-red-500 hover:text-red-600 transition-colors">Clear All</button>
+                    </div>
+                    <div id="chatHistory" class="space-y-2"></div>
+                </div>
+            </div>
 
-    <section class="panel">
-      <h2><span>2</span>Chat</h2>
-      <div class="field">
-        <label for="prompt">आपका सवाल</label>
-        <textarea id="prompt" rows="5" placeholder="उदाहरण: Hinglish में 5 tips likho jo naye blogger ke liye kaam aayen."></textarea>
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="ask">Ask AI</button>
-        <button class="btn secondary" type="button" id="copy">Copy answer</button>
-        <button class="btn secondary" type="button" id="reset">Clear chat</button>
-      </div>
-      <div class="output md" id="answer" aria-live="polite">जवाब यहाँ दिखेगा।</div>
-      <div class="status" id="status" role="status" aria-live="polite"></div>
-    </section>
-  </div>
-</main>
+            <!-- Footer -->
+            <div class="p-4 border-t border-gray-200 dark:border-premium-border">
+                <div class="text-xs text-gray-500 dark:text-gray-400 text-center">
+                    <span class="premium-badge">PREMIUM</span>
+                    <p class="mt-2">Aura AI Chat Assistant v3.0</p>
+                </div>
+            </div>
+        </div>
 
-<script>
-  const PROVIDER_LABEL = { shavi: 'Shavi AI', gemini: 'Gemini', openai: 'OpenAI' };
-  let activeProvider = 'shavi';
-  bindKeyPanel(activeProvider);
+        <!-- Mobile Overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
 
-  document.getElementById('provider').addEventListener('change', (e) => {
-    activeProvider = e.target.value;
-    bindKeyPanel(activeProvider);
-    aiStatus('info', PROVIDER_LABEL[activeProvider] + ' चुना गया।');
-  });
+        <!-- Main Chat Area -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <!-- Header -->
+            <div class="bg-white dark:bg-premium-card border-b border-gray-200 dark:border-premium-border px-6 py-4 flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-4 min-w-0">
+                    <button id="sidebarToggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <div class="min-w-0">
+                        <h1 id="chatTitle" class="text-xl font-bold truncate">New Conversation</h1>
+                        <p id="chatSubtitle" class="text-sm text-gray-500 dark:text-gray-400">Aura Free engine</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="stopBtn" class="hidden text-xs px-3 py-1.5 rounded-lg border border-red-400 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">Stop</button>
+                    <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Toggle theme">
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-  document.getElementById('clear-key').addEventListener('click', () => {
-    aiSetKey(activeProvider, '');
-    document.getElementById('api-key').value = '';
-    bindKeyPanel(activeProvider);
-    aiStatus('warn', 'Key हटा दी गई।');
-  });
+            <!-- Chat Messages -->
+            <div id="chatContainer" class="flex-1 overflow-y-auto scrollbar-custom bg-gradient-to-br from-gray-50 to-gray-100 dark:from-premium-dark dark:to-premium-card">
+                <div id="chatMessages" class="max-w-4xl mx-auto px-6 py-8 space-y-6"></div>
+            </div>
 
-  const askBtn = document.getElementById('ask');
-  askBtn.addEventListener('click', async () => {
-    const prompt = document.getElementById('prompt').value.trim();
-    if (!prompt) { aiStatus('err', 'पहले सवाल लिखें।'); return; }
-    aiBusy(askBtn, true, 'Ask AI', 'सोच रहा है…');
-    aiStatus('info', 'जवाब आ रहा है…');
-    const box = aiStreamBox('answer');
-    box.begin();
-    try {
-      const text = await aiAsk(prompt, activeProvider, box.delta);
-      box.done(text);
-      aiStatus('ok', 'तैयार।');
-    } catch (err) {
-      box.fail();
-      aiStatus('err', err.message);
-    } finally {
-      aiBusy(askBtn, false, 'Ask AI');
-    }
-  });
+            <!-- Input Area -->
+            <div class="bg-white dark:bg-premium-card border-t border-gray-200 dark:border-premium-border p-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-end gap-3 bg-gray-100 dark:bg-premium-card rounded-2xl p-4 shadow-inner border border-gray-200 dark:border-premium-border">
+                        <div class="flex-1">
+                            <textarea id="messageInput" rows="1"
+                                placeholder="Type your message here... (Shift+Enter for new line)"
+                                class="w-full bg-transparent resize-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 max-h-32 leading-relaxed"></textarea>
+                        </div>
+                        <button id="sendBtn" class="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white p-2 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105">
+                            <svg id="sendIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            <svg id="loadingIcon" class="w-5 h-5 hidden animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p id="engineNote" class="text-[11px] text-gray-400 text-center mt-2"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  document.getElementById('copy').addEventListener('click', (e) => copyText(document.getElementById('answer').textContent, e.currentTarget));
-  document.getElementById('reset').addEventListener('click', () => {
-    document.getElementById('prompt').value = '';
-    document.getElementById('answer').textContent = 'जवाब यहाँ दिखेगा।';
-    aiStatus('info', 'चैट साफ।');
-  });
-</script>
+    <template id="welcomeTemplate">
+        <div class="text-center py-16" data-welcome>
+            <div class="gradient-bg w-20 h-20 rounded-3xl mx-auto mb-8 flex items-center justify-center animate-float">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Welcome to Aura AI Chat Assistant
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                Free to use, no API key required. Crafted by
+                <a href="https://www.vktechlearn.online/" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">Vìñâý Kúshwâhå</a>.
+                Ask anything and start chatting.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button class="suggestion-btn px-4 py-2 bg-white dark:bg-premium-card rounded-full text-sm hover:shadow-lg transition-all duration-200" data-suggestion="Explain quantum computing in simple terms">🔬 Explain quantum computing</button>
+                <button class="suggestion-btn px-4 py-2 bg-white dark:bg-premium-card rounded-full text-sm hover:shadow-lg transition-all duration-200" data-suggestion="Write a creative story about AI">✍️ Write a creative story</button>
+                <button class="suggestion-btn px-4 py-2 bg-white dark:bg-premium-card rounded-full text-sm hover:shadow-lg transition-all duration-200" data-suggestion="Help me plan a weekend trip">🗓️ Plan a weekend trip</button>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        /* ------------------------------------------------------------------
+           CONFIG
+           ------------------------------------------------------------------
+           PROXY_URL: (recommended for a public website)
+             Deploy the included worker.js on Cloudflare Workers (free) with
+             your Gemini key stored as a secret, then paste the worker URL
+             here. Visitors then chat for free and your key stays hidden.
+             Example: const PROXY_URL = 'https://aura-chat.yourname.workers.dev';
+
+           Leave it empty to use the free Puter engine / visitor's own key.
+           ------------------------------------------------------------------ */
+        const PROXY_URL = '';
+        const PUTER_MODEL = 'gpt-5-nano';
+        const SYSTEM_PROMPT = 'You are Aura AI, a friendly and knowledgeable assistant. Answer clearly and use markdown when helpful. Reply in the same language the user writes in (including Hindi or Hinglish).';
+
+        class AuraChatBot {
+            constructor() {
+                this.settings = this.loadSettings();
+                this.conversations = this.loadConversations();
+                this.currentChatId = null;
+                this.currentMessages = [];
+                this.isTyping = false;
+                this.abortController = null;
+
+                this.initElements();
+                this.initEventListeners();
+                this.applySettings();
+                this.loadConversationHistory();
+                this.newConversation();
+            }
+
+            /* ---------- storage ---------- */
+            loadSettings() {
+                const defaults = {
+                    userName: '',
+                    selectedModel: 'free',
+                    apiKey: '',
+                    theme: 'dark'
+                };
+                try {
+                    const saved = JSON.parse(localStorage.getItem('ai_chat_settings') || 'null');
+                    return saved ? { ...defaults, ...saved } : defaults;
+                } catch (e) {
+                    return defaults;
+                }
+            }
+
+            loadConversations() {
+                try {
+                    return JSON.parse(localStorage.getItem('ai_conversations') || '{}') || {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('ai_chat_settings', JSON.stringify(this.settings));
+            }
+
+            saveConversations() {
+                localStorage.setItem('ai_conversations', JSON.stringify(this.conversations));
+            }
+
+            /* ---------- wiring ---------- */
+            initElements() {
+                this.sidebar = document.getElementById('sidebar');
+                this.sidebarOverlay = document.getElementById('sidebarOverlay');
+                this.chatMessages = document.getElementById('chatMessages');
+                this.chatContainer = document.getElementById('chatContainer');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.stopBtn = document.getElementById('stopBtn');
+                this.sendIcon = document.getElementById('sendIcon');
+                this.loadingIcon = document.getElementById('loadingIcon');
+                this.chatTitle = document.getElementById('chatTitle');
+                this.chatSubtitle = document.getElementById('chatSubtitle');
+                this.chatHistory = document.getElementById('chatHistory');
+                this.modelSelector = document.getElementById('modelSelector');
+                this.apiKeyWrap = document.getElementById('apiKeyWrap');
+                this.apiKeyInput = document.getElementById('apiKeyInput');
+                this.newChatBtn = document.getElementById('newChatBtn');
+                this.clearHistoryBtn = document.getElementById('clearHistoryBtn');
+                this.themeToggle = document.getElementById('themeToggle');
+                this.sidebarToggle = document.getElementById('sidebarToggle');
+                this.welcomeTemplate = document.getElementById('welcomeTemplate');
+            }
+
+            initEventListeners() {
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.stopBtn.addEventListener('click', () => this.abortController && this.abortController.abort());
+
+                this.messageInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+                this.messageInput.addEventListener('input', () => this.autoResizeTextarea());
+
+                document.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.suggestion-btn');
+                    if (btn) {
+                        this.messageInput.value = btn.dataset.suggestion;
+                        this.autoResizeTextarea();
+                        this.sendMessage();
+                    }
+                });
+
+                this.newChatBtn.addEventListener('click', () => this.newConversation());
+                this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
+                this.sidebarOverlay.addEventListener('click', () => this.closeSidebar());
+                this.clearHistoryBtn.addEventListener('click', () => this.clearAllHistory());
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+
+                this.modelSelector.addEventListener('change', (e) => {
+                    this.settings.selectedModel = e.target.value;
+                    this.saveSettings();
+                    this.applyModelUI();
+                });
+
+                this.apiKeyInput.addEventListener('input', (e) => {
+                    this.settings.apiKey = e.target.value.trim();
+                    this.saveSettings();
+                });
+
+                window.addEventListener('resize', () => this.applyResponsiveState());
+            }
+
+            autoResizeTextarea() {
+                this.messageInput.style.height = 'auto';
+                this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 128) + 'px';
+            }
+
+            applySettings() {
+                document.documentElement.classList.toggle('dark', this.settings.theme === 'dark');
+                this.modelSelector.value = this.settings.selectedModel;
+                if (this.modelSelector.selectedIndex === -1) {
+                    this.settings.selectedModel = 'free';
+                    this.modelSelector.value = 'free';
+                }
+                this.apiKeyInput.value = this.settings.apiKey || '';
+                this.applyModelUI();
+                this.applyResponsiveState();
+            }
+
+            applyModelUI() {
+                const isFree = this.settings.selectedModel === 'free';
+                this.apiKeyWrap.classList.toggle('hidden', isFree);
+                const labels = {
+                    'free': PROXY_URL ? 'Aura Free engine (secure proxy)' : 'Aura Free engine (Puter)',
+                    'gemini-2.0-flash': 'Gemini 2.0 Flash',
+                    'gemini-2.5-flash': 'Gemini 2.5 Flash',
+                    'gemini-1.5-flash': 'Gemini 1.5 Flash'
+                };
+                this.chatSubtitle.textContent = labels[this.settings.selectedModel] || 'Aura Free engine';
+
+                const note = document.getElementById('engineNote');
+                if (isFree) {
+                    note.textContent = PROXY_URL
+                        ? 'Free for everyone. Responses may be inaccurate.'
+                        : 'Free engine powered by Puter — one-time free sign-in on first message.';
+                } else {
+                    note.textContent = 'Your API key stays in this browser only. Responses may be inaccurate.';
+                }
+            }
+
+            applyResponsiveState() {
+                if (window.innerWidth >= 1024) {
+                    this.sidebar.classList.remove('-translate-x-full');
+                    this.sidebarOverlay.classList.add('hidden');
+                } else {
+                    this.sidebar.classList.add('-translate-x-full');
+                }
+            }
+
+            toggleSidebar() {
+                this.sidebar.classList.toggle('-translate-x-full');
+                this.sidebarOverlay.classList.toggle('hidden');
+            }
+
+            closeSidebar() {
+                this.sidebar.classList.add('-translate-x-full');
+                this.sidebarOverlay.classList.add('hidden');
+            }
+
+            toggleTheme() {
+                const isDark = document.documentElement.classList.toggle('dark');
+                this.settings.theme = isDark ? 'dark' : 'light';
+                this.saveSettings();
+            }
+
+            showNotification(message, type = 'info') {
+                const el = document.createElement('div');
+                const bg = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+                el.className = `fixed top-4 right-4 ${bg} text-white px-6 py-3 rounded-xl shadow-lg z-50 message-fade-in transition-all duration-300`;
+                el.textContent = message;
+                document.body.appendChild(el);
+                setTimeout(() => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(-20px)';
+                    setTimeout(() => el.remove(), 300);
+                }, 3500);
+            }
+
+            /* ---------- conversation lifecycle ---------- */
+            newConversation() {
+                this.currentChatId = null;
+                this.currentMessages = [];
+                this.chatTitle.textContent = 'New Conversation';
+                this.chatMessages.innerHTML = '';
+                this.chatMessages.appendChild(this.welcomeTemplate.content.cloneNode(true));
+                if (window.innerWidth >= 1024) this.messageInput.focus();
+                if (window.innerWidth < 1024) this.closeSidebar();
+            }
+
+            hideWelcome() {
+                const welcome = this.chatMessages.querySelector('[data-welcome]');
+                if (welcome) welcome.remove();
+            }
+
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message || this.isTyping) return;
+
+                if (this.settings.selectedModel === 'free' && !PROXY_URL && typeof puter === 'undefined') {
+                    this.showNotification('Free engine could not load. Check your internet connection.', 'error');
+                    return;
+                }
+
+                if (this.settings.selectedModel !== 'free' && !this.settings.apiKey) {
+                    this.showNotification('Please paste your Gemini API key, or switch to the free engine.', 'error');
+                    return;
+                }
+
+                this.setBusy(true);
+                this.hideWelcome();
+
+                if (!this.currentChatId) {
+                    this.currentChatId = Date.now().toString();
+                    this.chatTitle.textContent = message.substring(0, 40) + (message.length > 40 ? '...' : '');
+                }
+
+                this.addMessage(message, 'user');
+                this.currentMessages.push({ role: 'user', content: message });
+                this.messageInput.value = '';
+                this.autoResizeTextarea();
+                this.scrollToBottom();
+
+                const loadingId = this.addLoadingMessage();
+                this.abortController = new AbortController();
+
+                let target = null;
+                let answer = '';
+                const onChunk = (chunk) => {
+                    if (!chunk) return;
+                    if (!target) {
+                        this.removeMessage(loadingId);
+                        target = this.addMessage('', 'assistant');
+                        target.classList.add('cursor-blink');
+                    }
+                    answer += chunk;
+                    target.innerHTML = this.formatMarkdown(answer);
+                    this.scrollToBottom();
+                };
+
+                try {
+                    if (this.settings.selectedModel === 'free') {
+                        answer = PROXY_URL
+                            ? await this.callProxyAPI(onChunk)
+                            : await this.callPuterAPI(onChunk);
+                    } else {
+                        answer = await this.callGeminiAPI(onChunk);
+                    }
+
+                    if (!answer.trim()) throw new Error('Empty response from the model');
+
+                    this.removeMessage(loadingId);
+                    if (target) {
+                        target.classList.remove('cursor-blink');
+                        target.innerHTML = this.formatMarkdown(answer);
+                    } else {
+                        this.addMessage(answer, 'assistant');
+                    }
+                    this.currentMessages.push({ role: 'assistant', content: answer });
+                    this.saveCurrentConversation();
+                } catch (error) {
+                    this.removeMessage(loadingId);
+                    if (error.name === 'AbortError') {
+                        if (target) {
+                            target.classList.remove('cursor-blink');
+                            if (answer.trim()) {
+                                this.currentMessages.push({ role: 'assistant', content: answer });
+                                this.saveCurrentConversation();
+                            }
+                        }
+                        this.showNotification('Generation stopped', 'info');
+                    } else {
+                        console.error('API Error:', error);
+                        if (target) target.remove();
+                        this.addMessage('Sorry, I could not get a response.\n\n`' + error.message + '`\n\nPlease check your internet connection and try again.', 'assistant', true);
+                        this.showNotification('Failed to get AI response', 'error');
+                    }
+                } finally {
+                    this.abortController = null;
+                    this.setBusy(false);
+                    this.scrollToBottom();
+                }
+            }
+
+            setBusy(busy) {
+                this.isTyping = busy;
+                this.sendBtn.disabled = busy;
+                this.sendIcon.classList.toggle('hidden', busy);
+                this.loadingIcon.classList.toggle('hidden', !busy);
+                this.stopBtn.classList.toggle('hidden', !busy);
+                if (!busy && window.innerWidth >= 1024) this.messageInput.focus();
+            }
+
+            /* ---------- APIs ---------- */
+            buildHistory(limit = 20) {
+                return this.currentMessages.slice(-limit);
+            }
+
+            // Free engine #1: Puter.js — no API key for you, visitors sign in
+            // once with a free Puter account ("user pays" model).
+            async callPuterAPI(onChunk) {
+                const messages = [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    ...this.buildHistory().map(m => ({ role: m.role, content: m.content }))
+                ];
+
+                const stream = await puter.ai.chat(messages, { model: PUTER_MODEL, stream: true });
+                let full = '';
+                for await (const part of stream) {
+                    if (this.abortController.signal.aborted) {
+                        const err = new Error('aborted');
+                        err.name = 'AbortError';
+                        throw err;
+                    }
+                    const piece = typeof part === 'string' ? part : (part && part.text) || '';
+                    if (piece) {
+                        full += piece;
+                        onChunk(piece);
+                    }
+                }
+                return full;
+            }
+
+            // Free engine #2: your own Cloudflare Worker proxy (key stays secret)
+            // Free tiers answer "overloaded" now and then, so a request that
+            // failed before producing any text is retried a couple of times.
+            async callProxyAPI(onChunk) {
+                let received = false;
+                const track = (piece) => { received = true; onChunk(piece); };
+
+                for (let attempt = 0; ; attempt++) {
+                    try {
+                        return await this.proxyAttempt(track);
+                    } catch (error) {
+                        const retriable = !received && attempt < 2 &&
+                            error.name !== 'AbortError' &&
+                            /overload|temporarily|50[234]/i.test(error.message || '');
+                        if (!retriable) throw error;
+                        await new Promise(r => setTimeout(r, 800 * (attempt + 1)));
+                    }
+                }
+            }
+
+            async proxyAttempt(onChunk) {
+                const response = await fetch(PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        system: SYSTEM_PROMPT,
+                        messages: this.buildHistory()
+                    }),
+                    signal: this.abortController.signal
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Proxy error ${response.status}`);
+                }
+
+                // Accepts both OpenAI-style (NVIDIA NIM, OpenAI) and Gemini-style chunks
+                return await this.readSSE(response, onChunk, (json) => {
+                    if (json.error) {
+                        const err = new Error(json.error.message || 'Upstream error');
+                        err.isStream = true;
+                        throw err;
+                    }
+                    const choice = json.choices && json.choices[0];
+                    if (choice) {
+                        const delta = choice.delta || choice.message || {};
+                        return delta.content || '';
+                    }
+                    const cand = json.candidates && json.candidates[0];
+                    const parts = cand && cand.content && cand.content.parts;
+                    return parts ? parts.map(p => p.text || '').join('') : '';
+                });
+            }
+
+            async callGeminiAPI(onChunk) {
+                const model = this.settings.selectedModel;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${encodeURIComponent(this.settings.apiKey)}`;
+
+                const body = {
+                    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                    contents: this.buildHistory().map(m => ({
+                        role: m.role === 'user' ? 'user' : 'model',
+                        parts: [{ text: m.content }]
+                    })),
+                    generationConfig: { temperature: 0.7, topP: 0.95, maxOutputTokens: 2048 }
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                    signal: this.abortController.signal
+                });
+
+                if (!response.ok) {
+                    let detail = '';
+                    try {
+                        const err = await response.json();
+                        detail = err.error && err.error.message ? `: ${err.error.message}` : '';
+                    } catch (e) { /* ignore */ }
+                    throw new Error(`Gemini API error ${response.status}${detail}`);
+                }
+
+                return await this.readSSE(response, onChunk, (json) => {
+                    const cand = json.candidates && json.candidates[0];
+                    const parts = cand && cand.content && cand.content.parts;
+                    return parts ? parts.map(p => p.text || '').join('') : '';
+                });
+            }
+
+            async readSSE(response, onChunk, extract) {
+                const reader = response.body && response.body.getReader
+                    ? response.body.getReader()
+                    : null;
+
+                if (!reader) {
+                    // Fallback for browsers without streaming support
+                    const text = await response.text();
+                    let full = '';
+                    text.split('\n').forEach(line => {
+                        if (!line.startsWith('data:')) return;
+                        const payload = line.slice(5).trim();
+                        if (!payload || payload === '[DONE]') return;
+                        try {
+                            full += extract(JSON.parse(payload));
+                        } catch (e) {
+                            if (e && e.isStream) throw e;
+                        }
+                    });
+                    onChunk(full);
+                    return full;
+                }
+
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let full = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        const trimmed = line.trim();
+                        if (!trimmed.startsWith('data:')) continue;
+                        const payload = trimmed.slice(5).trim();
+                        if (!payload || payload === '[DONE]') continue;
+                        try {
+                            const piece = extract(JSON.parse(payload));
+                            if (piece) {
+                                full += piece;
+                                onChunk(piece);
+                            }
+                        } catch (e) {
+                            if (e && e.isStream) throw e;
+                            /* partial JSON, ignore */
+                        }
+                    }
+                }
+                return full;
+            }
+
+            /* ---------- rendering ---------- */
+            addMessage(content, sender, isError = false) {
+                const messageId = String(Date.now()) + Math.random().toString(16).slice(2);
+                const row = document.createElement('div');
+                row.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} message-fade-in`;
+                row.setAttribute('data-message-id', messageId);
+
+                const avatar = document.createElement('div');
+                avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${
+                    sender === 'user'
+                        ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white order-2 ml-3'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 mr-3'
+                }`;
+                avatar.textContent = sender === 'user' ? ((this.settings.userName || 'U').charAt(0).toUpperCase()) : 'AI';
+
+                const bubble = document.createElement('div');
+                bubble.className = `max-w-2xl px-4 py-3 rounded-2xl chat-message ${
+                    sender === 'user'
+                        ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
+                        : `bg-white dark:bg-premium-card text-gray-900 dark:text-gray-100 shadow-sm ${isError ? 'border-l-4 border-red-500' : ''}`
+                }`;
+
+                const body = document.createElement('div');
+                body.className = 'message-content markdown-content';
+                body.innerHTML = this.formatMarkdown(content);
+
+                const timestamp = document.createElement('div');
+                timestamp.className = `text-xs opacity-60 mt-2 ${sender === 'user' ? 'text-right' : 'text-left'}`;
+                timestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                bubble.appendChild(body);
+                bubble.appendChild(timestamp);
+                row.appendChild(avatar);
+                row.appendChild(bubble);
+                this.chatMessages.appendChild(row);
+
+                return body;
+            }
+
+            addLoadingMessage() {
+                const messageId = 'loading-' + Date.now();
+                const row = document.createElement('div');
+                row.className = 'flex justify-start message-fade-in';
+                row.setAttribute('data-message-id', messageId);
+                row.innerHTML = `
+                    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 mr-3">AI</div>
+                    <div class="px-4 py-3 rounded-2xl bg-white dark:bg-premium-card shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <div class="typing-animation"></div>
+                            <div class="typing-animation"></div>
+                            <div class="typing-animation"></div>
+                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">Thinking...</span>
+                        </div>
+                    </div>`;
+                this.chatMessages.appendChild(row);
+                this.scrollToBottom();
+                return messageId;
+            }
+
+            removeMessage(messageId) {
+                const el = this.chatMessages.querySelector(`[data-message-id="${messageId}"]`);
+                if (el) el.remove();
+            }
+
+            scrollToBottom() {
+                this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
+            }
+
+            escapeHtml(text) {
+                return text
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+            }
+
+            formatMarkdown(text) {
+                if (!text) return '';
+                const blocks = [];
+                let html = this.escapeHtml(text);
+
+                // fenced code blocks (a fence still open mid-stream is closed here)
+                if ((html.match(/```/g) || []).length % 2 === 1) {
+                    html += '\n```';
+                }
+                html = html.replace(/```(\w+)?\n?([\s\S]*?)```/g, (m, lang, code) => {
+                    blocks.push(`<pre><code>${code.replace(/\n$/, '')}</code></pre>`);
+                    return `\u0000BLOCK${blocks.length - 1}\u0000`;
+                });
+                // inline code
+                html = html.replace(/`([^`\n]+)`/g, (m, code) => {
+                    blocks.push(`<code>${code}</code>`);
+                    return `\u0000BLOCK${blocks.length - 1}\u0000`;
+                });
+
+                html = html
+                    .replace(/^######\s+(.*)$/gm, '<h3>$1</h3>')
+                    .replace(/^#####\s+(.*)$/gm, '<h3>$1</h3>')
+                    .replace(/^####\s+(.*)$/gm, '<h3>$1</h3>')
+                    .replace(/^###\s+(.*)$/gm, '<h3>$1</h3>')
+                    .replace(/^##\s+(.*)$/gm, '<h2>$1</h2>')
+                    .replace(/^#\s+(.*)$/gm, '<h1>$1</h1>')
+                    .replace(/^\s*&gt;\s?(.*)$/gm, '<blockquote>$1</blockquote>')
+                    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+                    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+                // lists
+                const lines = html.split('\n');
+                const out = [];
+                let listType = null;
+                const closeList = () => { if (listType) { out.push(`</${listType}>`); listType = null; } };
+
+                for (const line of lines) {
+                    const ul = line.match(/^\s*[-*+]\s+(.*)$/);
+                    const ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
+                    if (ul) {
+                        if (listType !== 'ul') { closeList(); out.push('<ul>'); listType = 'ul'; }
+                        out.push(`<li>${ul[1]}</li>`);
+                    } else if (ol) {
+                        if (listType !== 'ol') { closeList(); out.push('<ol>'); listType = 'ol'; }
+                        out.push(`<li>${ol[1]}</li>`);
+                    } else {
+                        closeList();
+                        out.push(line);
+                    }
+                }
+                closeList();
+                html = out.join('\n');
+
+                // paragraphs
+                html = html
+                    .split(/\n{2,}/)
+                    .map(block => {
+                        const t = block.trim();
+                        if (!t) return '';
+                        if (/^<(h1|h2|h3|ul|ol|pre|blockquote|table)/.test(t)) return t;
+                        return `<p>${t.replace(/\n/g, '<br>')}</p>`;
+                    })
+                    .join('');
+
+                return html.replace(/\u0000BLOCK(\d+)\u0000/g, (m, i) => blocks[Number(i)]);
+            }
+
+            /* ---------- history ---------- */
+            saveCurrentConversation() {
+                if (!this.currentChatId) return;
+                this.conversations[this.currentChatId] = {
+                    id: this.currentChatId,
+                    title: this.chatTitle.textContent,
+                    messages: [...this.currentMessages],
+                    timestamp: new Date().toISOString(),
+                    model: this.settings.selectedModel
+                };
+                this.saveConversations();
+                this.loadConversationHistory();
+            }
+
+            loadConversationHistory() {
+                this.chatHistory.innerHTML = '';
+                const items = Object.values(this.conversations)
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (!items.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'text-center text-gray-500 dark:text-gray-400 text-sm py-8';
+                    empty.innerHTML = `
+                        <svg class="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <p>No conversations yet</p>`;
+                    this.chatHistory.appendChild(empty);
+                    return;
+                }
+
+                items.forEach(conversation => {
+                    const item = document.createElement('div');
+                    item.className = 'group flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer premium-card';
+
+                    const info = document.createElement('div');
+                    info.className = 'flex-1 min-w-0';
+                    const title = document.createElement('div');
+                    title.className = 'font-medium text-sm truncate';
+                    title.textContent = conversation.title;
+                    const meta = document.createElement('div');
+                    meta.className = 'text-xs text-gray-500 dark:text-gray-400 mt-1';
+                    meta.textContent = `${new Date(conversation.timestamp).toLocaleDateString()} · ${conversation.messages.length} messages`;
+                    info.appendChild(title);
+                    info.appendChild(meta);
+
+                    const del = document.createElement('button');
+                    del.className = 'delete-chat opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-red-100 dark:hover:bg-red-900 text-red-500 transition-all';
+                    del.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`;
+                    del.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.deleteConversation(conversation.id);
+                    });
+
+                    item.appendChild(info);
+                    item.appendChild(del);
+                    item.addEventListener('click', () => this.loadConversation(conversation.id));
+                    this.chatHistory.appendChild(item);
+                });
+            }
+
+            loadConversation(chatId) {
+                const conversation = this.conversations[chatId];
+                if (!conversation) return;
+
+                this.currentChatId = chatId;
+                this.currentMessages = [...conversation.messages];
+                this.chatTitle.textContent = conversation.title;
+                this.chatMessages.innerHTML = '';
+                conversation.messages.forEach(msg => {
+                    this.addMessage(msg.content, msg.role === 'user' ? 'user' : 'assistant');
+                });
+                this.scrollToBottom();
+                if (window.innerWidth < 1024) this.closeSidebar();
+            }
+
+            deleteConversation(chatId) {
+                if (!confirm('Delete this conversation?')) return;
+                delete this.conversations[chatId];
+                this.saveConversations();
+                if (this.currentChatId === chatId) this.newConversation();
+                this.loadConversationHistory();
+                this.showNotification('Conversation deleted', 'info');
+            }
+
+            clearAllHistory() {
+                if (!confirm('Delete all conversation history?')) return;
+                this.conversations = {};
+                this.saveConversations();
+                this.loadConversationHistory();
+                this.newConversation();
+                this.showNotification('All conversations deleted', 'info');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.chatBot = new AuraChatBot();
+        });
+    </script>
 </body>
 </html>

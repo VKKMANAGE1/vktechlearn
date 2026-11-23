@@ -1,108 +1,296 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grammar Checker — Spelling aur Punctuation Fix | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Grammar checker — double space, punctuation, repeated words aur capital letters ki galtiyan browser me turant pakren, saath me fixed text copy karein.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/grammar-checker.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Grammar Checker</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+        
+        /* Loading spinner animation */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .gradient-button {
+            background-image: linear-gradient(to right, #6EE7B7, #3B82F6);
+            transition: all 0.3s ease;
+        }
+
+        .gradient-button:hover {
+            background-position: right center;
+            background-size: 200% auto;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex items-center justify-center flex-col">
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🤖 Grammar Checker</h1>
-    <p>अंग्रेज़ी और Hinglish लेख में spacing, punctuation, दोहराए शब्द और capital letters की आम गलतियाँ पकड़ें — सब कुछ browser में, बिना upload।</p>
-    <div class="related"><a href="/toolkit/case-converter.html">Case Converter</a><a href="/toolkit/article-rewriter.html">Article Rewriter</a></div>
-  </div>
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl w-full max-w-7xl mx-auto flex flex-col items-center">
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Text</h2>
-      <div class="field">
-        <label for="input">अपना text paste करें</label>
-        <textarea id="input" rows="10" placeholder="paste your paragraph here..."></textarea>
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="check">Check text</button>
-        <button class="btn secondary" type="button" id="fix">Auto-fix</button>
-        <button class="btn secondary" type="button" id="copy">Copy fixed text</button>
-      </div>
-      <div class="status" id="status" role="status"></div>
-    </section>
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 md:mb-10 text-center tracking-tight">
+            AI Grammar & Spelling Checker
+        </h1>
+        <p class="text-gray-400 text-center mb-8 max-w-2xl">
+            Powered by Gemini, this tool corrects your text's grammar, spelling, and punctuation instantly.
+        </p>
 
-    <section class="panel">
-      <h2><span>2</span>Report</h2>
-      <div class="output" id="summary">Text डालकर Check दबाएँ।</div>
-      <ul class="list" id="issues"></ul>
-      <div class="field">
-        <label for="fixed">Fixed text</label>
-        <textarea id="fixed" rows="8" readonly></textarea>
-      </div>
-    </section>
-  </div>
-</main>
+        <!-- Ad Banner Area - Placed strategically for visibility -->
+        <div class="w-full flex justify-center items-center mb-8 rounded-xl overflow-hidden shadow-lg bg-gray-700">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '4a8ace3e0264d393a5cc859242f0079d',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/4a8ace3e0264d393a5cc859242f0079d/invoke.js"></script>
+        </div>
 
-<script>
-  const input = document.getElementById('input');
-  const fixed = document.getElementById('fixed');
-  const issuesEl = document.getElementById('issues');
-  const summary = document.getElementById('summary');
+        <!-- Main Layout: Input, Button, and Output -->
+        <div class="flex flex-col md:flex-row w-full gap-8 md:gap-12 items-center">
 
-  const RULES = [
-    { name: 'दोहरा space', re: / {2,}/g, fix: (t) => t.replace(/ {2,}/g, ' ') },
-    { name: 'comma/period से पहले space', re: /\s+([,.;:!?])/g, fix: (t) => t.replace(/\s+([,.;:!?])/g, '$1') },
-    { name: 'punctuation के बाद space नहीं', re: /([,.;:!?])(?=[A-Za-z])/g, fix: (t) => t.replace(/([,.;:!?])(?=[A-Za-z])/g, '$1 ') },
-    { name: 'दोहराया हुआ शब्द', re: /\b(\w+)\s+\1\b/gi, fix: (t) => t.replace(/\b(\w+)\s+\1\b/gi, '$1') },
-    { name: 'छोटा "i"', re: /\bi\b/g, fix: (t) => t.replace(/\bi\b/g, 'I') },
-    { name: 'वाक्य की शुरुआत छोटे अक्षर से', re: /(^|[.!?]\s+)([a-z])/g, fix: (t) => t.replace(/(^|[.!?]\s+)([a-z])/g, (m, p, c) => p + c.toUpperCase()) },
-    { name: 'ज़्यादा !!! या ???', re: /([!?])\1{2,}/g, fix: (t) => t.replace(/([!?])\1{2,}/g, '$1') },
-    { name: 'हफ्ते/साल जैसी गलत spelling', re: /\b(recieve|seperate|definately|occured|untill|wich|teh|adress)\b/gi, fix: (t) => t.replace(/\brecieve\b/gi, 'receive').replace(/\bseperate\b/gi, 'separate').replace(/\bdefinately\b/gi, 'definitely').replace(/\boccured\b/gi, 'occurred').replace(/\buntill\b/gi, 'until').replace(/\bwich\b/gi, 'which').replace(/\bteh\b/gi, 'the').replace(/\badress\b/gi, 'address') }
-  ];
+            <!-- Left Column: Input Textarea -->
+            <div class="w-full md:w-5/12">
+                <label for="inputText" class="block text-xl font-semibold mb-3 text-gray-300">Your Text</label>
+                <textarea id="inputText"
+                            class="w-full h-80 bg-gray-700 text-gray-200 border border-gray-600 rounded-xl p-4 transition duration-300 ease-in-out focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-500 text-base"
+                            placeholder="Paste your text here..."></textarea>
+            </div>
 
-  function scan(text) {
-    return RULES.map((rule) => ({ name: rule.name, hits: (text.match(rule.re) || []).length })).filter((r) => r.hits > 0);
-  }
+            <!-- Middle: Check Button -->
+            <div class="flex-shrink-0">
+                <button id="checkButton" class="gradient-button text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out flex items-center justify-center space-x-2">
+                    <span class="text-lg">Check Grammar</span>
+                    <i class="fas fa-magic"></i>
+                </button>
+            </div>
 
-  document.getElementById('check').addEventListener('click', () => {
-    const text = input.value;
-    if (!text.trim()) { aiStatus('err', 'पहले text डालें।'); return; }
-    const found = scan(text);
-    const words = text.trim().split(/\s+/).length;
-    summary.textContent = found.length
-      ? words + ' शब्दों में ' + found.reduce((n, r) => n + r.hits, 0) + ' संभावित गलतियाँ ' + found.length + ' तरह की मिलीं।'
-      : words + ' शब्दों में कोई साफ गलती नहीं मिली।';
-    issuesEl.replaceChildren(...found.map((r) => {
-      const li = document.createElement('li');
-      li.innerHTML = '<strong></strong> <span></span>';
-      li.querySelector('strong').textContent = r.name;
-      li.querySelector('span').textContent = r.hits + ' जगह';
-      return li;
-    }));
-    aiStatus(found.length ? 'warn' : 'ok', found.length ? 'Auto-fix दबाकर सुधार देखें।' : 'Text साफ लग रहा है।');
-  });
+            <!-- Right Column: Corrected Text Output -->
+            <div class="w-full md:w-5/12 relative">
+                <label for="outputText" class="block text-xl font-semibold mb-3 text-gray-300">Corrected Text</label>
+                <div id="outputText"
+                        class="w-full h-80 bg-gray-700 text-gray-200 border border-gray-600 rounded-xl p-4 overflow-y-auto text-base">
+                    Your corrected text will appear here.
+                </div>
+                <!-- Buttons for output -->
+                <div class="absolute bottom-4 right-4 flex space-x-2">
+                    <button id="copyButton" class="bg-gray-600 hover:bg-gray-500 text-white p-2 rounded-full transition duration-200 ease-in-out shadow-md">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button id="clearButton" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-full transition duration-200 ease-in-out shadow-md">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
 
-  document.getElementById('fix').addEventListener('click', () => {
-    let text = input.value;
-    if (!text.trim()) { aiStatus('err', 'पहले text डालें।'); return; }
-    RULES.forEach((rule) => { text = rule.fix(text); });
-    fixed.value = text;
-    const left = scan(text);
-    aiStatus(left.length ? 'warn' : 'ok', left.length ? 'कुछ चीज़ें हाथ से देखनी पड़ेंगी।' : 'सारी आम गलतियाँ ठीक हो गईं।');
-  });
+        </div>
 
-  document.getElementById('copy').addEventListener('click', (e) => {
-    if (!fixed.value) { aiStatus('err', 'पहले Auto-fix चलाएँ।'); return; }
-    copyText(fixed.value, e.currentTarget);
-  });
-</script>
+        <!-- Notification Message Area -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full max-w-2xl hidden"></div>
+
+    </div>
+
+    <!-- Instructions on how to use the tool -->
+    <div class="mt-12 w-full max-w-7xl text-left p-6 rounded-2xl bg-gray-800 shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">How to Use this AI Grammar Checker? (इस AI ग्रामर चेकर का उपयोग कैसे करें?)</h2>
+        <p class="text-gray-400 mb-6">
+            This tool is designed to be simple and easy to use. Just follow these steps: <br/>
+            यह टूल उपयोग करने में बहुत आसान है। बस इन चरणों का पालन करें:
+        </p>
+
+        <ol class="list-decimal list-inside text-gray-300 space-y-4">
+            <li>
+                <strong class="text-blue-400">Step 1: Enter your text (पहला कदम: अपना टेक्स्ट दर्ज करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Paste the text you want to check into the "Your Text" box.
+                    उस टेक्स्ट को "Your Text" बॉक्स में पेस्ट करें जिसे आप चेक करना चाहते हैं।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 2: Click the 'Check Grammar' button (दूसरा कदम: 'Check Grammar' बटन पर क्लिक करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click the button to send your text to the AI model for correction. Please wait a few moments for the result.
+                    टेक्स्ट को सुधारने के लिए AI मॉडल को भेजने के लिए बटन पर क्लिक करें। कृपया परिणाम के लिए कुछ पल प्रतीक्षा करें।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 3: Get your corrected text (तीसरा कदम: अपना सुधारा हुआ टेक्स्ट प्राप्त करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    The corrected text will appear in the "Corrected Text" box. You can then copy it using the copy icon or clear both boxes using the clear icon.
+                    सुधारा हुआ टेक्स्ट "Corrected Text" बॉक्स में दिखाई देगा। आप इसे कॉपी आइकन का उपयोग करके कॉपी कर सकते हैं या क्लियर आइकन का उपयोग करके दोनों बॉक्स को खाली कर सकते हैं।
+                </p>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // DOM Element references
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const checkButton = document.getElementById('checkButton');
+        const copyButton = document.getElementById('copyButton');
+        const clearButton = document.getElementById('clearButton');
+        const messageArea = document.getElementById('messageArea');
+
+        // Show a temporary message to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full max-w-2xl block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.style = 'opacity:0';
+                setTimeout(() => {
+                    messageArea.classList.add('hidden');
+                }, 500); // Wait for the transition to finish
+            }, 3000);
+        };
+
+        // Handle the "Check Grammar" button click
+        checkButton.addEventListener('click', async () => {
+            const userText = inputText.value.trim();
+            if (!userText) {
+                showMessage("Please enter some text to check.", true);
+                return;
+            }
+
+            // Disable button and show a loading spinner
+            checkButton.innerHTML = `<div class="loader"></div><span class="ml-2">Checking...</span>`;
+            checkButton.disabled = true;
+            outputText.innerHTML = '';
+            
+            const prompt = `Correct the grammar, spelling, and punctuation in the following text without changing its meaning or tone. Only return the corrected text. Text: ${userText}`;
+            
+            // Gemini API call configuration
+            const apiKey = "AIzaSyB3Nb0mlF1HTe1CP8pvhK7wgYGI8FgC_yA";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            let success = false;
+            let retryCount = 0;
+            const maxRetries = 3;
+            const baseDelay = 1000; // 1 second
+
+            while (!success && retryCount < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429) {
+                            // Rate limit exceeded, retry with exponential backoff
+                            const delay = baseDelay * Math.pow(2, retryCount);
+                            await new Promise(res => setTimeout(res, delay));
+                            retryCount++;
+                            continue;
+                        } else {
+                            // Other HTTP error
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        
+                        const correctedText = result.candidates[0].content.parts[0].text;
+                        outputText.innerText = correctedText;
+                        success = true;
+                        showMessage("Grammar check complete!", false);
+                    } else {
+                        throw new Error("Invalid response format from API.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching data from Gemini API:", error);
+                    // If it's not a rate limit error, break the retry loop
+                    if (error.message.indexOf('429') === -1) {
+                         showMessage("An error occurred. Please try again.", true);
+                         break;
+                    }
+                }
+            }
+            if (!success) {
+                showMessage("Failed to get a response after multiple retries. Please try again later.", true);
+            }
+
+            // Reset button state
+            checkButton.innerHTML = `<span class="text-lg">Check Grammar</span><i class="fas fa-magic"></i>`;
+            checkButton.disabled = false;
+        });
+
+        // Handle the "Copy" button click
+        copyButton.addEventListener('click', () => {
+            const textToCopy = outputText.innerText;
+            if (textToCopy && textToCopy !== "Your corrected text will appear here.") {
+                // Use the older document.execCommand('copy') for better iframe compatibility
+                const tempTextarea = document.createElement('textarea');
+                tempTextarea.value = textToCopy;
+                document.body.appendChild(tempTextarea);
+                tempTextarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempTextarea);
+                showMessage("Corrected text copied!", false);
+            } else {
+                showMessage("No text to copy.", true);
+            }
+        });
+
+        // Handle the "Clear" button click
+        clearButton.addEventListener('click', () => {
+            inputText.value = '';
+            outputText.innerText = "Your corrected text will appear here.";
+            showMessage("Text fields cleared.", false);
+        });
+    </script>
 </body>
 </html>

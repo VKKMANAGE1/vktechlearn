@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF Library for PDF Creation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- SortableJS Library for Drag-and-Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+
+        /* Loading spinner animation */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Custom styles for drag-and-drop */
+        .sortable-ghost {
+            opacity: 0.5;
+            background-color: #374151; /* bg-gray-700 */
+        }
+        .sortable-drag {
+            cursor: grabbing !important;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex items-center justify-center flex-col">
+
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl w-full max-w-7xl mx-auto flex flex-col items-center">
+
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 text-center tracking-tight">
+            Image to PDF Converter
+        </h1>
+        <p class="text-gray-400 text-center mb-8 max-w-2xl">
+            Upload multiple images, reorder them with drag-and-drop, and convert them into a single PDF document.
+        </p>
+        
+        <!-- Ad Banner Area - Placed strategically for visibility -->
+        <div class="w-full flex justify-center items-center mb-8 rounded-xl overflow-hidden shadow-lg bg-gray-700">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '91de114237d3dc3fdac11b19dab00854',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/91de114237d3dc3fdac11b19dab00854/invoke.js"></script>
+        </div>
+
+        <!-- Upload Area -->
+        <div class="w-full">
+            <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-600 border-dashed rounded-xl cursor-pointer bg-gray-700 hover:bg-gray-600 transition-colors duration-300 mb-8">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                    <p class="mt-2 text-lg text-gray-400 font-semibold">
+                        Drag & Drop Images or <span class="text-blue-400 underline">Click to Upload</span>
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">JPEG, PNG, GIF, etc.</p>
+                </div>
+                <input id="imageUpload" type="file" class="hidden" multiple accept="image/*" />
+            </label>
+        </div>
+
+        <!-- Image Preview and Sorting Area -->
+        <div id="preview-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 w-full mb-8">
+            <!-- Image previews will be dynamically added here -->
+        </div>
+
+        <!-- Controls -->
+        <div class="flex space-x-4 w-full justify-center">
+            <button id="clearButton" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105" disabled>
+                <i class="fas fa-trash-alt mr-2"></i> Clear All
+            </button>
+            <button id="convertButton" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105" disabled>
+                <i class="fas fa-file-pdf mr-2"></i> Convert to PDF
+            </button>
+        </div>
+        
+        <!-- Notification Area -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full max-w-md hidden"></div>
+    </div>
+
+    <!-- Instructions on how to use the tool -->
+    <div class="mt-12 w-full max-w-7xl text-left p-6 rounded-2xl bg-gray-800 shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">How to Use this Tool? (इस टूल का उपयोग कैसे करें?)</h2>
+        <p class="text-gray-400 mb-6">
+            This tool is designed to be simple and easy to use. Just follow these steps: <br/>
+            यह टूल उपयोग करने में बहुत आसान है। बस इन चरणों का पालन करें:
+        </p>
+
+        <ol class="list-decimal list-inside text-gray-300 space-y-4">
+            <li>
+                <strong class="text-blue-400">Step 1: Upload your images (पहला कदम: अपनी इमेज अपलोड करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click the "Click to Upload" area or drag and drop your images into it. You can select multiple images at once.
+                    "Click to Upload" क्षेत्र पर क्लिक करें या अपनी इमेज को इसमें ड्रैग और ड्रॉप करें। आप एक साथ कई इमेज का चयन कर सकते हैं।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 2: Reorder your images (दूसरा कदम: अपनी इमेज को फिर से व्यवस्थित करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Drag and drop the image previews to change the order in which they will appear in the PDF.
+                    PDF में उनके दिखने के क्रम को बदलने के लिए इमेज प्रीव्यू को ड्रैग और ड्रॉप करें।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 3: Convert to PDF (तीसरा कदम: PDF में बदलें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Once you're happy with the order, click the "Convert to PDF" button to download your single PDF document.
+                    जब आप क्रम से संतुष्ट हों, तो अपने सिंगल PDF डॉक्यूमेंट को डाउनलोड करने के लिए "Convert to PDF" बटन पर क्लिक करें।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 4: Clear Images (चौथा कदम: इमेज को हटाएँ)</strong>
+                <p class="text-gray-400 mt-1">
+                    You can remove all the images from the tool by clicking the 'Clear All' button.
+                    आप 'Clear All' बटन पर क्लिक करके टूल से सभी इमेज हटा सकते हैं।
+                </p>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // DOM element references
+        const imageUpload = document.getElementById('imageUpload');
+        const previewContainer = document.getElementById('preview-container');
+        const convertButton = document.getElementById('convertButton');
+        const clearButton = document.getElementById('clearButton');
+        const messageArea = document.getElementById('messageArea');
+
+        // Global array to store image files in their current order
+        let uploadedFiles = [];
+
+        // --- Utility Functions ---
+
+        // Show a temporary message to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full max-w-md block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0';
+                messageArea.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'opacity' && messageArea.style.opacity === '0') {
+                        messageArea.classList.add('hidden');
+                    }
+                }, { once: true });
+            }, 3000);
+        };
+
+        // Update button states based on number of uploaded images
+        const updateButtonStates = () => {
+            const hasImages = uploadedFiles.length > 0;
+            convertButton.disabled = !hasImages;
+            clearButton.disabled = !hasImages;
+        };
+
+        // --- Event Handlers ---
+
+        // Handle file selection from the input
+        imageUpload.addEventListener('change', (event) => {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                // We add new files to the end of our current list
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        uploadedFiles.push(file);
+                        displayImagePreview(file);
+                    } else {
+                        showMessage(`Skipping file: ${file.name}. Only images are supported.`, true);
+                    }
+                });
+                updateButtonStates();
+                showMessage(`${files.length} image(s) added!`);
+            }
+        });
+
+        // Display a preview of an image
+        const displayImagePreview = (file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'relative group bg-gray-700 rounded-xl p-2 shadow-md flex flex-col items-center cursor-grab';
+                
+                // Add an index attribute to the element to help with sorting
+                previewItem.dataset.fileIndex = uploadedFiles.indexOf(file);
+
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="${file.name}" class="w-full h-auto rounded-md mb-2 object-contain aspect-square">
+                    <span class="text-xs text-gray-400 truncate w-full px-1 text-center">${file.name}</span>
+                    <button class="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                `;
+                
+                // Add event listener for the remove button
+                const removeButton = previewItem.querySelector('button');
+                removeButton.addEventListener('click', () => {
+                    const indexToRemove = uploadedFiles.indexOf(file);
+                    if (indexToRemove > -1) {
+                        uploadedFiles.splice(indexToRemove, 1);
+                        previewItem.remove();
+                        updateButtonStates();
+                    }
+                });
+                
+                previewContainer.appendChild(previewItem);
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // --- Drag-and-Drop Sorting ---
+        Sortable.create(previewContainer, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: function (evt) {
+                // Update the uploadedFiles array to match the new order
+                const [movedItem] = uploadedFiles.splice(evt.oldIndex, 1);
+                uploadedFiles.splice(evt.newIndex, 0, movedItem);
+                
+                // Update the data-file-index attribute for all elements after a move
+                const newOrderElements = Array.from(previewContainer.children);
+                newOrderElements.forEach((el, index) => {
+                    el.dataset.fileIndex = index;
+                });
+            }
+        });
+
+        // --- Conversion to PDF ---
+        convertButton.addEventListener('click', async () => {
+            if (uploadedFiles.length === 0) {
+                showMessage("Please upload at least one image first.", true);
+                return;
+            }
+
+            // Show loading state
+            convertButton.innerHTML = `<div class="loader"></div><span class="ml-2">Converting...</span>`;
+            convertButton.disabled = true;
+            clearButton.disabled = true;
+
+            const doc = new window.jspdf.jsPDF('p', 'pt', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            
+            try {
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    const file = uploadedFiles[i];
+                    
+                    if (i > 0) {
+                        doc.addPage();
+                    }
+
+                    const reader = new FileReader();
+                    const dataUrl = await new Promise((resolve) => {
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+
+                    // Get image dimensions
+                    const img = new Image();
+                    img.src = dataUrl;
+                    await new Promise((resolve) => { img.onload = resolve; });
+                    
+                    const imgWidth = img.width;
+                    const imgHeight = img.height;
+                    const aspectRatio = imgWidth / imgHeight;
+
+                    let newWidth = pageWidth;
+                    let newHeight = newWidth / aspectRatio;
+
+                    // If height is too tall, scale to fit height instead
+                    if (newHeight > pageHeight) {
+                        newHeight = pageHeight;
+                        newWidth = newHeight * aspectRatio;
+                    }
+
+                    // Calculate centered position
+                    const x = (pageWidth - newWidth) / 2;
+                    const y = (pageHeight - newHeight) / 2;
+                    
+                    doc.addImage(dataUrl, 'JPEG', x, y, newWidth, newHeight, null, 'FAST');
+                }
+
+                doc.save('converted_images.pdf');
+                showMessage("PDF created successfully!");
+            } catch (error) {
+                console.error("Error during PDF conversion:", error);
+                showMessage("An error occurred during conversion.", true);
+            } finally {
+                // Reset button state
+                convertButton.innerHTML = `<i class="fas fa-file-pdf mr-2"></i> Convert to PDF`;
+                updateButtonStates();
+            }
+        });
+
+        // Handle clear button click
+        clearButton.addEventListener('click', () => {
+            uploadedFiles = [];
+            previewContainer.innerHTML = '';
+            updateButtonStates();
+            imageUpload.value = null; // Reset the file input
+            showMessage("All images cleared.", false);
+        });
+    </script>
+</body>
+</html>

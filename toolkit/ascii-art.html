@@ -1,142 +1,565 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ASCII Art Generator — Image to Text Art | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="ASCII art generator — koi bhi photo chunein aur text art me badal dein, width aur characters chunne ke saath, browser me hi.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/ascii-art.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<style>
-  #art { background: #05070d; color: #d7e6f7; border: 1px solid rgba(0,229,255,.25); border-radius: 12px; padding: 1rem; overflow: auto; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; line-height: 1; white-space: pre; }
-</style>
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Art Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'mono': ['Courier New', 'monospace'],
+                        'retro': ['Courier New', 'Monaco', 'Lucida Console', 'monospace']
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'scan': 'scan 2s linear infinite',
+                        'flicker': 'flicker 0.15s infinite linear'
+                    },
+                    keyframes: {
+                        glow: {
+                            'from': { 'text-shadow': '0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00' },
+                            'to': { 'text-shadow': '0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00' }
+                        },
+                        scan: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100vh)' }
+                        },
+                        flicker: {
+                            '0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': { opacity: '1' },
+                            '20%, 21.999%, 63%, 63.999%, 65%, 69.999%': { opacity: '0.4' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom retro styles */
+        .retro-border {
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        
+        .retro-glow {
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .ascii-output {
+            font-family: 'Courier New', monospace;
+            line-height: 0.8;
+            letter-spacing: 0;
+            white-space: pre;
+            overflow: auto;
+        }
+        
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 3s linear infinite;
+            opacity: 0.6;
+        }
+        
+        .crt-effect {
+            position: relative;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+            background-size: 100% 4px;
+        }
+        
+        /* Custom scrollbar */
+        .ascii-output::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .ascii-output::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .ascii-output::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 4px;
+        }
+        
+        .ascii-output::-webkit-scrollbar-thumb:hover {
+            background: #00cc00;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="min-h-screen bg-black text-green-400 font-retro overflow-x-hidden">
+    <!-- Animated background -->
+    <div class="fixed inset-0 opacity-10">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-900/20 to-black"></div>
+        <div class="scan-line"></div>
+    </div>
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🧩 ASCII Art Generator</h1>
-    <p>फोटो को अक्षरों वाली कला में बदलें — width चुनें और text copy या download करें।</p>
-    <div class="related"><a href="/img/resize.html">Image Resizer</a><a href="/toolkit/drawing.html">Drawing App</a></div>
-  </div>
-
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Image</h2>
-      <div class="field">
-        <label for="file">Image चुनें</label>
-        <input type="file" id="file" accept="image/*">
-      </div>
-      <div class="row-3">
-        <div class="field">
-          <label for="width">Width (अक्षर)</label>
-          <input type="number" id="width" value="90" min="20" max="200">
+    <!-- Header -->
+    <header class="relative z-10 border-b-2 border-green-500 bg-black/80 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold retro-glow animate-flicker mb-2">
+                    <i class="fas fa-terminal mr-3"></i>
+                    ASCII ART GENERATOR
+                </h1>
+                <p class="text-green-300 text-lg">
+                    > CONVERT_IMAGES_TO_ASCII_ART.EXE
+                </p>
+                <div class="mt-4 text-sm text-green-500">
+                    <span class="animate-pulse">█</span> By <a href="https://vktechlearnprofile.blogspot.com/" target="_blank"> Vìñâý Kúshwâhå </a> <span class="animate-pulse">█</span>
+                </div>
+            </div>
         </div>
-        <div class="field">
-          <label for="invert">Invert</label>
-          <select id="invert">
-            <option value="0" selected>Dark background</option>
-            <option value="1">Light background</option>
-          </select>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        <!-- Upload Section -->
+        <section class="mb-8">
+            <div class="retro-border rounded-lg p-6 bg-black/50 crt-effect">
+                <h2 class="text-2xl font-bold mb-4 retro-glow">
+                    <i class="fas fa-upload mr-2"></i>
+                    IMAGE INPUT MODULE
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- File Upload -->
+                    <div>
+                        <label class="block text-green-300 mb-2">
+                            > SELECT IMAGE FILE:
+                        </label>
+                        <div class="relative">
+                            <input type="file" id="imageInput" accept="image/*" 
+                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <div class="retro-border rounded p-4 text-center hover:bg-green-900/20 transition-colors cursor-pointer">
+                                <i class="fas fa-cloud-upload-alt text-3xl mb-2 text-green-500"></i>
+                                <p class="text-green-300">CLICK TO UPLOAD IMAGE</p>
+                                <p class="text-xs text-green-600 mt-1">SUPPORTED: JPG, PNG, GIF, BMP</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mt-4 hidden">
+                            <p class="text-green-300 mb-2">> IMAGE LOADED:</p>
+                            <div class="retro-border rounded p-2 bg-black/30">
+                                <img id="previewImg" class="max-w-full h-auto max-h-48 mx-auto" alt="Preview">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-green-300 mb-2">
+                                > ASCII CHARACTER SET:
+                            </label>
+                            <input type="text" id="charSet" 
+                                   value="@#S%?*+;:,.' "
+                                   class="w-full bg-black border-2 border-green-500 rounded px-3 py-2 text-green-400 font-mono focus:outline-none focus:border-green-300">
+                            <p class="text-xs text-green-600 mt-1">DARK → LIGHT CHARACTERS</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-green-300 mb-2">
+                                > RESOLUTION: <span id="resolutionValue">100</span>px
+                            </label>
+                            <input type="range" id="resolution" min="50" max="200" value="100"
+                                   class="w-full h-2 bg-green-900 rounded-lg appearance-none cursor-pointer slider">
+                            <div class="flex justify-between text-xs text-green-600 mt-1">
+                                <span>LOW DETAIL</span>
+                                <span>HIGH DETAIL</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-green-300 mb-2">
+                                > CONTRAST BOOST:
+                            </label>
+                            <input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1"
+                                   class="w-full h-2 bg-green-900 rounded-lg appearance-none cursor-pointer slider">
+                            <div class="flex justify-between text-xs text-green-600 mt-1">
+                                <span>0.5x</span>
+                                <span>2.0x</span>
+                            </div>
+                        </div>
+                        
+                        <button id="generateBtn" disabled
+                                class="w-full retro-border rounded py-3 px-6 bg-green-900/30 text-green-300 font-bold hover:bg-green-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
+                            <i class="fas fa-cogs mr-2"></i>
+                            GENERATE ASCII ART
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Processing Status -->
+        <div id="processingStatus" class="mb-6 hidden">
+            <div class="retro-border rounded-lg p-4 bg-black/50 text-center">
+                <div class="animate-spin inline-block w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full mr-3"></div>
+                <span class="text-green-300">PROCESSING IMAGE DATA...</span>
+            </div>
         </div>
-        <div class="field">
-          <label for="chars">Characters</label>
-          <select id="chars">
-            <option value="standard" selected>Standard</option>
-            <option value="blocks">Blocks</option>
-            <option value="dots">Dots</option>
-          </select>
+
+        <!-- Output Section -->
+        <section id="outputSection" class="hidden">
+            <div class="retro-border rounded-lg p-6 bg-black/50 crt-effect">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold retro-glow">
+                        <i class="fas fa-terminal mr-2"></i>
+                        ASCII OUTPUT
+                    </h2>
+                    <div class="space-x-2">
+                        <button id="copyBtn" 
+                                class="retro-border rounded px-4 py-2 bg-green-900/30 text-green-300 hover:bg-green-900/50 transition-colors">
+                            <i class="fas fa-copy mr-2"></i>COPY
+                        </button>
+                        <button id="downloadBtn" 
+                                class="retro-border rounded px-4 py-2 bg-green-900/30 text-green-300 hover:bg-green-900/50 transition-colors">
+                            <i class="fas fa-download mr-2"></i>SAVE
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="retro-border rounded p-4 bg-black/80 max-h-96 overflow-auto">
+                    <pre id="asciiOutput" class="ascii-output text-green-400 text-xs"></pre>
+                </div>
+                
+                <div class="mt-4 text-sm text-green-600">
+                    <span id="outputStats"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Instructions -->
+        <section class="mt-8">
+            <div class="retro-border rounded-lg p-6 bg-black/30">
+                <h3 class="text-xl font-bold mb-4 retro-glow">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    SYSTEM INSTRUCTIONS
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <h4 class="text-green-300 font-bold mb-2">> USAGE:</h4>
+                        <ul class="space-y-1 text-green-500">
+                            <li>• Upload an image file (JPG, PNG, GIF, BMP)</li>
+                            <li>• Adjust character set for different styles</li>
+                            <li>• Use resolution slider to control detail level</li>
+                            <li>• Boost contrast for better definition</li>
+                            <li>• Generate and copy/download your ASCII art</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-green-300 font-bold mb-2">> TIPS:</h4>
+                        <ul class="space-y-1 text-green-500">
+                            <li>• High contrast images work best</li>
+                            <li>• Lower resolution = faster processing</li>
+                            <li>• Experiment with different character sets</li>
+                            <li>• Portrait orientation images recommended</li>
+                            <li>• Use monospace fonts when displaying</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t-2 border-green-500 bg-black/80 backdrop-blur-sm mt-12">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center">
+            <p class="text-green-600">
+                > ASCII_ART_GENERATOR_V1.0 | RETRO_COMPUTING_DIVISION
+            </p>
         </div>
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="make">Generate</button>
-        <button class="btn secondary" type="button" id="copy">Copy art</button>
-        <button class="btn secondary" type="button" id="download">Download .txt</button>
-      </div>
-      <div class="status" id="status" role="status"></div>
-    </section>
+    </footer>
 
-    <section class="panel">
-      <h2><span>2</span>Preview</h2>
-      <div id="art">Image चुनकर Generate दबाएँ।</div>
-    </section>
-  </div>
-</main>
+    <!-- Hidden canvas for image processing -->
+    <canvas id="hiddenCanvas" style="display: none;"></canvas>
 
-<script>
-  const SETS = {
-    standard: '@%#*+=-:. ',
-    blocks: '█▓▒░ ',
-    dots: '@●◉○· '
-  };
-  const fileInput = document.getElementById('file');
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  let img = null;
-  let art = '';
+    <script>
+        // Global variables
+        let currentImage = null;
+        let isProcessing = false;
 
-  fileInput.addEventListener('change', () => {
-    const file = fileInput.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      img = new Image();
-      img.onload = () => { generate(); aiStatus('ok', 'Image load हो गई।'); };
-      img.onerror = () => aiStatus('err', 'यह image नहीं खुली। दूसरी file चुनें।');
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
+        // DOM elements
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const charSetInput = document.getElementById('charSet');
+        const resolutionSlider = document.getElementById('resolution');
+        const resolutionValue = document.getElementById('resolutionValue');
+        const contrastSlider = document.getElementById('contrast');
+        const generateBtn = document.getElementById('generateBtn');
+        const processingStatus = document.getElementById('processingStatus');
+        const outputSection = document.getElementById('outputSection');
+        const asciiOutput = document.getElementById('asciiOutput');
+        const outputStats = document.getElementById('outputStats');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const hiddenCanvas = document.getElementById('hiddenCanvas');
 
-  function generate() {
-    if (!img) { aiStatus('err', 'पहले image चुनें।'); return; }
-    const chars = SETS[document.getElementById('chars').value];
-    const width = Math.min(200, Math.max(20, Number(document.getElementById('width').value) || 90));
-    const ratio = img.height / img.width;
-    const height = Math.max(1, Math.round(width * ratio * 0.5));
-    canvas.width = width;
-    canvas.height = height;
-    ctx.drawImage(img, 0, 0, width, height);
-    const data = ctx.getImageData(0, 0, width, height).data;
-    const invert = document.getElementById('invert').value === '1';
-    let out = '';
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const i = (y * width + x) * 4;
-        const lum = (0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]) / 255;
-        const v = invert ? lum : 1 - lum;
-        out += chars[Math.min(chars.length - 1, Math.floor(v * chars.length))];
-      }
-      out += '\n';
-    }
-    art = out;
-    const pre = document.getElementById('art');
-    pre.textContent = out;
-    pre.style.color = invert ? '#0b1020' : '#d7e6f7';
-    pre.style.background = invert ? '#f5f7fa' : '#05070d';
-  }
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // File input change
+            imageInput.addEventListener('change', handleImageUpload);
+            
+            // Resolution slider
+            resolutionSlider.addEventListener('input', (e) => {
+                resolutionValue.textContent = e.target.value;
+            });
+            
+            // Generate button
+            generateBtn.addEventListener('click', generateASCII);
+            
+            // Copy button
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            // Download button
+            downloadBtn.addEventListener('click', downloadASCII);
+        }
 
-  document.getElementById('make').addEventListener('click', generate);
-  document.getElementById('copy').addEventListener('click', (e) => {
-    if (!art) { aiStatus('err', 'पहले Generate दबाएँ।'); return; }
-    copyText(art, e.currentTarget);
-  });
-  document.getElementById('download').addEventListener('click', () => {
-    if (!art) { aiStatus('err', 'पहले Generate दबाएँ।'); return; }
-    const blob = new Blob([art], { type: 'text/plain;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'ascii-art.txt';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
-</script>
-</body>
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showNotification('ERROR: Invalid file type. Please select an image.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImage = new Image();
+                currentImage.onload = function() {
+                    // Show preview
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    generateBtn.disabled = false;
+                    
+                    showNotification('IMAGE LOADED SUCCESSFULLY', 'success');
+                };
+                currentImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Generate ASCII art
+        async function generateASCII() {
+            if (!currentImage || isProcessing) return;
+
+            isProcessing = true;
+            generateBtn.disabled = true;
+            processingStatus.classList.remove('hidden');
+            outputSection.classList.add('hidden');
+
+            try {
+                // Get settings
+                const charSet = charSetInput.value || '@#S%?*+;:,.\' ';
+                const maxWidth = parseInt(resolutionSlider.value);
+                const contrastBoost = parseFloat(contrastSlider.value);
+
+                // Process image
+                const asciiArt = await processImageToASCII(currentImage, charSet, maxWidth, contrastBoost);
+                
+                // Display result
+                asciiOutput.textContent = asciiArt;
+                outputSection.classList.remove('hidden');
+                
+                // Update stats
+                const lines = asciiArt.split('\n').length;
+                const chars = asciiArt.length;
+                outputStats.textContent = `DIMENSIONS: ${lines} LINES | ${chars} CHARACTERS | CHARSET: "${charSet}"`;
+                
+                showNotification('ASCII ART GENERATED SUCCESSFULLY', 'success');
+                
+            } catch (error) {
+                console.error('Error generating ASCII:', error);
+                showNotification('ERROR: Failed to generate ASCII art', 'error');
+            } finally {
+                isProcessing = false;
+                generateBtn.disabled = false;
+                processingStatus.classList.add('hidden');
+            }
+        }
+
+        // Process image to ASCII
+        function processImageToASCII(image, charSet, maxWidth, contrastBoost) {
+            return new Promise((resolve) => {
+                const canvas = hiddenCanvas;
+                const ctx = canvas.getContext('2d');
+
+                // Calculate dimensions maintaining aspect ratio
+                const aspectRatio = image.height / image.width;
+                const width = Math.min(maxWidth, image.width);
+                const height = Math.floor(width * aspectRatio * 0.5); // 0.5 to account for character height/width ratio
+
+                // Set canvas size
+                canvas.width = width;
+                canvas.height = height;
+
+                // Draw and resize image
+                ctx.drawImage(image, 0, 0, width, height);
+
+                // Get image data
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const pixels = imageData.data;
+
+                let asciiArt = '';
+
+                // Process each pixel
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const pixelIndex = (y * width + x) * 4;
+                        
+                        // Get RGB values
+                        const r = pixels[pixelIndex];
+                        const g = pixels[pixelIndex + 1];
+                        const b = pixels[pixelIndex + 2];
+                        
+                        // Calculate brightness (luminance)
+                        const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+                        
+                        // Apply contrast boost
+                        const adjustedBrightness = Math.min(255, brightness * contrastBoost);
+                        
+                        // Map brightness to character
+                        const charIndex = Math.floor((adjustedBrightness / 255) * (charSet.length - 1));
+                        const char = charSet[charSet.length - 1 - charIndex]; // Reverse for dark to light
+                        
+                        asciiArt += char;
+                    }
+                    asciiArt += '\n';
+                }
+
+                resolve(asciiArt);
+            });
+        }
+
+        // Copy to clipboard
+        async function copyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(asciiOutput.textContent);
+                showNotification('ASCII ART COPIED TO CLIPBOARD', 'success');
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = asciiOutput.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('ASCII ART COPIED TO CLIPBOARD', 'success');
+            }
+        }
+
+        // Download ASCII art
+        function downloadASCII() {
+            const content = asciiOutput.textContent;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ascii-art.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('ASCII ART DOWNLOADED', 'success');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 retro-border rounded-lg p-4 bg-black/90 text-green-400 transform translate-x-full transition-transform duration-300`;
+            
+            if (type === 'error') {
+                notification.classList.add('border-red-500', 'text-red-400');
+            } else if (type === 'success') {
+                notification.classList.add('border-green-500', 'text-green-400');
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                    <span class="font-mono text-sm">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Custom slider styling
+        const style = document.createElement('style');
+        style.textContent = `
+            .slider::-webkit-slider-thumb {
+                appearance: none;
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: #00ff00;
+                border: 2px solid #000;
+                cursor: pointer;
+                box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            
+            .slider::-moz-range-thumb {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: #00ff00;
+                border: 2px solid #000;
+                cursor: pointer;
+                box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            showNotification('ASCII ART GENERATOR INITIALIZED', 'success');
+        });
+
+        // Add some retro terminal effects
+        function addTerminalEffects() {
+            // Random flicker effect for the title
+            setInterval(() => {
+                const title = document.querySelector('h1');
+                if (Math.random() < 0.1) {
+                    title.style.opacity = '0.8';
+                    setTimeout(() => {
+                        title.style.opacity = '1';
+                    }, 50);
+                }
+            }, 2000);
+        }
+
+        // Start terminal effects
+        setTimeout(addTerminalEffects, 1000);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9739db08122fff9d',t:'MTc1NTk0NDE5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

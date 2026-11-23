@@ -1,145 +1,1761 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Worksheet Generator — Kids Math Practice Sheets | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Free worksheet generator — bachchon ke liye jod, ghatav, guna aur bhaag ke practice sheets banayen aur seedha print karein.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/worksheet.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<style>
-  .sheet { background: #fff; color: #111; border-radius: 12px; padding: 1.4rem; }
-  .sheet h3 { margin: 0 0 .2rem; color: #111; }
-  .sheet .sub { color: #555; font-size: .85rem; margin: 0 0 1rem; }
-  .qgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .9rem 1.4rem; }
-  .q { border-bottom: 1px dashed #bbb; padding: .35rem 0 .7rem; font-size: 1.05rem; }
-  .q small { float: right; color: #16a34a; }
-  @media print {
-    header.top, .tool-head, .panel:first-of-type, footer, .hint, .status { display: none !important; }
-    body { background: #fff; }
-    .sheet { box-shadow: none; padding: 0; }
-    .two-col { display: block; }
-  }
-</style>
-<script src="/toolkit/ai.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create printable math worksheets, answer keys, PDFs, and DOCX workbooks.">
+  <title>VK Tech Learn Worksheet Studio</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fc;
+      --panel: #ffffff;
+      --panel-2: #f3f5fb;
+      --ink: #22243a;
+      --muted: #72778d;
+      --line: #e3e6f1;
+      --purple: #6c5ce7;
+      --purple-dark: #5545d3;
+      --pink: #ff6b9d;
+      --yellow: #ffc857;
+      --green: #32c48d;
+      --blue: #36a3ff;
+      --shadow: 0 18px 45px rgba(48, 45, 86, .10);
+      --radius: 20px;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #171824;
+      --panel: #222433;
+      --panel-2: #2b2d40;
+      --ink: #f5f6ff;
+      --muted: #aeb3c8;
+      --line: #3a3d53;
+      --purple: #8b7cff;
+      --purple-dark: #7565ee;
+      --shadow: 0 18px 45px rgba(0, 0, 0, .24);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 2%, rgba(255, 200, 87, .18), transparent 24rem),
+        radial-gradient(circle at 95% 6%, rgba(108, 92, 231, .15), transparent 30rem),
+        var(--bg);
+      transition: background .25s, color .25s;
+    }
+
+    button, input, select { font: inherit; }
+
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 18px clamp(14px, 2.2vw, 34px) 40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      border-radius: 15px;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 900;
+      transform: rotate(-4deg);
+      background: linear-gradient(145deg, var(--purple), var(--pink));
+      box-shadow: 0 10px 24px rgba(108, 92, 231, .28);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(20px, 2.2vw, 29px);
+      letter-spacing: -.6px;
+      line-height: 1;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 13px;
+      color: var(--ink);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      cursor: pointer;
+      box-shadow: 0 5px 18px rgba(35, 35, 60, .06);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(285px, 355px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
+      position: sticky;
+      top: 14px;
+      padding: 20px;
+      max-height: calc(100vh - 28px);
+      overflow: auto;
+      scrollbar-width: thin;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 15px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 14px 0 0 var(--yellow), 28px 0 0 var(--green);
+      margin-right: 27px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+
+    label.field-label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .02em;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      height: 42px;
+      padding: 0 11px;
+      color: var(--ink);
+      background: var(--panel-2);
+      border: 1px solid transparent;
+      border-radius: 11px;
+      outline: none;
+      transition: border .18s, box-shadow .18s;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, .13);
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      padding: 4px;
+      background: var(--panel-2);
+      border-radius: 12px;
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      padding: 8px 4px;
+      border-radius: 9px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .segmented input:checked + label {
+      color: #fff;
+      background: var(--purple);
+      box-shadow: 0 4px 12px rgba(108, 92, 231, .24);
+    }
+
+    .operation-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .op-button {
+      position: relative;
+      aspect-ratio: 1.08;
+    }
+
+    .op-button input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .op-button label {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      color: var(--muted);
+      background: var(--panel-2);
+      border: 2px solid transparent;
+      border-radius: 13px;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .15s, color .15s, border .15s;
+    }
+
+    .op-button label:hover { transform: translateY(-2px); }
+    .op-button input:checked + label {
+      color: var(--purple);
+      background: rgba(108, 92, 231, .10);
+      border-color: var(--purple);
+    }
+
+    .checks {
+      display: grid;
+      gap: 9px;
+      margin-top: 2px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 30px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .switch {
+      position: relative;
+      width: 42px;
+      height: 24px;
+      flex: 0 0 auto;
+    }
+
+    .switch input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 30px;
+      background: #c8ccda;
+      transition: .2s;
+    }
+
+    .slider::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 3px;
+      left: 3px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,.2);
+      transition: .2s;
+    }
+
+    .switch input:checked + .slider { background: var(--green); }
+    .switch input:checked + .slider::after { transform: translateX(18px); }
+
+    .divider {
+      height: 1px;
+      margin: 17px 0;
+      background: var(--line);
+    }
+
+    .primary-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 17px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: var(--panel-2);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(40, 40, 70, .10);
+    }
+
+    .btn:disabled { opacity: .48; cursor: not-allowed; }
+
+    .btn.primary {
+      grid-column: 1 / -1;
+      color: white;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      box-shadow: 0 9px 20px rgba(108, 92, 231, .24);
+    }
+
+    .btn.random { color: #9b5b00; background: rgba(255, 200, 87, .22); border-color: rgba(255, 200, 87, .45); }
+
+    .preview-card { min-width: 0; overflow: hidden; }
+
+    .preview-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .preview-heading {
+      min-width: 0;
+    }
+
+    .preview-heading h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .preview-heading p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .kdp-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      padding: 4px 8px;
+      color: #287a5d;
+      background: rgba(50, 196, 141, .12);
+      border: 1px solid rgba(50, 196, 141, .28);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .pager {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+    }
+
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      color: var(--ink);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    .page-indicator {
+      min-width: 82px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .preview-area {
+      min-height: 690px;
+      padding: clamp(12px, 2vw, 26px);
+      overflow: auto;
+      background:
+        linear-gradient(45deg, rgba(108, 92, 231, .03) 25%, transparent 25%) 0 0/24px 24px,
+        linear-gradient(-45deg, rgba(108, 92, 231, .03) 25%, transparent 25%) 0 0/24px 24px,
+        var(--panel-2);
+    }
+
+    .paper-wrap {
+      width: min(100%, 816px);
+      margin: 0 auto;
+    }
+
+    .sheet {
+      --safe-top: .5in;
+      --safe-bottom: .5in;
+      --safe-inside: .5in;
+      --safe-outside: .375in;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      aspect-ratio: 8.5 / 11;
+      padding: var(--safe-top) var(--safe-outside) var(--safe-bottom) var(--safe-inside);
+      overflow: hidden;
+      color: #171721;
+      background: white;
+      box-shadow: 0 18px 40px rgba(30, 30, 55, .16);
+      font-family: Arial, Helvetica, sans-serif;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .sheet::before {
+      content: "";
+      position: absolute;
+      display: none;
+      inset: var(--safe-top) var(--safe-outside) var(--safe-bottom) var(--safe-inside);
+      border: 2px solid #8b7cff;
+      border-radius: 10px;
+      box-shadow:
+        inset 0 0 0 2px #fff,
+        inset 0 0 0 4px #ffc857;
+      pointer-events: none;
+    }
+
+    .sheet.page-verso {
+      padding-left: var(--safe-outside);
+      padding-right: var(--safe-inside);
+    }
+
+    .sheet.page-verso::before {
+      inset: var(--safe-top) var(--safe-inside) var(--safe-bottom) var(--safe-outside);
+    }
+
+    .sheet-decor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .sheet-math-card {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: clamp(22px, 4.4vw, 42px);
+      height: clamp(22px, 4.4vw, 42px);
+      border: 2px solid #fff;
+      border-radius: 12px 9px 13px 9px;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(13px, 2.6vw, 25px);
+      font-weight: 900;
+      box-shadow: 0 4px 9px rgba(43, 40, 85, .18);
+    }
+
+    .sheet-math-card:nth-child(1) { top: 5.5%; left: 6.2%; background: #ff6b9d; transform: rotate(-9deg); }
+    .sheet-math-card:nth-child(2) { top: 5.5%; right: 6.2%; background: #36a3ff; transform: rotate(8deg); }
+    .sheet-math-card:nth-child(3) { bottom: 6.2%; left: 6.2%; background: #32c48d; transform: rotate(8deg); }
+    .sheet-math-card:nth-child(4) { bottom: 6.2%; right: 6.2%; background: #ff9f43; transform: rotate(-8deg); }
+    .sheet-math-card { display: none; }
+
+    .sheet-header {
+      text-align: center;
+      border-bottom: 1px solid #24243a;
+      padding-bottom: 1.2%;
+    }
+
+    .sheet-title {
+      margin: 0;
+      max-width: 82%;
+      margin-left: auto;
+      margin-right: auto;
+      overflow-wrap: anywhere;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(13px, 2.2vw, 24px);
+      letter-spacing: .2px;
+    }
+
+    .student-line {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 6%;
+      margin-top: 1.8%;
+      font-size: clamp(7px, 1.15vw, 13px);
+      text-align: left;
+    }
+
+    .write-line {
+      display: inline-block;
+      width: calc(100% - 42px);
+      min-height: 1em;
+      border-bottom: 1px solid #555;
+      vertical-align: bottom;
+    }
+
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--columns, 4), minmax(0, 1fr));
+      grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
+      grid-auto-flow: column;
+      column-gap: 4.1%;
+      flex: 1 1 auto;
+      min-height: 0;
+      height: auto;
+      padding-top: 2.2%;
+      padding-bottom: 12%;
+    }
+
+    .problem {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .problem.vertical-layout {
+      display: grid;
+      grid-template-columns: var(--problem-number-column, 24px) minmax(44px, var(--problem-column-width, 86px));
+      grid-template-rows: repeat(3, auto);
+      align-items: center;
+      justify-content: center;
+      column-gap: var(--problem-column-gap, 5px);
+    }
+
+    .problem.vertical-layout.no-number {
+      grid-template-columns: minmax(58px, 86px);
+    }
+
+    .problem.vertical-layout .problem-number {
+      grid-column: 1;
+      grid-row: 1 / 4;
+      align-self: center;
+      width: var(--problem-number-column, 24px);
+      text-align: right;
+      transform: none;
+    }
+
+    .problem-number {
+      position: static;
+      flex: 0 0 auto;
+      color: #171721;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: var(--number-font, 14px);
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .vertical-problem {
+      display: contents;
+      min-width: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: var(--problem-font);
+      font-weight: 700;
+      line-height: 1.05;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .vertical-problem .top-number {
+      grid-column: 2;
+      grid-row: 1;
+      min-height: 1.15em;
+      padding: 0 5px 2px;
+      text-align: right;
+    }
+
+    .vertical-problem .bottom {
+      grid-column: 2;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr);
+      align-items: end;
+      gap: 2px;
+      border-bottom: 1.6px solid #111;
+      padding: 0 5px var(--problem-line-padding, 3px) 2px;
+    }
+
+    .vertical-problem .bottom-number { text-align: right; }
+    .answer-space {
+      position: relative;
+      display: block;
+      grid-column: 2;
+      grid-row: 3;
+      width: 100%;
+      height: var(--problem-answer-height, 25px);
+      margin-top: var(--problem-answer-gap, 4px);
+      box-sizing: border-box;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .answer-space.write-box {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .answer-space.write-box::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-bottom: 1.5px solid #222;
+    }
+
+    .answer-space.has-answer {
+      padding-right: 5px;
+      text-align: right;
+    }
+
+    .problem.vertical-layout.no-number .top-number,
+    .problem.vertical-layout.no-number .bottom,
+    .problem.vertical-layout.no-number .answer-space {
+      grid-column: 1;
+    }
+
+    .horizontal-problem {
+      width: auto;
+      text-align: left;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: var(--problem-font);
+      font-weight: 700;
+      white-space: nowrap;
+      letter-spacing: -.04em;
+    }
+
+    .horizontal-problem .answer-box {
+      display: inline-block;
+      width: 3.2em;
+      height: 1.25em;
+      margin-left: .22em;
+      border: 0;
+      border-bottom: 1.5px solid #222;
+      border-radius: 0;
+      background: transparent;
+      vertical-align: middle;
+    }
+
+    .sheet-footer {
+      position: absolute;
+      left: var(--safe-inside);
+      right: var(--safe-outside);
+      bottom: .72in;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2px 12px;
+      color: #74747f;
+      font-size: clamp(5px, .68vw, 8px);
+    }
+
+    .sheet.page-verso .sheet-footer {
+      left: var(--safe-outside);
+      right: var(--safe-inside);
+    }
+
+    .sheet-credit {
+      grid-column: 1 / -1;
+      color: #6c5ce7;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      display: grid;
+      place-items: center;
+      min-height: 620px;
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty-state[hidden],
+    .paper-wrap[hidden] {
+      display: none !important;
+    }
+
+    .empty-illustration {
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 17px;
+      display: grid;
+      place-items: center;
+      border-radius: 28px;
+      color: white;
+      background: linear-gradient(145deg, var(--yellow), var(--pink));
+      font-size: 43px;
+      transform: rotate(4deg);
+      box-shadow: 0 14px 28px rgba(255, 107, 157, .20);
+    }
+
+    .empty-state h3 { margin: 0 0 6px; color: var(--ink); }
+    .empty-state p { max-width: 390px; margin: 0; line-height: 1.55; }
+
+    .export-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+      padding: 15px 18px 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .export-bar .btn:nth-child(1) { color: var(--blue); }
+    .export-bar .btn:nth-child(2), .export-bar .btn:nth-child(4) { color: var(--green); }
+    .export-bar .btn:nth-child(3), .export-bar .btn:nth-child(5) { color: var(--purple); }
+
+    .busy-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(21, 22, 35, .58);
+      backdrop-filter: blur(7px);
+    }
+
+    .busy-overlay.active { display: grid; }
+
+    .busy-box {
+      width: min(420px, 100%);
+      padding: 25px;
+      border-radius: 20px;
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: 0 25px 70px rgba(0,0,0,.3);
+      text-align: center;
+    }
+
+    .spinner {
+      width: 43px;
+      height: 43px;
+      margin: 0 auto 15px;
+      border: 5px solid var(--line);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .busy-box h3 { margin: 0 0 5px; }
+    .busy-box p { margin: 0 0 15px; color: var(--muted); font-size: 13px; }
+
+    .progress-track {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: var(--panel-2);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      transition: width .16s ease;
+    }
+
+    .progress-text {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .site-footer {
+      margin-top: 22px;
+      padding: 17px 20px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .site-footer strong { color: var(--ink); }
+
+    .site-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--purple);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .site-footer a:hover { text-decoration: underline; }
+
+    #printRoot { display: none; }
+
+    @media (max-width: 920px) {
+      .workspace { grid-template-columns: 1fr; }
+      .controls { position: static; max-height: none; }
+      .preview-area { min-height: auto; }
+    }
+
+    @media (max-width: 560px) {
+      .app-shell { padding: 12px 10px 28px; }
+      .brand p { display: none; }
+      .brand-mark { width: 42px; height: 42px; border-radius: 13px; }
+      .theme-toggle .theme-label { display: none; }
+      .controls { padding: 16px; border-radius: 17px; }
+      .preview-toolbar { padding: 12px; }
+      .preview-heading p { display: none; }
+      .preview-area { padding: 8px; }
+      .export-bar { grid-template-columns: repeat(2, 1fr); padding: 12px; }
+      .export-bar .btn:first-child { grid-column: 1 / -1; }
+      .sheet { box-shadow: none; }
+      .sheet-title { font-size: clamp(11px, 3.3vw, 18px); }
+      .student-line { font-size: clamp(5px, 1.8vw, 10px); }
+      .site-footer { margin-top: 14px; padding: 15px 12px; font-size: 12px; }
+    }
+
+    @page {
+      size: Letter portrait;
+      margin: 0;
+    }
+
+    @media print {
+      body { background: white !important; }
+      .app-shell, .busy-overlay { display: none !important; }
+      #printRoot { display: block !important; }
+      #printRoot .sheet {
+        width: 8.5in;
+        height: 11in;
+        aspect-ratio: auto;
+        --safe-top: .5in;
+        --safe-bottom: .5in;
+        --safe-inside: .5in;
+        --safe-outside: .375in;
+        box-shadow: none;
+        page-break-after: always;
+        break-after: page;
+      }
+      #printRoot .sheet:last-child { page-break-after: auto; }
+      #printRoot .sheet-title { font-size: 25px; }
+      #printRoot .student-line { font-size: 12px; }
+      #printRoot .problem-number { font-size: var(--number-font, 14px); }
+      #printRoot .sheet-footer { font-size: 8px; }
+      #printRoot .vertical-problem,
+      #printRoot .horizontal-problem {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: var(--problem-font);
+      }
+    }
+  </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div>
+          <h1>VK Tech Learn</h1>
+          <p>Playful practice, polished printables.</p>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <span id="themeIcon">☾</span>
+        <span class="theme-label" id="themeLabel">Dark mode</span>
+      </button>
+    </header>
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🎓 Worksheet Generator</h1>
-    <p>बच्चों के लिए जोड़, घटाव, गुणा और भाग के practice sheets — सवाल अपने आप बनते हैं, जवाब अलग से दिखते हैं।</p>
-    <div class="related"><a href="/toolkit/typing-master.html">Typing Master</a><a href="/toolkit/gemini-cheat-code.html">Gemini Prompts</a></div>
+    <div class="workspace">
+      <aside class="controls card">
+        <h2 class="section-title"><span class="dot"></span>Worksheet setup</h2>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label class="field-label" for="worksheetTitle">Worksheet title</label>
+            <input id="worksheetTitle" type="text" maxlength="80" value="Math Practice" placeholder="Math Practice">
+          </div>
+
+          <div class="field full">
+            <label class="field-label">Operation</label>
+            <div class="operation-grid" role="radiogroup" aria-label="Operation">
+              <div class="op-button"><input id="op-add" name="operation" type="radio" value="add" checked><label for="op-add" title="Addition">+</label></div>
+              <div class="op-button"><input id="op-subtract" name="operation" type="radio" value="subtract"><label for="op-subtract" title="Subtraction">−</label></div>
+              <div class="op-button"><input id="op-multiply" name="operation" type="radio" value="multiply"><label for="op-multiply" title="Multiplication">×</label></div>
+              <div class="op-button"><input id="op-divide" name="operation" type="radio" value="divide"><label for="op-divide" title="Division">÷</label></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="digits">Number of digits</label>
+            <select id="digits">
+              <option value="1">1 digit</option>
+              <option value="2" selected>2 digits</option>
+              <option value="3">3 digits</option>
+              <option value="4">4 digits</option>
+              <option value="5">5 digits</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="problemCount">Problems / page</label>
+            <select id="problemCount">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="pageCount">Workbook pages</label>
+            <select id="pageCount">
+              <option value="24" selected>24 pages</option>
+              <option value="50">50 pages</option>
+              <option value="100">100 pages</option>
+              <option value="200">200 pages</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="field-label">Orientation</label>
+            <div class="segmented">
+              <input id="vertical" name="orientation" type="radio" value="vertical" checked>
+              <label for="vertical">Vertical</label>
+              <input id="horizontal" name="orientation" type="radio" value="horizontal">
+              <label for="horizontal">Horizontal</label>
+            </div>
+          </div>
+
+          <div class="field full">
+            <div class="checks">
+              <label class="check-row">
+                <span>Show problem numbers</span>
+                <span class="switch"><input id="showNumbers" type="checkbox" checked><span class="slider"></span></span>
+              </label>
+              <label class="check-row">
+                <span>Include name field</span>
+                <span class="switch"><input id="showName" type="checkbox" checked><span class="slider"></span></span>
+              </label>
+              <label class="check-row">
+                <span>Include date field</span>
+                <span class="switch"><input id="showDate" type="checkbox" checked><span class="slider"></span></span>
+              </label>
+              <label class="check-row">
+                <span>Include answer key</span>
+                <span class="switch"><input id="includeAnswers" type="checkbox" checked><span class="slider"></span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="primary-actions">
+          <button class="btn primary" id="createBtn" type="button">✦ Create workbook</button>
+          <button class="btn" id="regenerateBtn" type="button">↻ Regenerate</button>
+          <button class="btn random" id="randomizeBtn" type="button">⚄ Randomize</button>
+        </div>
+      </aside>
+
+      <section class="preview-card card">
+        <div class="preview-toolbar">
+          <div class="preview-heading">
+            <h2>Worksheet preview</h2>
+            <p id="workbookSummary">Choose your settings, then create a workbook.</p>
+            <div class="kdp-note">✓ KDP-safe Letter interior · No bleed · 0.5″ binding margin</div>
+          </div>
+          <div class="pager">
+            <button class="icon-btn" id="prevPage" type="button" aria-label="Previous page" disabled>‹</button>
+            <span class="page-indicator" id="pageIndicator">Page 0 / 0</span>
+            <button class="icon-btn" id="nextPage" type="button" aria-label="Next page" disabled>›</button>
+          </div>
+        </div>
+
+        <div class="preview-area" id="previewArea">
+          <div class="empty-state" id="emptyState">
+            <div>
+              <div class="empty-illustration">÷</div>
+              <h3>Your worksheet will appear here</h3>
+              <p>Pick an operation and a few options. You can make anything from a quick practice page to a 200-page workbook.</p>
+            </div>
+          </div>
+          <div class="paper-wrap" id="paperWrap" hidden></div>
+        </div>
+
+        <div class="export-bar">
+          <button class="btn" id="printBtn" type="button" disabled>⎙ Print</button>
+          <button class="btn" id="pdfBtn" type="button" disabled>↓ Worksheet PDF</button>
+          <button class="btn" id="answerPdfBtn" type="button" disabled>✓ Answer PDF</button>
+          <button class="btn" id="docxBtn" type="button" disabled>W Worksheet DOCX</button>
+          <button class="btn" id="answerDocxBtn" type="button" disabled>W Answer DOCX</button>
+        </div>
+      </section>
+    </div>
+
+    <footer class="site-footer card">
+      <div>© 2026 VK Tech Learn. All rights reserved.</div>
+      <div>
+        By: <strong>Vìñâý Kúshwâhå</strong> · Follow on Instagram
+        <a href="https://www.instagram.com/mr__vinay__kushwaha/#" target="_blank" rel="noopener noreferrer" aria-label="Follow mr__vinay__kushwaha on Instagram">
+          ◉ @mr__vinay__kushwaha
+        </a>
+      </div>
+    </footer>
+  </main>
+
+  <div class="busy-overlay" id="busyOverlay" role="status" aria-live="polite">
+    <div class="busy-box">
+      <div class="spinner"></div>
+      <h3 id="busyTitle">Building your workbook…</h3>
+      <p id="busyMessage">A little math magic is happening.</p>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">0%</div>
+    </div>
   </div>
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Settings</h2>
-      <div class="field">
-        <label for="ops">Operation</label>
-        <select id="ops">
-          <option value="+" selected>जोड़ (+)</option>
-          <option value="-">घटाव (−)</option>
-          <option value="x">गुणा (×)</option>
-          <option value="/">भाग (÷)</option>
-          <option value="mix">मिला-जुला</option>
-        </select>
-      </div>
-      <div class="row-3">
-        <div class="field">
-          <label for="min">सबसे छोटी संख्या</label>
-          <input type="number" id="min" value="1" min="0">
-        </div>
-        <div class="field">
-          <label for="max">सबसे बड़ी संख्या</label>
-          <input type="number" id="max" value="20" min="2">
-        </div>
-        <div class="field">
-          <label for="count">कितने सवाल</label>
-          <input type="number" id="count" value="20" min="5" max="60">
-        </div>
-      </div>
-      <div class="field">
-        <label for="name">बच्चे का नाम (optional)</label>
-        <input id="name" placeholder="जैसे: Aarav">
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="make">New worksheet</button>
-        <button class="btn secondary" type="button" id="answers">Answers दिखाएँ</button>
-        <button class="btn secondary" type="button" id="print">Print</button>
-      </div>
-      <div class="status" id="status" role="status"></div>
-    </section>
+  <div id="printRoot"></div>
 
-    <section class="panel">
-      <h2><span>2</span>Worksheet</h2>
-      <div class="sheet" id="sheet">
-        <h3>Math Practice</h3>
-        <p class="sub">Name: ____________ &nbsp; Date: ____________</p>
-        <div class="qgrid" id="qgrid"></div>
-      </div>
-    </section>
-  </div>
-</main>
+  <script>
+    (() => {
+      "use strict";
 
-<script>
-  const qgrid = document.getElementById('qgrid');
-  const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
-  let showAnswers = false, current = [];
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => [...document.querySelectorAll(selector)];
+      const yieldToBrowser = () => new Promise(resolve => setTimeout(resolve, 0));
 
-  function build() {
-    const min = Math.max(0, Number(document.getElementById('min').value) || 0);
-    const max = Math.max(min + 1, Number(document.getElementById('max').value) || 20);
-    const count = Math.min(60, Math.max(5, Number(document.getElementById('count').value) || 20));
-    const pick = document.getElementById('ops').value;
-    current = [];
+      const elements = {
+        title: $("#worksheetTitle"),
+        digits: $("#digits"),
+        problemCount: $("#problemCount"),
+        pageCount: $("#pageCount"),
+        showNumbers: $("#showNumbers"),
+        showName: $("#showName"),
+        showDate: $("#showDate"),
+        includeAnswers: $("#includeAnswers"),
+        paperWrap: $("#paperWrap"),
+        emptyState: $("#emptyState"),
+        summary: $("#workbookSummary"),
+        pageIndicator: $("#pageIndicator"),
+        prevPage: $("#prevPage"),
+        nextPage: $("#nextPage"),
+        busy: $("#busyOverlay"),
+        busyTitle: $("#busyTitle"),
+        busyMessage: $("#busyMessage"),
+        progressFill: $("#progressFill"),
+        progressText: $("#progressText"),
+        printRoot: $("#printRoot")
+      };
 
-    for (let i = 0; i < count; i++) {
-      const op = pick === 'mix' ? ['+', '-', 'x', '/'][rnd(0, 3)] : pick;
-      let a = rnd(min, max), b = rnd(min, max), answer;
-      if (op === '-') { if (b > a) { const t = a; a = b; b = t; } answer = a - b; }
-      else if (op === 'x') { a = rnd(min, Math.min(max, 12)); b = rnd(min, Math.min(max, 12)); answer = a * b; }
-      else if (op === '/') {
-        b = rnd(Math.max(1, min), Math.max(2, Math.min(max, 12)));
-        answer = rnd(min, Math.max(min + 1, Math.min(max, 12)));
-        a = b * answer;
-      } else answer = a + b;
-      current.push({ text: a + ' ' + (op === 'x' ? '×' : op === '/' ? '÷' : op) + ' ' + b + ' =', answer });
-    }
-    paint();
-    const name = document.getElementById('name').value.trim();
-    document.querySelector('#sheet h3').textContent = name ? 'Math Practice — ' + name : 'Math Practice';
-    aiStatus('ok', count + ' सवाल तैयार।');
-  }
+      const state = {
+        workbook: [],
+        config: null,
+        currentPage: 0,
+        busy: false
+      };
 
-  function paint() {
-    qgrid.replaceChildren(...current.map((q) => {
-      const div = document.createElement('div');
-      div.className = 'q';
-      div.textContent = q.text + ' ____';
-      if (showAnswers) {
-        const small = document.createElement('small');
-        small.textContent = q.answer;
-        div.append(small);
+      const operationMeta = {
+        add: { symbol: "+", word: "Addition" },
+        subtract: { symbol: "−", word: "Subtraction" },
+        multiply: { symbol: "×", word: "Multiplication" },
+        divide: { symbol: "÷", word: "Division" }
+      };
+
+      function getConfig() {
+        return {
+          title: elements.title.value.trim() || "Math Practice",
+          operation: $('input[name="operation"]:checked').value,
+          digits: Number(elements.digits.value),
+          orientation: $('input[name="orientation"]:checked').value,
+          problemCount: Math.min(50, Math.max(10, Number(elements.problemCount.value))),
+          pageCount: Math.min(200, Math.max(24, Number(elements.pageCount.value))),
+          showNumbers: elements.showNumbers.checked,
+          showName: elements.showName.checked,
+          showDate: elements.showDate.checked,
+          includeAnswers: elements.includeAnswers.checked
+        };
       }
-      return div;
-    }));
-  }
 
-  document.getElementById('make').addEventListener('click', build);
-  document.getElementById('answers').addEventListener('click', () => {
-    showAnswers = !showAnswers;
-    paint();
-    aiStatus('info', showAnswers ? 'जवाब दिख रहे हैं।' : 'जवाब छिप गए।');
-  });
-  document.getElementById('print').addEventListener('click', () => window.print());
-  build();
-</script>
+      function layoutFor(config) {
+        const columns = config.orientation === "horizontal"
+          ? (config.digits >= 5 ? 2 : config.digits >= 4 ? 3 : 4)
+          : (config.problemCount >= 50 ? 5 : 4);
+        return { columns, rows: Math.ceil(config.problemCount / columns) };
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function makeProblem(config) {
+        const min = config.digits === 1 ? 1 : 10 ** (config.digits - 1);
+        const max = (10 ** config.digits) - 1;
+        let a, b, answer;
+
+        if (config.operation === "add") {
+          a = randomInt(min, max);
+          b = randomInt(min, max);
+          answer = a + b;
+        } else if (config.operation === "subtract") {
+          a = randomInt(min, max);
+          b = randomInt(min, max);
+          if (b > a) [a, b] = [b, a];
+          answer = a - b;
+        } else if (config.operation === "multiply") {
+          a = randomInt(min, max);
+          b = randomInt(min, max);
+          answer = a * b;
+        } else {
+          // Dividend stays within the selected digit range and every quotient is a whole number.
+          let attempts = 0;
+          do {
+            b = randomInt(1, Math.max(2, Math.floor(Math.sqrt(max))));
+            answer = randomInt(1, Math.max(1, Math.floor(max / b)));
+            a = b * answer;
+            attempts++;
+          } while ((a < min || a > max) && attempts < 100);
+          if (a < min || a > max) {
+            b = 1;
+            a = randomInt(min, max);
+            answer = a;
+          }
+        }
+        return { a, b, answer };
+      }
+
+      async function generateWorkbook(config) {
+        setBusy(true, "Creating your workbook…", "Generating fresh, printable problems.");
+        const workbook = [];
+        for (let page = 0; page < config.pageCount; page++) {
+          const problems = [];
+          for (let i = 0; i < config.problemCount; i++) problems.push(makeProblem(config));
+          workbook.push(problems);
+          updateProgress(page + 1, config.pageCount);
+          if (page % 4 === 3) await yieldToBrowser();
+        }
+        state.workbook = workbook;
+        state.config = config;
+        state.currentPage = 0;
+        renderPreview();
+        updateExportButtons();
+        setBusy(false);
+      }
+
+      function fontSizeFor(config) {
+        if (config.orientation === "vertical" && config.problemCount >= 50) return "14px";
+        if (config.orientation === "horizontal") {
+          if (config.digits >= 5) return "10px";
+          if (config.digits >= 4) return "12px";
+        }
+        return "14px";
+      }
+
+      function printFontSizeFor(config) {
+        if (config.orientation === "vertical" && config.problemCount >= 50) return "14px";
+        if (config.orientation === "horizontal") {
+          if (config.digits >= 5) return "10px";
+          if (config.digits >= 4) return "12px";
+        }
+        return "14px";
+      }
+
+      function createSheet(pageIndex, answers = false, forPrint = false) {
+        const config = state.config;
+        const problems = state.workbook[pageIndex];
+        const layout = layoutFor(config);
+        const sheet = document.createElement("article");
+        const dense = config.orientation === "vertical" && config.problemCount >= 50;
+        sheet.className = `sheet ${pageIndex % 2 === 0 ? "page-recto" : "page-verso"}${dense ? " dense" : ""}`;
+        sheet.style.setProperty("--columns", layout.columns);
+        sheet.style.setProperty("--rows", layout.rows);
+        sheet.style.setProperty("--problem-font", forPrint ? printFontSizeFor(config) : fontSizeFor(config));
+        if (dense) {
+          sheet.style.setProperty("--problem-number-column", "20px");
+          sheet.style.setProperty("--problem-column-width", "78px");
+          sheet.style.setProperty("--problem-column-gap", "4px");
+          sheet.style.setProperty("--problem-line-padding", "2px");
+          sheet.style.setProperty("--problem-answer-height", "22px");
+          sheet.style.setProperty("--problem-answer-gap", "3px");
+          sheet.style.setProperty("--number-font", "11px");
+        }
+
+        const title = answers ? `${config.title} — Answer Key` : config.title;
+        const studentBits = [];
+        if (!answers && config.showName) studentBits.push('<span>Name: <span class="write-line"></span></span>');
+        if (!answers && config.showDate) studentBits.push('<span>Date: <span class="write-line"></span></span>');
+        const studentLine = studentBits.length ? `<div class="student-line">${studentBits.join("")}</div>` : "";
+
+        sheet.innerHTML = `
+          <div class="sheet-decor" aria-hidden="true">
+            <span class="sheet-math-card">+</span>
+            <span class="sheet-math-card">−</span>
+            <span class="sheet-math-card">×</span>
+            <span class="sheet-math-card">÷</span>
+          </div>
+          <header class="sheet-header">
+            <h1 class="sheet-title">${escapeHtml(title)}</h1>
+            ${studentLine}
+          </header>
+          <div class="problems-grid"></div>
+          <footer class="sheet-footer">
+            <span>${operationMeta[config.operation].word} • ${config.digits}-digit practice</span>
+            <span>Page ${pageIndex + 1} of ${state.workbook.length}</span>
+            <span class="sheet-credit">© 2026 VK Tech Learn · By: Vìñâý Kúshwâhå</span>
+          </footer>
+        `;
+
+        const grid = sheet.querySelector(".problems-grid");
+        problems.forEach((problem, index) => {
+          const item = document.createElement("div");
+          item.className = `problem ${config.orientation === "vertical" ? "vertical-layout" : "horizontal-layout"}${config.showNumbers ? "" : " no-number"}`;
+          const number = config.showNumbers ? `<span class="problem-number">${index + 1}.</span>` : "";
+          const answer = answers ? formatNumber(problem.answer) : "";
+          if (config.orientation === "vertical") {
+            const answerSpace = answers
+              ? `<div class="answer-space has-answer">${answer}</div>`
+              : "";
+            item.innerHTML = `${number}
+              <div class="vertical-problem">
+                <div class="top-number">${formatNumber(problem.a)}</div>
+                <div class="bottom"><span>${operationMeta[config.operation].symbol}</span><span class="bottom-number">${formatNumber(problem.b)}</span></div>
+                ${answerSpace}
+              </div>`;
+          } else {
+            item.innerHTML = `${number}
+              <div class="horizontal-problem">
+                ${formatNumber(problem.a)} ${operationMeta[config.operation].symbol} ${formatNumber(problem.b)} =
+                ${answers ? `<span>${answer}</span>` : '<span class="answer-box">&nbsp;</span>'}
+              </div>`;
+          }
+          grid.appendChild(item);
+        });
+        return sheet;
+      }
+
+      function renderPreview() {
+        if (!state.workbook.length) return;
+        elements.emptyState.hidden = true;
+        elements.paperWrap.hidden = false;
+        elements.paperWrap.replaceChildren(createSheet(state.currentPage));
+        const config = state.config;
+        elements.pageIndicator.textContent = `Page ${state.currentPage + 1} / ${state.workbook.length}`;
+        elements.prevPage.disabled = state.currentPage === 0;
+        elements.nextPage.disabled = state.currentPage >= state.workbook.length - 1;
+        elements.summary.textContent = `${config.pageCount} page${config.pageCount === 1 ? "" : "s"} • ${config.problemCount} problems each • ${operationMeta[config.operation].word}`;
+      }
+
+      function updateExportButtons() {
+        const ready = state.workbook.length > 0 && !state.busy;
+        ["printBtn", "pdfBtn", "docxBtn"].forEach(id => $(`#${id}`).disabled = !ready);
+        const answersReady = ready && state.config.includeAnswers;
+        $("#answerPdfBtn").disabled = !answersReady;
+        $("#answerDocxBtn").disabled = !answersReady;
+      }
+
+      function setBusy(active, title = "", message = "") {
+        state.busy = active;
+        elements.busy.classList.toggle("active", active);
+        document.body.style.overflow = active ? "hidden" : "";
+        if (title) elements.busyTitle.textContent = title;
+        if (message) elements.busyMessage.textContent = message;
+        if (active) updateProgress(0, 1);
+        updateExportButtons();
+      }
+
+      function updateProgress(current, total) {
+        const percent = total ? Math.round((current / total) * 100) : 0;
+        elements.progressFill.style.width = `${percent}%`;
+        elements.progressText.textContent = `${percent}%`;
+      }
+
+      function formatNumber(number) {
+        return Number(number).toLocaleString("en-US");
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+        })[char]);
+      }
+
+      function safeFileName(name) {
+        return (name || "math-workbook")
+          .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
+          .trim()
+          .replace(/\s+/g, "-")
+          .slice(0, 70) || "math-workbook";
+      }
+
+      async function printWorkbook(answers = false) {
+        if (!state.workbook.length) return;
+        setBusy(true, answers ? "Preparing answer-key pages…" : "Preparing print pages…", "Laying out the complete workbook.");
+        elements.printRoot.replaceChildren();
+        for (let i = 0; i < state.workbook.length; i++) {
+          elements.printRoot.appendChild(createSheet(i, answers, true));
+          updateProgress(i + 1, state.workbook.length);
+          if (i % 5 === 4) await yieldToBrowser();
+        }
+        setBusy(false);
+        await yieldToBrowser();
+        window.print();
+        setTimeout(() => elements.printRoot.replaceChildren(), 1200);
+      }
+
+      function pdfFontSize(config) {
+        if (config.orientation === "vertical" && config.problemCount >= 50) return 12;
+        if (config.orientation === "horizontal") {
+          if (config.digits >= 5) return 10;
+          if (config.digits >= 4) return 12;
+        }
+        return 14;
+      }
+
+      function fitPdfFontSize(pdf, text, maxWidth, baseSize, minSize = 8) {
+        let size = baseSize;
+        pdf.setFontSize(size);
+        while (size > minSize && pdf.getTextWidth(text) > maxWidth) {
+          size -= 0.5;
+          pdf.setFontSize(size);
+        }
+        return size;
+      }
+
+      async function downloadPdf(answers = false) {
+        if (!window.jspdf?.jsPDF) {
+          alert("The PDF library could not load. Please check your internet connection and try again.");
+          return;
+        }
+        const config = state.config;
+        setBusy(true, answers ? "Creating answer key PDF…" : "Creating worksheet PDF…", "Rendering print-quality letter pages.");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter", compress: true, putOnlyUsedFonts: true });
+        const width = 612;
+        const height = 792;
+        const safeInside = 36;
+        const safeOutside = 27;
+        const safeTop = 36;
+        const safeBottom = 58;
+        const footerReserve = 72;
+        const top = 58;
+        const headerBottom = (config.showName || config.showDate) && !answers ? 108 : 86;
+        const contentHeight = height - headerBottom - safeBottom - footerReserve;
+        const layout = layoutFor(config);
+        const rows = layout.rows;
+        const columns = layout.columns;
+        const rowHeight = contentHeight / rows;
+        const fontSize = pdfFontSize(config);
+        const denseVertical = config.orientation === "vertical" && config.problemCount >= 50;
+        const pdfSymbols = { add: "+", subtract: "-", multiply: "x", divide: "/" };
+        const symbol = pdfSymbols[config.operation];
+
+        for (let page = 0; page < state.workbook.length; page++) {
+          if (page > 0) pdf.addPage("letter", "portrait");
+          const isRecto = page % 2 === 0;
+          const leftMargin = isRecto ? safeInside : safeOutside;
+          const rightMargin = isRecto ? safeOutside : safeInside;
+          const columnWidth = (width - leftMargin - rightMargin) / columns;
+
+          pdf.setDrawColor(139, 124, 255);
+          pdf.setLineWidth(2.2);
+          pdf.roundedRect(leftMargin, safeTop, width - leftMargin - rightMargin, height - safeTop - safeBottom, 9, 9);
+          pdf.setDrawColor(255, 200, 87);
+          pdf.setLineWidth(1.1);
+          pdf.roundedRect(leftMargin + 4, safeTop + 4, width - leftMargin - rightMargin - 8, height - safeTop - safeBottom - 8, 7, 7);
+
+          const pdfCards = [
+            { x: leftMargin + 5, y: safeTop + 8, color: [255, 107, 157], symbol: "+" },
+            { x: width - rightMargin - 27, y: safeTop + 8, color: [54, 163, 255], symbol: "-" },
+            { x: leftMargin + 5, y: height - safeBottom - 30, color: [50, 196, 141], symbol: "x" },
+            { x: width - rightMargin - 27, y: height - safeBottom - 30, color: [255, 159, 67], symbol: "/" }
+          ];
+          pdfCards.forEach(card => {
+            pdf.setFillColor(...card.color);
+            pdf.setDrawColor(255, 255, 255);
+            pdf.setLineWidth(1.2);
+            pdf.roundedRect(card.x, card.y, 22, 22, 4, 4, "FD");
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(15);
+            pdf.text(card.symbol, card.x + 11, card.y + 15.5, { align: "center" });
+          });
+
+          pdf.setTextColor(26, 26, 35);
+          pdf.setFont("helvetica", "bold");
+          const pdfTitle = answers ? `${config.title} — Answer Key` : config.title;
+          const titleSize = fitPdfFontSize(pdf, pdfTitle, width - leftMargin - rightMargin - 60, 18, 10);
+          pdf.setFontSize(titleSize);
+          pdf.text(pdfTitle, width / 2, top, { align: "center" });
+
+          pdf.setDrawColor(35, 35, 48);
+          pdf.setLineWidth(1.2);
+          pdf.line(leftMargin, headerBottom - 9, width - rightMargin, headerBottom - 9);
+
+          if (!answers && (config.showName || config.showDate)) {
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(9);
+            if (config.showName && config.showDate) {
+              pdf.text("Name:", leftMargin, 82);
+              pdf.line(leftMargin + 32, 83, width / 2 - 18, 83);
+              pdf.text("Date:", width / 2 + 16, 82);
+              pdf.line(width / 2 + 44, 83, width - rightMargin, 83);
+            } else if (config.showName) {
+              pdf.text("Name:", leftMargin, 82);
+              pdf.line(leftMargin + 32, 83, width - rightMargin, 83);
+            } else {
+              pdf.text("Date:", leftMargin, 82);
+              pdf.line(leftMargin + 28, 83, width - rightMargin, 83);
+            }
+          }
+
+          state.workbook[page].forEach((problem, index) => {
+            const col = Math.floor(index / rows);
+            const row = index % rows;
+            const x0 = leftMargin + col * columnWidth;
+            const xCenter = x0 + columnWidth / 2;
+            const y0 = headerBottom + row * rowHeight;
+            const yCenter = y0 + rowHeight / 2;
+
+            pdf.setTextColor(18, 18, 24);
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(fontSize);
+
+            if (config.orientation === "vertical") {
+              const right = x0 + columnWidth - 12;
+              const lineY = yCenter + fontSize * .25;
+              const calculationLeft = x0 + (config.showNumbers ? (denseVertical ? 24 : 32) : 13);
+              if (config.showNumbers) {
+                pdf.setFont("helvetica", "normal");
+                pdf.setFontSize(denseVertical ? 10 : 14);
+                pdf.text(`${index + 1}.`, x0 + 3, lineY);
+                pdf.setFont("helvetica", "bold");
+              }
+              fitPdfFontSize(pdf, formatNumber(problem.a), columnWidth - 42, fontSize);
+              pdf.setFontSize(Math.min(fontSize, Number(pdf.getFontSize())));
+              pdf.text(formatNumber(problem.a), right, lineY - fontSize * .85, { align: "right" });
+              pdf.setFontSize(fontSize);
+              pdf.text(symbol, calculationLeft, lineY, { align: "left" });
+              pdf.text(formatNumber(problem.b), right, lineY, { align: "right" });
+              pdf.setLineWidth(.7);
+              pdf.line(calculationLeft - 2, lineY + 3, right, lineY + 3);
+              if (answers) {
+                pdf.text(formatNumber(problem.answer), right, lineY + fontSize * 1.02, { align: "right" });
+              }
+            } else {
+              const numberPrefix = config.showNumbers ? `${index + 1}.  ` : "";
+              const equation = answers
+                ? `${numberPrefix}${formatNumber(problem.a)} ${symbol} ${formatNumber(problem.b)} = ${formatNumber(problem.answer)}`
+                : `${numberPrefix}${formatNumber(problem.a)} ${symbol} ${formatNumber(problem.b)} =`;
+              const boxWidth = answers ? 0 : Math.min(34, columnWidth * .25);
+              const safeFontSize = fitPdfFontSize(pdf, equation, columnWidth - 12 - boxWidth - (answers ? 0 : 5), fontSize);
+              pdf.setFontSize(safeFontSize);
+              if (answers) {
+                pdf.text(equation, xCenter, yCenter + safeFontSize * .32, { align: "center" });
+              } else {
+                const textWidth = pdf.getTextWidth(equation);
+                const totalWidth = textWidth + 5 + boxWidth;
+                const startX = xCenter - totalWidth / 2;
+                pdf.text(equation, startX, yCenter + safeFontSize * .32);
+                pdf.setLineWidth(.8);
+                pdf.line(startX + textWidth + 5, yCenter + 6, startX + textWidth + 5 + boxWidth, yCenter + 6);
+              }
+            }
+          });
+
+          pdf.setFont("helvetica", "normal");
+          pdf.setTextColor(115, 115, 125);
+          pdf.setFontSize(7);
+          pdf.text(`${operationMeta[config.operation].word} • ${config.digits}-digit practice`, leftMargin, height - 96);
+          pdf.text(`Page ${page + 1} of ${state.workbook.length}`, width - rightMargin, height - 96, { align: "right" });
+          pdf.setTextColor(108, 92, 231);
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(6.5);
+          pdf.text("© 2026 VK Tech Learn · By: Vinay Kushwaha", width / 2, height - 84, { align: "center" });
+
+          updateProgress(page + 1, state.workbook.length);
+          if (page % 3 === 2) await yieldToBrowser();
+        }
+
+        const suffix = answers ? "answer-key" : "worksheets";
+        pdf.save(`${safeFileName(config.title)}-${suffix}.pdf`);
+        setBusy(false);
+      }
+
+      async function downloadDocx(answers = false) {
+        if (!window.docx) {
+          alert("The DOCX library could not load. Please check your internet connection and try again.");
+          return;
+        }
+        const config = state.config;
+        const d = window.docx;
+        setBusy(true, answers ? "Creating answer key DOCX…" : "Creating worksheet DOCX…", "Building editable letter-size pages.");
+        const sections = [];
+        const symbol = operationMeta[config.operation].symbol;
+        const layout = layoutFor(config);
+        const rows = layout.rows;
+        const columns = layout.columns;
+        const docxFontSize = config.orientation === "horizontal"
+          ? (config.digits >= 5 ? 18 : config.digits >= 4 ? 22 : 28)
+          : (config.digits >= 5 ? 24 : 28);
+
+        for (let page = 0; page < state.workbook.length; page++) {
+          const children = [];
+          children.push(new d.Paragraph({
+            alignment: d.AlignmentType.CENTER,
+            spacing: { after: 130 },
+            children: [new d.TextRun({
+              text: answers ? `${config.title} — Answer Key` : config.title,
+              bold: true,
+              size: 32,
+              font: "Trebuchet MS"
+            })]
+          }));
+
+          if (!answers && (config.showName || config.showDate)) {
+            let line = "";
+            if (config.showName) line += "Name: ______________________________";
+            if (config.showName && config.showDate) line += "        ";
+            if (config.showDate) line += "Date: ____________________";
+            children.push(new d.Paragraph({
+              spacing: { after: 110 },
+              children: [new d.TextRun({ text: line, size: 18, font: "Arial" })]
+            }));
+          }
+
+          const tableRows = [];
+          for (let row = 0; row < rows; row++) {
+            const cells = [];
+            for (let col = 0; col < columns; col++) {
+              const index = col * rows + row;
+              const problem = state.workbook[page][index];
+              let paragraphs;
+              if (!problem) {
+                paragraphs = [new d.Paragraph("")];
+              } else {
+                const n = config.showNumbers ? `${index + 1}. ` : "";
+                if (config.orientation === "vertical") {
+                  paragraphs = [
+                    new d.Paragraph({ alignment: d.AlignmentType.RIGHT, children: [new d.TextRun({ text: formatNumber(problem.a), font: "Arial", size: docxFontSize, bold: true })] }),
+                    new d.Paragraph({
+                      alignment: d.AlignmentType.RIGHT,
+                      border: { bottom: { color: "222222", size: 8, style: d.BorderStyle.SINGLE } },
+                      children: [new d.TextRun({ text: `${n}${symbol} ${formatNumber(problem.b)}`, font: "Arial", size: docxFontSize, bold: true })]
+                    })
+                  ];
+                  if (answers) {
+                    paragraphs.push(new d.Paragraph({
+                      alignment: d.AlignmentType.RIGHT,
+                      spacing: { after: 30 },
+                      children: [new d.TextRun({
+                        text: formatNumber(problem.answer),
+                        font: "Arial",
+                        size: docxFontSize,
+                        bold: true
+                      })]
+                    }));
+                  }
+                } else {
+                  const equationRuns = [
+                    new d.TextRun({
+                      text: `${n}${formatNumber(problem.a)} ${symbol} ${formatNumber(problem.b)} = `,
+                      font: "Arial",
+                      size: docxFontSize,
+                      bold: true
+                    }),
+                    new d.TextRun(answers ? {
+                      text: formatNumber(problem.answer),
+                      font: "Arial",
+                      size: docxFontSize,
+                      bold: true
+                    } : {
+                      text: "       ",
+                      font: "Arial",
+                      size: docxFontSize,
+                      border: { bottom: { color: "222222", size: 8, style: d.BorderStyle.SINGLE } }
+                    })
+                  ];
+                  paragraphs = [new d.Paragraph({
+                    alignment: d.AlignmentType.CENTER,
+                    children: equationRuns
+                  })];
+                }
+              }
+              cells.push(new d.TableCell({
+                width: { size: 100 / columns, type: d.WidthType.PERCENTAGE },
+                verticalAlign: d.VerticalAlign.CENTER,
+                margins: { top: 55, bottom: 55, left: 65, right: 65 },
+                borders: {
+                  top: { style: d.BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  bottom: { style: d.BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  left: { style: d.BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  right: { style: d.BorderStyle.NONE, size: 0, color: "FFFFFF" }
+                },
+                children: paragraphs
+              }));
+            }
+            tableRows.push(new d.TableRow({ children: cells, height: { value: Math.max(300, Math.floor(7800 / rows)), rule: d.HeightRule.ATLEAST } }));
+          }
+
+          children.push(new d.Table({
+            width: { size: 100, type: d.WidthType.PERCENTAGE },
+            layout: d.TableLayoutType.FIXED,
+            rows: tableRows
+          }));
+          children.push(new d.Paragraph({
+            alignment: d.AlignmentType.CENTER,
+            spacing: { before: 80 },
+            children: [
+              new d.TextRun({ text: `Page ${page + 1} of ${state.workbook.length}\n`, color: "777777", size: 14 }),
+              new d.TextRun({
+                text: "© 2026 VK Tech Learn · By: Vìñâý Kúshwâhå",
+                color: "6C5CE7",
+                bold: true,
+                size: 13
+              })
+            ]
+          }));
+
+          sections.push({
+            properties: {
+              page: {
+                size: { width: 12240, height: 15840 },
+                 margin: { top: 720, right: 720, bottom: 720, left: 720 }
+              }
+            },
+            children
+          });
+          updateProgress(page + 1, state.workbook.length);
+          if (page % 2 === 1) await yieldToBrowser();
+        }
+
+        const doc = new d.Document({ sections });
+        const blob = await d.Packer.toBlob(doc);
+        saveAs(blob, `${safeFileName(config.title)}-${answers ? "answer-key" : "worksheets"}.docx`);
+        setBusy(false);
+      }
+
+      function randomizeSettings() {
+        const operations = ["add", "subtract", "multiply", "divide"];
+        const counts = ["10", "20", "30", "50"];
+        const pages = ["24", "50", "100"];
+        const operation = operations[randomInt(0, operations.length - 1)];
+        $(`#op-${operation}`).checked = true;
+        elements.digits.value = String(randomInt(1, 3));
+        elements.problemCount.value = counts[randomInt(0, counts.length - 1)];
+        elements.pageCount.value = pages[randomInt(0, pages.length - 1)];
+        const orientation = Math.random() > .5 ? "vertical" : "horizontal";
+        $(`#${orientation}`).checked = true;
+        generateWorkbook(getConfig());
+      }
+
+      $("#createBtn").addEventListener("click", () => generateWorkbook(getConfig()));
+      $("#regenerateBtn").addEventListener("click", () => generateWorkbook(getConfig()));
+      $("#randomizeBtn").addEventListener("click", randomizeSettings);
+      $("#printBtn").addEventListener("click", () => printWorkbook(false));
+      // Use the exact same browser-rendered pages as Print so Save as PDF
+      // cannot drift from the layout the user already verified.
+      $("#pdfBtn").addEventListener("click", () => printWorkbook(false));
+      $("#answerPdfBtn").addEventListener("click", () => printWorkbook(true));
+      $("#docxBtn").addEventListener("click", () => downloadDocx(false));
+      $("#answerDocxBtn").addEventListener("click", () => downloadDocx(true));
+
+      elements.prevPage.addEventListener("click", () => {
+        if (state.currentPage > 0) {
+          state.currentPage--;
+          renderPreview();
+        }
+      });
+
+      elements.nextPage.addEventListener("click", () => {
+        if (state.currentPage < state.workbook.length - 1) {
+          state.currentPage++;
+          renderPreview();
+        }
+      });
+
+      elements.includeAnswers.addEventListener("change", updateExportButtons);
+
+      $("#themeToggle").addEventListener("click", () => {
+        const dark = document.documentElement.dataset.theme !== "dark";
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        $("#themeIcon").textContent = dark ? "☀" : "☾";
+        $("#themeLabel").textContent = dark ? "Light mode" : "Dark mode";
+        try { localStorage.setItem("brightmath-theme", dark ? "dark" : "light"); } catch (_) {}
+      });
+
+      try {
+        const savedTheme = localStorage.getItem("brightmath-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+          document.documentElement.dataset.theme = "dark";
+          $("#themeIcon").textContent = "☀";
+          $("#themeLabel").textContent = "Light mode";
+        }
+      } catch (_) {}
+
+      window.addEventListener("afterprint", () => elements.printRoot.replaceChildren());
+    })();
+  </script>
 </body>
 </html>

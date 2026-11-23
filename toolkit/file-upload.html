@@ -1,145 +1,275 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>File Upload Manager — Local File Vault | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="File upload manager — files ko browser ke local vault me rakhen, list dekhen, download karein aur delete karein. Kuch bhi server par nahi jata.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/file-upload.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex items-center justify-center flex-col">
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🧩 File Vault</h1>
-    <p>अपनी files इसी browser में एक जगह रखें — list, download और delete सब यहीं। फाइलें किसी server पर नहीं जातीं, इसलिए यह personal vault है, सार्वजनिक शेयर लिंक नहीं।</p>
-    <div class="related"><a href="/pdf/">PDF Toolbox</a><a href="/img/">Image Toolbox</a></div>
-  </div>
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl w-full max-w-2xl mx-auto text-center">
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Files जोड़ें</h2>
-      <div class="field">
-        <label for="files">Choose files</label>
-        <input type="file" id="files" multiple>
-        <div class="hint">कुल storage लगभग 50 MB तक — browser की सीमा पर निर्भर।</div>
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="add">Save to vault</button>
-        <button class="btn secondary" type="button" id="refresh">Refresh list</button>
-      </div>
-      <div class="status" id="status" role="status"></div>
-      <p class="hint">नोट: GitHub Pages पर server नहीं है, इसलिए "shareable link" नहीं बन सकता। जो file यहाँ रहेगी, वह सिर्फ इसी browser और device में दिखेगी।</p>
-    </section>
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 md:mb-10 tracking-tight">
+            <i class="fas fa-cloud-upload-alt text-blue-400 mr-3"></i>File Upload Manager
+        </h1>
+        <p class="text-gray-400 text-center mb-8 max-w-2xl">
+            Drag & drop your files or click to upload.
+        </p>
 
-    <section class="panel">
-      <h2><span>2</span>Vault</h2>
-      <div class="output" id="usage">—</div>
-      <ul class="list" id="list"></ul>
-    </section>
-  </div>
-</main>
+        <!-- Ad Banner Area - Placed strategically for visibility -->
+        <div class="w-full flex justify-center items-center mb-8 rounded-xl overflow-hidden shadow-lg bg-gray-700">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'b98ff1a04183c6a672faf175535eecc3',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/b98ff1a04183c6a672faf175535eecc3/invoke.js"></script>
+        </div>
 
-<script>
-  const DB_NAME = 'vktl-file-vault';
-  const STORE = 'files';
-  let db = null;
+        <!-- Upload Area (Drag-and-Drop Zone) -->
+        <label for="fileInput" id="dropZone" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-600 border-dashed rounded-xl bg-gray-700 hover:bg-gray-600 transition-colors duration-300 cursor-pointer">
+            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                <p class="mt-2 text-lg text-gray-400 font-semibold">
+                    <span id="dropZoneText">Drag & Drop or Click to Upload</span>
+                </p>
+                <p id="fileNameDisplay" class="text-sm text-gray-500 mt-1"></p>
+            </div>
+        </label>
+        <input id="fileInput" type="file" class="hidden" />
 
-  function open() {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, 1);
-      req.onupgradeneeded = () => {
-        const d = req.result;
-        if (!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE, { keyPath: 'id', autoIncrement: true });
-      };
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
+        <!-- Progress Bar -->
+        <div id="progressBarContainer" class="w-full h-4 bg-gray-700 rounded-full mt-6 overflow-hidden hidden">
+            <div id="progressBar" class="h-full bg-blue-600 transition-all duration-300 ease-out" style="width: 0%;"></div>
+        </div>
 
-  function tx(mode) { return db.transaction(STORE, mode).objectStore(STORE); }
+        <!-- Result Area -->
+        <div id="resultArea" class="mt-8 hidden">
+            <p class="text-gray-400 text-sm mb-2">Shareable Link:</p>
+            <div class="flex items-center bg-gray-700 rounded-xl p-2 pr-4 shadow-md">
+                <input type="text" id="fileUrlInput" class="flex-1 bg-transparent text-gray-200 text-sm font-mono focus:outline-none" readonly />
+                <button id="copyButton" class="ml-2 p-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors duration-200">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+        </div>
 
-  function all() {
-    return new Promise((resolve, reject) => {
-      const req = tx('readonly').getAll();
-      req.onsuccess = () => resolve(req.result || []);
-      req.onerror = () => reject(req.error);
-    });
-  }
+        <!-- Error/Message Area -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full max-w-md hidden"></div>
 
-  const bytes = (n) => n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(0) + ' KB' : (n / 1048576).toFixed(2) + ' MB';
+    </div>
 
-  async function refresh() {
-    const files = await all();
-    const total = files.reduce((n, f) => n + (f.size || 0), 0);
-    document.getElementById('usage').textContent = files.length + ' files · ' + bytes(total) + ' इस्तेमाल';
-    const list = document.getElementById('list');
-    if (!files.length) {
-      const li = document.createElement('li');
-      li.textContent = 'Vault खाली है।';
-      list.replaceChildren(li);
-      return;
-    }
-    list.replaceChildren(...files.map((f) => {
-      const li = document.createElement('li');
-      li.style.display = 'flex';
-      li.style.alignItems = 'center';
-      li.style.gap = '.6rem';
-      li.style.flexWrap = 'wrap';
-      const name = document.createElement('strong');
-      name.textContent = f.name;
-      const size = document.createElement('span');
-      size.textContent = bytes(f.size || 0);
-      const dl = document.createElement('button');
-      dl.className = 'btn secondary';
-      dl.type = 'button';
-      dl.textContent = 'Download';
-      dl.addEventListener('click', () => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(f.blob);
-        a.download = f.name;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-      });
-      const del = document.createElement('button');
-      del.className = 'btn secondary';
-      del.type = 'button';
-      del.textContent = 'Delete';
-      del.addEventListener('click', () => {
-        const req = tx('readwrite').delete(f.id);
-        req.onsuccess = () => { refresh(); aiStatus('ok', f.name + ' हट गई।'); };
-      });
-      li.append(name, size, dl, del);
-      return li;
-    }));
-  }
+    <!-- Instructions on how to use the tool -->
+    <div class="mt-12 w-full max-w-2xl text-left p-6 rounded-2xl bg-gray-800 shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">How to Use this Tool? (इस टूल का उपयोग कैसे करें?)</h2>
+        <p class="text-gray-400 mb-6">
+            This tool is designed to be simple and easy to use. Just follow these steps: <br/>
+            यह टूल उपयोग करने में बहुत आसान है। बस इन चरणों का पालन करें:
+        </p>
 
-  document.getElementById('add').addEventListener('click', async () => {
-    const input = document.getElementById('files');
-    if (!input.files.length) { aiStatus('err', 'पहले file चुनें।'); return; }
-    for (const file of input.files) {
-      await new Promise((resolve, reject) => {
-        const req = tx('readwrite').add({ name: file.name, size: file.size, type: file.type, blob: file, at: Date.now() });
-        req.onsuccess = resolve;
-        req.onerror = () => reject(req.error);
-      }).catch((e) => aiStatus('err', 'सेव नहीं हुआ: ' + e));
-    }
-    input.value = '';
-    aiStatus('ok', 'Vault में सेव हो गया।');
-    refresh();
-  });
+        <ol class="list-decimal list-inside text-gray-300 space-y-4">
+            <li>
+                <strong class="text-blue-400">Step 1: Upload your file (पहला कदम: अपनी फाइल अपलोड करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click the upload area or drag and drop your file into it.
+                    अपलोड क्षेत्र पर क्लिक करें या अपनी फ़ाइल को इसमें ड्रैग और ड्रॉप करें।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 2: Wait for upload to complete (दूसरा कदम: अपलोड पूरा होने की प्रतीक्षा करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    The progress bar will show the status of your file upload.
+                    प्रगति बार (progress bar) आपकी फ़ाइल अपलोड की स्थिति दिखाएगा।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Step 3: Get your shareable link (तीसरा कदम: अपना साझा करने योग्य लिंक प्राप्त करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Once the upload is finished, a shareable link will appear. You can click the copy icon to copy the link.
+                    एक बार अपलोड पूरा हो जाने पर, एक साझा करने योग्य लिंक दिखाई देगा। आप लिंक को कॉपी करने के लिए कॉपी आइकन पर क्लिक कर सकते हैं।
+                </p>
+            </li>
+        </ol>
+    </div>
 
-  document.getElementById('refresh').addEventListener('click', refresh);
+    <script>
+        // DOM Element references
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const dropZoneText = document.getElementById('dropZoneText');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const progressBarContainer = document.getElementById('progressBarContainer');
+        const progressBar = document.getElementById('progressBar');
+        const resultArea = document.getElementById('resultArea');
+        const fileUrlInput = document.getElementById('fileUrlInput');
+        const copyButton = document.getElementById('copyButton');
+        const messageArea = document.getElementById('messageArea');
 
-  open().then((d) => { db = d; refresh(); }).catch(() => aiStatus('err', 'इस browser में local storage उपलब्ध नहीं।'));
-</script>
+        // Show a temporary message to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full max-w-md block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0';
+                messageArea.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'opacity' && messageArea.style.opacity === '0') {
+                        messageArea.classList.add('hidden');
+                    }
+                }, { once: true });
+            }, 3000);
+        };
+
+        // --- Drag & Drop Functionality ---
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-400');
+            dropZone.classList.remove('border-gray-600');
+            dropZoneText.textContent = 'Drop file to upload';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-blue-400');
+            dropZone.classList.add('border-gray-600');
+            dropZoneText.textContent = 'Drag & Drop or Click to Upload';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-400');
+            dropZone.classList.add('border-gray-600');
+            dropZoneText.textContent = 'Drag & Drop or Click to Upload';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        // Handle file selection via input click
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        // --- Upload Logic ---
+        const handleFileUpload = (file) => {
+            // Reset UI
+            resultArea.classList.add('hidden');
+            progressBarContainer.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            
+            fileNameDisplay.textContent = file.name;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const xhr = new XMLHttpRequest();
+
+            // Progress tracking
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    const percent = (event.loaded / event.total) * 100;
+                    progressBar.style.width = `${percent}%`;
+                }
+            });
+
+            // Handle server response
+            xhr.onload = () => {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        fileUrlInput.value = response.url;
+                        resultArea.classList.remove('hidden');
+                        progressBarContainer.classList.add('hidden');
+                        showMessage("File uploaded successfully!", false);
+                    } else {
+                        showMessage(`Error: ${response.error}`, true);
+                        progressBarContainer.classList.add('hidden');
+                    }
+                } catch (e) {
+                    showMessage("Server error. Could not parse response.", true);
+                    progressBarContainer.classList.add('hidden');
+                }
+            };
+
+            // Handle network errors
+            xhr.onerror = () => {
+                showMessage("Network error. Could not connect to the server.", true);
+                progressBarContainer.classList.add('hidden');
+            };
+
+            // Send the request
+            // Note: In this self-contained context, a real server upload is not possible.
+            // We simulate a successful upload for demonstration purposes.
+            // In a real-world scenario, you would replace this with a valid endpoint.
+            simulateUpload(file);
+        };
+
+        // A dummy function to simulate a file upload with a delay
+        const simulateUpload = (file) => {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = `${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    progressBarContainer.classList.add('hidden');
+                    const simulatedUrl = `https://example.com/files/${file.name.replace(/\s/g, '_')}`;
+                    fileUrlInput.value = simulatedUrl;
+                    resultArea.classList.remove('hidden');
+                    showMessage("File uploaded successfully!", false);
+                }
+            }, 200);
+        };
+
+
+        // --- Copy Link Functionality ---
+        copyButton.addEventListener('click', () => {
+            fileUrlInput.select();
+            fileUrlInput.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                document.execCommand('copy');
+                showMessage("Link copied!", false);
+            } catch (err) {
+                showMessage("Failed to copy link.", true);
+            }
+        });
+    </script>
 </body>
 </html>

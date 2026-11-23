@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+
+        /* Hide the file input but keep the label clickable */
+        .file-input-label {
+            cursor: pointer;
+        }
+        .file-input-label:hover {
+            border-color: #60a5fa; /* border-blue-400 */
+        }
+        .file-input {
+            display: none;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex flex-col items-center">
+
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl w-full max-w-4xl mx-auto flex flex-col items-center">
+
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 text-center tracking-tight">
+            <i class="fas fa-expand-alt text-blue-400 mr-3"></i>Image Resizer
+        </h1>
+        <p class="text-gray-400 text-center mb-8 max-w-2xl">
+            Resize your images quickly and easily in the browser.
+        </p>
+
+        <!-- Ad Placement (If you wish to add ads, place your code here) -->
+        <!-- This is a strategic position for the ad, placed between the main description and the upload area. -->
+        <div class="w-full my-6 flex justify-center">
+            <!-- 
+                कृपया यहां अपना AdSense या किसी अन्य विज्ञापन प्रदाता का कोड पेस्ट करें।
+                मैं आपके विज्ञापन कोड को सीधे शामिल नहीं कर सकता।
+            -->
+        </div>
+
+        <!-- Upload Area -->
+        <div class="w-full mb-8">
+            <label for="fileInput" class="file-input-label flex flex-col items-center justify-center w-full h-40 border-2 border-gray-600 border-dashed rounded-xl bg-gray-700 hover:bg-gray-600 transition-colors duration-300">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                    <p class="mt-2 text-lg text-gray-400 font-semibold">
+                        Drag & Drop Image or <span class="text-blue-400 underline">Click to Upload</span>
+                    </p>
+                </div>
+            </label>
+            <input id="fileInput" type="file" class="file-input" accept="image/*" />
+        </div>
+
+        <!-- Preview and Controls Column -->
+        <div id="controls-container" class="w-full bg-gray-700 p-6 rounded-xl shadow-md hidden">
+            <!-- Image Preview -->
+            <div class="flex justify-center items-center mb-6">
+                <img id="imagePreview" src="" alt="Image Preview" class="max-h-96 w-auto rounded-lg object-contain">
+            </div>
+
+            <!-- Dimensions and Aspect Ratio Controls -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 mb-4">
+                <div class="flex-1 w-full">
+                    <label for="widthInput" class="block text-sm font-medium text-gray-300">Width (px)</label>
+                    <input type="number" id="widthInput" class="w-full p-2 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex-1 w-full">
+                    <label for="heightInput" class="block text-sm font-medium text-gray-300">Height (px)</label>
+                    <input type="number" id="heightInput" class="w-full p-2 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-center mb-6">
+                <input type="checkbox" id="aspectRatioToggle" class="mr-2 text-blue-500 rounded focus:ring-blue-400" checked>
+                <label for="aspectRatioToggle" class="text-sm font-medium text-gray-300">Lock Aspect Ratio</label>
+            </div>
+
+            <!-- Format and Quality Controls -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                <div class="flex-1 w-full">
+                    <label for="formatSelect" class="block text-sm font-medium text-gray-300">Output Format</label>
+                    <select id="formatSelect" class="w-full p-2 rounded-lg bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-200">
+                        <option value="image/jpeg">JPEG</option>
+                        <option value="image/png">PNG</option>
+                        <option value="image/webp">WEBP</option>
+                    </select>
+                </div>
+                <div class="flex-1 w-full">
+                    <label for="qualitySlider" class="block text-sm font-medium text-gray-300">Quality (<span id="qualityValue">80</span>%)</label>
+                    <input type="range" id="qualitySlider" min="0" max="100" value="80" class="w-full accent-blue-500 rounded-lg h-2 bg-gray-800 border-transparent">
+                </div>
+            </div>
+
+            <!-- Resize and Download Button -->
+            <button id="downloadButton" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                <i class="fas fa-download mr-2"></i> Resize & Download
+            </button>
+        </div>
+
+        <!-- Notification Message Area -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full max-w-2xl hidden"></div>
+    </div>
+
+    <!-- Instructions on how to use the tool -->
+    <div class="mt-12 w-full max-w-4xl text-left p-6 rounded-2xl bg-gray-800 shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">How to Resize an Image? (इमेज को कैसे Resize करें?)</h2>
+        <p class="text-gray-400 mb-6">
+            This tool is designed to be simple and easy to use. Just follow these steps: <br/>
+            यह टूल उपयोग करने में बहुत आसान है। बस इन चरणों का पालन करें:
+        </p>
+
+        <ol class="list-decimal list-inside text-gray-300 space-y-4">
+            <li>
+                <strong class="text-blue-400">Select or Drag & Drop Image (इमेज चुनें या Drag & Drop करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click on the "Click to Upload" button or simply drag and drop your image file onto the dotted area. <br/>
+                    "Click to Upload" बटन पर क्लिक करें या अपनी इमेज फ़ाइल को सीधे dotted area पर Drag करके छोड़ दें।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Enter New Dimensions (नई डाइमेंशन डालें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Once the image is uploaded, you will see input fields for "Width (px)" and "Height (px)". You can either type in the new width and the height will automatically adjust to maintain the aspect ratio, or you can unlock the aspect ratio to set both dimensions independently. <br/>
+                    इमेज अपलोड होने के बाद, आपको "Width (px)" और "Height (px)" के लिए इनपुट फ़ील्ड दिखाई देंगे। आप नई चौड़ाई (width) दर्ज कर सकते हैं और ऊँचाई (height) अपने आप ही aspect ratio बनाए रखने के लिए एडजस्ट हो जाएगी। या, आप aspect ratio लॉक हटाकर दोनों डाइमेंशन को अलग-अलग सेट कर सकते हैं।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Choose Format and Quality (फ़ॉर्मैट और क्वालिटी चुनें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Use the "Output Format" dropdown to select the desired output type (JPEG, PNG, or WEBP). Use the "Quality" slider to control the compression. A lower quality value means a smaller file size, but it may reduce image clarity. <br/>
+                    "Output Format" ड्रॉपडाउन का उपयोग करके आउटपुट टाइप (JPEG, PNG, या WEBP) चुनें। "Quality" स्लाइडर का उपयोग करके इमेज की क्वालिटी को कम या ज्यादा कर सकते हैं। कम क्वालिटी का मतलब है छोटा फ़ाइल साइज़, लेकिन इससे इमेज की clarity कम हो सकती है।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Resize & Download (Resize करें और डाउनलोड करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    After setting your preferences, click the "Resize & Download" button. The resized image will be generated and downloaded to your computer instantly. <br/>
+                    अपनी पसंद सेट करने के बाद, "Resize & Download" बटन पर क्लिक करें। रिसाइज़ की गई इमेज तुरंत जेनरेट होकर आपके कंप्यूटर पर डाउनलोड हो जाएगी।
+                </p>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // DOM Element references
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const controlsContainer = document.getElementById('controls-container');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const aspectRatioToggle = document.getElementById('aspectRatioToggle');
+        const formatSelect = document.getElementById('formatSelect');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValueSpan = document.getElementById('qualityValue');
+        const downloadButton = document.getElementById('downloadButton');
+        const messageArea = document.getElementById('messageArea');
+        const dropArea = document.querySelector('.file-input-label');
+
+        let originalImage = null;
+        let aspectRatio = 1;
+
+        // --- Utility Functions ---
+
+        // Show a temporary message to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full max-w-2xl block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0';
+                messageArea.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'opacity' && messageArea.style.opacity === '0') {
+                        messageArea.classList.add('hidden');
+                    }
+                }, { once: true });
+            }, 3000);
+        };
+
+        // Handle the file and load the image
+        const handleFile = (file) => {
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showMessage("Please upload a valid image file.", true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImage = new Image();
+                originalImage.onload = () => {
+                    // Update preview with the original image first
+                    imagePreview.src = originalImage.src; 
+                    controlsContainer.classList.remove('hidden');
+                    
+                    // Set initial dimensions
+                    widthInput.value = originalImage.width;
+                    heightInput.value = originalImage.height;
+                    
+                    // Calculate and store aspect ratio
+                    aspectRatio = originalImage.width / originalImage.height;
+                    showMessage("Image loaded successfully!", false);
+
+                    // Initial preview update with default settings
+                    updatePreview();
+                };
+                originalImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // Update the image preview based on current settings (dimensions, format, quality)
+        const updatePreview = () => {
+            if (!originalImage) return;
+
+            const newWidth = parseInt(widthInput.value, 10);
+            const newHeight = parseInt(heightInput.value, 10);
+            const format = formatSelect.value;
+            const quality = parseInt(qualitySlider.value, 10) / 100;
+            
+            // Create a temporary canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            
+            // Draw the original image onto the canvas with new dimensions
+            ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+            
+            // Generate the data URL and update the preview image source
+            const previewDataUrl = canvas.toDataURL(format, quality);
+            imagePreview.src = previewDataUrl;
+        };
+
+        // --- Event Listeners ---
+
+        // Handle file selection from the input
+        fileInput.addEventListener('change', (event) => {
+            handleFile(event.target.files[0]);
+        });
+
+        // Add drag and drop functionality
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('bg-gray-600');
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('bg-gray-600');
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('bg-gray-600');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // Sync height with width based on aspect ratio AND update preview
+        widthInput.addEventListener('input', () => {
+            if (aspectRatioToggle.checked) {
+                heightInput.value = Math.round(widthInput.value / aspectRatio);
+            }
+            updatePreview();
+        });
+
+        // Sync width with height based on aspect ratio AND update preview
+        heightInput.addEventListener('input', () => {
+            if (aspectRatioToggle.checked) {
+                widthInput.value = Math.round(heightInput.value * aspectRatio);
+            }
+            updatePreview();
+        });
+        
+        // Update the quality value display AND update preview
+        qualitySlider.addEventListener('input', () => {
+            qualityValueSpan.textContent = qualitySlider.value;
+            updatePreview();
+        });
+
+        // Update preview when the format is changed
+        formatSelect.addEventListener('change', () => {
+            updatePreview();
+        });
+
+        // Handle download button click
+        downloadButton.addEventListener('click', () => {
+            if (!originalImage) {
+                showMessage("Please upload an image first.", true);
+                return;
+            }
+            
+            const newWidth = parseInt(widthInput.value, 10);
+            const newHeight = parseInt(heightInput.value, 10);
+            
+            if (isNaN(newWidth) || isNaN(newHeight) || newWidth <= 0 || newHeight <= 0) {
+                showMessage("Please enter valid dimensions.", true);
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            
+            // Draw the original image onto the canvas with new dimensions
+            ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+            
+            // Get the selected format and quality
+            const format = formatSelect.value;
+            const quality = parseInt(qualitySlider.value, 10) / 100;
+            
+            // Generate the data URL
+            const resizedDataUrl = canvas.toDataURL(format, quality);
+            
+            // Create a temporary link and trigger the download
+            const a = document.createElement('a');
+            a.href = resizedDataUrl;
+            a.download = `resized_image.${format.split('/')[1]}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showMessage("Image resized and downloaded successfully!", false);
+        });
+    </script>
+</body>
+</html>

@@ -1,153 +1,225 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Drawing App — Free Online Paint Pad | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Free drawing app — browser me brush, color, eraser aur undo ke saath sketch banayen, PNG me download karein. Kuch upload nahi hota.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/drawing.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<style>
-  #pad-wrap { position: relative; border: 1px solid rgba(0,229,255,.25); border-radius: 14px; overflow: hidden; background: #fff; }
-  #pad { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
-</style>
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+        
+        /* The canvas should fill its container */
+        canvas {
+            touch-action: none; /* Prevents default touch behavior like scrolling */
+            cursor: crosshair;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex flex-col items-center">
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🖼️ Drawing App</h1>
-    <p>Mouse, pen या उँगली से स्केच बनाएँ — रंग, brush size, eraser और undo के साथ। PNG के रूप में सेव करें।</p>
-    <div class="related"><a href="/img/">Image Toolbox</a><a href="/img/meme.html">Meme Generator</a></div>
-  </div>
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-4 md:p-8 rounded-2xl shadow-2xl w-full max-w-5xl mx-auto flex flex-col items-center">
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Tool</h2>
-      <div class="field">
-        <label for="color">रंग</label>
-        <input type="color" id="color" value="#111827">
-      </div>
-      <div class="field">
-        <label for="size">Brush size: <span id="size-label">4</span> px</label>
-        <input type="range" id="size" min="1" max="40" value="4">
-      </div>
-      <div class="field">
-        <label for="mode">Mode</label>
-        <select id="mode">
-          <option value="brush" selected>Brush</option>
-          <option value="eraser">Eraser</option>
-        </select>
-      </div>
-      <div class="actions">
-        <button class="btn secondary" type="button" id="undo">Undo</button>
-        <button class="btn secondary" type="button" id="clear">Clear</button>
-      </div>
-      <div class="field" style="margin-top:.9rem">
-        <label for="bg">Background</label>
-        <select id="bg">
-          <option value="#ffffff" selected>White</option>
-          <option value="#0b1020">Dark</option>
-          <option value="transparent">Transparent</option>
-        </select>
-      </div>
-      <div class="actions"><button class="btn" type="button" id="save">Download PNG</button></div>
-      <div class="status" id="status" role="status"></div>
-    </section>
+        <!-- Header -->
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-6 text-center tracking-tight">
+            <i class="fas fa-paintbrush text-blue-400 mr-2"></i>Simple Drawing App
+        </h1>
 
-    <section class="panel">
-      <h2><span>2</span>Canvas</h2>
-      <div id="pad-wrap"><canvas id="pad" width="1000" height="640"></canvas></div>
-      <p class="hint">मोबाइल पर उँगली से ड्रॉ करें। Undo आखिरी stroke हटाता है।</p>
-    </section>
-  </div>
-</main>
+        <!-- Toolbar -->
+        <div class="w-full flex flex-wrap items-center justify-center gap-4 p-4 bg-gray-700 rounded-xl shadow-inner mb-6">
+            
+            <!-- Color Picker -->
+            <div class="flex items-center gap-2">
+                <label for="colorPicker" class="text-gray-300">Color:</label>
+                <input type="color" id="colorPicker" value="#ffffff" class="w-10 h-10 rounded-full cursor-pointer border-none">
+            </div>
 
-<script>
-  const pad = document.getElementById('pad');
-  const ctx = pad.getContext('2d');
-  const history = [];
-  let drawing = false, last = null;
+            <!-- Brush Size Slider -->
+            <div class="flex items-center gap-2">
+                <label for="brushSize" class="text-gray-300">Size:</label>
+                <input type="range" id="brushSize" min="1" max="50" value="5" class="w-24 md:w-32 accent-blue-500 cursor-pointer">
+                <span id="brushSizeValue" class="text-gray-400 w-6 text-center">5</span>
+            </div>
+            
+            <!-- Tool Buttons -->
+            <div class="flex items-center space-x-2">
+                <button id="brushButton" class="p-3 rounded-lg bg-blue-600 text-white shadow-md transition-transform hover:scale-105 active:bg-blue-500">
+                    <i class="fas fa-brush"></i>
+                </button>
+                <button id="eraserButton" class="p-3 rounded-lg bg-gray-600 text-white shadow-md transition-transform hover:scale-105 active:bg-gray-500">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
 
-  function paintBackground() {
-    const choice = document.getElementById('bg').value;
-    ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, pad.width, pad.height);
-    if (choice !== 'transparent') { ctx.fillStyle = choice; ctx.fillRect(0, 0, pad.width, pad.height); }
-    ctx.restore();
-  }
-  function snapshot() {
-    history.push(ctx.getImageData(0, 0, pad.width, pad.height));
-    if (history.length > 20) history.shift();
-  }
-  function pos(e) {
-    const r = pad.getBoundingClientRect();
-    return { x: (e.clientX - r.left) * (pad.width / r.width), y: (e.clientY - r.top) * (pad.height / r.height) };
-  }
-  function stroke(from, to) {
-    const mode = document.getElementById('mode').value;
-    ctx.strokeStyle = mode === 'eraser' ? (document.getElementById('bg').value === 'transparent' ? '#ffffff' : document.getElementById('bg').value) : document.getElementById('color').value;
-    ctx.globalCompositeOperation = mode === 'eraser' ? 'destination-out' : 'source-over';
-    ctx.lineWidth = Number(document.getElementById('size').value);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(from.x, from.y);
-    ctx.lineTo(to.x, to.y);
-    ctx.stroke();
-    ctx.globalCompositeOperation = 'source-over';
-  }
+            <!-- Action Buttons -->
+            <button id="clearButton" class="p-3 rounded-lg bg-red-600 text-white font-semibold shadow-md transition-transform hover:scale-105 active:bg-red-500">
+                <i class="fas fa-trash-alt mr-2"></i>Clear
+            </button>
+            <button id="saveButton" class="p-3 rounded-lg bg-green-600 text-white font-semibold shadow-md transition-transform hover:scale-105 active:bg-green-500">
+                <i class="fas fa-download mr-2"></i>Save
+            </button>
+        </div>
 
-  pad.addEventListener('pointerdown', (e) => {
-    snapshot();
-    drawing = true;
-    last = pos(e);
-    pad.setPointerCapture(e.pointerId);
-  });
-  pad.addEventListener('pointermove', (e) => {
-    if (!drawing) return;
-    const p = pos(e);
-    stroke(last, p);
-    last = p;
-  });
-  pad.addEventListener('pointerup', () => { drawing = false; });
-  pad.addEventListener('pointerleave', () => { drawing = false; });
+        <!-- Placeholder for Banner Ad -->
+        <!-- This placeholder is for design purposes. The real ad script will replace this div when hosted on a live site. -->
+        <div class="my-6 w-full max-w-7xl h-[90px] md:h-[90px] flex items-center justify-center bg-gray-700 rounded-lg border border-gray-600 shadow-inner">
+            <span class="text-gray-400 text-center font-medium">Ad Placeholder (728x90)</span>
+        </div>
 
-  document.getElementById('size').addEventListener('input', (e) => {
-    document.getElementById('size-label').textContent = e.target.value;
-  });
-  document.getElementById('bg').addEventListener('change', () => {
-    const img = ctx.getImageData(0, 0, pad.width, pad.height);
-    paintBackground();
-    ctx.putImageData(img, 0, 0);
-  });
-  document.getElementById('undo').addEventListener('click', () => {
-    const data = history.pop();
-    if (!data) { aiStatus('warn', 'Undo के लिए कुछ नहीं है।'); return; }
-    ctx.putImageData(data, 0, 0);
-  });
-  document.getElementById('clear').addEventListener('click', () => {
-    snapshot();
-    paintBackground();
-    aiStatus('ok', 'Canvas साफ।');
-  });
-  document.getElementById('save').addEventListener('click', () => {
-    const a = document.createElement('a');
-    a.href = pad.toDataURL('image/png');
-    a.download = 'drawing.png';
-    a.click();
-    aiStatus('ok', 'PNG download हो गई।');
-  });
+        <!-- Drawing Canvas -->
+        <canvas id="drawingCanvas" class="bg-white rounded-xl shadow-inner border border-gray-600 w-full h-auto" width="800" height="600"></canvas>
+    </div>
 
-  paintBackground();
-</script>
+    <script>
+        // DOM Element references
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        const brushSizeSlider = document.getElementById('brushSize');
+        const brushSizeValue = document.getElementById('brushSizeValue');
+        const brushButton = document.getElementById('brushButton');
+        const eraserButton = document.getElementById('eraserButton');
+        const clearButton = document.getElementById('clearButton');
+        const saveButton = document.getElementById('saveButton');
+
+        // State variables
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // --- Canvas Setup ---
+
+        // Set the initial canvas size based on its parent container
+        const resizeCanvas = () => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        };
+
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+        // Set initial drawing properties
+        ctx.strokeStyle = colorPicker.value;
+        ctx.lineWidth = brushSizeSlider.value;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.globalCompositeOperation = 'source-over'; // Default to brush
+
+        // --- Event Listeners for Drawing ---
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+        // --- Touch Events for Mobile ---
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            isDrawing = true;
+            [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.stroke();
+            [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', () => isDrawing = false);
+        canvas.addEventListener('touchcancel', () => isDrawing = false);
+
+
+        // --- Toolbar Control Event Listeners ---
+
+        // Update brush color
+        colorPicker.addEventListener('input', () => {
+            ctx.strokeStyle = colorPicker.value;
+            ctx.globalCompositeOperation = 'source-over';
+        });
+
+        // Update brush size and display its value
+        brushSizeSlider.addEventListener('input', () => {
+            ctx.lineWidth = brushSizeSlider.value;
+            brushSizeValue.textContent = brushSizeSlider.value;
+        });
+
+        // Switch to Brush tool
+        brushButton.addEventListener('click', () => {
+            ctx.globalCompositeOperation = 'source-over';
+            brushButton.classList.add('bg-blue-600', 'text-white');
+            brushButton.classList.remove('bg-gray-600');
+            eraserButton.classList.remove('bg-blue-600', 'text-white');
+            eraserButton.classList.add('bg-gray-600');
+        });
+
+        // Switch to Eraser tool
+        eraserButton.addEventListener('click', () => {
+            ctx.globalCompositeOperation = 'destination-out';
+            eraserButton.classList.add('bg-blue-600', 'text-white');
+            eraserButton.classList.remove('bg-gray-600');
+            brushButton.classList.remove('bg-blue-600', 'text-white');
+            brushButton.classList.add('bg-gray-600');
+        });
+
+        // Clear the canvas
+        clearButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Save the canvas as a PNG
+        saveButton.addEventListener('click', () => {
+            const dataURL = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'my-drawing.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+    </script>
 </body>
 </html>

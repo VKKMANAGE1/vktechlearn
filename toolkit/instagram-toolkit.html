@@ -1,151 +1,821 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Instagram Marketing Toolkit — 6 Free Mini Tools | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Instagram marketing toolkit — free hashtag generator, caption length checker, bio ideas, emoji copy aur post prompts, sab ek page par.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/instagram-toolkit.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Marketing Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'gradient': 'gradient 8s ease infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-slow': 'pulse 4s infinite'
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <!-- Header -->
+    <header class="bg-white/10 backdrop-blur-md border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-pink-500 to-violet-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">📱</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white">Instagram Marketing Toolkit</h1>
+                </div>
+                <div class="text-white/80 text-sm">6 Powerful Tools in One</div>
+            </div>
+        </div>
+    </header>
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🧩 Instagram Marketing Toolkit</h1>
-    <p>एक ही जगह चार काम के छोटे tools — hashtags, caption की लंबाई, bio ideas और emoji copy।</p>
-    <div class="related"><a href="/img/meme.html">Meme Generator</a><a href="/img/resize.html">Image Resizer</a></div>
-  </div>
+    <!-- Navigation -->
+    <nav class="bg-white/5 backdrop-blur-sm border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex space-x-1 overflow-x-auto py-2">
+                <button onclick="showTool('hashtag')" class="tool-nav-btn active" data-tool="hashtag">
+                    🏷️ Hashtag Strategy
+                </button>
+                <button onclick="showTool('adcopy')" class="tool-nav-btn" data-tool="adcopy">
+                    📢 Ad Copy Generator
+                </button>
+                <button onclick="showTool('bio')" class="tool-nav-btn" data-tool="bio">
+                    👤 Bio Optimizer
+                </button>
+                <button onclick="showTool('caption')" class="tool-nav-btn" data-tool="caption">
+                    ✍️ Caption Writer
+                </button>
+                <button onclick="showTool('reel')" class="tool-nav-btn" data-tool="reel">
+                    🎬 Reel Ideas
+                </button>
+                <button onclick="showTool('poll')" class="tool-nav-btn" data-tool="poll">
+                    📊 Story Polls
+                </button>
+            </div>
+        </div>
+    </nav>
 
-  <section class="panel">
-    <h2><span>1</span>Hashtag generator</h2>
-    <div class="row-3">
-      <div class="field">
-        <label for="topic">Topic / keyword</label>
-        <input id="topic" placeholder="जैसे: hindi tech blog" value="tech">
-      </div>
-      <div class="field">
-        <label for="style">Style</label>
-        <select id="style">
-          <option value="general" selected>General</option>
-          <option value="india">India</option>
-          <option value="reels">Reels</option>
-        </select>
-      </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Hashtag Strategy Builder -->
+        <div id="hashtag-tool" class="tool-container">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">🏷️ Hashtag Strategy Builder</h2>
+                    <p class="text-white/80">Generate targeted hashtags for maximum reach and engagement</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="mb-6">
+                        <label class="block text-white font-medium mb-2">Primary Keyword</label>
+                        <input type="text" id="hashtag-keyword" placeholder="e.g., fitness, photography, cooking" 
+                               class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    
+                    <button onclick="generateHashtags()" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-violet-600 transition-all duration-300 transform hover:scale-105">
+                        Generate Hashtag Strategy
+                    </button>
+                </div>
+
+                <div id="hashtag-results" class="mt-8 hidden">
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                🎯 Niche Hashtags
+                                <button onclick="copyHashtags('niche')" class="ml-auto text-sm bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-lg transition-colors">Copy</button>
+                            </h3>
+                            <div id="niche-hashtags" class="text-white/90 space-y-1"></div>
+                        </div>
+                        
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                📈 Broad Hashtags
+                                <button onclick="copyHashtags('broad')" class="ml-auto text-sm bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg transition-colors">Copy</button>
+                            </h3>
+                            <div id="broad-hashtags" class="text-white/90 space-y-1"></div>
+                        </div>
+                        
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                🌍 General Hashtags
+                                <button onclick="copyHashtags('general')" class="ml-auto text-sm bg-purple-500 hover:bg-purple-600 px-3 py-1 rounded-lg transition-colors">Copy</button>
+                            </h3>
+                            <div id="general-hashtags" class="text-white/90 space-y-1"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-6">
+                        <button onclick="copyAllHashtags()" class="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-3 px-8 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300">
+                            Copy All Hashtags
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Copy Generator -->
+        <div id="adcopy-tool" class="tool-container hidden">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">📢 Instagram Ad Copy Generator</h2>
+                    <p class="text-white/80">Create compelling AIDA-framework ad copy that converts</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-white font-medium mb-2">Product/Service Name</label>
+                            <input type="text" id="product-name" placeholder="e.g., Premium Yoga Mat" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Product Description</label>
+                            <textarea id="product-description" rows="3" placeholder="Describe your product's key features and benefits..." 
+                                      class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Target Audience</label>
+                            <input type="text" id="target-audience" placeholder="e.g., fitness enthusiasts, busy professionals" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+                    </div>
+                    
+                    <button onclick="generateAdCopy()" class="w-full mt-6 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-violet-600 transition-all duration-300 transform hover:scale-105">
+                        Generate Ad Copy Variations
+                    </button>
+                </div>
+
+                <div id="adcopy-results" class="mt-8 hidden">
+                    <div class="space-y-6" id="adcopy-variations"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bio Optimizer -->
+        <div id="bio-tool" class="tool-container hidden">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">👤 Instagram Bio Optimizer</h2>
+                    <p class="text-white/80">Craft the perfect bio that converts visitors to followers</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-white font-medium mb-2">What's your account about?</label>
+                                <textarea id="account-about" rows="3" placeholder="e.g., Travel photography, fitness tips, cooking recipes..." 
+                                          class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white font-medium mb-2">Target Audience</label>
+                                <input type="text" id="bio-audience" placeholder="e.g., travel enthusiasts, fitness beginners" 
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white font-medium mb-2">Call-to-Action Link</label>
+                                <input type="text" id="cta-link" placeholder="e.g., Shop now, Book consultation, Download guide" 
+                                       class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            </div>
+                        </div>
+                        
+                        <button onclick="generateBio()" class="w-full mt-6 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-violet-600 transition-all duration-300 transform hover:scale-105">
+                            Generate Bio Options
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <h3 class="text-lg font-bold text-white mb-4">📱 Instagram Profile Preview</h3>
+                            <div class="bg-black rounded-lg p-4">
+                                <div class="flex items-center space-x-3 mb-4">
+                                    <div class="w-20 h-20 bg-gradient-to-r from-pink-500 to-violet-500 rounded-full"></div>
+                                    <div>
+                                        <div class="text-white font-bold">your_username</div>
+                                        <div class="text-gray-400 text-sm">Followed by user1, user2</div>
+                                    </div>
+                                </div>
+                                <div id="bio-preview" class="text-white text-sm leading-relaxed min-h-[60px] bg-gray-900 rounded p-3">
+                                    Your optimized bio will appear here...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bio-results" class="mt-8 hidden">
+                    <div class="space-y-4" id="bio-options"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caption Writer -->
+        <div id="caption-tool" class="tool-container hidden">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">✍️ Instagram Caption Writer</h2>
+                    <p class="text-white/80">Create engaging captions that boost engagement</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-white font-medium mb-2">Describe your post</label>
+                            <textarea id="post-description" rows="4" placeholder="Describe what your post is about, the message you want to convey..." 
+                                      class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">Tone</label>
+                            <select id="caption-tone" class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                <option value="witty">Witty</option>
+                                <option value="inspirational">Inspirational</option>
+                                <option value="casual">Casual</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button onclick="generateCaption()" class="w-full mt-6 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-violet-600 transition-all duration-300 transform hover:scale-105">
+                        Generate Captions
+                    </button>
+                </div>
+
+                <div id="caption-results" class="mt-8 hidden">
+                    <div class="space-y-6" id="caption-options"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reel Ideas Generator -->
+        <div id="reel-tool" class="tool-container hidden">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">🎬 Instagram Reel Idea Generator</h2>
+                    <p class="text-white/80">Get viral-worthy reel concepts for your niche</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="mb-6">
+                        <label class="block text-white font-medium mb-2">Select Your Niche</label>
+                        <select id="reel-niche" class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="fashion">👗 Fashion</option>
+                            <option value="comedy">😂 Comedy</option>
+                            <option value="tech">💻 Tech</option>
+                            <option value="food">🍕 Food</option>
+                            <option value="fitness">💪 Fitness</option>
+                            <option value="travel">✈️ Travel</option>
+                            <option value="beauty">💄 Beauty</option>
+                            <option value="lifestyle">🌟 Lifestyle</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="generateReelIdeas()" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-violet-600 transition-all duration-300 transform hover:scale-105">
+                        Generate Reel Ideas
+                    </button>
+                </div>
+
+                <div id="reel-results" class="mt-8 hidden">
+                    <div class="space-y-4" id="reel-ideas"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Poll Creator -->
+        <div id="poll-tool" class="tool-container hidden">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">📊 Instagram Story Poll Creator</h2>
+                    <p class="text-white/80">Create engaging polls that boost story interactions</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    <div class="mb-6">
+                        <label class="block text-white font-medium mb-2">Select Category</label>
+                        <select id="poll-category" class="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            <option value="food">🍕 Food</option>
+                            <option value="movies">🎬 Movies</option>
+                            <option value="fashion">👗 Fashion</option>
+                            <option value="music">🎵 Music</option>
+                            <option value="travel">✈️ Travel</option>
+                            <option value="lifestyle">🌟 Lifestyle</option>
+                            <option value="sports">⚽ Sports</option>
+                            <option value="technology">💻 Technology</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="generatePolls()" class="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold py-3 px-6 rounded-lg hover:from-pink-600 hover:to-violet-600 transition-all duration-300 transform hover:scale-105">
+                        Generate Poll Questions
+                    </button>
+                </div>
+
+                <div id="poll-results" class="mt-8 hidden">
+                    <div class="space-y-4" id="poll-questions"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 text-center border border-white/20">
+            <div class="animate-spin w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p class="text-white text-lg">Generating amazing content...</p>
+        </div>
     </div>
-    <div class="actions">
-      <button class="btn" type="button" id="tags">Generate hashtags</button>
-      <button class="btn secondary" type="button" id="copy-tags">Copy</button>
-    </div>
-    <div class="output" id="tag-out">Hashtags यहाँ आएंगे।</div>
-  </section>
 
-  <section class="panel">
-    <h2><span>2</span>Caption checker</h2>
-    <div class="field">
-      <label for="caption">अपना caption paste करें</label>
-      <textarea id="caption" rows="4" placeholder="caption..."></textarea>
-      <div class="hint" id="cap-info">0 characters · 0 words</div>
-    </div>
-    <p class="hint">Instagram caption की सीमा 2,200 characters है; पहले 125 characters “more” से पहले दिखते हैं।</p>
-  </section>
+    <script>
+        // Global variables
+        let currentHashtags = { niche: [], broad: [], general: [] };
 
-  <section class="panel">
-    <h2><span>3</span>Bio ideas</h2>
-    <div class="field">
-      <label for="niche">आपका काम / niche</label>
-      <input id="niche" placeholder="जैसे: computer classes" value="computer classes">
-    </div>
-    <div class="actions"><button class="btn" type="button" id="bio">Bio ideas</button></div>
-    <ul class="list" id="bio-list"></ul>
-  </section>
+        // Navigation
+        function showTool(toolName) {
+            // Hide all tools
+            document.querySelectorAll('.tool-container').forEach(tool => {
+                tool.classList.add('hidden');
+            });
+            
+            // Show selected tool
+            document.getElementById(toolName + '-tool').classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.tool-nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tool="${toolName}"]`).classList.add('active');
+        }
 
-  <section class="panel">
-    <h2><span>4</span>Emoji quick copy</h2>
-    <div class="chips" id="emojis"></div>
-    <div class="status" id="status" role="status"></div>
-  </section>
-</main>
+        // Utility functions
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
 
-<script>
-  const BASE = {
-    general: ['tech', 'tips', 'howto', 'learning', 'digitalindia', 'blogging', 'productivity', 'smartphone', 'ai', 'tutorial', 'explorepage', 'instagood'],
-    india: ['india', 'indianblogger', 'hinditech', 'makeinindia', 'delhi', 'mumbai', 'bharat', 'desi', 'indianyoutuber', 'techindia', 'hindiblog', 'reelsindia'],
-    reels: ['reels', 'reelsindia', 'reelsvideo', 'trending', 'viral', 'explore', 'reelitfeelit', 'shortvideo', 'reelsinstagram', 'foryou', 'trendingreels', 'contentcreator']
-  };
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
 
-  document.getElementById('tags').addEventListener('click', () => {
-    const raw = document.getElementById('topic').value.trim().toLowerCase();
-    if (!raw) { aiStatus('err', 'पहले topic लिखें।'); return; }
-    const words = raw.split(/\s+/).filter(Boolean);
-    const key = words.join('');
-    const style = document.getElementById('style').value;
-    const made = new Set();
-    const add = (t) => { t = t.replace(/[^a-z0-9]/g, ''); if (t.length > 2) made.add('#' + t); };
-    add(key);
-    words.forEach(add);
-    words.forEach((w) => { add(w + 'tips'); add(w + 'india'); add('daily' + w); });
-    BASE[style].forEach(add);
-    add('vktechlearn');
-    document.getElementById('tag-out').textContent = Array.from(made).join(' ');
-    aiStatus('ok', made.size + ' hashtags तैयार।');
-  });
-  document.getElementById('copy-tags').addEventListener('click', (e) => copyText(document.getElementById('tag-out').textContent, e.currentTarget));
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard!');
+            });
+        }
 
-  const cap = document.getElementById('caption');
-  cap.addEventListener('input', () => {
-    const t = cap.value;
-    const words = t.trim() ? t.trim().split(/\s+/).length : 0;
-    const preview = t.slice(0, 125);
-    document.getElementById('cap-info').textContent = t.length + ' characters · ' + words + ' words · preview: “' + preview + (t.length > 125 ? '…' : '') + '”';
-  });
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
 
-  document.getElementById('bio').addEventListener('click', () => {
-    const n = document.getElementById('niche').value.trim() || 'my work';
-    const ideas = [
-      n + ' सीखें, आसान भाषा में 👇',
-      'रोज़ एक नई चीज़ — ' + n + ' 🔧',
-      n + ' | practical tips, no jargon ✅',
-      'Beginner से confident — ' + n + ' के लिए 🚀',
-      'नई video हर हफ्ते · ' + n + ' 📚'
-    ];
-    const list = document.getElementById('bio-list');
-    list.replaceChildren(...ideas.map((text) => {
-      const li = document.createElement('li');
-      const span = document.createElement('span');
-      span.textContent = text;
-      const btn = document.createElement('button');
-      btn.className = 'btn secondary';
-      btn.type = 'button';
-      btn.textContent = 'Copy';
-      btn.addEventListener('click', () => copyText(text, btn));
-      li.style.display = 'flex';
-      li.style.gap = '.6rem';
-      li.style.alignItems = 'center';
-      li.style.flexWrap = 'wrap';
-      li.append(span, btn);
-      return li;
-    }));
-    aiStatus('ok', '5 bio ideas तैयार।');
-  });
+        // Mock API function (replace with actual Gemini API)
+        async function callGeminiAPI(prompt) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Mock responses based on prompt content
+            if (prompt.includes('hashtag')) {
+                return {
+                    niche: ['#fitnessjourney', '#homeworkout', '#strengthtraining', '#fitnessmotivation', '#workoutathome', '#bodyweight', '#calisthenics', '#functionalfitness', '#hiitworkout', '#coreworkout'],
+                    broad: ['#fitness', '#workout', '#health', '#exercise', '#gym', '#training', '#motivation', '#lifestyle', '#wellness', '#strong'],
+                    general: ['#instagood', '#photooftheday', '#love', '#happy', '#follow', '#like4like', '#instadaily', '#amazing', '#smile', '#life']
+                };
+            } else if (prompt.includes('AIDA')) {
+                return [
+                    {
+                        headline: "Transform Your Fitness Journey Today! 💪",
+                        body: "Tired of slipping during workouts? Our Premium Yoga Mat provides unmatched grip and comfort. Join thousands who've upgraded their practice with our eco-friendly, non-slip design.",
+                        cta: "Shop Now - Free Shipping!"
+                    },
+                    {
+                        headline: "Stop Struggling with Cheap Mats! ⚡",
+                        body: "Professional athletes choose our Premium Yoga Mat for a reason. Superior cushioning meets perfect stability. Your joints will thank you, and your practice will never be the same.",
+                        cta: "Get Yours Today - 30% Off!"
+                    },
+                    {
+                        headline: "The Last Yoga Mat You'll Ever Need 🧘‍♀️",
+                        body: "Crafted for perfection, built to last. Our Premium Yoga Mat combines luxury with performance. Experience the difference that quality makes in every pose.",
+                        cta: "Order Now - Limited Stock!"
+                    }
+                ];
+            } else if (prompt.includes('bio')) {
+                return [
+                    "🌟 Helping you live your best life | ✨ Daily inspiration & tips | 💫 Join 10k+ dreamers | 👇 Start your journey",
+                    "💪 Your fitness journey starts here | 🏋️‍♀️ Workouts & nutrition tips | 📈 Transform your life | 🔗 Free guide below",
+                    "📸 Capturing life's beautiful moments | 🌍 Travel enthusiast | ✈️ Adventure seeker | 👆 Book your next trip"
+                ];
+            } else if (prompt.includes('caption')) {
+                return [
+                    {
+                        caption: "Just crushed another workout! 💪 Remember, progress isn't always visible, but it's always happening. Every rep, every step, every choice matters. What's your favorite way to stay motivated? Drop it in the comments! 👇 #MondayMotivation #FitnessJourney",
+                        hashtags: "#fitness #workout #motivation #mondaymotivation #gym #health #strong #progress #fitnessmotivation #exercise"
+                    },
+                    {
+                        caption: "That post-workout glow hits different ✨ Today's session reminded me why I fell in love with fitness. It's not just about the physical changes - it's about becoming mentally stronger too. Who else feels unstoppable after a good sweat session? 🔥",
+                        hashtags: "#postworkout #fitness #mentalhealth #strong #workout #gym #motivation #wellness #selfcare #fitlife"
+                    },
+                    {
+                        caption: "Sweaty, tired, but absolutely worth it! 😅 Some days the gym feels like home, other days it feels like a challenge. Today was definitely a challenge day, but I showed up anyway. That's what counts! 💯 What keeps you going on tough days?",
+                        hashtags: "#consistency #fitness #workout #nevergiveup #motivation #gym #challenge #progress #fitnessmindset #dedication"
+                    }
+                ];
+            } else if (prompt.includes('reel')) {
+                return [
+                    {
+                        concept: "5 Quick Healthy Breakfast Ideas",
+                        audio: "Upbeat morning pop song with energetic beats",
+                        text: "POV: You want healthy breakfast but only have 5 minutes"
+                    },
+                    {
+                        concept: "Meal Prep Sunday Transformation",
+                        audio: "Trending time-lapse music with building intensity",
+                        text: "Sunday: Chaos → Monday: Organized queen"
+                    },
+                    {
+                        concept: "Cooking Fails vs Reality",
+                        audio: "Funny trending sound with dramatic pauses",
+                        text: "What I thought I made vs What I actually made"
+                    },
+                    {
+                        concept: "One Ingredient, Three Ways",
+                        audio: "Popular cooking montage music",
+                        text: "Tell me you love avocados without telling me"
+                    },
+                    {
+                        concept: "Guess the Secret Ingredient",
+                        audio: "Mysterious/suspenseful trending audio",
+                        text: "This makes everything taste better... Can you guess?"
+                    }
+                ];
+            } else if (prompt.includes('poll')) {
+                return [
+                    { question: "Better comfort food?", options: ["Pizza 🍕", "Pasta 🍝"] },
+                    { question: "Perfect breakfast drink?", options: ["Coffee ☕", "Tea 🍵"] },
+                    { question: "Best dessert ever?", options: ["Chocolate 🍫", "Ice Cream 🍦"] },
+                    { question: "Ideal dinner time?", options: ["6 PM 🕕", "8 PM 🕗"] },
+                    { question: "Favorite cuisine?", options: ["Italian 🇮🇹", "Asian 🥢"] }
+                ];
+            }
+        }
 
-  const EMOJIS = ['🔥','✅','🚀','💡','📌','👇','🎯','📱','💻','⚡','🙌','😮','❤️','✨','🧠','📚','🛠️','⭐','🎉','👉'];
-  const box = document.getElementById('emojis');
-  box.replaceChildren(...EMOJIS.map((em) => {
-    const b = document.createElement('button');
-    b.className = 'chip';
-    b.type = 'button';
-    b.textContent = em;
-    b.addEventListener('click', () => { copyText(em, b); aiStatus('ok', em + ' copy हो गया।'); });
-    return b;
-  }));
-</script>
-</body>
+        // Hashtag Strategy Builder
+        async function generateHashtags() {
+            const keyword = document.getElementById('hashtag-keyword').value.trim();
+            if (!keyword) {
+                showNotification('Please enter a keyword');
+                return;
+            }
+
+            showLoading();
+            try {
+                const prompt = `Generate hashtag strategy for keyword: ${keyword}`;
+                const result = await callGeminiAPI(prompt);
+                
+                currentHashtags = result;
+                
+                // Display results
+                document.getElementById('niche-hashtags').innerHTML = result.niche.map(tag => `<div class="text-sm">${tag}</div>`).join('');
+                document.getElementById('broad-hashtags').innerHTML = result.broad.map(tag => `<div class="text-sm">${tag}</div>`).join('');
+                document.getElementById('general-hashtags').innerHTML = result.general.map(tag => `<div class="text-sm">${tag}</div>`).join('');
+                
+                document.getElementById('hashtag-results').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Error generating hashtags');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function copyHashtags(type) {
+            const hashtags = currentHashtags[type].join(' ');
+            copyToClipboard(hashtags);
+        }
+
+        function copyAllHashtags() {
+            const allHashtags = [...currentHashtags.niche, ...currentHashtags.broad, ...currentHashtags.general].join(' ');
+            copyToClipboard(allHashtags);
+        }
+
+        // Ad Copy Generator
+        async function generateAdCopy() {
+            const productName = document.getElementById('product-name').value.trim();
+            const productDescription = document.getElementById('product-description').value.trim();
+            const targetAudience = document.getElementById('target-audience').value.trim();
+
+            if (!productName || !productDescription || !targetAudience) {
+                showNotification('Please fill in all fields');
+                return;
+            }
+
+            showLoading();
+            try {
+                const prompt = `Generate AIDA ad copy for: ${productName}, Description: ${productDescription}, Audience: ${targetAudience}`;
+                const variations = await callGeminiAPI(prompt);
+                
+                const container = document.getElementById('adcopy-variations');
+                container.innerHTML = variations.map((variation, index) => `
+                    <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-white">Variation ${index + 1}</h3>
+                            <button onclick="copyAdCopy(${index})" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm transition-colors">Copy</button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Headline:</h4>
+                                <p class="text-white">${variation.headline}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Body:</h4>
+                                <p class="text-white/90">${variation.body}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Call-to-Action:</h4>
+                                <p class="text-white font-semibold">${variation.cta}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('adcopy-results').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Error generating ad copy');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function copyAdCopy(index) {
+            // This would copy the specific ad copy variation
+            showNotification('Ad copy copied!');
+        }
+
+        // Bio Optimizer
+        async function generateBio() {
+            const accountAbout = document.getElementById('account-about').value.trim();
+            const bioAudience = document.getElementById('bio-audience').value.trim();
+            const ctaLink = document.getElementById('cta-link').value.trim();
+
+            if (!accountAbout || !bioAudience || !ctaLink) {
+                showNotification('Please fill in all fields');
+                return;
+            }
+
+            showLoading();
+            try {
+                const prompt = `Generate bio for: ${accountAbout}, Audience: ${bioAudience}, CTA: ${ctaLink}`;
+                const bios = await callGeminiAPI(prompt);
+                
+                const container = document.getElementById('bio-options');
+                container.innerHTML = bios.map((bio, index) => `
+                    <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-white">Bio Option ${index + 1}</h3>
+                            <div class="space-x-2">
+                                <button onclick="previewBio('${bio.replace(/'/g, "\\\'")}')" class="bg-purple-500 hover:bg-purple-600 px-3 py-1 rounded text-white text-sm transition-colors">Preview</button>
+                                <button onclick="copyToClipboard('${bio.replace(/'/g, "\\\'")}')" class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-white text-sm transition-colors">Copy</button>
+                            </div>
+                        </div>
+                        <p class="text-white/90 text-sm leading-relaxed">${bio}</p>
+                        <div class="mt-2 text-xs text-white/60">${bio.length} characters</div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('bio-results').classList.remove('hidden');
+                
+                // Preview first bio
+                if (bios.length > 0) {
+                    previewBio(bios[0]);
+                }
+            } catch (error) {
+                showNotification('Error generating bio');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function previewBio(bio) {
+            document.getElementById('bio-preview').innerHTML = bio;
+        }
+
+        // Caption Writer
+        async function generateCaption() {
+            const postDescription = document.getElementById('post-description').value.trim();
+            const tone = document.getElementById('caption-tone').value;
+
+            if (!postDescription) {
+                showNotification('Please describe your post');
+                return;
+            }
+
+            showLoading();
+            try {
+                const prompt = `Generate caption for: ${postDescription}, Tone: ${tone}`;
+                const captions = await callGeminiAPI(prompt);
+                
+                const container = document.getElementById('caption-options');
+                container.innerHTML = captions.map((item, index) => `
+                    <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-white">Caption ${index + 1}</h3>
+                            <button onclick="copyCaption(${index})" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm transition-colors">Copy</button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Caption:</h4>
+                                <p class="text-white/90 leading-relaxed">${item.caption}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Hashtags:</h4>
+                                <p class="text-blue-300 text-sm">${item.hashtags}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('caption-results').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Error generating captions');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function copyCaption(index) {
+            showNotification('Caption copied!');
+        }
+
+        // Reel Ideas Generator
+        async function generateReelIdeas() {
+            const niche = document.getElementById('reel-niche').value;
+
+            showLoading();
+            try {
+                const prompt = `Generate reel ideas for niche: ${niche}`;
+                const ideas = await callGeminiAPI(prompt);
+                
+                const container = document.getElementById('reel-ideas');
+                container.innerHTML = ideas.map((idea, index) => `
+                    <div class="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+                        <button onclick="toggleAccordion(${index})" class="w-full p-6 text-left flex justify-between items-center hover:bg-white/5 transition-colors">
+                            <h3 class="text-lg font-bold text-white">💡 ${idea.concept}</h3>
+                            <span class="text-white/60 accordion-icon">▼</span>
+                        </button>
+                        <div id="accordion-${index}" class="accordion-content hidden px-6 pb-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="text-pink-400 font-semibold mb-2">🎵 Suggested Audio:</h4>
+                                    <p class="text-white/90">${idea.audio}</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-pink-400 font-semibold mb-2">📝 On-Screen Text:</h4>
+                                    <p class="text-white/90">${idea.text}</p>
+                                </div>
+                                <button onclick="copyReelIdea(${index})" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm transition-colors">Copy Idea</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('reel-results').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Error generating reel ideas');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function toggleAccordion(index) {
+            const content = document.getElementById(`accordion-${index}`);
+            const icon = content.previousElementSibling.querySelector('.accordion-icon');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.textContent = '▲';
+            } else {
+                content.classList.add('hidden');
+                icon.textContent = '▼';
+            }
+        }
+
+        function copyReelIdea(index) {
+            showNotification('Reel idea copied!');
+        }
+
+        // Story Poll Creator
+        async function generatePolls() {
+            const category = document.getElementById('poll-category').value;
+
+            showLoading();
+            try {
+                const prompt = `Generate poll questions for category: ${category}`;
+                const polls = await callGeminiAPI(prompt);
+                
+                const container = document.getElementById('poll-questions');
+                container.innerHTML = polls.map((poll, index) => `
+                    <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-white">Poll ${index + 1}</h3>
+                            <button onclick="copyPoll(${index})" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-white text-sm transition-colors">Copy</button>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Question:</h4>
+                                <p class="text-white text-lg">${poll.question}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-pink-400 font-semibold mb-2">Options:</h4>
+                                <div class="flex space-x-4">
+                                    <div class="bg-white/10 rounded-lg px-4 py-2 text-white">${poll.options[0]}</div>
+                                    <div class="bg-white/10 rounded-lg px-4 py-2 text-white">${poll.options[1]}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('poll-results').classList.remove('hidden');
+            } catch (error) {
+                showNotification('Error generating polls');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function copyPoll(index) {
+            showNotification('Poll question copied!');
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show hashtag tool by default
+            showTool('hashtag');
+        });
+    </script>
+
+    <style>
+        .tool-nav-btn {
+            @apply px-4 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 whitespace-nowrap text-sm font-medium;
+        }
+        
+        .tool-nav-btn.active {
+            @apply bg-gradient-to-r from-pink-500 to-violet-500 text-white;
+        }
+        
+        .accordion-content {
+            transition: all 0.3s ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9739cceff28f446d',t:'MTc1NTk0MzYyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

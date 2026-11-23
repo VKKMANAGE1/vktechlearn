@@ -1,97 +1,204 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Age Calculator — Exact Age in Years, Months, Days | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Age calculator — apni exact age years, months, days aur total weeks me nikalen, next birthday countdown ke saath.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/age-calculator.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS for styling and font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom styling for the date input to match the dark theme and add a modern look */
+        input[type="date"] {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #E5E7EB; /* gray-200 */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        input[type="date"]:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #A78BFA; /* violet-400 */
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.5);
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="bg-gradient-to-br from-gray-900 via-slate-800 to-indigo-900 text-gray-100 p-4 min-h-screen flex flex-col items-center justify-center">
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🧩 Age Calculator</h1>
-    <p>जन्मतिथि डालकर साल, महीने और दिन में ठीक उम्र देखें — साथ में कुल हफ्ते और अगला जन्मदिन कितने दिन बाद।</p>
-    <div class="related"><a href="/toolkit/currency-converter.html">Currency Converter</a><a href="/toolkit/ip-lookup.html">IP Lookup</a></div>
-  </div>
+    <!-- Main Container -->
+    <div class="bg-gray-800 bg-opacity-70 backdrop-filter backdrop-blur-lg p-8 md:p-12 rounded-3xl shadow-2xl w-full max-w-lg mx-auto text-center border border-gray-700">
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Dates</h2>
-      <div class="field">
-        <label for="dob">जन्मतिथि</label>
-        <input type="date" id="dob">
-      </div>
-      <div class="field">
-        <label for="on">इस तारीख पर उम्र (खाली छोड़ें तो आज)</label>
-        <input type="date" id="on">
-      </div>
-      <div class="actions"><button class="btn" type="button" id="calc">Calculate age</button></div>
-      <div class="status" id="status" role="status"></div>
-    </section>
+        <!-- Header -->
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-6 md:mb-8 tracking-tight">
+            <span class="text-violet-400">Age</span> Calculator
+        </h1>
 
-    <section class="panel">
-      <h2><span>2</span>Result</h2>
-      <div class="output" id="result">तारीख डालकर Calculate दबाएँ।</div>
-      <ul class="list" id="details"></ul>
-    </section>
-  </div>
-</main>
+        <!-- Input Section -->
+        <div class="mb-8">
+            <label for="dobInput" class="block text-lg font-semibold mb-3 text-gray-300">अपनी जन्मतिथि चुनें</label>
+            <input type="date" id="dobInput" class="w-full">
+        </div>
 
-<script>
-  const dayMs = 24 * 60 * 60 * 1000;
-  const parse = (v) => { const d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; };
+        <!-- Button -->
+        <button id="calculateButton" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+            उम्र निकालें
+        </button>
 
-  function diffParts(from, to) {
-    let years = to.getFullYear() - from.getFullYear();
-    let months = to.getMonth() - from.getMonth();
-    let days = to.getDate() - from.getDate();
-    if (days < 0) {
-      months -= 1;
-      days += new Date(to.getFullYear(), to.getMonth(), 0).getDate();
-    }
-    if (months < 0) { years -= 1; months += 12; }
-    return { years, months, days };
-  }
+        <!-- Output Section -->
+        <div id="outputSection" class="mt-10 p-6 bg-gray-700 rounded-xl hidden border border-gray-600">
+            <!-- Age Breakdown -->
+            <div class="mb-6">
+                <p class="text-xl font-medium text-gray-300 mb-4">आपकी उम्र है:</p>
+                <div class="flex justify-around items-center space-x-4">
+                    <div class="flex flex-col items-center">
+                        <span id="years" class="text-4xl md:text-6xl font-extrabold text-teal-400">0</span>
+                        <span class="text-sm text-gray-400 mt-1">साल</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span id="months" class="text-4xl md:text-6xl font-extrabold text-teal-400">0</span>
+                        <span class="text-sm text-gray-400 mt-1">महीने</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span id="days" class="text-4xl md:text-6xl font-extrabold text-teal-400">0</span>
+                        <span class="text-sm text-gray-400 mt-1">दिन</span>
+                    </div>
+                </div>
+            </div>
 
-  document.getElementById('calc').addEventListener('click', () => {
-    const dob = parse(document.getElementById('dob').value);
-    const to = document.getElementById('on').value ? parse(document.getElementById('on').value) : new Date();
-    if (!dob) { aiStatus('err', 'पहले जन्मतिथि चुनें।'); return; }
-    if (dob > to) { aiStatus('err', 'जन्मतिथि आज से आगे नहीं हो सकती।'); return; }
+            <hr class="border-gray-600 my-6">
 
-    const { years, months, days } = diffParts(dob, to);
-    const totalDays = Math.floor((to - dob) / dayMs);
-    const next = new Date(to.getFullYear(), dob.getMonth(), dob.getDate());
-    if (next < to) next.setFullYear(next.getFullYear() + 1);
-    const toNext = Math.ceil((next - to) / dayMs);
+            <!-- Next Birthday Countdown -->
+            <div>
+                <p class="text-lg font-medium text-gray-300 mb-2">अगले जन्मदिन तक का समय:</p>
+                <div class="flex justify-center space-x-4">
+                    <div class="flex flex-col items-center">
+                        <span id="nextBirthdayMonths" class="text-2xl font-bold text-rose-400">0</span>
+                        <span class="text-sm text-gray-400">महीने</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span id="nextBirthdayDays" class="text-2xl font-bold text-rose-400">0</span>
+                        <span class="text-sm text-gray-400">दिन</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Message Area for warnings/errors -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full hidden"></div>
+    </div>
 
-    document.getElementById('result').textContent = years + ' साल, ' + months + ' महीने, ' + days + ' दिन';
-    const rows = [
-      ['कुल दिन', totalDays.toLocaleString('en-IN') + ' दिन'],
-      ['कुल हफ्ते', Math.floor(totalDays / 7).toLocaleString('en-IN') + ' हफ्ते'],
-      ['कुल महीने', (years * 12 + months).toLocaleString('en-IN') + ' महीने'],
-      ['कुल घंटे', (totalDays * 24).toLocaleString('en-IN') + ' घंटे'],
-      ['अगला जन्मदिन', toNext === 0 ? 'आज 🎉' : toNext + ' दिन बाद (' + next.toLocaleDateString('en-IN') + ')']
-    ];
-    document.getElementById('details').replaceChildren(...rows.map(([k, v]) => {
-      const li = document.createElement('li');
-      li.innerHTML = '<strong></strong> <span></span>';
-      li.querySelector('strong').textContent = k;
-      li.querySelector('span').textContent = v;
-      return li;
-    }));
-    aiStatus('ok', 'उम्र निकाल दी गई।');
-  });
-</script>
+    <script>
+        // DOM Element references for easy access
+        const dobInput = document.getElementById('dobInput');
+        const calculateButton = document.getElementById('calculateButton');
+        const outputSection = document.getElementById('outputSection');
+        const yearsSpan = document.getElementById('years');
+        const monthsSpan = document.getElementById('months');
+        const daysSpan = document.getElementById('days');
+        const nextBirthdayMonthsSpan = document.getElementById('nextBirthdayMonths');
+        const nextBirthdayDaysSpan = document.getElementById('nextBirthdayDays');
+        const messageArea = document.getElementById('messageArea');
+
+        // Function to display temporary messages to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0';
+                messageArea.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'opacity' && messageArea.style.opacity === '0') {
+                        messageArea.classList.add('hidden');
+                    }
+                }, { once: true });
+            }, 3000);
+        };
+
+        // Main function to calculate and display the age
+        const calculateAge = () => {
+            const dob = dobInput.value;
+            if (!dob) {
+                showMessage("कृपया अपनी जन्मतिथि चुनें।", true);
+                return;
+            }
+
+            const today = new Date();
+            const birthDate = new Date(dob);
+
+            if (birthDate > today) {
+                showMessage("आप भविष्य की तारीख नहीं चुन सकते।", true);
+                outputSection.classList.add('hidden');
+                return;
+            }
+
+            // --- Calculate Age in Years, Months, and Days ---
+            let ageYears = today.getFullYear() - birthDate.getFullYear();
+            let ageMonths = today.getMonth() - birthDate.getMonth();
+            let ageDays = today.getDate() - birthDate.getDate();
+
+            // Adjust for negative month or day values
+            if (ageDays < 0) {
+                ageMonths--;
+                // Get number of days in the previous month
+                ageDays += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (ageMonths < 0) {
+                ageYears--;
+                ageMonths += 12;
+            }
+
+            // --- Calculate Next Birthday Countdown ---
+            const nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            if (nextBirthday < today) {
+                // If this year's birthday has passed, calculate for next year
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+
+            const nextBirthdayMilliseconds = nextBirthday - today;
+            const nextBirthdayDaysLeft = Math.floor(nextBirthdayMilliseconds / (1000 * 60 * 60 * 24));
+            
+            // A simple way to get months and remaining days for next birthday
+            let nextBirthdayMonthsLeft = Math.floor(nextBirthdayDaysLeft / 30.44); // Approx days per month
+            let nextBirthdayDaysRem = nextBirthdayDaysLeft % 30;
+
+            // Update the UI with the calculated results
+            yearsSpan.textContent = ageYears;
+            monthsSpan.textContent = ageMonths;
+            daysSpan.textContent = ageDays;
+            
+            nextBirthdayMonthsSpan.textContent = nextBirthdayMonthsLeft;
+            nextBirthdayDaysSpan.textContent = nextBirthdayDaysRem;
+
+            // Show the results section
+            outputSection.classList.remove('hidden');
+        };
+
+        // Event listener for the button click
+        calculateButton.addEventListener('click', calculateAge);
+
+        // Optional: Trigger calculation on 'Enter' key press in the input field
+        dobInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                calculateAge();
+            }
+        });
+    </script>
 </body>
 </html>

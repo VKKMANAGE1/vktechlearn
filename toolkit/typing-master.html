@@ -1,159 +1,1248 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Typing Master Pro — Free Typing Speed Test | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="Typing test — 60 second me apni WPM aur accuracy naapen, Hindi aur English sentences ke saath, bina signup.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/typing-master.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<style>
-  #target { font-size: 1.15rem; line-height: 1.9; background: #0b1020; border: 1px solid rgba(0,229,255,.25); border-radius: 12px; padding: 1rem; }
-  #target span.ok { color: #4ade80; }
-  #target span.bad { color: #ff6b81; background: rgba(255,107,129,.16); border-radius: 3px; }
-  #target span.now { border-bottom: 2px solid #00e5ff; }
-  #typed { width: 100%; min-height: 6rem; font: inherit; color: #dbe6f5; background: #0b1020; border: 1px solid rgba(0,229,255,.25); border-radius: 12px; padding: .8rem; }
-</style>
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Typing Game - Speed Test & Bubble Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#0f0f23',
+                        'dark-card': '#1a1a2e',
+                        'dark-accent': '#16213e',
+                        'neon-green': '#00ff88',
+                        'neon-blue': '#00d4ff',
+                        'neon-purple': '#b347d9',
+                        'neon-pink': '#ff6b9d',
+                        'neon-yellow': '#ffd93d',
+                        'error-red': '#ff4757'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+        
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .typing-cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .correct-char {
+            background-color: rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+            transition: all 0.2s ease;
+            transform: scale(1.05);
+        }
+        
+        .incorrect-char {
+            background-color: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+            transition: all 0.2s ease;
+            transform: scale(1.05);
+        }
+        
+        .current-char {
+            background-color: rgba(0, 212, 255, 0.5);
+            animation: blink 1s infinite;
+            transition: all 0.1s ease;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        
+        .game-container {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+        }
+        
+        /* Bubble Game Styles */
+        .bubble-game-area {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a2e 100%);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .bubble {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: rainFall linear;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .bubble:hover {
+            transform: scale(1.1);
+        }
+        
+        .bonus-bubble {
+            background: linear-gradient(135deg, #ffd93d 0%, #ff6b9d 50%, #b347d9 100%) !important;
+            animation: rainFall linear, glow 1s ease-in-out infinite alternate;
+            box-shadow: 0 0 30px rgba(255, 217, 61, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes fall {
+            from {
+                transform: translateY(-70px);
+            }
+            to {
+                transform: translateY(570px);
+            }
+        }
+        
+        @keyframes rainFall {
+            0% {
+                transform: translateY(-70px) translateX(0px);
+            }
+            25% {
+                transform: translateY(125px) translateX(-10px);
+            }
+            50% {
+                transform: translateY(250px) translateX(5px);
+            }
+            75% {
+                transform: translateY(375px) translateX(-5px);
+            }
+            100% {
+                transform: translateY(570px) translateX(0px);
+            }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 30px rgba(255, 217, 61, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.2); }
+            100% { box-shadow: 0 0 40px rgba(255, 217, 61, 1), inset 0 0 30px rgba(255, 255, 255, 0.3); }
+        }
+        
+        .bubble-pop {
+            animation: pop 0.3s ease-out forwards;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        .score-popup {
+            position: absolute;
+            font-weight: bold;
+            font-size: 18px;
+            color: #00ff88;
+            animation: scoreFloat 1s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes scoreFloat {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+        
+        .game-mode-selector {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .difficulty-option {
+            transition: all 0.3s ease;
+        }
+        
+        .difficulty-option.active {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            color: #0f0f23;
+        }
+        
+        .text-justified {
+            text-align: justify;
+            text-justify: inter-word;
+            line-height: 1.8;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="bg-dark-bg text-white font-mono min-h-screen">
+    <!-- Header -->
+    <header class="text-center py-8 bg-gradient-to-r from-dark-card to-dark-accent">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-bold bg-gradient-to-r from-neon-green to-neon-blue bg-clip-text text-transparent mb-2">
+                <i class="fas fa-keyboard mr-3"></i>
+                Typing Master Pro
+            </h1>
+            <p class="text-gray-400 text-lg">Speed Test & Bubble Challenge - Master Your Typing Skills!</p>
+            
+            <!-- Game Mode Selector -->
+            <div class="mt-6 flex justify-center">
+                <div class="game-mode-selector rounded-xl p-4">
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button id="speedTestMode" class="difficulty-option active px-6 py-3 rounded-lg font-semibold transition-all">
+                            <i class="fas fa-stopwatch mr-2"></i>Speed Test
+                        </button>
+                        <button id="bubbleGameMode" class="difficulty-option px-6 py-3 rounded-lg font-semibold transition-all">
+                            <i class="fas fa-circle mr-2"></i>Bubble Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🧩 Typing Master Pro</h1>
-    <p>एक मिनट में अपनी typing speed (WPM) और accuracy नापें — रोज़ पाँच मिनट का अभ्यास सबसे बड़ा फर्क डालता है।</p>
-    <div class="related"><a href="/toolkit/worksheet.html">Worksheet Generator</a><a href="/toolkit/case-converter.html">Case Converter</a></div>
-  </div>
+    <!-- Main Game Container -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Display -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            <!-- Time -->
+            <div class="stats-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-neon-blue mb-1" id="timeDisplay">00:00</div>
+                <div class="text-gray-400 text-xs uppercase tracking-wide">
+                    <i class="fas fa-clock mr-1"></i>Time
+                </div>
+            </div>
+            
+            <!-- WPM -->
+            <div class="stats-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-neon-green mb-1" id="wpmDisplay">0</div>
+                <div class="text-gray-400 text-xs uppercase tracking-wide">
+                    <i class="fas fa-tachometer-alt mr-1"></i>WPM
+                </div>
+            </div>
+            
+            <!-- Accuracy -->
+            <div class="stats-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-neon-purple mb-1" id="accuracyDisplay">100%</div>
+                <div class="text-gray-400 text-xs uppercase tracking-wide">
+                    <i class="fas fa-bullseye mr-1"></i>Accuracy
+                </div>
+            </div>
+            
+            <!-- Score (for bubble game) -->
+            <div class="stats-card rounded-xl p-4 text-center" id="scoreCard">
+                <div class="text-2xl font-bold text-neon-yellow mb-1" id="scoreDisplay">0</div>
+                <div class="text-gray-400 text-xs uppercase tracking-wide">
+                    <i class="fas fa-star mr-1"></i>Score
+                </div>
+            </div>
+            
+            <!-- Lives/Progress -->
+            <div class="stats-card rounded-xl p-4 text-center">
+                <div class="text-2xl font-bold text-neon-pink mb-1" id="livesDisplay">❤️❤️❤️</div>
+                <div class="text-gray-400 text-xs uppercase tracking-wide">
+                    <i class="fas fa-heart mr-1"></i><span id="livesLabel">Lives</span>
+                </div>
+            </div>
+        </div>
 
-  <section class="panel">
-    <h2><span>1</span>Test</h2>
-    <div class="field">
-      <label for="lang">भाषा</label>
-      <select id="lang">
-        <option value="en" selected>English</option>
-        <option value="hi">Hinglish</option>
-      </select>
-    </div>
-    <div id="target">Start दबाने के बाद timer चलेगा।</div>
-    <div class="field" style="margin-top:.9rem">
-      <label for="typed">यहाँ टाइप करें</label>
-      <textarea id="typed" spellcheck="false" disabled placeholder="Start दबाएँ…"></textarea>
-    </div>
-    <div class="actions">
-      <button class="btn" type="button" id="start">Start 60s test</button>
-      <button class="btn secondary" type="button" id="reset">Reset</button>
-    </div>
-    <div class="output" id="stats">WPM — · Accuracy — · Time —</div>
-    <div class="status" id="status" role="status"></div>
-  </section>
+        <!-- Speed Test Game Area -->
+        <div id="speedTestArea" class="game-container rounded-2xl p-8 mb-8 border border-gray-700">
+            <!-- Difficulty & Text Options -->
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-neon-green mb-2">Difficulty Level:</label>
+                    <select id="difficultySelect" class="w-full bg-dark-accent border border-gray-600 rounded-lg p-3 text-white focus:border-neon-green focus:outline-none">
+                        <option value="easy">Easy (Simple words)</option>
+                        <option value="medium" selected>Medium (Mixed text)</option>
+                        <option value="hard">Hard (Complex text)</option>
+                        <option value="expert">Expert (All characters)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-neon-blue mb-2">Text Type:</label>
+                    <select id="textTypeSelect" class="w-full bg-dark-accent border border-gray-600 rounded-lg p-3 text-white focus:border-neon-blue focus:outline-none">
+                        <option value="lowercase">Lowercase only</option>
+                        <option value="mixed" selected>Mixed Case</option>
+                        <option value="numbers">With Numbers</option>
+                        <option value="special">With Special Chars</option>
+                        <option value="all">All Characters</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-neon-purple mb-2">Text Length:</label>
+                    <select id="lengthSelect" class="w-full bg-dark-accent border border-gray-600 rounded-lg p-3 text-white focus:border-neon-purple focus:outline-none">
+                        <option value="short">Short (50-80 words)</option>
+                        <option value="medium" selected>Medium (80-120 words)</option>
+                        <option value="long">Long (120-200 words)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Text Prompt Display -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-neon-green mb-4 flex items-center">
+                    <i class="fas fa-quote-left mr-3"></i>
+                    Type the following text:
+                </h3>
+                <div id="textPrompt" class="bg-dark-accent rounded-lg p-6 text-lg leading-relaxed font-mono border border-gray-600 min-h-[120px] max-h-[200px] overflow-y-auto text-justified break-words">
+                    <!-- Text will be populated by JavaScript -->
+                </div>
+            </div>
 
-  <section class="panel">
-    <h2><span>2</span>Tips</h2>
-    <ul class="list">
-      <li><strong>अंगुलियाँ home row पर</strong> — left hand ASDF, right hand JKL; से शुरू करें।</li>
-      <li><strong>स्क्रीन नहीं, text देखें</strong> — keyboard देखने से speed 10–15 WPM रुक जाती है।</li>
-      <li><strong>पहले accuracy</strong> — 95% accuracy के बाद ही speed बढ़ाएँ।</li>
-      <li><strong>रोज़ 10 मिनट</strong> — हफ्ते में एक घंटे से ज़्यादा फायदा देता है।</li>
-    </ul>
-  </section>
-</main>
+            <!-- Input Area -->
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-neon-blue mb-4 flex items-center">
+                    <i class="fas fa-edit mr-3"></i>
+                    Your typing:
+                </h3>
+                <textarea 
+                    id="userInput" 
+                    placeholder="Start typing here to begin the test..."
+                    class="w-full bg-dark-accent border border-gray-600 rounded-lg p-6 text-lg font-mono text-white placeholder-gray-500 focus:border-neon-green focus:outline-none focus:ring-2 focus:ring-neon-green focus:ring-opacity-50 resize-none transition-all duration-300"
+                    rows="6"
+                    disabled
+                ></textarea>
+            </div>
 
-<script>
-  const TEXTS = {
-    en: [
-      'The best way to learn typing is to type a little every day and keep your eyes on the screen instead of the keyboard. Speed comes later, accuracy comes first.',
-      'Small habits build big results. If you spend ten minutes each morning practising the same paragraph, your fingers slowly learn where every key lives.',
-      'A clear plan saves more time than a fast keyboard. Write down the three tasks that matter today and start with the hardest one before opening any chat app.'
-    ],
-    hi: [
-      'Computer par kaam karte waqt sabse zaroori cheez hai saaf aadat. Roz das minute typing practice karein aur screen par nazar rakhein, keyboard par nahi.',
-      'Jo log dheere par sahi type karte hain, wo jaldi wale logon se aage nikal jaate hain kyunki unhe galtiyan sudharni nahi padti.',
-      'Ek chhota target set karein, use poora karein, phir agla target lein. Isi tarah mahine bhar me speed apne aap badh jaati hai.'
-    ]
-  };
-  const targetEl = document.getElementById('target');
-  const typed = document.getElementById('typed');
-  const stats = document.getElementById('stats');
-  const startBtn = document.getElementById('start');
-  let text = '', started = 0, timer = null, finished = false;
+            <!-- Controls -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button 
+                    id="startBtn" 
+                    class="bg-gradient-to-r from-neon-green to-green-500 hover:from-green-500 hover:to-neon-green text-dark-bg font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 glow-effect"
+                >
+                    <i class="fas fa-play mr-2"></i>Start Test
+                </button>
+                
+                <button 
+                    id="restartBtn" 
+                    class="bg-gradient-to-r from-neon-blue to-blue-500 hover:from-blue-500 hover:to-neon-blue text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hidden"
+                >
+                    <i class="fas fa-redo mr-2"></i>New Test
+                </button>
+                
+                <button 
+                    id="pauseBtn" 
+                    class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-orange-500 hover:to-yellow-500 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hidden"
+                >
+                    <i class="fas fa-pause mr-2"></i>Pause
+                </button>
+            </div>
+        </div>
 
-  function render() {
-    const value = typed.value;
-    targetEl.replaceChildren();
-    let badAt = -1;
-    for (let i = 0; i < text.length; i++) {
-      const span = document.createElement('span');
-      span.textContent = text[i];
-      if (i < value.length) span.className = value[i] === text[i] ? 'ok' : 'bad';
-      else if (i === value.length) span.className = 'now';
-      targetEl.append(span);
-      if (i < value.length && value[i] !== text[i] && badAt < 0) badAt = i;
-    }
-    return badAt;
-  }
+        <!-- Bubble Game Area -->
+        <div id="bubbleGameArea" class="game-container rounded-2xl p-8 mb-8 border border-gray-700 hidden">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-semibold text-neon-green mb-4">
+                    <i class="fas fa-circle mr-3"></i>Bubble Typing Challenge
+                </h3>
+                <p class="text-gray-400">Type the letters in the falling bubbles! +10 points for correct, -20 for missed. Game over after 10 mistakes!</p>
+            </div>
+            
+            <!-- Bubble Game Controls -->
+            <div class="flex justify-center gap-4 mb-6">
+                <button 
+                    id="startBubbleBtn" 
+                    class="bg-gradient-to-r from-neon-purple to-purple-500 hover:from-purple-500 hover:to-neon-purple text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+                >
+                    <i class="fas fa-play mr-2"></i>Start Bubble Game
+                </button>
+                
+                <button 
+                    id="pauseBubbleBtn" 
+                    class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-orange-500 hover:to-yellow-500 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hidden"
+                >
+                    <i class="fas fa-pause mr-2"></i>Pause
+                </button>
+            </div>
+            
+            <!-- Bubble Game Play Area -->
+            <div class="bubble-game-area rounded-xl mb-4" id="bubblePlayArea">
+                <div class="absolute top-4 left-4 text-white font-bold">
+                    Next: <span id="nextBubble" class="text-neon-yellow text-xl">A</span>
+                </div>
+            </div>
+            
+            <!-- Game Instructions -->
+            <div class="text-center text-gray-400 text-sm">
+                <p>🎯 Type the letter shown in each bubble to pop it and earn points!</p>
+                <p>⚡ Speed increases as you progress. Don't let bubbles reach the bottom!</p>
+            </div>
+        </div>
 
-  function correctCount() {
-    const value = typed.value;
-    let ok = 0;
-    for (let i = 0; i < value.length; i++) if (value[i] === text[i]) ok++;
-    return ok;
-  }
+        <!-- Results Modal -->
+        <div id="resultsModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+            <div class="bg-dark-card rounded-2xl p-8 max-w-md w-full mx-4 border border-neon-green">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h2 class="text-3xl font-bold text-neon-green mb-6">Test Complete!</h2>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Final WPM:</span>
+                            <span class="text-2xl font-bold text-neon-green" id="finalWPM">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Accuracy:</span>
+                            <span class="text-2xl font-bold text-neon-purple" id="finalAccuracy">100%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Time:</span>
+                            <span class="text-2xl font-bold text-neon-blue" id="finalTime">00:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <div id="performanceMessage" class="text-lg font-semibold"></div>
+                    </div>
+                    
+                    <button 
+                        id="newTestBtn" 
+                        class="bg-gradient-to-r from-neon-green to-green-500 hover:from-green-500 hover:to-neon-green text-dark-bg font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    >
+                        <i class="fas fa-redo mr-2"></i>Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
 
-  function tick() {
-    const seconds = Math.min(60, (Date.now() - started) / 1000);
-    const chars = correctCount();
-    const wpm = seconds > 1 ? Math.round((chars / 5) / (seconds / 60)) : 0;
-    const accuracy = typed.value.length ? Math.round((chars / typed.value.length) * 100) : 100;
-    stats.textContent = 'WPM ' + wpm + ' · Accuracy ' + accuracy + '% · Time ' + Math.round(seconds) + 's';
-    if (seconds >= 60 && !finished) finish(wpm, accuracy);
-  }
+    <!-- Footer -->
+    <footer class="text-center py-6 text-gray-500">
+        <p>&copy; 2024 Typing Speed Test. Challenge yourself every day! 🚀</p>
+    </footer>
 
-  function finish(wpm, accuracy) {
-    finished = true;
-    clearInterval(timer);
-    typed.disabled = true;
-    startBtn.disabled = false;
-    aiStatus('ok', 'Test पूरा — ' + wpm + ' WPM, ' + accuracy + '% accuracy।');
-  }
+    <script>
+        // Enhanced text prompts for different difficulty levels
+        const textPrompts = {
+            easy: {
+                lowercase: [
+                    "the quick brown fox jumps over the lazy dog and runs through the green forest with amazing speed and grace",
+                    "cats love to play with yarn balls and chase mice around the house during sunny afternoon hours",
+                    "reading books helps expand knowledge and imagination while providing entertainment and relaxation for many people",
+                    "cooking delicious meals requires patience practice and creativity to combine different flavors and ingredients perfectly",
+                    "music brings joy and happiness to people around the world through beautiful melodies and rhythmic beats"
+                ],
+                mixed: [
+                    "The Quick Brown Fox Jumps Over The Lazy Dog And Runs Through Green Forest Areas",
+                    "Technology Has Changed How We Communicate Work And Live In Modern Digital Society Today",
+                    "Learning New Skills Requires Dedication Practice And Patience To Master Complex Techniques Properly",
+                    "Nature Provides Beautiful Landscapes Fresh Air Clean Water And Amazing Wildlife For Everyone",
+                    "Exercise Improves Physical Health Mental Clarity And Overall Quality Of Life Significantly"
+                ]
+            },
+            medium: {
+                mixed: [
+                    "Technology has revolutionized the way we communicate, work, and live. From smartphones to artificial intelligence, innovation continues to shape our future in ways we never imagined possible.",
+                    "Reading books opens up new worlds of imagination and knowledge. Every page turned is a step into someone else's thoughts, experiences, and creative vision that can inspire and educate us.",
+                    "The art of cooking combines creativity with science. Understanding ingredients, temperatures, and timing allows chefs to create masterpieces that delight both the palate and the soul.",
+                    "Music has the power to transcend language barriers and connect people from different cultures. A single melody can evoke emotions, memories, and feelings that words alone cannot express.",
+                    "Exercise and physical fitness are essential for maintaining good health. Regular activity strengthens the body, improves mental clarity, and enhances overall quality of life significantly."
+                ],
+                numbers: [
+                    "In 2024, over 5.16 billion people use the internet daily, spending an average of 6 hours and 40 minutes online. Mobile devices account for 58.67% of all web traffic worldwide.",
+                    "The human brain contains approximately 86 billion neurons, each forming about 7,000 connections. This creates a network more complex than any computer system built to date.",
+                    "Mount Everest stands at 29,032 feet above sea level. Over 6,000 people have successfully climbed it since 1953, with the fastest ascent taking just 10 hours and 56 minutes.",
+                    "A typical smartphone contains over 1,500 components from 300 suppliers across 6 continents. The manufacturing process involves 16 different rare earth elements.",
+                    "The average person walks 7,500 steps per day, covering about 3.5 miles. Over a lifetime, this equals walking around the Earth 5 times, or roughly 110,000 miles total."
+                ]
+            },
+            hard: {
+                special: [
+                    "Programming languages use symbols like {}, [], (), &&, ||, !=, ==, +=, -=, *=, /= to create logical structures and perform operations efficiently.",
+                    "Email addresses follow the format: user@domain.com, while URLs use https://www.example.com/path?query=value&param=data#section for web navigation.",
+                    "Mathematical expressions often include: (x + y)² = x² + 2xy + y², where π ≈ 3.14159, and e ≈ 2.71828 are fundamental constants.",
+                    "Regular expressions use patterns like ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$ to validate email formats precisely.",
+                    "CSS selectors include: .class-name, #id-selector, element[attribute=\"value\"], :hover, ::before, and > for styling web elements."
+                ],
+                all: [
+                    "The password requirements are: 8+ characters, including UPPERCASE, lowercase, numbers (0-9), and symbols (!@#$%^&*). Don't use: 'password123' or 'qwerty'.",
+                    "JSON format: {\"name\": \"John Doe\", \"age\": 30, \"email\": \"john@example.com\", \"skills\": [\"JavaScript\", \"Python\", \"C++\"]}",
+                    "SQL query: SELECT * FROM users WHERE age >= 18 AND (status = 'active' OR role = 'admin') ORDER BY created_at DESC LIMIT 50;",
+                    "File paths: C:\\Users\\Documents\\file.txt (Windows) vs /home/user/documents/file.txt (Linux/Mac). Use quotes for spaces: \"My File.doc\"",
+                    "Regex pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$/ validates strong passwords effectively."
+                ]
+            },
+            expert: [
+                "Advanced cryptography involves algorithms like AES-256, RSA-4096, and SHA-512. Key exchange protocols (ECDH, DH) ensure secure communication channels between parties.",
+                "Machine learning frameworks (TensorFlow, PyTorch) use mathematical operations: ∇f(x) = ∂f/∂x, where backpropagation calculates gradients through chain rule: ∂L/∂w = ∂L/∂y × ∂y/∂w",
+                "Quantum computing leverages superposition |ψ⟩ = α|0⟩ + β|1⟩ and entanglement. Shor's algorithm factors integers exponentially faster than classical methods.",
+                "Bioinformatics analyzes DNA sequences (ATCG), protein structures (20 amino acids), and genetic variations (SNPs). BLAST algorithms compare sequences with E-values < 10⁻⁵.",
+                "Distributed systems handle CAP theorem trade-offs: Consistency, Availability, Partition tolerance. Consensus algorithms (Raft, PBFT) ensure data integrity across nodes."
+            ]
+        };
 
-  function reset() {
-    clearInterval(timer);
-    finished = false;
-    typed.value = '';
-    typed.disabled = true;
-    targetEl.textContent = 'Start दबाने के बाद timer चलेगा।';
-    stats.textContent = 'WPM — · Accuracy — · Time —';
-    startBtn.disabled = false;
-    startBtn.textContent = 'Start 60s test';
-  }
+        // Game state variables
+        let currentPrompt = '';
+        let startTime = null;
+        let timerInterval = null;
+        let isTestActive = false;
+        let isPaused = false;
+        let totalCharacters = 0;
+        let correctCharacters = 0;
+        let currentCharIndex = 0;
+        let currentGameMode = 'speedTest';
 
-  startBtn.addEventListener('click', () => {
-    const pool = TEXTS[document.getElementById('lang').value];
-    text = pool[Math.floor(Math.random() * pool.length)];
-    typed.value = '';
-    typed.disabled = false;
-    typed.focus();
-    render();
-    finished = false;
-    started = Date.now();
-    startBtn.disabled = true;
-    startBtn.textContent = 'Running…';
-    clearInterval(timer);
-    timer = setInterval(tick, 250);
-    aiStatus('info', 'टाइपिंग शुरू — 60 सेकंड।');
-  });
+        // Bubble game variables
+        let bubbleGameActive = false;
+        let bubbleScore = 0;
+        let bubbleLives = 10;
+        let bubbleSpeed = 6000; // milliseconds for bubble to fall (slower start)
+        let bubbleSpawnRate = 1500; // milliseconds between bubbles
+        let bubbleInterval = null;
+        let activeBubbles = [];
+        let bubbleCounter = 0;
+        let nextBubbleChar = 'A';
+        let bubblesPopped = 0;
+        let bonusBubbleChance = 0;
+        
+        // Character sets for bubble game
+        const characterSets = {
+            letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            special: '!@#$%^&*()_+-=[]{}|;:,.<>?',
+            mixed: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+            bonus: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
+        };
 
-  typed.addEventListener('input', () => {
-    render();
-    if (started) tick();
-  });
-  document.getElementById('reset').addEventListener('click', reset);
-</script>
-</body>
+        // DOM elements
+        const textPromptEl = document.getElementById('textPrompt');
+        const userInputEl = document.getElementById('userInput');
+        const timeDisplayEl = document.getElementById('timeDisplay');
+        const wpmDisplayEl = document.getElementById('wpmDisplay');
+        const accuracyDisplayEl = document.getElementById('accuracyDisplay');
+        const scoreDisplayEl = document.getElementById('scoreDisplay');
+        const livesDisplayEl = document.getElementById('livesDisplay');
+        const livesLabelEl = document.getElementById('livesLabel');
+        const startBtnEl = document.getElementById('startBtn');
+        const restartBtnEl = document.getElementById('restartBtn');
+        const pauseBtnEl = document.getElementById('pauseBtn');
+        const resultsModalEl = document.getElementById('resultsModal');
+        const finalWPMEl = document.getElementById('finalWPM');
+        const finalAccuracyEl = document.getElementById('finalAccuracy');
+        const finalTimeEl = document.getElementById('finalTime');
+        const performanceMessageEl = document.getElementById('performanceMessage');
+        const newTestBtnEl = document.getElementById('newTestBtn');
+        
+        // Game mode elements
+        const speedTestModeEl = document.getElementById('speedTestMode');
+        const bubbleGameModeEl = document.getElementById('bubbleGameMode');
+        const speedTestAreaEl = document.getElementById('speedTestArea');
+        const bubbleGameAreaEl = document.getElementById('bubbleGameArea');
+        const startBubbleBtnEl = document.getElementById('startBubbleBtn');
+        const pauseBubbleBtnEl = document.getElementById('pauseBubbleBtn');
+        const bubblePlayAreaEl = document.getElementById('bubblePlayArea');
+        const nextBubbleEl = document.getElementById('nextBubble');
+        
+        // Settings elements
+        const difficultySelectEl = document.getElementById('difficultySelect');
+        const textTypeSelectEl = document.getElementById('textTypeSelect');
+        const lengthSelectEl = document.getElementById('lengthSelect');
+
+        // Initialize the game
+        function initGame() {
+            selectRandomPrompt();
+            resetStats();
+            updateDisplay();
+            setupGameModeListeners();
+        }
+
+        // Setup game mode listeners
+        function setupGameModeListeners() {
+            speedTestModeEl.addEventListener('click', () => switchGameMode('speedTest'));
+            bubbleGameModeEl.addEventListener('click', () => switchGameMode('bubbleGame'));
+            
+            // Settings change listeners
+            difficultySelectEl.addEventListener('change', selectRandomPrompt);
+            textTypeSelectEl.addEventListener('change', selectRandomPrompt);
+            lengthSelectEl.addEventListener('change', selectRandomPrompt);
+        }
+
+        // Switch between game modes
+        function switchGameMode(mode) {
+            currentGameMode = mode;
+            
+            // Update button states
+            speedTestModeEl.classList.toggle('active', mode === 'speedTest');
+            bubbleGameModeEl.classList.toggle('active', mode === 'bubbleGame');
+            
+            // Show/hide appropriate areas
+            speedTestAreaEl.classList.toggle('hidden', mode !== 'speedTest');
+            bubbleGameAreaEl.classList.toggle('hidden', mode !== 'bubbleGame');
+            
+            // Update stats display
+            updateStatsDisplay();
+            
+            // Reset any active games
+            if (mode === 'speedTest') {
+                stopBubbleGame();
+                resetTest();
+            } else {
+                resetTest();
+                resetBubbleGame();
+            }
+        }
+
+        // Update stats display based on game mode
+        function updateStatsDisplay() {
+            if (currentGameMode === 'speedTest') {
+                livesLabelEl.textContent = 'Progress';
+                livesDisplayEl.textContent = '0%';
+                document.getElementById('scoreCard').style.display = 'none';
+            } else {
+                livesLabelEl.textContent = 'Lives';
+                livesDisplayEl.textContent = '❤️'.repeat(Math.max(0, bubbleLives));
+                document.getElementById('scoreCard').style.display = 'block';
+                scoreDisplayEl.textContent = bubbleScore;
+            }
+        }
+
+        // Select a random text prompt based on settings
+        function selectRandomPrompt() {
+            const difficulty = difficultySelectEl.value;
+            const textType = textTypeSelectEl.value;
+            const length = lengthSelectEl.value;
+            
+            let availableTexts = [];
+            
+            if (difficulty === 'expert') {
+                availableTexts = textPrompts.expert;
+            } else if (difficulty === 'hard') {
+                if (textType === 'all') {
+                    availableTexts = textPrompts.hard.all;
+                } else {
+                    availableTexts = textPrompts.hard.special;
+                }
+            } else if (difficulty === 'medium') {
+                if (textType === 'numbers') {
+                    availableTexts = textPrompts.medium.numbers;
+                } else {
+                    availableTexts = textPrompts.medium.mixed;
+                }
+            } else { // easy
+                if (textType === 'lowercase') {
+                    availableTexts = textPrompts.easy.lowercase;
+                } else {
+                    availableTexts = textPrompts.easy.mixed;
+                }
+            }
+            
+            // Select random text
+            const randomIndex = Math.floor(Math.random() * availableTexts.length);
+            let selectedText = availableTexts[randomIndex];
+            
+            // Apply text type modifications
+            if (textType === 'lowercase' && difficulty !== 'easy') {
+                selectedText = selectedText.toLowerCase();
+            } else if (textType === 'mixed' && difficulty === 'easy') {
+                selectedText = applyMixedCase(selectedText);
+            }
+            
+            // Adjust length if needed
+            selectedText = adjustTextLength(selectedText, length);
+            
+            currentPrompt = selectedText;
+            displayPrompt();
+        }
+
+        // Apply mixed case to text
+        function applyMixedCase(text) {
+            return text.split(' ').map(word => {
+                if (Math.random() > 0.5) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                }
+                return word.toLowerCase();
+            }).join(' ');
+        }
+
+        // Adjust text length based on selection
+        function adjustTextLength(text, targetLength) {
+            const words = text.split(' ');
+            let targetWordCount;
+            
+            switch(targetLength) {
+                case 'short': targetWordCount = 50 + Math.floor(Math.random() * 30); break;
+                case 'medium': targetWordCount = 80 + Math.floor(Math.random() * 40); break;
+                case 'long': targetWordCount = 120 + Math.floor(Math.random() * 80); break;
+                default: targetWordCount = words.length;
+            }
+            
+            if (words.length > targetWordCount) {
+                return words.slice(0, targetWordCount).join(' ') + '.';
+            } else if (words.length < targetWordCount) {
+                // Repeat text to reach target length
+                let result = text;
+                while (result.split(' ').length < targetWordCount) {
+                    result += ' ' + text;
+                }
+                return result.split(' ').slice(0, targetWordCount).join(' ') + '.';
+            }
+            
+            return text;
+        }
+
+        // Display the prompt with character highlighting
+        function displayPrompt() {
+            let displayHTML = '';
+            const userText = userInputEl.value;
+            
+            for (let i = 0; i < currentPrompt.length; i++) {
+                const char = currentPrompt[i];
+                let className = '';
+                
+                if (i < userText.length) {
+                    if (userText[i] === char) {
+                        className = 'correct-char';
+                    } else {
+                        className = 'incorrect-char';
+                    }
+                } else if (i === userText.length && isTestActive) {
+                    className = 'current-char typing-cursor';
+                }
+                
+                displayHTML += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+            }
+            
+            textPromptEl.innerHTML = displayHTML;
+        }
+
+        // Start the typing test
+        function startTest() {
+            isTestActive = true;
+            isPaused = false;
+            startTime = new Date();
+            userInputEl.disabled = false;
+            userInputEl.focus();
+            
+            // Update button visibility
+            startBtnEl.classList.add('hidden');
+            restartBtnEl.classList.remove('hidden');
+            pauseBtnEl.classList.remove('hidden');
+            
+            // Start timer
+            timerInterval = setInterval(updateTimer, 100);
+            
+            displayPrompt();
+        }
+
+        // Pause/Resume test
+        function togglePause() {
+            if (isPaused) {
+                isPaused = false;
+                startTime = new Date() - (new Date() - startTime);
+                timerInterval = setInterval(updateTimer, 100);
+                pauseBtnEl.innerHTML = '<i class="fas fa-pause mr-2"></i>Pause';
+                userInputEl.disabled = false;
+                userInputEl.focus();
+            } else {
+                isPaused = true;
+                clearInterval(timerInterval);
+                pauseBtnEl.innerHTML = '<i class="fas fa-play mr-2"></i>Resume';
+                userInputEl.disabled = true;
+            }
+        }
+
+        // Restart the test
+        function restartTest() {
+            resetTest();
+            selectRandomPrompt();
+            updateDisplay();
+        }
+
+        // Reset test state
+        function resetTest() {
+            isTestActive = false;
+            isPaused = false;
+            clearInterval(timerInterval);
+            
+            userInputEl.value = '';
+            userInputEl.disabled = true;
+            
+            // Reset button visibility
+            startBtnEl.classList.remove('hidden');
+            restartBtnEl.classList.add('hidden');
+            pauseBtnEl.classList.add('hidden');
+            
+            resetStats();
+        }
+
+        // Reset statistics
+        function resetStats() {
+            startTime = null;
+            totalCharacters = 0;
+            correctCharacters = 0;
+            currentCharIndex = 0;
+        }
+
+        // Update timer display
+        function updateTimer() {
+            if (!startTime || isPaused) return;
+            
+            const currentTime = new Date();
+            const elapsedTime = (currentTime - startTime) / 1000;
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = Math.floor(elapsedTime % 60);
+            
+            timeDisplayEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            calculateStats();
+        }
+
+        // Calculate WPM and accuracy
+        function calculateStats() {
+            if (!startTime) return;
+            
+            const currentTime = new Date();
+            const elapsedMinutes = (currentTime - startTime) / (1000 * 60);
+            const userText = userInputEl.value;
+            
+            // Calculate correct characters
+            correctCharacters = 0;
+            for (let i = 0; i < userText.length && i < currentPrompt.length; i++) {
+                if (userText[i] === currentPrompt[i]) {
+                    correctCharacters++;
+                }
+            }
+            
+            totalCharacters = userText.length;
+            
+            // Calculate WPM (words per minute) - standard is 5 characters per word
+            const wpm = elapsedMinutes > 0 ? Math.round((correctCharacters / 5) / elapsedMinutes) : 0;
+            
+            // Calculate accuracy
+            const accuracy = totalCharacters > 0 ? Math.round((correctCharacters / totalCharacters) * 100) : 100;
+            
+            // Calculate progress
+            const progress = Math.round((userText.length / currentPrompt.length) * 100);
+            
+            // Update displays
+            wpmDisplayEl.textContent = wpm;
+            accuracyDisplayEl.textContent = `${accuracy}%`;
+            
+            if (currentGameMode === 'speedTest') {
+                livesDisplayEl.textContent = `${Math.min(progress, 100)}%`;
+            }
+        }
+
+        // Update all displays
+        function updateDisplay() {
+            displayPrompt();
+            calculateStats();
+            updateStatsDisplay();
+        }
+
+        // Bubble Game Functions
+        function startBubbleGame() {
+            bubbleGameActive = true;
+            bubbleScore = 0;
+            bubbleLives = 10;
+            bubbleSpeed = 6000; // Start slower
+            bubbleSpawnRate = 2000;
+            activeBubbles = [];
+            bubbleCounter = 0;
+            bubblesPopped = 0;
+            bonusBubbleChance = 0;
+            
+            startBubbleBtnEl.classList.add('hidden');
+            pauseBubbleBtnEl.classList.remove('hidden');
+            
+            updateStatsDisplay();
+            
+            // Spawn initial bubbles one by one
+            spawnBubble();
+            setTimeout(() => spawnBubble(), 800);
+            setTimeout(() => spawnBubble(), 1600);
+            
+            // Start spawning bubbles with smart logic
+            bubbleInterval = setInterval(() => {
+                if (bubbleGameActive && !isPaused) {
+                    checkAndSpawnBubbles();
+                    
+                    // Increase difficulty every 5 bubbles popped
+                    if (bubblesPopped > 0 && bubblesPopped % 5 === 0) {
+                        bubbleSpeed = Math.max(3000, bubbleSpeed - 300); // Fastest: 3 seconds
+                        bubbleSpawnRate = Math.max(1000, bubbleSpawnRate - 100);
+                    }
+                }
+            }, bubbleSpawnRate);
+        }
+
+        function checkAndSpawnBubbles() {
+            // Only spawn new bubbles if we have less than 3 active bubbles
+            if (activeBubbles.length < 3) {
+                const bubblesNeeded = 3 - activeBubbles.length;
+                for(let i = 0; i < bubblesNeeded; i++) {
+                    setTimeout(() => spawnBubble(), i * 600);
+                }
+            }
+        }
+
+        function spawnBubble() {
+            if (!bubbleGameActive) return;
+            
+            // Determine if this should be a bonus bubble (every 4-8 bubbles randomly)
+            const isBonus = Math.random() < 0.15 && bubblesPopped > 3; // 15% chance after 3 bubbles
+            
+            let char, charSet;
+            if (isBonus) {
+                charSet = characterSets.bonus;
+            } else {
+                // Mix different character types
+                const sets = [characterSets.letters, characterSets.lowercase, characterSets.numbers];
+                charSet = sets[Math.floor(Math.random() * sets.length)];
+            }
+            
+            char = charSet[Math.floor(Math.random() * charSet.length)];
+            const bubble = createBubble(char, isBonus);
+            
+            activeBubbles.push({
+                element: bubble,
+                char: char,
+                id: bubbleCounter++,
+                isBonus: isBonus
+            });
+            
+            // Update next bubble indicator with first active bubble
+            if (activeBubbles.length > 0) {
+                nextBubbleChar = activeBubbles[0].char;
+                nextBubbleEl.textContent = nextBubbleChar;
+            }
+            
+            // Remove bubble when animation ends
+            setTimeout(() => {
+                if (bubble.parentNode) {
+                    bubble.remove();
+                    activeBubbles = activeBubbles.filter(b => b.element !== bubble);
+                    
+                    // Lose life if bubble wasn't popped
+                    if (bubbleGameActive) {
+                        bubbleLives--;
+                        updateStatsDisplay();
+                        
+                        if (bubbleLives <= 0) {
+                            endBubbleGame();
+                        }
+                    }
+                }
+            }, bubbleSpeed);
+        }
+
+        function findSafePosition() {
+            const maxAttempts = 50;
+            const bubbleSize = 60;
+            const minDistance = 80; // Minimum distance between bubbles
+            
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                const x = Math.random() * (bubblePlayAreaEl.offsetWidth - bubbleSize);
+                let isSafe = true;
+                
+                // Check against all active bubbles
+                for (const activeBubble of activeBubbles) {
+                    const activeX = parseFloat(activeBubble.element.style.left);
+                    const distance = Math.abs(x - activeX);
+                    
+                    if (distance < minDistance) {
+                        isSafe = false;
+                        break;
+                    }
+                }
+                
+                if (isSafe) {
+                    return x;
+                }
+            }
+            
+            // If no safe position found, use a grid-based approach
+            const gridPositions = [
+                bubblePlayAreaEl.offsetWidth * 0.15,
+                bubblePlayAreaEl.offsetWidth * 0.5,
+                bubblePlayAreaEl.offsetWidth * 0.85
+            ];
+            
+            // Find the first available grid position
+            for (const gridX of gridPositions) {
+                let isOccupied = false;
+                for (const activeBubble of activeBubbles) {
+                    const activeX = parseFloat(activeBubble.element.style.left);
+                    if (Math.abs(gridX - activeX) < minDistance) {
+                        isOccupied = true;
+                        break;
+                    }
+                }
+                if (!isOccupied) {
+                    return gridX;
+                }
+            }
+            
+            // Fallback to random position
+            return Math.random() * (bubblePlayAreaEl.offsetWidth - bubbleSize);
+        }
+
+        function createBubble(char, isBonus = false) {
+            const bubble = document.createElement('div');
+            bubble.className = isBonus ? 'bubble bonus-bubble' : 'bubble';
+            bubble.textContent = char;
+            
+            // Find a safe position that doesn't overlap with existing bubbles
+            const safeX = findSafePosition();
+            bubble.style.left = safeX + 'px';
+            bubble.style.animationDuration = bubbleSpeed + 'ms';
+            
+            if (!isBonus) {
+                // Random bubble color for normal bubbles
+                const colors = ['#00ff88', '#00d4ff', '#b347d9', '#ff6b9d', '#ffd93d'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                bubble.style.background = `linear-gradient(135deg, ${color}, ${color}aa)`;
+                bubble.style.color = '#0f0f23';
+            } else {
+                // Bonus bubble styling is handled by CSS class
+                bubble.style.color = '#0f0f23';
+                bubble.style.fontWeight = '900';
+                bubble.style.fontSize = '22px';
+            }
+            
+            bubblePlayAreaEl.appendChild(bubble);
+            return bubble;
+        }
+
+        function popBubble(char) {
+            const bubbleIndex = activeBubbles.findIndex(b => b.char === char);
+            if (bubbleIndex === -1) return false;
+            
+            const bubble = activeBubbles[bubbleIndex];
+            bubble.element.classList.add('bubble-pop');
+            
+            // Calculate points
+            const points = bubble.isBonus ? 20 : 10;
+            bubblesPopped++;
+            
+            // Add score popup
+            const scorePopup = document.createElement('div');
+            scorePopup.className = 'score-popup';
+            scorePopup.textContent = `+${points}`;
+            scorePopup.style.left = bubble.element.style.left;
+            scorePopup.style.top = bubble.element.offsetTop + 'px';
+            scorePopup.style.color = bubble.isBonus ? '#ffd93d' : '#00ff88';
+            scorePopup.style.fontSize = bubble.isBonus ? '22px' : '18px';
+            scorePopup.style.fontWeight = bubble.isBonus ? '900' : 'bold';
+            bubblePlayAreaEl.appendChild(scorePopup);
+            
+            setTimeout(() => scorePopup.remove(), 1000);
+            
+            // Update score
+            bubbleScore += points;
+            updateStatsDisplay();
+            
+            // Update next bubble indicator
+            activeBubbles.splice(bubbleIndex, 1);
+            if (activeBubbles.length > 0) {
+                nextBubbleChar = activeBubbles[0].char;
+                nextBubbleEl.textContent = nextBubbleChar;
+            }
+            
+            // Remove bubble
+            setTimeout(() => {
+                bubble.element.remove();
+            }, 300);
+            
+            return true;
+        }
+
+        function stopBubbleGame() {
+            bubbleGameActive = false;
+            clearInterval(bubbleInterval);
+            
+            // Clear all bubbles
+            activeBubbles.forEach(bubble => bubble.element.remove());
+            activeBubbles = [];
+            
+            startBubbleBtnEl.classList.remove('hidden');
+            pauseBubbleBtnEl.classList.add('hidden');
+        }
+
+        function resetBubbleGame() {
+            stopBubbleGame();
+            bubbleScore = 0;
+            bubbleLives = 10;
+            bubblesPopped = 0;
+            bonusBubbleChance = 0;
+            bubbleSpeed = 6000;
+            bubbleSpawnRate = 1500;
+            updateStatsDisplay();
+        }
+
+        function endBubbleGame() {
+            stopBubbleGame();
+            
+            // Show game over message
+            const gameOverDiv = document.createElement('div');
+            gameOverDiv.className = 'absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 rounded-xl';
+            gameOverDiv.innerHTML = `
+                <div class="text-center text-white">
+                    <h3 class="text-3xl font-bold text-error-red mb-4">Game Over!</h3>
+                    <p class="text-xl mb-4">Final Score: <span class="text-neon-yellow">${bubbleScore}</span></p>
+                    <button onclick="this.parentElement.parentElement.remove(); resetBubbleGame();" 
+                            class="bg-gradient-to-r from-neon-green to-green-500 hover:from-green-500 hover:to-neon-green text-dark-bg font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
+                        Play Again
+                    </button>
+                </div>
+            `;
+            
+            bubblePlayAreaEl.appendChild(gameOverDiv);
+        }
+
+        // Handle user input
+        function handleInput() {
+            if (!isTestActive) {
+                startTest();
+            }
+            
+            const userText = userInputEl.value;
+            
+            // Check if test is complete
+            if (userText.length >= currentPrompt.length) {
+                completeTest();
+                return;
+            }
+            
+            updateDisplay();
+        }
+
+        // Complete the test
+        function completeTest() {
+            isTestActive = false;
+            clearInterval(timerInterval);
+            userInputEl.disabled = true;
+            
+            // Calculate final stats
+            const currentTime = new Date();
+            const elapsedTime = (currentTime - startTime) / 1000;
+            const elapsedMinutes = elapsedTime / 60;
+            const finalWPM = Math.round((correctCharacters / 5) / elapsedMinutes);
+            const finalAccuracy = Math.round((correctCharacters / totalCharacters) * 100);
+            
+            // Show results modal
+            showResults(finalWPM, finalAccuracy, elapsedTime);
+        }
+
+        // Show results modal
+        function showResults(wpm, accuracy, time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60);
+            
+            finalWPMEl.textContent = wpm;
+            finalAccuracyEl.textContent = `${accuracy}%`;
+            finalTimeEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Performance message
+            let message = '';
+            if (wpm >= 80 && accuracy >= 95) {
+                message = '🏆 Excellent! You\'re a typing master!';
+                performanceMessageEl.className = 'text-lg font-semibold text-neon-green';
+            } else if (wpm >= 60 && accuracy >= 90) {
+                message = '🎯 Great job! Keep practicing!';
+                performanceMessageEl.className = 'text-lg font-semibold text-neon-blue';
+            } else if (wpm >= 40 && accuracy >= 80) {
+                message = '👍 Good work! You\'re improving!';
+                performanceMessageEl.className = 'text-lg font-semibold text-yellow-400';
+            } else {
+                message = '💪 Keep practicing! You\'ll get better!';
+                performanceMessageEl.className = 'text-lg font-semibold text-orange-400';
+            }
+            
+            performanceMessageEl.textContent = message;
+            resultsModalEl.classList.remove('hidden');
+        }
+
+        // Hide results modal
+        function hideResults() {
+            resultsModalEl.classList.add('hidden');
+        }
+
+        // Event listeners
+        startBtnEl.addEventListener('click', startTest);
+        restartBtnEl.addEventListener('click', restartTest);
+        pauseBtnEl.addEventListener('click', togglePause);
+        userInputEl.addEventListener('input', handleInput);
+        newTestBtnEl.addEventListener('click', () => {
+            hideResults();
+            restartTest();
+        });
+        
+        // Bubble game event listeners
+        startBubbleBtnEl.addEventListener('click', startBubbleGame);
+        pauseBubbleBtnEl.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseBubbleBtnEl.innerHTML = isPaused ? 
+                '<i class="fas fa-play mr-2"></i>Resume' : 
+                '<i class="fas fa-pause mr-2"></i>Pause';
+        });
+
+        // Close modal when clicking outside
+        resultsModalEl.addEventListener('click', (e) => {
+            if (e.target === resultsModalEl) {
+                hideResults();
+            }
+        });
+
+        // Keyboard shortcuts and bubble game controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!resultsModalEl.classList.contains('hidden')) {
+                    hideResults();
+                }
+            }
+            
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                if (currentGameMode === 'speedTest') {
+                    restartTest();
+                } else {
+                    resetBubbleGame();
+                }
+            }
+            
+            // Bubble game controls
+            if (currentGameMode === 'bubbleGame' && bubbleGameActive && !isPaused) {
+                const key = e.key;
+                // Handle both uppercase and lowercase, numbers, and special characters
+                if (key.match(/[A-Za-z0-9!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/)) {
+                    e.preventDefault();
+                    if (popBubble(key)) {
+                        // Successfully popped a bubble
+                        console.log('Popped bubble:', key);
+                    }
+                }
+            }
+        });
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bd4514465e3e27',t:'MTc1NzMyMjE3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Set font to Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #4b5563; /* bg-gray-600 */
+            border-radius: 6px;
+            border: 3px solid #1f2937;
+        }
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
+</head>
+<body class="bg-gray-900 text-gray-100 p-4 min-h-screen flex items-center justify-center flex-col">
+
+    <!-- Main Container -->
+    <div class="bg-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl w-full max-w-4xl mx-auto flex flex-col items-center">
+
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 md:mb-10 text-center tracking-tight">
+            <i class="fas fa-laugh-squint text-blue-400 mr-3"></i>Meme Generator
+        </h1>
+        <p class="text-gray-400 text-center mb-8 max-w-2xl">
+            Upload an image, add your text, and create your own classic meme.
+        </p>
+
+        <!-- Ad Placement -->
+        <!-- This is a strategic position for the ad, placed between the main description and the controls. -->
+        <div class="w-full my-6 flex justify-center">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '20299bdcca13049e55e7538b48fb09a3',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/20299bdcca13049e55e7538b48fb09a3/invoke.js"></script>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="w-full flex flex-col sm:flex-row justify-center gap-4 mb-8">
+            <div class="flex-1">
+                <label for="imageUpload" class="block text-sm font-medium text-gray-300 mb-2">Upload Image</label>
+                <input type="file" id="imageUpload" class="w-full text-sm text-gray-400
+                                                           file:mr-4 file:py-2 file:px-4
+                                                           file:rounded-full file:border-0
+                                                           file:text-sm file:font-semibold
+                                                           file:bg-blue-500 file:text-white
+                                                           hover:file:bg-blue-600"/>
+            </div>
+            <div class="flex-1">
+                <label for="topText" class="block text-sm font-medium text-gray-300 mb-2">Top Text</label>
+                <input type="text" id="topText" placeholder="Enter top text here" class="w-full p-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="flex-1">
+                <label for="bottomText" class="block text-sm font-medium text-gray-300 mb-2">Bottom Text</label>
+                <input type="text" id="bottomText" placeholder="Enter bottom text here" class="w-full p-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+        </div>
+
+        <!-- Canvas and Buttons -->
+        <div class="w-full flex flex-col items-center">
+            <canvas id="memeCanvas" class="w-full rounded-xl shadow-lg border border-gray-700 mb-6"></canvas>
+
+            <div class="flex flex-col sm:flex-row w-full justify-center gap-4">
+                <button id="generateButton" class="w-full sm:w-1/2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105" disabled>
+                    <i class="fas fa-magic mr-2"></i> Generate Meme
+                </button>
+                <button id="downloadButton" class="w-full sm:w-1/2 bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105" disabled>
+                    <i class="fas fa-download mr-2"></i> Download Meme
+                </button>
+            </div>
+        </div>
+        
+        <!-- Error/Message Area -->
+        <div id="messageArea" class="mt-8 text-center text-sm font-medium w-full max-w-md hidden"></div>
+    </div>
+
+    <!-- Instructions on how to use the tool -->
+    <div class="mt-12 w-full max-w-4xl text-left p-6 rounded-2xl bg-gray-800 shadow-lg">
+        <h2 class="text-2xl font-bold text-white mb-4">How to Use this Meme Generator? (इस मेम जेनरेटर का उपयोग कैसे करें?)</h2>
+        <p class="text-gray-400 mb-6">
+            This tool is designed to be simple and easy to use. Just follow these steps: <br/>
+            यह टूल उपयोग करने में बहुत आसान है। बस इन चरणों का पालन करें:
+        </p>
+
+        <ol class="list-decimal list-inside text-gray-300 space-y-4">
+            <li>
+                <strong class="text-blue-400">Upload Image (इमेज अपलोड करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click on the "Upload Image" button and select an image file (JPG, PNG, etc.) from your computer. Once the image is loaded, the buttons will become active. <br/>
+                    "Upload Image" बटन पर क्लिक करें और अपने कंप्यूटर से एक इमेज फ़ाइल (JPG, PNG, आदि) चुनें। इमेज लोड होने के बाद, बटन सक्रिय हो जाएंगे।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Add Text (टेक्स्ट जोड़ें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Type your desired text into the "Top Text" and "Bottom Text" input fields. The meme preview on the canvas will update automatically as you type. <br/>
+                    "Top Text" और "Bottom Text" इनपुट फ़ील्ड में अपना टेक्स्ट लिखें। जैसे-जैसे आप टाइप करेंगे, कैनवास पर मेम का पूर्वावलोकन (preview) अपने आप अपडेट होता रहेगा।
+                </p>
+            </li>
+            <li>
+                <strong class="text-blue-400">Generate and Download (जनरेट करें और डाउनलोड करें)</strong>
+                <p class="text-gray-400 mt-1">
+                    Click the "Generate Meme" button to finalize your meme. Then, click "Download Meme" to save the final image to your device. <br/>
+                    अपने मेम को अंतिम रूप देने के लिए "Generate Meme" बटन पर क्लिक करें। फिर, अंतिम इमेज को अपने डिवाइस में सेव करने के लिए "Download Meme" पर क्लिक करें।
+                </p>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // DOM Element references
+        const imageUpload = document.getElementById('imageUpload');
+        const topText = document.getElementById('topText');
+        const bottomText = document.getElementById('bottomText');
+        const generateButton = document.getElementById('generateButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const memeCanvas = document.getElementById('memeCanvas');
+        const ctx = memeCanvas.getContext('2d');
+        const messageArea = document.getElementById('messageArea');
+
+        let uploadedImage = null;
+
+        // Show a temporary message to the user
+        const showMessage = (message, isError = false) => {
+            messageArea.innerText = message;
+            messageArea.className = `mt-8 text-center text-sm font-medium w-full max-w-md block rounded-md p-3 transition-opacity duration-500 ease-in-out ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            messageArea.style.opacity = '1';
+            setTimeout(() => {
+                messageArea.style.opacity = '0';
+                messageArea.addEventListener('transitionend', (e) => {
+                    if (e.propertyName === 'opacity' && messageArea.style.opacity === '0') {
+                        messageArea.classList.add('hidden');
+                    }
+                }, { once: true });
+            }, 3000);
+        };
+
+        // --- Core Rendering Logic ---
+        const drawMeme = () => {
+            if (!uploadedImage) {
+                return;
+            }
+
+            // Set canvas size to match the image
+            memeCanvas.width = uploadedImage.width;
+            memeCanvas.height = uploadedImage.height;
+
+            // Clear canvas and draw the image
+            ctx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
+            ctx.drawImage(uploadedImage, 0, 0, memeCanvas.width, memeCanvas.height);
+
+            // Configure text properties
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            // Calculate font size dynamically based on canvas width
+            const fontSize = memeCanvas.width * 0.08;
+            ctx.font = `${fontSize}px Impact, Haettenschweiler, Arial Narrow Bold, sans-serif`;
+
+            // Draw top text
+            const topTextValue = topText.value.toUpperCase();
+            if (topTextValue) {
+                ctx.fillText(topTextValue, memeCanvas.width / 2, 10);
+                ctx.strokeText(topTextValue, memeCanvas.width / 2, 10);
+            }
+
+            // Draw bottom text
+            const bottomTextValue = bottomText.value.toUpperCase();
+            if (bottomTextValue) {
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(bottomTextValue, memeCanvas.width / 2, memeCanvas.height - 10);
+                ctx.strokeText(bottomTextValue, memeCanvas.width / 2, memeCanvas.height - 10);
+            }
+        };
+
+        // --- Event Handlers ---
+
+        // Handle image file upload
+        imageUpload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImage = new Image();
+                    uploadedImage.onload = () => {
+                        // Once image is loaded, enable buttons and draw the initial meme
+                        generateButton.disabled = false;
+                        downloadButton.disabled = false;
+                        drawMeme();
+                        showMessage("Image loaded successfully!", false);
+                    };
+                    uploadedImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Live preview on text input
+        topText.addEventListener('input', drawMeme);
+        bottomText.addEventListener('input', drawMeme);
+
+        // Handle generate button click (optional for live preview, but good for explicit action)
+        generateButton.addEventListener('click', () => {
+            drawMeme();
+            showMessage("Meme generated!", false);
+        });
+
+        // Handle download button click
+        downloadButton.addEventListener('click', () => {
+            if (!uploadedImage) {
+                showMessage("Please upload an image first.", true);
+                return;
+            }
+            const dataURL = memeCanvas.toDataURL('image/jpeg', 0.9);
+            const a = document.createElement('a');
+            a.href = dataURL;
+            a.download = 'my-meme.jpeg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showMessage("Meme downloaded!", false);
+        });
+    </script>
+</body>
+</html>

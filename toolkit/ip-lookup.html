@@ -1,101 +1,341 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IP Address Lookup — Location aur ISP Details | VK Tech Learn</title>
-<link rel="icon" type="image/png" href="../img/favicon.png">
-<meta name="description" content="IP address lookup — apna IP ya kisi bhi IP ka country, city, ISP aur timezone dekhen, bina signup, seedha browser me.">
-<link rel="canonical" href="https://vktechlearn.site/toolkit/ip-lookup.html">
-<link rel="stylesheet" href="/pdf/style.min.css">
-<script src="/toolkit/ai.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>IP Address Lookup • Canva Code</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* Smooth fade-in and subtle glow for cards */
+        .fade-in { animation: fadeIn 0.6s ease-out both; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0);} }
+
+        /* Elevated, soft glow on hover for cards/buttons */
+        .glow { box-shadow: 0 0 0px rgba(99,102,241,.0), 0 0 0px rgba(34,197,94,.0); transition: box-shadow .35s ease; }
+        .glow:hover { box-shadow: 0 16px 60px rgba(99,102,241,.25), 0 6px 28px rgba(34,197,94,.12); }
+
+        /* Advanced dynamic background: aurora + subtle grid */
+        body { position: relative; }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -20% -10% -10% -10%;
+            background: radial-gradient(60% 80% at 20% 30%, rgba(99,102,241,.35), rgba(99,102,241,0)),
+                        radial-gradient(60% 80% at 80% 70%, rgba(16,185,129,.28), rgba(16,185,129,0)),
+                        radial-gradient(40% 60% at 50% 10%, rgba(56,189,248,.25), rgba(56,189,248,0));
+            filter: blur(40px) saturate(120%);
+            transform: translate3d(0,0,0);
+            z-index: 0;
+            animation: drift 22s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 40px 40px, 40px 40px; /* subtle grid */
+            mask-image: radial-gradient(closest-side, rgba(0,0,0,0.35), rgba(0,0,0,0.8));
+            z-index: 0;
+            pointer-events: none;
+        }
+        @keyframes drift {
+            0%   { transform: translateY(-10px) translateX(-10px) scale(1); }
+            50%  { transform: translateY(10px) translateX(8px) scale(1.05); }
+            100% { transform: translateY(-6px) translateX(12px) scale(1.02); }
+        }
+
+        /* Ensure map fills its container without overlaps */
+        #map { height: 380px; border-radius: 14px; overflow: hidden; }
+        @media (min-width: 1024px){ #map { height: 420px; } }
+
+        /* Leaflet default marker on dark */
+        .leaflet-container { background: #0b1220; }
+        
+        /* New styling for instructions section */
+        .instructions-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+    </style>
+<meta name='google-adsense-platform-account' content='ca-host-pub-1556223355139109'/>
+<meta name='google-adsense-platform-domain' content='blogspot.com'/>
 </head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
-  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
-</div></header>
+<body class="min-h-screen bg-gradient-to-br from-[#0b1020] via-[#0b0f1a] to-[#0b0f1a] text-slate-100 selection:bg-indigo-600/40 selection:text-white">
+    <main class="max-w-6xl mx-auto px-6 py-10 md:py-14">
+        <!-- Header -->
+        <header class="mb-8 md:mb-10 fade-in">
+            <div class="flex items-center gap-3">
+                <div class="h-11 w-11 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
+                    <i class="fa-solid fa-location-dot text-indigo-300 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">
+                        IP Address Lookup
+                    </h1>
+                    <p class="text-slate-400 text-sm md:text-base">
+                        Find the location, ISP, timezone and more — then see it on the map.
+                    </p>
+                </div>
+            </div>
+        </header>
 
-<main class="wrap">
-  <div class="tool-head">
-    <div class="eyebrow">Tools</div>
-    <h1>🧩 IP Address Lookup</h1>
-    <p>अपना public IP देखें या किसी IP का देश, शहर, ISP और timezone पता करें। VPN चालू हो तो नतीजा उसी देश का आएगा।</p>
-    <div class="related"><a href="/toolkit/currency-converter.html">Currency Converter</a><a href="/toolkit/grammar-checker.html">Grammar Checker</a></div>
-  </div>
+        <!-- Input + Button -->
+        <section class="fade-in">
+            <div class="rounded-2xl bg-white/[0.03] border border-white/10 p-4 md:p-5 backdrop-blur-sm glow">
+                <form id="lookupForm" class="flex flex-col md:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </span>
+                        <input id="ipInput" type="text" inputmode="text" autocomplete="off" placeholder="Enter IPv4 or IPv6 (e.g. 8.8.8.8)"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/60 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/30 transition">
+                    </div>
+                    <button id="lookupBtn" type="submit"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium transition shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass-location"></i>
+                        <span>Lookup IP</span>
+                    </button>
+                </form>
+                <p id="helperText" class="text-xs text-slate-500 mt-2 pl-1">
+                    Tip: It starts with your own IP automatically.
+                </p>
+            </div>
+        </section>
 
-  <div class="two-col">
-    <section class="panel">
-      <h2><span>1</span>Lookup</h2>
-      <div class="field">
-        <label for="ip">IP address (खाली छोड़ें तो आपका अपना)</label>
-        <input id="ip" placeholder="जैसे: 8.8.8.8" autocomplete="off">
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="run">Look up</button>
-        <button class="btn secondary" type="button" id="mine">मेरा IP</button>
-      </div>
-      <div class="status" id="status" role="status"></div>
-      <p class="hint">जानकारी ipapi.co से आती है। मोबाइल नेटवर्क पर शहर का अनुमान कभी-कभी दूर होता है।</p>
-    </section>
+        <!-- Error Alert -->
+        <div id="errorBox" class="hidden mt-4 fade-in rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-200 p-4">
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-triangle-exclamation mt-1"></i>
+                <div id="errorMessage" class="text-sm">
+                    Something went wrong. Please try again.
+                </div>
+            </div>
+        </div>
 
-    <section class="panel">
-      <h2><span>2</span>Result</h2>
-      <div class="output" id="result">Look up दबाएँ।</div>
-      <ul class="list" id="details"></ul>
-    </section>
-  </div>
-</main>
+        <!-- Results + Map -->
+        <section class="mt-6 grid md:grid-cols-2 gap-6">
+            <!-- Results -->
+            <div class="rounded-2xl bg-white/[0.03] border border-white/10 p-5 md:p-6 backdrop-blur-sm fade-in glow">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-emerald-300"></i>
+                    Details
+                </h2>
+                <ul class="space-y-3">
+                    <li class="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                        <span class="text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-globe"></i> IP Address
+                        </span>
+                        <strong id="res-ip" class="text-slate-100">—</strong>
+                    </li>
+                    <li class="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                        <span class="text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-flag"></i> Country
+                        </span>
+                        <strong id="res-country" class="text-slate-100">—</strong>
+                    </li>
+                    <li class="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                        <span class="text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-city"></i> City
+                        </span>
+                        <strong id="res-city" class="text-slate-100">—</strong>
+                    </li>
+                    <li class="flex items-center justify-between gap-4 border-b border-white/5 pb-3">
+                        <span class="text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-tower-broadcast"></i> ISP
+                        </span>
+                        <strong id="res-isp" class="text-slate-100">—</strong>
+                    </li>
+                    <li class="flex items-center justify-between gap-4">
+                        <span class="text-slate-400 flex items-center gap-2">
+                            <i class="fa-regular fa-clock"></i> Timezone
+                        </span>
+                        <strong id="res-timezone" class="text-slate-100">—</strong>
+                    </li>
+                </ul>
+            </div>
 
-<script>
-  const result = document.getElementById('result');
-  const details = document.getElementById('details');
+            <!-- Map -->
+            <div class="rounded-2xl bg-white/[0.03] border border-white/10 p-3 md:p-4 backdrop-blur-sm fade-in glow">
+                <div class="flex items-center justify-between px-1 pb-2">
+                    <h2 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-sky-300"></i>
+                        Map
+                    </h2>
+                    <div class="text-xs text-slate-500">OpenStreetMap • Leaflet</div>
+                </div>
+                <div id="map" class="w-full"></div>
+            </div>
+        </section>
 
-  function rows(items) {
-    details.replaceChildren(...items.filter(([, v]) => v).map(([k, v]) => {
-      const li = document.createElement('li');
-      li.innerHTML = '<strong></strong> <span></span>';
-      li.querySelector('strong').textContent = k;
-      li.querySelector('span').textContent = v;
-      return li;
-    }));
-  }
+        <!-- Instructions Section in Hindi -->
+        <section class="mt-8 md:mt-12 w-full p-6 rounded-2xl bg-white/[0.03] border border-white/10 shadow-lg glow instructions-section">
+            <h2 class="text-2xl font-bold text-white mb-4">इस टूल का उपयोग कैसे करें (How to use this tool)</h2>
+            <p class="text-gray-400 mb-6">
+                यह टूल आपके या किसी भी IP पते के बारे में जानकारी ढूंढने के लिए बनाया गया है। इसका उपयोग करने के लिए इन सरल चरणों का पालन करें:
+            </p>
+            <ol class="list-decimal list-inside text-gray-300 space-y-4">
+                <li>
+                    <strong class="text-indigo-400">स्वचालित खोज (Automatic Lookup)</strong>
+                    <p class="text-gray-400 mt-1">
+                        जब आप पेज खोलते हैं, तो यह टूल स्वचालित रूप से आपके वर्तमान IP पते का पता लगाता है और उसकी जानकारी (जैसे देश, शहर और ISP) दिखाता है। यह जानकारी सीधे मैप पर भी प्रदर्शित होती है।
+                    </p>
+                </li>
+                <li>
+                    <strong class="text-indigo-400">कोई अन्य IP पता दर्ज करें (Enter another IP Address)</strong>
+                    <p class="text-gray-400 mt-1">
+                        यदि आप किसी और IP पते की जानकारी चाहते हैं, तो "Enter IPv4 or IPv6" फ़ील्ड में उस IP पते को टाइप करें। आप IPv4 (जैसे 8.8.8.8) या IPv6 (जैसे 2001:4860:4860::8888) दोनों को दर्ज कर सकते हैं।
+                    </p>
+                </li>
+                <li>
+                    <strong class="text-indigo-400">खोजें बटन पर क्लिक करें (Click the Lookup Button)</strong>
+                    <p class="text-gray-400 mt-1">
+                        IP पता डालने के बाद, "Lookup IP" बटन पर क्लिक करें। टूल उस IP पते से संबंधित सभी उपलब्ध जानकारी प्राप्त करेगा और उसे स्क्रीन पर दिखाएगा। मैप पर भी स्थान अपडेट हो जाएगा।
+                    </p>
+                </li>
+                <li>
+                    <strong class="text-indigo-400">परिणाम देखें (View Results)</strong>
+                    <p class="text-gray-400 mt-1">
+                        "Details" सेक्शन में आपको IP पता, देश, शहर, ISP और टाइमज़ोन जैसी जानकारी मिलेगी। "Map" सेक्शन में आप उस स्थान को मानचित्र पर देख सकते हैं।
+                    </p>
+                </li>
+            </ol>
+            <p class="text-gray-400 mt-6">
+                कृपया ध्यान दें: यह टूल सार्वजनिक IP पतों के लिए बनाया गया है। निजी नेटवर्क पते (जैसे 192.168.x.x) का उपयोग करने पर सही परिणाम नहीं मिलेंगे।
+            </p>
+        </section>
 
-  async function lookup(ip) {
-    aiStatus('info', 'जानकारी आ रही है…');
-    const url = 'https://ipapi.co/' + (ip ? encodeURIComponent(ip) + '/' : '') + 'json/';
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.error) throw new Error(data.reason || 'IP नहीं मिला');
-      result.textContent = (data.ip || ip) + ' — ' + [data.city, data.region, data.country_name].filter(Boolean).join(', ');
-      rows([
-        ['IP', data.ip],
-        ['देश', data.country_name + (data.country_code ? ' (' + data.country_code + ')' : '')],
-        ['राज्य / शहर', [data.region, data.city].filter(Boolean).join(', ')],
-        ['ISP', data.org],
-        ['Timezone', data.timezone],
-        ['अक्षांश, देशांतर', data.latitude && data.longitude ? data.latitude + ', ' + data.longitude : ''],
-        ['Postal', data.postal]
-      ]);
-      aiStatus('ok', 'मिल गया।');
-    } catch (err) {
-      result.textContent = 'नतीजा नहीं आया।';
-      details.replaceChildren();
-      aiStatus('err', err.message + ' — internet या ad-blocker जाँचें।');
-    }
-  }
+        <!-- Footer note -->
+        <footer class="mt-8 text-center text-xs text-slate-500">
+            Powered by https://www.vktechlearn.online (free), OpenStreetMap & Leaflet.
+        </footer>
+    </main>
+    <script>
+        // Canva Code uses ipapi.co (HTTPS) to avoid blocked insecure requests in this environment.
+        // Endpoints:
+        // - Your IP:   https://ipapi.co/json/
+        // - By IP:     https://ipapi.co/{IP}/json/
 
-  document.getElementById('run').addEventListener('click', () => {
-    const ip = document.getElementById('ip').value.trim();
-    if (ip && !/^[0-9a-fA-F:.]+$/.test(ip)) { aiStatus('err', 'IP का format ठीक नहीं।'); return; }
-    lookup(ip);
-  });
-  document.getElementById('mine').addEventListener('click', () => {
-    document.getElementById('ip').value = '';
-    lookup('');
-  });
-  lookup('');
-</script>
+        // UI Elements
+        const form = document.getElementById('lookupForm');
+        const ipInput = document.getElementById('ipInput');
+        const lookupBtn = document.getElementById('lookupBtn');
+        const errorBox = document.getElementById('errorBox');
+        const errorMessage = document.getElementById('errorMessage');
+
+        const resIP = document.getElementById('res-ip');
+        const resCountry = document.getElementById('res-country');
+        const resCity = document.getElementById('res-city');
+        const resISP = document.getElementById('res-isp');
+        const resTZ = document.getElementById('res-timezone');
+
+        // Leaflet Map
+        let map, marker;
+        function initMap() {
+            map = L.map('map', { zoomControl: false }).setView([20, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+        }
+
+        function setLoading(isLoading) {
+            lookupBtn.disabled = isLoading;
+            lookupBtn.innerHTML = isLoading
+                ? '<i class="fa-solid fa-spinner-third fa-spin"></i><span>Looking up...</span>'
+                : '<i class="fa-solid fa-magnifying-glass-location"></i><span>Lookup IP</span>';
+        }
+
+        function showError(msg) {
+            errorMessage.textContent = msg || 'Something went wrong. Please try again.';
+            errorBox.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorBox.classList.add('hidden');
+        }
+
+        function updateResults(data) {
+            // Safe reading with fallbacks
+            resIP.textContent = data.ip || '—';
+            resCountry.textContent = data.country_name || '—';
+            resCity.textContent = data.city || '—';
+            resISP.textContent = data.org || data.org_name || '—';
+            resTZ.textContent = data.timezone || '—';
+        }
+
+        function updateMap(lat, lon, label) {
+            if (typeof lat !== 'number' || typeof lon !== 'number' || isNaN(lat) || isNaN(lon)) return;
+            const pos = [lat, lon];
+            if (!marker) {
+                marker = L.marker(pos).addTo(map);
+            } else {
+                marker.setLatLng(pos);
+            }
+            marker.bindPopup(`<strong>${label || 'Location'}</strong><br>${lat.toFixed(4)}, ${lon.toFixed(4)}`).openPopup();
+            map.setView(pos, 9, { animate: true });
+        }
+
+        async function fetchGeo(ip) {
+            const url = ip && ip.trim() !== '' ? `https://ipapi.co/${encodeURIComponent(ip.trim())}/json/` : 'https://ipapi.co/json/';
+            const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            if (!resp.ok) throw new Error('Network error. Please try again.');
+            const data = await resp.json();
+            if (data.error) {
+                // ipapi.co provides 'reason' on error; show a friendly message.
+                const reason = data.reason || 'Invalid IP address.';
+                throw new Error(reason);
+            }
+            // Normalize coordinates
+            const lat = Number(data.latitude);
+            const lon = Number(data.longitude);
+            if (!isFinite(lat) || !isFinite(lon)) {
+                throw new Error('Location not available for this IP.');
+            }
+            return { data, lat, lon };
+        }
+
+        async function doLookup(ip) {
+            hideError();
+            setLoading(true);
+            try {
+                const { data, lat, lon } = await fetchGeo(ip);
+                // Prefill the input with the resolved IP if it differs or was empty
+                if (!ipInput.value || ipInput.value.trim() === '') ipInput.value = data.ip || '';
+                updateResults(data);
+                updateMap(lat, lon, data.ip);
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // Handle form submit (Lookup button)
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const raw = ipInput.value.trim();
+            // Allow blank to re-resolve user's IP
+            doLookup(raw);
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', async () => {
+            initMap();
+            // Initial lookup for user's own IP
+            await doLookup('');
+        });
+    </script>
 </body>
 </html>
