@@ -56,6 +56,27 @@ sentence structure with common English tech words, same as existing posts).
   no "विनाय कुशवाहा"), do not add or drop the diacritics (ï â ý û å).
 - The same name is used in every post page, the homepage footer and any author box.
 
+## Source citation rule (apply to every post, always)
+
+- Har fact, number, feature ya claim ka source **original jagah** ka hona chahiye — jis
+  company/product/study ki baat ho, usi ka official page:
+  official docs, help center, official blog/changelog, pricing page, developer reference,
+  ya original research paper / government portal.
+- **Kisi doosre blog ka link source ke roop me mat do** jab original available hai —
+  koi "top 10 tools" listicle, aggregator, news-recap ya copy-paste tech blog source nahi hai.
+  Original page hi kholo aur wahi link karo (e.g. Windows feature ke liye Microsoft Learn,
+  Android ke liye developer.android.com, AWS ke liye aws.amazon.com docs, GST ke liye
+  gst.gov.in / CBIC).
+- Agar original page hi na mile ya paywalled ho, to sabse primary alternate do — official
+  documentation, standards body, regulator — content farm ya SEO blog nahi.
+- Wikipedia/News sirf background samajhne ke liye; post me link tabhi jab primary source na ho,
+  aur preferably wahi primary source jo Wikipedia ne cite kiya hai.
+- Source section me link ke saath 2–4 shabd ka context likho ki kis claim ka support hai
+  (e.g. "Microsoft Learn — Windows 11 system requirements"). Dead ya redirect ho chuke link
+  publish se pehle check karo.
+- Outbound links 1–2 hi rakho (rule 4), isliye sirf wahi official sources chuno jo sabse
+  zaroori claims cover karte hain.
+
 ## Publishing flow (important)
 
 - Write/update the post on **Blogger** (source of truth). GitHub Actions `sync.yml` rebuilds
