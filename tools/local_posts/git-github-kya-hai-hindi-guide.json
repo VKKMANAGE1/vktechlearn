@@ -1,0 +1,11 @@
+{
+  "slug": "git-github-kya-hai-hindi-guide",
+  "title": "Git aur GitHub Kya Hai? Version Control ki Aasan Guide",
+  "description": "Git aur GitHub kya hai, commit, branch, merge aur pull request, 10 commands aur pehle repo ka step-by-step setup — easy Hindi guide, zero se shuruaat.",
+  "published": "2026-11-25T20:00:00+05:30",
+  "labels": ["Git", "GitHub", "Developer Tools"],
+  "hero": "img/posts/git-github-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "हर commit एक checkpoint है — कुछ भी बिगड़े तो पीछे लौटने का रास्ता हमेशा रहता है"
+}

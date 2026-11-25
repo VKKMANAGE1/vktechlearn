@@ -1,0 +1,175 @@
+<p>हर developer के साथ एक बार यह होता है: code में कुछ बदला, काम नहीं किया, और अब पता नहीं कि पिछले हफ़्ते वाला ठीक version कहाँ गया। Git इसी डर का इलाज है। वह आपके code की हर अवस्था को याद रखता है, ताकि आप कभी भी पीछे लौट सकें और यह भी देख सकें कि किसने, कब और क्यों क्या बदला।</p>
+
+<p>इस guide में मैं Git और GitHub का फर्क, Git के तीन हिस्से, 10 commands जो रोज़ के 90% काम कर देते हैं, branch और merge, पहले repository का पूरा setup, commit message लिखने का तरीका, conflict सुलझाना, और वे छह गलतियाँ जो शुरुआत में सबसे महंगी पड़ती हैं — सब आसान भाषा में।</p>
+
+<p><strong>छोटा जवाब:</strong> Git एक version control tool है जो आपके computer पर चलता है और code के हर बदलाव का record रखता है। GitHub एक website है जहाँ वही record internet पर रखा जाता है, ताकि team साथ काम कर सके और backup बना रहे। Git के बिना GitHub का कोई मतलब नहीं; GitHub के बिना Git पूरी तरह काम करता है — बस team के साथ साझा करना मुश्किल हो जाता है।</p>
+
+<h2>Git aur GitHub: फर्क साफ़ करें</h2>
+
+<p>Git को समझने का सबसे आसान तरीका है — इसे document के "undo history" की तरह देखना, पर बहुत ज़्यादा ताकतवर। आप एक folder चुनते हैं, Git को बताते हैं कि इस पर नज़र रखो, और फिर जब भी कुछ ठीक लगे, एक snapshot बना देते हैं। उस snapshot को commit कहते हैं।</p>
+
+<p>GitHub उसी folder की एक copy internet पर रखता है। इससे तीन फायदे होते हैं: laptop खराब होने पर code बचा रहता है, दो लोग एक साथ काम कर सकते हैं, और हर बदलाव पर चर्चा हो सकती है। GitHub के अलावा GitLab और Bitbucket भी यही काम करते हैं — यानी GitHub कोई ज़रूरी हिस्सा नहीं, एक लोकप्रिय जगह है।</p>
+
+<table>
+  <thead>
+    <tr><th>पहलू</th><th>Git</th><th>GitHub</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>क्या है</td><td>Tool (software)</td><td>Website / service</td></tr>
+    <tr><td>कहाँ चलता है</td><td>आपका computer</td><td>Internet पर</td></tr>
+    <tr><td>काम</td><td>History, branch, merge</td><td>Hosting, review, issues, CI</td></tr>
+    <tr><td>बिना internet</td><td>पूरा चलता है</td><td>नहीं चलेगा</td></tr>
+    <tr><td>बनाने वाला</td><td>Linus Torvalds, 2005</td><td>GitHub (Microsoft)</td></tr>
+  </tbody>
+</table>
+
+<h2>Git ke तीन हिस्से</h2>
+
+<figure>
+<img src="../img/posts/git-three-areas-hindi.jpg" alt="working directory, staging area, local commit और remote — Git के चार स्तर" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>फाइल लिखी, फिर चुनी, फिर सँभाली — यही क्रम Git की पूरी सोच है</figcaption>
+</figure>
+
+<p><strong>Working directory:</strong> आपका folder जैसा अभी है। यहाँ आप code लिखते हैं, files बनाते और मिटाते हैं। Git इसमें कुछ नहीं बदलता, बस देखता रहता है कि क्या बदला।</p>
+
+<p><strong>Staging area:</strong> वह जगह जहाँ आप तय करते हैं कि अगले commit में क्या-क्या जाएगा। <code>git add</code> से files यहाँ आती हैं। इसका फायदा यह है कि 10 files बदलने के बाद भी आप सिर्फ़ 3 को एक साफ़ commit में डाल सकते हैं।</p>
+
+<p><strong>Repository (local):</strong> जब आप <code>git commit</code> करते हैं, staging का सामान एक snapshot बनकर repository में चला जाता है। अब वह बदलाव सुरक्षित है — आप आगे कुछ भी करें, वापस आ सकते हैं।</p>
+
+<p><strong>Remote:</strong> GitHub पर रखी copy. <code>git push</code> से local commits वहाँ जाते हैं, और <code>git pull</code> से वहाँ के बदलाव यहाँ आते हैं।</p>
+
+<h2>10 commands जो रोज़ के 90% काम कर देते हैं</h2>
+
+<pre><code>git init                  # naya repo shuru karo
+git clone &lt;url&gt;           # doosre ka repo copy karo
+git status                # kya badla, kya staged hai
+git add &lt;file&gt;            # file ko commit ke liye chuno
+git commit -m "message"   # snapshot banao
+git log --oneline         # history dekho
+git pull                  # remote ke badlav lo
+git push                  # apne commit bhejo
+git switch -c feature-x   # nayi branch banao
+git switch main           # wapas main par aao</code></pre>
+
+<p>इन दस से शुरुआत करें। जब ज़रूरत पड़े, तब <code>git diff</code> (क्या बदला), <code>git restore</code> (बदलाव वापस), <code>git merge</code> और <code>git rebase</code> सीखें। एक बात याद रखें — जो command समझ न आए, उसे किसी असली project पर न चलाएँ; पहले एक test folder में आज़माएँ।</p>
+
+<h2>Branch aur merge</h2>
+
+<figure>
+<img src="../img/posts/git-branch-merge-hindi.jpg" alt="main branch, feature branch, pull request और merge का काम" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>main हमेशा चलने लायक रहे, और हर काम अपनी branch में — यही team का सबसे सस्ता नियम है</figcaption>
+</figure>
+
+<p>Branch एक अलग रास्ता है जहाँ आप बिना main को छुए काम कर सकते हैं। मान लीजिए आपको login page में बदलाव करना है। आप <code>git switch -c login-fix</code> से नई branch बनाते हैं, काम करते हैं, commits करते हैं। अगर कुछ गड़बड़ हो, तो बस main पर वापस आ जाएँ — वहाँ कुछ नहीं बदला।</p>
+
+<p>जब काम ठीक लगे, तो branch को main में मिलाते हैं। Team में यह काम pull request से होता है: आप अपनी branch push करते हैं, GitHub पर एक PR खोलते हैं, साथी code पढ़ते हैं, comment करते हैं, और फिर merge करते हैं। इससे दो फायदे होते हैं — code दो लोगों ने देखा, और चर्चा का record बना रहता है।</p>
+
+<p>Branch छोटी रखें। एक हफ़्ते चलने वाली branch में 40 files बदल जाती हैं और review मुश्किल हो जाता है। दो-तीन दिन का काम, फिर merge — यही आदत conflict सबसे ज़्यादा कम करती है।</p>
+
+<h2>पहला repository: step-by-step</h2>
+
+<ol>
+  <li><strong>Git install करें</strong> और terminal में <code>git --version</code> से जाँचें।</li>
+  <li><strong>नाम और email सेट करें</strong> (एक बार): <code>git config --global user.name "Aapka Naam"</code> और <code>git config --global user.email "aap@example.com"</code>.</li>
+  <li><strong>Folder बनाएँ और शुरू करें:</strong> <code>mkdir my-project &amp;&amp; cd my-project &amp;&amp; git init</code>.</li>
+  <li><strong>.gitignore बनाएँ:</strong> इसमें वे चीज़ें लिखें जो repo में नहीं जानी चाहिए — <code>node_modules/</code>, <code>.env</code>, build folders.</li>
+  <li><strong>पहला commit:</strong> <code>git add .</code> फिर <code>git commit -m "Initial project setup"</code>.</li>
+  <li><strong>GitHub पर खाली repo बनाएँ</strong> — README या .gitignore जोड़े बिना, ताकि पहला push आसान रहे।</li>
+  <li><strong>Remote जोड़ें:</strong> <code>git remote add origin &lt;repo-url&gt;</code>.</li>
+  <li><strong>Push करें:</strong> <code>git push -u origin main</code>. अब आपका code GitHub पर है।</li>
+</ol>
+
+<p>अगर पहला push पर error आए कि "remote contains work that you do not have", तो इसका मतलब है कि GitHub पर पहले से कोई commit है (जैसे README). तब <code>git pull --rebase origin main</code> चलाकर फिर push करें।</p>
+
+<h2>Commit message कैसे लिखें</h2>
+
+<p>Commit message भविष्य में आपको ही पढ़ना है। "update", "fix", "changes" — ये तीन शब्द किसी काम के नहीं, क्योंकि छह महीने बाद आपको पता नहीं चलेगा कि क्या बदला था। एक अच्छा message बताता है कि क्या बदला और क्यों।</p>
+
+<p>मेरा तरीका सीधा है: पहली line में एक छोटा वाक्य जो "इस commit के बाद क्या अलग है" बताए, और उसके बाद एक खाली line छोड़कर दो-तीन lines में कारण। जैसे:</p>
+
+<pre><code>Validate email before saving the signup form
+
+The form accepted addresses without a dot in the domain, which created
+rows that the mail service rejected later. Validation now runs on the
+server too, not only in the browser.</code></pre>
+
+<p>यह format आपको बाद में <code>git log</code> पढ़ने लायक बनाता है, और किसी bug के समय "यह line क्यों लिखी गई थी" का जवाब देता है।</p>
+
+<h2>Conflict कैसे सुलझाएँ</h2>
+
+<p>Conflict तब होता है जब दो लोग एक ही file की एक ही line बदल दें। Git खुद तय नहीं कर सकता कि किसकी बात सही है, इसलिए वह दोनों को file में रख देता है और आपसे पूछता है।</p>
+
+<p>पहला कदम — घबराएँ नहीं। <code>git status</code> बताएगा कि कौन सी files conflict में हैं। उन्हें खोलें, और वे markers ढूँढें जो <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> और <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> जैसे दिखते हैं। बीच का हिस्सा दोनों तरफ़ का बदलाव है। आपको तय करना है कि अंतिम file में क्या रहेगा — कभी आपका, कभी सामने वाले का, कभी दोनों का मिला हुआ।</p>
+
+<p>Markers हटाकर file को वैसा बनाएँ जैसा आप चाहते हैं, फिर <code>git add</code> और <code>git commit</code>. अगर उलझन बढ़े, तो <code>git merge --abort</code> से सब वापस लौट सकते हैं।</p>
+
+<p>अगर conflict बार-बार आता है, तो वजह अक्सर प्रक्रिया होती है — लंबी branch, देर से pull, या एक ही file पर दो लोगों का काम। इलाज वही है: छोटी branch, रोज़ pull, और बहुत बड़ी file को छोटे हिस्सों में तोड़ना। Conflict का डर न रखें — यह Git का सामान्य हिस्सा है, गलती नहीं।
+
+<h2>GitHub पर और क्या मिलता है</h2>
+
+<p><strong>Pull requests:</strong> code review की जगह। यहाँ line-by-line comment होते हैं, और merge से पहले checks चल सकते हैं।</p>
+
+<p><strong>Issues:</strong> काम और bug का record. अच्छा issue बताता है कि क्या हुआ, कैसे दोबारा बनाया जाए, और क्या उम्मीद थी।</p>
+
+<p><strong>Actions:</strong> हर push पर अपने आप test या deploy चलाना। छोटी team के लिए यह सबसे बड़ा फायदा है — हर बदलाव जाँचा हुआ जाता है।</p>
+
+<p><strong>Releases और tags:</strong> तय versions पर निशान लगाना, ताकि आप कह सकें "v1.2 पर यह code था"।</p>
+
+<h2>छह गलतियाँ जो महंगी पड़ती हैं</h2>
+
+<p><strong>1. Secret commit करना।</strong> API key, password या <code>.env</code> file एक बार commit हो गई तो वह history में हमेशा रहेगी। सबसे पहले key बदलें, फिर history से हटाने का काम करें।</p>
+
+<p><strong>2. बहुत बड़ा commit।</strong> 50 files का एक commit review में नहीं पढ़ा जाता। छोटे commits बनाएँ, हर एक का अपना मतलब रखें।</p>
+
+<p><strong>3. main पर सीधा काम।</strong> बिना branch काम करने से main कभी-कभी टूट जाता है। हर काम के लिए branch, चाहे कितना छोटा हो।</p>
+
+<p><strong>4. force push से दूसरों का काम मिटाना।</strong> <code>--force</code> तब इस्तेमाल करें जब आप पूरी तरह जानते हों कि क्या मिट रहा है। shared branch पर यह कभी न करें।</p>
+
+<p><strong>5. .gitignore न बनाना।</strong> <code>node_modules</code> और build folders repo को भारी कर देते हैं। शुरुआत में ही यह file बना लें।</p>
+
+<p><strong>6. Pull न करना।</strong> हफ़्ते भर बाद pull करने पर सैकड़ों conflict मिलते हैं। रोज़ सुबह pull करने की आदत सबसे सस्ता बीमा है।</p>
+
+<p>एक और बात — इन गलतियों का इलाज अनुशासन नहीं, सेटअप है। <code>.gitignore</code> template से आता है, pre-commit hook secret पकड़ सकता है, और branch protection main पर सीधा push रोक देता है। जो नियम machine निभा सके, उसे इंसान की याद पर न छोड़ें।</p>
+
+<p>यही आदतें बड़े project में भी काम आती हैं — जब टीम बढ़ती है, तो branch discipline और review ही quality बचाते हैं। CI/CD वाला हिस्सा <a href="/posts/system-design-basics-hindi.html">system design</a> और <a href="/posts/unit-testing-kya-hai-guide.html">unit testing</a> वाली guides से जुड़ता है।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>मैंने शुरुआत में Git को backup की तरह इस्तेमाल किया — महीने में एक बार push, बस। जब एक बार laptop ठीक हुआ और मैंने पुराना version देखना चाहा, तो पता चला कि बीच के तीन हफ़्ते का कोई record ही नहीं था। उसके बाद मैंने छोटे commits की आदत डाली, और फिर कभी "कौन सा version चल रहा था" का जवाब ढूँढना नहीं पड़ा।</p>
+
+<p>दूसरी बात जो मैंने सीखी: commit message अच्छा लिखने से debugging आधी हो जाती है। जब कोई bug आता है, तो मैं पहले <code>git log</code> में उस file के commits पढ़ता हूँ। आधी बार वजह वहीं लिखी मिल जाती है।</p>
+
+<p>तीसरी बात: Git सीखने का सबसे अच्छा तरीका एक नकली repo है। उसमें जाकर branch बनाएँ, conflict पैदा करें, rebase करें, और बिगाड़ें — कुछ नहीं जाएगा। असली project पर पहली बार सीखने से डर लगता है, और डर से लोग गलत command चला देते हैं।</p>
+
+<h2>नतीजा</h2>
+
+<p>Git आपके काम की याद रखता है, GitHub उसे team के साथ साझा करता है। तीन जगहें याद रखें — लिखा कहाँ, चुना कहाँ, सँभाला कहाँ। रोज़ के लिए दस commands काफ़ी हैं, बाकी ज़रूरत पर आएँगी। छोटी branch, छोटा commit, साफ़ message और रोज़ pull — यह चार आदतें शुरुआत में ही डाल दें, तो Git कभी डरावना नहीं लगेगा।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या GitHub के बिना Git चल सकता है?</h3>
+
+<p>हाँ, पूरी तरह। Git local tool है। GitHub सिर्फ़ hosting और collaboration के लिए है; आप Git को अपने computer पर ही इस्तेमाल कर सकते हैं।</p>
+
+<h3>क्या GitHub free है?</h3>
+
+<p>Public repos और सामान्य private repos के लिए free plan है। Team features, बड़े storage और advanced security के लिए paid plans हैं — अपनी ज़रूरत के हिसाब से official pricing देखें।</p>
+
+<h3>git pull और git fetch में फर्क?</h3>
+
+<p><code>fetch</code> सिर्फ़ remote के बदलाव लाता है, आपकी files नहीं बदलता। <code>pull</code> वही करता है और फिर merge भी कर देता है — यानी सीधे आपके code में बदलाव आ जाता है।</p>
+
+<h3>गलत commit हो गया, क्या करें?</h3>
+
+<p>अगर push नहीं हुआ, तो <code>git commit --amend</code> से message या आख़िरी बदलाव ठीक कर सकते हैं। Push हो गया और shared branch है, तो नया commit बनाकर सुधारें — history बदलने से दूसरों को परेशानी होती है।</p>
+
+<h3>क्या non-developer Git सीख सकता है?</h3>
+
+<p>हाँ। जो लोग document या design files का version रखना चाहते हैं, उनके लिए भी Git काम आता है — बस commands वही रहेंगी, files अलग होंगी।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://git-scm.com/book/en/v2" rel="nofollow noopener" target="_blank">Git — Pro Git book (official)</a></li>
+  <li><a href="https://docs.github.com/en/get-started" rel="nofollow noopener" target="_blank">GitHub Docs — Get started</a></li>
+</ul>

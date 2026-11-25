@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me — VK Tech Learn</title>
+<meta name="description" content="API kya hai, REST aur JSON ka kaam, method aur status code, pehla API call, authentication aur 6 common galtiyan — easy Hindi guide. Udaharan ke saath.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me">
+<meta property="og:description" content="API kya hai, REST aur JSON ka kaam, method aur status code, pehla API call, authentication aur 6 common galtiyan — easy Hindi guide. Udaharan ke saath.">
+<meta property="og:url" content="https://vktechlearn.site/posts/api-kya-hai-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/api-kya-hai-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="API, Web Development, Backend">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/api-kya-hai-hindi.jpg">
+<meta property="og:image:alt" content="API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me">
+<meta property="article:published_time" content="2026-11-25T19:40:00+05:30">
+<meta property="article:modified_time" content="2026-11-25T19:40:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="API">
+<meta property="article:tag" content="API">
+<meta property="article:tag" content="Web Development">
+<meta property="article:tag" content="Backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me">
+<meta name="twitter:description" content="API kya hai, REST aur JSON ka kaam, method aur status code, pehla API call, authentication aur 6 common galtiyan — easy Hindi guide. Udaharan ke saath.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/api-kya-hai-hindi.jpg">
+<meta name="twitter:image:alt" content="API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me","description":"API kya hai, REST aur JSON ka kaam, method aur status code, pehla API call, authentication aur 6 common galtiyan — easy Hindi guide. Udaharan ke saath.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/api-kya-hai-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/api-kya-hai-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/api-kya-hai-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/api-kya-hai-hindi.jpg","datePublished":"2026-11-25T19:40:00+05:30","dateModified":"2026-11-25T19:40:00+05:30","articleSection":"API","keywords":"API, Web Development, Backend"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me","item":"https://vktechlearn.site/posts/api-kya-hai-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">API</span><span class="tag">Web Development</span>
+      <time datetime="2026-11-25T19:40:00+05:30">25 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/api-kya-hai-hindi.jpg" alt="API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>दो software आपस में बात करें — बिना एक-दूसरे का अंदर देखे, सिर्फ़ तय किए हुए रास्ते से</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>जब आप किसी app में मौसम देखते हैं, UPI से पैसे भेजते हैं या किसी website पर Google से login करते हैं, तो पीछे दो software आपस में बात कर रहे होते हैं। उस बातचीत का रास्ता, नियम और भाषा — इन तीनों को मिलाकर API कहते हैं। API का पूरा नाम Application Programming Interface है, पर नाम से ज़्यादा ज़रूरी यह समझना है कि यह एक contract है: "मुझसे इस तरीके से माँगो, मैं तुम्हें इस shape में जवाब दूँगा।"</p>
+
+      <p>इस guide में मैं API को बिल्कुल शुरुआत से खोलूँगा — एक request के चार हिस्से, REST और HTTP methods, JSON का format, आपका पहला API call, authentication का फर्क, status codes की table, और वे छह गलतियाँ जो नए developers सबसे ज़्यादा करते हैं। अगर आप frontend या backend में नए हैं, तो यह पोस्ट आपके लिए है।</p>
+
+      <p><strong>छोटा जवाब:</strong> API दो programs के बीच बात करने का तय किया हुआ तरीका है। Client एक request भेजता है — method, URL, headers और ज़रूरत हो तो body. Server जाँचता है कि आपको अनुमति है या नहीं, काम करता है, और एक response लौटाता है जिसमें status code और data (आमतौर पर JSON) होता है। REST एक style है जिसमें हर चीज़ को "resource" मानकर उस पर GET, POST, PUT और DELETE चलाया जाता है।</p>
+
+      <h2>API kya hai — एक आसान तुलना</h2>
+
+      <p>रेस्टोरेंट की तुलना सबसे ज़्यादा समझ आती है। आप रसोई में जाकर खुद खाना नहीं बनाते; आप waiter को order देते हैं। Waiter menu जानता है, रसोई से बात करता है, और आपको plate लाकर देता है। आपको रसोई का पूरा हिसाब नहीं पता, और आपको पता होना भी नहीं चाहिए।</p>
+
+      <p>यहाँ menu API है — यह बताता है कि क्या-क्या माँगा जा सकता है। Order आपकी request है, और plate response. अगर आप menu में नहीं है वह माँगेंगे, तो जवाब मिलेगा "यह नहीं है" — यही 404 है। अगर waiter को लगे कि आपने गलत तरीके से order दिया, तो 400. और अगर रसोई में आग लग जाए, तो 500.</p>
+
+      <p>इस तुलना से एक ज़रूरी बात निकलती है: API आपको अंदर का पूरा सिस्टम नहीं दिखाता, सिर्फ़ वह सतह दिखाता है जिससे बात की जा सके। इसीलिए कोई company अपना database बदल सकती है बिना अपनी mobile app को तोड़े — बशर्ते API का contract वही रहे।</p>
+
+      <h2>एक API call के चार हिस्से</h2>
+
+      <figure>
+      <img src="../img/posts/api-request-flow-hindi.jpg" alt="client से API server और database तक जाती एक request और लौटता JSON response" loading="lazy" decoding="async">
+      <figcaption>Request अंदर जाती है, response बाहर आता है — बीच का सब काम server का है</figcaption>
+      </figure>
+
+      <p><strong>1. Method:</strong> क्या करना है — पढ़ना, बनाना, बदलना या हटाना।</p>
+
+      <p><strong>2. URL:</strong> किस चीज़ पर करना है। जैसे <code>/users/42/orders</code> का मतलब है user 42 के orders. URL में जो हिस्सा बदलता है उसे path parameter कहते हैं।</p>
+
+      <p><strong>3. Headers:</strong> request के बारे में जानकारी — मैं कौन हूँ (token), मुझे किस shape में जवाब चाहिए, और मैंने क्या भेजा है।</p>
+
+      <p><strong>4. Body:</strong> असली data, जो POST या PUT के साथ जाता है। GET में आमतौर पर body नहीं होती।</p>
+
+      <h2>REST aur HTTP methods</h2>
+
+      <figure>
+      <img src="../img/posts/rest-methods-hindi.jpg" alt="GET, POST, PUT/PATCH और DELETE methods का काम" loading="lazy" decoding="async">
+      <figcaption>Method चुनना ही आधा design है — गलत method से API का मतलब बदल जाता है</figcaption>
+      </figure>
+
+      <p>REST कोई library नहीं, एक तरीका है। उसमें हर चीज़ एक "resource" होती है — user, order, product, invoice — और उस resource पर चार बुनियादी काम होते हैं।</p>
+
+      <table>
+        <thead>
+          <tr><th>Method</th><th>काम</th><th>उदाहरण</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>GET</td><td>पढ़ना</td><td>GET /products?limit=20</td></tr>
+          <tr><td>POST</td><td>नया बनाना</td><td>POST /orders</td></tr>
+          <tr><td>PUT</td><td>पूरा बदलना</td><td>PUT /users/42</td></tr>
+          <tr><td>PATCH</td><td>थोड़ा बदलना</td><td>PATCH /users/42</td></tr>
+          <tr><td>DELETE</td><td>हटाना</td><td>DELETE /users/42</td></tr>
+        </tbody>
+      </table>
+
+      <p>दो बातें ध्यान रखें। पहला — GET को कभी data नहीं बदलना चाहिए। अगर कोई GET request चलाने से database में कुछ बदल जाए, तो browser, cache और crawler सब भ्रम में पड़ जाएँगे। दूसरा — POST को दो बार भेजने पर दो records बन सकते हैं। इसलिए payment जैसे कामों में idempotency key भेजी जाती है, ताकि दोबारा आई request को server पहचान ले और दूसरी बार पैसा न काटे।</p>
+
+      <h2>JSON kya hai</h2>
+
+      <p>JSON data का एक सादा format है — curly braces में key और value. यह पढ़ने में आसान है और लगभग हर language इसे सीधे समझ लेती है। नीचे एक order का response है।</p>
+
+      <pre><code>{
+        "id": 1042,
+        "status": "shipped",
+        "total": 1299.00,
+        "customer": { "id": 42, "name": "Amit" },
+        "items": [
+          { "sku": "KB-01", "qty": 1 },
+          { "sku": "MS-07", "qty": 2 }
+        ]
+      }</code></pre>
+
+      <p>यहाँ तीन चीज़ें देखें: numbers बिना quotes के हैं, text quotes में, और list square brackets में। जब API का जवाब बदले, तो पुराने clients न टूटें — इसके लिए एक नियम बनाएँ: नई fields जोड़ना ठीक है, पर मौजूदा field का नाम या type बदलना versioning के बिना नहीं।</p>
+
+      <h2>आपका पहला API call</h2>
+
+      <p>किसी public API से शुरुआत करें जिसे key न चाहिए, जैसे मौसम या देशों की जानकारी देने वाली कोई खुली service. Terminal में एक GET request ऐसे भेजी जाती है:</p>
+
+      <pre><code>curl -s "https://api.example.com/v1/countries?limit=3" \
+        -H "Accept: application/json"</code></pre>
+
+      <p>जवाब कुछ ऐसा आएगा:</p>
+
+      <pre><code>[{"code":"IN","name":"India"},{"code":"JP","name":"Japan"}]</code></pre>
+
+      <p>अब वही काम code से करें। Python में requests library से:</p>
+
+      <pre><code>import requests
+
+      r = requests.get(
+          "https://api.example.com/v1/countries",
+          params={"limit": 3},
+          headers={"Accept": "application/json"},
+          timeout=10,
+      )
+      print(r.status_code)
+      print(r.json())</code></pre>
+
+      <p>चार आदतें शुरू से डालें: timeout दें, status code जाँचें, जवाब को parse करने से पहले सोचें कि वह JSON है या नहीं, और error पर क्या करना है यह पहले से तय करें। बिना timeout वाली request कभी-कभी मिनटों तक लटकी रहती है और पूरा page रोक देती है।</p>
+
+      <h2>Authentication: कौन हैं आप</h2>
+
+      <p>Public API बिना पहचान के चलती हैं, पर जो API आपके data तक पहुँचती हैं उन्हें पहचान चाहिए। तीन आम तरीके हैं।</p>
+
+      <p><strong>API key:</strong> एक लंबा secret string जो header में भेजा जाता है। सबसे सादा, पर इसे server पर ही रखें — कभी frontend code या mobile app में नहीं, क्योंकि वहाँ से कोई भी निकाल सकता है।</p>
+
+      <p><strong>Bearer token:</strong> login के बाद मिला token, जो हर request के साथ जाता है और कुछ समय बाद खत्म हो जाता है। इसे भी सुरक्षित जगह रखें और समय पर refresh करें।</p>
+
+      <p><strong>OAuth:</strong> जब user किसी दूसरी company के account से login करता है, तो आपको उसका password नहीं मिलता — बस एक token मिलता है जिसमें तय scope होता है, जैसे "सिर्फ़ profile पढ़ना". यही वजह है कि "Sign in with Google" सुरक्षित माना जाता है।</p>
+
+      <p>एक बात जो अक्सर छूट जाती है: authorization और authentication अलग हैं। Authentication बताता है कि आप कौन हैं; authorization बताता है कि आप क्या कर सकते हैं। दोनों की जाँच server पर होनी चाहिए — client से आए "role" पर भरोसा करना सबसे आम सुरक्षा गलती है।</p>
+
+      <h2>Status codes: server क्या कह रहा है</h2>
+
+      <table>
+        <thead>
+          <tr><th>Code</th><th>मतलब</th><th>क्या करें</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>200</td><td>सब ठीक</td><td>जवाब पढ़ें</td></tr>
+          <tr><td>201</td><td>नया बना</td><td>नई ID संभालें</td></tr>
+          <tr><td>400</td><td>Request में गलती</td><td>अपना data जाँचें, दोबारा न भेजें</td></tr>
+          <tr><td>401</td><td>पहचान नहीं</td><td>Token refresh करें</td></tr>
+          <tr><td>403</td><td>अनुमति नहीं</td><td>Permission माँगें, retry न करें</td></tr>
+          <tr><td>404</td><td>नहीं मिला</td><td>URL जाँचें</td></tr>
+          <tr><td>429</td><td>बहुत ज़्यादा requests</td><td>रुकें, फिर धीरे भेजें</td></tr>
+          <tr><td>500</td><td>Server की गलती</td><td>Retry, पर सीमित बार</td></tr>
+        </tbody>
+      </table>
+
+      <p>यह table याद रखने लायक है, क्योंकि ज़्यादातर debugging यहीं से शुरू होती है। 4xx का मतलब है गलती आपकी तरफ़ है; उसे वैसे ही दोबारा भेजने से कुछ नहीं होगा। 5xx का मतलब है दूसरी तरफ़ कुछ हुआ — वहाँ थोड़ा रुककर दोबारा कोशिश करना ठीक है, पर हर बार समय बढ़ाते हुए।</p>
+
+      <h2>छह गलतियाँ जो नए developers करते हैं</h2>
+
+      <p><strong>1. Secret frontend में डालना।</strong> Browser के code में API key डालने का मतलब है उसे public करना। जो key secret है, वह server पर रहे और client उसी server से बात करे।</p>
+
+      <p><strong>2. Timeout न देना।</strong> नेटवर्क धीमा हो या service बंद हो, आपकी app को इंतज़ार में फँसना नहीं चाहिए। हर call पर timeout और एक साफ़ error message रखें।</p>
+
+      <p><strong>3. Retry की सीमा न रखना।</strong> अगर 500 पर बिना रुके बार-बार request भेजेंगे, तो server और दबाव में आएगा। Retry में थोड़ा इंतज़ार बढ़ाएँ और अधिकतम 2–3 बार।</p>
+
+      <p><strong>4. पूरा data माँगना।</strong> जब ज़रूरत सिर्फ़ नाम और price की है, तो 40 fields वाला जवाब माँगने से page धीमा होता है। Fields चुनने का option हो तो इस्तेमाल करें, और list API में pagination ज़रूर लगाएँ।</p>
+
+      <p><strong>5. Error को छिपाना।</strong> जब API fail हो और code चुपचाप खाली list दिखा दे, तो user को लगता है data ही नहीं है। Error और "कोई data नहीं" — दोनों अलग दिखने चाहिए।</p>
+
+      <p><strong>6. Versioning न सोचना।</strong> जब mobile app के पुराने versions महीनों तक चलते हैं, तो API में अचानक बदलाव सीधे user को तोड़ता है। शुरू से <code>/v1/</code> जैसा version रखें।</p>
+
+      <p>यही सोच बड़े systems में भी काम आती है — जब कई services आपस में API से बात करती हैं, तो contract और error handling ही असली design बन जाते हैं। इसका बड़ा रूप <a href="/posts/system-design-basics-hindi.html">system design basics वाली guide</a> में है।</p>
+
+      <h2>अपनी API design करते समय चार नियम</h2>
+
+      <p>अगर आप खुद API बना रहे हैं, तो चार चीज़ें शुरू से तय कर लें। पहला — नाम में क्रिया नहीं, चीज़ रखें: <code>/getUsers</code> के बजाय <code>/users</code>, और काम method से बताएँ। दूसरा — हर list endpoint में pagination रखें, चाहे आज data छोटा हो; बाद में जोड़ना पुराने clients को तोड़ता है। तीसरा — error का एक ही format रखें, जिसमें code, message और ज़रूरत हो तो field का नाम हो, ताकि client सीधे handle कर सके। चौथा — जो field कभी नहीं भेजेंगे उसे नाम में न रखें; खाली field भ्रम पैदा करती है।</p>
+
+      <p>एक और आदत: हर नई API का एक उदाहरण लिखें जिसे कोई भी copy-paste करके चला सके। जो API बिना मदद के चल जाए, वही सबसे ज़्यादा अपनाई जाती है — और सबसे कम सवाल पैदा करती है। छोटी team में यह भी फायदा देता है कि आप खुद कुछ महीनों बाद उसी API को दूसरे की तरह पढ़ेंगे — जो लिखा हुआ है वही याद रहता है, जो सिर्फ़ दिमाग़ में था वह नहीं।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>मेरी पहली API integration तीन दिन चली, क्योंकि मैं हर बार 200 का जवाब मिलने पर मान लेता था कि सब ठीक है। बाद में पता चला कि response के अंदर एक <code>success: false</code> field थी जिसे मैंने कभी नहीं पढ़ा। उस दिन के बाद मैंने एक आदत बनाई: पहले पूरा एक response print करके पढ़ो, फिर code लिखो।</p>
+
+      <p>दूसरी बात जो मैंने सीखी: API documentation पढ़ने में जो समय लगता है, वह debugging में बचता है। खासकर rate limit, pagination और error format — ये तीन चीज़ें docs में होती हैं और तीनों बाद में सबसे ज़्यादा परेशान करती हैं।</p>
+
+      <p>तीसरी बात: अपनी API बनाते समय सोचें कि उसे कोई अजनबी इस्तेमाल करेगा। नाम साफ़ रखें, हर error में बताएँ कि क्या गलत था, और एक उदाहरण ज़रूर लिखें। जो API समझने में आसान है, वही सबसे ज़्यादा इस्तेमाल होती है।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>API दो programs के बीच एक contract है — method, URL, headers और body अंदर जाते हैं; status code और JSON बाहर आते हैं। REST उस contract को resource के रूप में सोचने का तरीका है। शुरुआत में चार आदतें काफ़ी हैं: timeout देना, status code जाँचना, secret server पर रखना, और errors को साफ़ दिखाना। जब यह चार पक्के हो जाएँ, तो बाकी सब सीखना आसान हो जाता है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या API और REST एक ही चीज़ हैं?</h3>
+
+      <p>नहीं। API बात करने का तरीका है; REST उसे design करने का एक style है। एक API REST हो सकती है, GraphQL हो सकती है, या सिर्फ़ साधारण function call.</p>
+
+      <h3>क्या API सीखने के लिए coding ज़रूरी है?</h3>
+
+      <p>समझने के लिए नहीं — Postman जैसे tools से बिना code request भेज सकते हैं। पर अपनी API बनाने के लिए किसी language की ज़रूरत पड़ेगी।</p>
+
+      <h3>JSON और XML में क्या चुनें?</h3>
+
+      <p>आज लगभग हर नई API JSON देती है, क्योंकि वह छोटा और पढ़ने में आसान है। XML पुराने systems में मिलेगा, और वहाँ भी आपको उसे पढ़ना आना चाहिए।</p>
+
+      <h3>रोज़ कितनी requests भेज सकते हैं?</h3>
+
+      <p>हर service की अपनी rate limit होती है — कुछ हज़ार प्रति घंटा, कुछ प्रति मिनट. यह docs में लिखा होता है और 429 का जवाब मिलने पर साफ़ हो जाता है।</p>
+
+      <h3>API key और token में फर्क?</h3>
+
+      <p>API key आमतौर पर app की पहचान है और लंबे समय तक चलती है; token user की पहचान है और छोटे समय के लिए मिलता है। दोनों को server पर ही रखें।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP" rel="nofollow noopener" target="_blank">MDN — HTTP reference (methods, headers, status)</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="nofollow noopener" target="_blank">IETF RFC 9110 — HTTP semantics</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

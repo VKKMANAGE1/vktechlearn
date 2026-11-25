@@ -1,0 +1,154 @@
+<p>Cyber security की सबसे बड़ी सच्चाई यह है कि 90% हमले किसी बहुत होशियार hacker से नहीं आते। वे एक साधारण सी गलती से आते हैं — वही password दो जगह, एक link जो असली जैसा दिखता है, या एक update जो महीनों से pending है। इसीलिए सुरक्षा का सवाल "कौन सा antivirus लूँ" नहीं, "कौन सी आदत रोज़ निभाऊँ" है।</p>
+
+<p>इस guide में मैं वही दस आदतें बताऊँगा जो सबसे ज़्यादा बचाती हैं, phishing पहचानने के पाँच संकेत, password manager की ज़रूरत, 2FA के तीन तरह, UPI और OTP fraud से बचाव, और अगर account hack हो जाए तो पहले घंटे में क्या करना है। साथ में छोटी team या office के लिए पाँच नियम भी।</p>
+
+<p><strong>छोटा जवाब:</strong> हर site का अलग password, password manager, 2FA चालू, सब कुछ auto-update, और एक ऐसा backup जिसे restore करना आता हो — इन पाँच से ही ज़्यादातर नुकसान रुक जाता है। बाकी सब इन्हीं के आसपास है। सुरक्षा महंगे tools से नहीं, इन आदतों को निभाने से बनती है।</p>
+
+<h2>Cybersecurity kya hai — तीन चीज़ें जो बचानी होती हैं</h2>
+
+<p>सुरक्षा में तीन चीज़ें होती हैं जिन्हें बचाना होता है। पहली — <strong>गोपनीयता</strong>: आपका data सिर्फ़ उन्हें दिखे जिन्हें दिखना चाहिए। दूसरी — <strong>सत्यता</strong>: जो data है वह बदला न गया हो। तीसरी — <strong>उपलब्धता</strong>: जब चाहिए, तब मिले।</p>
+
+<p>हर हमला इन्हीं तीन में से किसी एक पर लगता है। Phishing गोपनीयता तोड़ता है, ransomware सत्यता और उपलब्धता दोनों, और DDoS सिर्फ़ उपलब्धता। जब आप कोई सुरक्षा कदम सोचें, तो पूछें — यह किस चीज़ को बचा रहा है। इससे फिज़ूल के tools से बचा जा सकता है।</p>
+
+<h2>दस आदतें जो सबसे ज़्यादा बचाती हैं</h2>
+
+<figure>
+<img src="../img/posts/cyber-basics-hindi.jpg" alt="cybersecurity की चार सबसे ज़रूरी आदतें — alag password, 2FA, update aur backup" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>चार आदतें, और इनका असर सबसे बड़ा — बाकी सब इन्हीं की परतें हैं</figcaption>
+</figure>
+
+<ol>
+  <li><strong>हर account का अलग password।</strong> एक जगह leak हुआ password दूसरी जगह न चले — यही सबसे बड़ी सुरक्षा है।</li>
+  <li><strong>Password manager।</strong> अलग-अलग लंबे passwords याद नहीं रखे जा सकते; manager यह काम आपके लिए करता है।</li>
+  <li><strong>2FA चालू करें।</strong> Password चोरी भी हो जाए, तो दूसरा कदम बचा लेता है।</li>
+  <li><strong>Update को टालें नहीं।</strong> ज़्यादातर हमले पुराने, known bugs से होते हैं जिनका fix पहले से मौजूद है।</li>
+  <li><strong>Backup रखें — और restore test करें।</strong> Backup वह है जिसे आपने एक बार वापस लाकर देखा हो।</li>
+  <li><strong>Link पर सीधे click न करें।</strong> Bank, courier या government के नाम से आए link को app में खुद खोलें।</li>
+  <li><strong>OTP किसी को न बताएँ।</strong> कोई भी असली company OTP नहीं माँगती — न कॉल पर, न chat में।</li>
+  <li><strong>Public Wi-Fi पर login से बचें।</strong> ज़रूरत हो तो mobile hotspot या VPN इस्तेमाल करें।</li>
+  <li><strong>App permissions जाँचें।</strong> एक torch app को contacts और location की ज़रूरत नहीं होती।</li>
+  <li><strong>Screen lock और device encryption।</strong> फोन खोया तो भी data सुरक्षित रहे।</li>
+</ol>
+
+<p>इनमें पहली चार सबसे ज़्यादा असर करती हैं। अगर आज सिर्फ़ चार चीज़ें कर सकें, तो यही करें — password manager, 2FA, auto-update और backup.</p>
+
+<h2>Phishing कैसे पहचानें</h2>
+
+<p>Phishing वह हमला है जिसमें आपको ऐसा message भेजा जाता है जो किसी भरोसेमंद की तरफ़ से लगे — bank, delivery company, सरकारी विभाग, या आपका boss. मकसद एक ही होता है: आपसे password, OTP या पैसे लेना।</p>
+
+<h3>पाँच संकेत</h3>
+
+<p><strong>1. जल्दबाज़ी।</strong> "24 घंटे में account बंद हो जाएगा", "आज ही verify करें" — डर पैदा करके सोचने का समय छीना जाता है। असली companies ऐसा दबाव नहीं बनातीं।</p>
+
+<p><strong>2. Link का पता।</strong> Text में लिखा नाम और असली URL अलग होते हैं। Link पर hover करके या दबाकर देखें — <em>sbi-verify.xyz</em> कभी bank का domain नहीं होता।</p>
+
+<p><strong>3. भाषा की गलतियाँ।</strong> असली bank के email में spelling और grammar ठीक होते हैं। हालाँकि अब AI से यह गलती कम हो रही है, इसलिए इसे अकेला संकेत न मानें।</p>
+
+<p><strong>4. अनचाहा attachment।</strong> Invoice, challan या "photo" के नाम से आई file खोलने से पहले सोचें कि क्या आपको इसकी उम्मीद थी।</p>
+
+<p><strong>5. Payment का नया तरीका।</strong> "सिर्फ़ इस QR पर scan करके pay करें" या "gift card से भेजें" — यह लगभग हमेशा fraud होता है।</p>
+
+<p>एक आदत जो सबसे ज़्यादा बचाती है: message में दिए link से कभी login न करें। App खोलें या address bar में खुद URL लिखें। अगर message सच में bank से था, तो app में वह notification दिखेगा।</p>
+
+<h2>Password manager क्यों ज़रूरी है</h2>
+
+<p>लोग एक ही password कई जगह इस्तेमाल करते हैं क्योंकि 40 अलग-अलग लंबे passwords याद रखना असंभव है। Password manager यह समस्या हल करता है: वह हर site के लिए लंबा random password बनाता है, सँभालकर रखता है, और आपको सिर्फ़ एक master password याद रखना होता है।</p>
+
+<p>तीन बातें ध्यान रखें। पहला — master password लंबा और याद रखने लायक वाक्य हो, जो कहीं और इस्तेमाल न हो। दूसरा — 2FA manager पर भी चालू करें। तीसरा — recovery codes कहीं छापकर या सुरक्षित जगह रखें, क्योंकि manager का access खोने पर सब कुछ अटक सकता है।</p>
+
+<p>एक आम शंका यह होती है कि सारे passwords एक जगह रखना सुरक्षित है या नहीं। सच यह है कि manager का data encrypted होता है और उसे खोलने की key आपके master password से बनती है — company को भी वह नहीं पता होती। जोखिम तब है जब master password कमज़ोर हो या आपके device में malware हो। इसलिए master password लंबा रखें, device को lock रखें, और manager के recovery codes सुरक्षित जगह रखें।</p>
+
+<p>Browser में built-in manager भी ठीक शुरुआत है, पर एक dedicated manager family के devices में sharing और notes जैसी सुविधा देता है। जो भी चुनें, उसे इस्तेमाल करना शुरू करें — perfect manager न होने से बेहतर है कोई manager होना।</p>
+
+<h2>2FA: तीन तरह, तीन स्तर</h2>
+
+<p><strong>SMS OTP:</strong> सबसे आम, पर सबसे कमज़ोर। SIM swap और OTP intercept के cases होते हैं। फिर भी यह बिना 2FA से बहुत बेहतर है।</p>
+
+<p><strong>Authenticator app:</strong> हर 30 सेकंड बदलने वाला code, जो device पर बनता है। SMS से बेहतर, क्योंकि network से नहीं आता।</p>
+
+<p><strong>Passkey या hardware key:</strong> सबसे मज़बूत। Passkey में password की जगह device की cryptography होती है, इसलिए phishing लगभग बेकार हो जाती है। जहाँ support हो, वहाँ इसे चुनें।</p>
+
+<p>अगर सब जगह passkey नहीं है, तो क्रम यह रखें: जहाँ मिले passkey, बाकी जगह authenticator app, और जहाँ सिर्फ़ SMS है वहाँ SMS — पर उन accounts को प्राथमिकता दें जहाँ पैसा या पहचान है: email, bank, UPI, और सोशल media.</p>
+
+<h2>UPI, OTP aur phone scams</h2>
+
+<p>भारत में सबसे आम fraud तीन तरह के हैं। पहला — "मैंने गलती से आपके account में पैसे भेज दिए, वापस कर दीजिए" वाला message, जिसमें असल में वे आपसे पैसे माँगते हैं। दूसरा — "आपका KYC बंद हो जाएगा" कहकर एक app install कराना, जो notifications पढ़कर OTP चुरा लेती है। तीसरा — part-time job या investment का लालच, जिसमें पहले थोड़ा पैसा मिलता है और फिर बड़ी रकम माँगी जाती है।</p>
+
+<p>एक और आदत: किसी भी अपरिचित नंबर से आए payment request को reject करें, चाहे स्क्रीन पर "refund" लिखा हो। UPI में request accept करने का मतलब है पैसे जाना — और यही सबसे आम धोखा है। अगर किसी कॉल पर दबाव महसूस हो, तो कॉल काटें और खुद bank के official नंबर पर callback करें। असली अधिकारी कभी नाराज़ नहीं होते कि आपने सावधानी बरती।</p>
+
+<p>तीन सुनहरे नियम। UPI में पैसे <em>भेजने</em> के लिए PIN लगता है — पैसे <em>लेना</em> कभी PIN नहीं माँगता। कोई भी screen share app (जैसे remote support tools) बैंक के काम के लिए नहीं चाहिए। और OTP सिर्फ़ आपके लिए है, किसी के लिए नहीं — चाहे वह "bank officer" ही क्यों न कहे।</p>
+
+<p>अगर fraud हो जाए, तो सबसे तेज़ रास्ता है cybercrime.gov.in पर शिकायत और helpline 1930. पैसे का मामला हो तो जितनी जल्दी report, उतना ज़्यादा chance कि transaction रुक सके। Bank को भी तुरंत बताएँ और card/UPI को block कराएँ।</p>
+
+<h2>Account hack ho jaye to क्या करें</h2>
+
+<figure>
+<img src="../img/posts/cyber-incident-hindi.jpg" alt="account hack hone par chaar kadam — password badlo, sessions band karo, report karo, jaanch karo" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>पहला घंटा सबसे कीमती होता है — क्रम याद रखें, घबराएँ नहीं</figcaption>
+</figure>
+
+<ol>
+  <li><strong>दूसरे device से password बदलें।</strong> अगर email hack हुआ है, तो पहले email — क्योंकि बाकी सब उसी से reset होता है।</li>
+  <li><strong>सभी sessions logout करें।</strong> Settings में "log out of all devices" विकल्प ढूँढें, वरना attacker का login चलता रहेगा।</li>
+  <li><strong>Recovery options जाँचें।</strong> Backup email, phone number और app passwords देखें — attacker अक्सर इन्हीं में अपना नंबर जोड़ देता है।</li>
+  <li><strong>2FA फिर से सेट करें</strong> और पुराने app passwords रद्द करें।</li>
+  <li><strong>दोस्तों और team को बताएँ,</strong> क्योंकि आपके account से उन्हें भी message जा सकते हैं।</li>
+  <li><strong>Report करें</strong> — bank, platform और ज़रूरत हो तो cybercrime.gov.in पर।</li>
+</ol>
+
+<p>इसके बाद एक हफ़्ता ध्यान से देखें: नए devices, नए forwarding rules, नए payment contacts. अगर पैसा गया है, तो bank को लिखित शिकायत दें और acknowledgement रखें।</p>
+
+<h2>छोटी team या office के पाँच नियम</h2>
+
+<p><strong>1. Shared password नहीं।</strong> एक ही login सबको देने से पता नहीं चलता कि किसने क्या किया। हर इंसान का अपना account हो।</p>
+
+<p><strong>2. Admin access कम लोगों को।</strong> जिसे ज़रूरत नहीं, उसे admin न दें। जब कोई चला जाए, तो उसका access उसी दिन बंद करें।</p>
+
+<p><strong>3. Secrets code में नहीं।</strong> API keys और passwords code या repo में न रखें; environment variables या secret manager में रखें।</p>
+
+<p><strong>4. Backup और restore test।</strong> हर महीने एक बार किसी random file को restore करके देखें। जो backup कभी restore नहीं हुआ, वह backup है या नहीं, पता नहीं।</p>
+
+<p><strong>5. Phishing की छोटी drill.</strong> साल में एक बार नकली phishing email भेजकर देखें कि कितने लोग click करते हैं। यह डराने के लिए नहीं, सिखाने के लिए है।</p>
+
+<p>घर के लिए एक आख़िरी बात — router का default password बदलें और firmware update चालू रखें। ज़्यादातर घरों में router वर्षों तक वही password लिए चलता रहता है, और वही सबसे आसान दरवाज़ा बन जाता है। Smart devices — camera, TV, speaker — को अलग Wi-Fi network पर रखना बेहतर है, खासकर अगर घर से काम होता हो।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>मेरे एक दोस्त का email hack हुआ क्योंकि उसने एक "courier tracking" link खोला और वहाँ email password डाल दिया। सबसे चौंकाने वाली बात यह नहीं थी कि hack हुआ — बल्कि यह थी कि उसके account में 2FA चालू था, पर recovery email पुराना था जिसका access attacker के पास पहले से था। उस दिन मैंने अपने सारे recovery options दोबारा जाँचे।</p>
+
+<p>दूसरी बात जो मैंने सीखी: सुरक्षा में सबसे कमज़ोर कड़ी अक्सर सबसे पुरानी चीज़ होती है — पुराना फोन नंबर, पुराना email, पुराना password जो किसी पुराने account में अब भी चल रहा है। साल में एक बार बैठकर यह सूची साफ़ करना किसी नए tool से ज़्यादा फायदा देता है।</p>
+
+<p>तीसरी बात: डर से सुरक्षा नहीं बनती। जो लोग डरकर हर चीज़ बंद कर देते हैं, वे कुछ दिन बाद थककर सब कुछ खोल देते हैं। छोटी आदतें जो हमेशा निभ सकें, बड़े नियमों से बेहतर हैं।</p>
+
+<h2>नतीजा</h2>
+
+<p>Cyber security कोई एक product नहीं, आदतों की परत है। आज चार चीज़ें करें — password manager, 2FA, auto-update और एक restore-tested backup. उसके बाद link पर click करने से पहले रुकने की आदत डालें, और OTP किसी से साझा न करें। इतने से ही आप उन 90% हमलों से बाहर आ जाते हैं जो सिर्फ़ एक गलती का इंतज़ार करते हैं।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या antivirus ज़रूरी है?</h3>
+
+<p>Windows और Android में built-in protection काफ़ी अच्छी है। Antivirus तब मदद करता है जब आप बहुत सारी बाहर की files खोलते हों — पर वह password और 2FA की जगह नहीं ले सकता।</p>
+
+<h3>क्या free VPN सुरक्षित है?</h3>
+
+<p>हमेशा नहीं। Free VPN अक्सर आपका data बेचकर चलते हैं। ज़रूरत हो तो भरोसेमंद paid VPN या mobile hotspot इस्तेमाल करें।</p>
+
+<h3>Password manager का master password भूल जाएँ तो?</h3>
+
+<p>ज़्यादातर managers में recovery नहीं होता — यही उनकी सुरक्षा है। इसलिए recovery codes और एक लिखा हुआ emergency kit सुरक्षित जगह रखें।</p>
+
+<h3>क्या public computer पर login करना ठीक है?</h3>
+
+<p>सिर्फ़ ज़रूरत में, और हमेशा private/incognito window में। काम के बाद logout करें और browser को बंद करें। बैंक या email के लिए बेहतर है टालना।</p>
+
+<h3>Fraud की शिकायत कहाँ करें?</h3>
+
+<p>cybercrime.gov.in पर online शिकायत, या helpline 1930. साथ में bank को भी तुरंत सूचित करें और transaction की details संभालकर रखें।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://www.cybercrime.gov.in/" rel="nofollow noopener" target="_blank">National Cyber Crime Reporting Portal — शिकायत और helpline</a></li>
+  <li><a href="https://www.cert-in.org.in/" rel="nofollow noopener" target="_blank">CERT-In — भारत की cyber security एजेंसी के advisories</a></li>
+</ul>

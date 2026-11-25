@@ -1,0 +1,11 @@
+{
+  "slug": "api-kya-hai-hindi",
+  "title": "API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me",
+  "description": "API kya hai, REST aur JSON ka kaam, method aur status code, pehla API call, authentication aur 6 common galtiyan — easy Hindi guide. Udaharan ke saath.",
+  "published": "2026-11-25T19:40:00+05:30",
+  "labels": ["API", "Web Development", "Backend"],
+  "hero": "img/posts/api-kya-hai-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "दो software आपस में बात करें — बिना एक-दूसरे का अंदर देखे, सिर्फ़ तय किए हुए रास्ते से"
+}
