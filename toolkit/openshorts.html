@@ -72,7 +72,7 @@
     <h2><span>→</span>What you get</h2>
     <div class="feat">
       <div><h3>AI moment picking</h3><p>Ranks the transcript scene by scene, keeps 3–15 moments of 15–60 seconds with a virality score.</p></div>
-      <div><h3>Works with no key</h3><p>A free offline picker scores the transcript itself; a Gemini key or a local Ollama model upgrades the selection.</p></div>
+      <div><h3>Can run without Google</h3><p>Point <code>LLM_BASE_URL</code> at Ollama, LM Studio or vLLM and the moment picker stays on your own machine.</p></div>
       <div><h3>Smart 9:16 reframing</h3><p>Face-tracked crop, blurred background, two-speaker split or screencast layout — picked per video.</p></div>
       <div><h3>Auto captions</h3><p>Word-level timestamps from Whisper, several caption styles, burned into the clip and downloadable as SRT.</p></div>
       <div><h3>Real clip editor</h3><p>Word-level cuts, extra segments, framing changes and fast re-renders — not a preview mock-up.</p></div>
@@ -84,30 +84,33 @@
 
   <section class="panel" style="margin-top:1.6rem">
     <h2><span>→</span>How to run it</h2>
-    <p class="lead">This is a self-hosted tool: it needs Python and ffmpeg, so it cannot run inside a static
-      page like the rest of this toolkit. You install it once on your computer or a small server, then open the
-      dashboard in your browser.</p>
+    <p class="lead">This is a self-hosted tool: it needs Docker, Python and ffmpeg under the hood, so it cannot run
+      inside a static page like the rest of this toolkit. You install it once on your computer or a small server,
+      then open the dashboard in your browser. These are the upstream project's own steps.</p>
     <ol class="steps">
-      <li><b>Install the requirements:</b> Python 3.12, ffmpeg, and about 8 GB of RAM for comfortable CPU work (an NVIDIA GPU makes it much faster).</li>
-      <li><b>Get the code and the Python packages:</b> create a virtual environment and install <code>requirements.txt</code>; install the dashboard with <code>npm install</code>.</li>
-      <li><b>Start it:</b> the API runs on port 8000 and the dashboard on port 3000. Paste a link or upload a video and the clips land in the <code>output/</code> folder.</li>
+      <li><b>Install Docker and Docker Compose.</b> A machine with 8 GB of RAM is enough for CPU work; an NVIDIA GPU makes it much faster.</li>
+      <li><b>Clone the repository</b> and copy the example environment file. S3 backup is optional, so the file can stay empty for a first run.</li>
+      <li><b>Start the stack</b> with Docker Compose. The backend comes up on port 8000 and the dashboard on port 5175.</li>
+      <li><b>Add your keys in Settings</b> inside the dashboard: Google Gemini is required for the AI features, and fal.ai, ElevenLabs and Upload-Post unlock AI Shorts, voice dubbing and auto-posting.</li>
     </ol>
-    <pre><code>python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-(cd dashboard &amp;&amp; npm install)
-./start.sh</code></pre>
-    <div class="note"><b>Heads-up:</b> the free edition has no subscription, credits or watermark, and it needs no API key to clip a video. Optional keys only add features: Gemini or a local model for smarter moment picking, ElevenLabs for dubbing, fal.ai for AI actors, Upload-Post for auto-publishing.</div>
+    <pre><code>git clone https://github.com/mutonby/openshorts.git
+cd openshorts
+cp .env.example .env
+docker compose up --build
+
+# then open http://localhost:5175</code></pre>
+    <div class="note"><b>Costs:</b> the software is free and MIT licensed, with no subscription and no watermark on your own machine. You bring your own keys, and each one has a free tier: Gemini (free tier available), ElevenLabs, Upload-Post (10 free uploads a month) and fal.ai (pay per use, only for AI Shorts). No Google key? Set <code>LLM_BASE_URL</code> to a local Ollama or LM Studio server and the clip pipeline stays fully local.</div>
     <div class="cta">
-      <a class="primary" href="https://github.com/mutonby/openshorts" target="_blank" rel="noopener noreferrer">View the source on GitHub →</a>
+      <a class="primary" href="https://github.com/mutonby/openshorts#getting-started" target="_blank" rel="noopener noreferrer">Read the setup guide on GitHub →</a>
       <a class="ghost" href="/toolkit/">Back to all tools</a>
     </div>
   </section>
 
   <section class="panel" style="margin-top:1.6rem">
     <h2><span>→</span>Good to know</h2>
-    <p class="lead">A 110-second test video took about three minutes to become two finished 1080×1920 clips on a
-      two-core machine. On CPU, budget roughly 3–5 minutes of processing for every minute of source; on a GPU it
-      is closer to real time. Everything stays on your machine — no upload to a third-party service.</p>
+    <p class="lead">On a typical CPU an 8-minute video takes about 5–8 minutes to clip; with an NVIDIA GPU it is
+      closer to a minute. Everything stays on your machine — the video is never uploaded to a third-party service,
+      and only the transcript goes to Gemini (or to your own local model if you set one).</p>
     <div class="related">
       <a href="/toolkit/gemini-cheat-code.html">Gemini prompt codes</a>
       <a href="/toolkit/instagram-toolkit.html">Instagram toolkit</a>
