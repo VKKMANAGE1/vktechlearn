@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenShorts — Free AI Video Clipper (Self-Hosted) | VK Tech Learn</title>
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<meta name="description" content="OpenShorts turns long videos into 9:16 Shorts, Reels and TikToks: AI moment picking, auto captions, reframing, clip editor. Free, open source, no watermark, no plans.">
+<link rel="canonical" href="https://vktechlearn.site/toolkit/openshorts.html">
+<link rel="stylesheet" href="/pdf/style.min.css">
+<style>
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.4rem 0 2.4rem}
+  .shot{margin:0;background:#ffffff08;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .shot img{display:block;width:100%;height:auto}
+  .shot figcaption{padding:.6rem .8rem;font-size:.78rem;color:var(--muted)}
+  .lead{color:var(--muted);max-width:70ch}
+  .steps{counter-reset:s;display:grid;gap:.9rem;margin:1rem 0 0;padding:0;list-style:none}
+  .steps li{counter-increment:s;position:relative;padding-left:2.4rem;color:var(--muted)}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:-2px;width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;font-size:.82rem;color:#c7d2fe;background:#6366f126;border:1px solid #6366f152}
+  .steps b{color:var(--ink,#e5e7eb)}
+  pre{overflow:auto;background:#0b1020;border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;font-size:.82rem;line-height:1.7;color:#cbd5e1}
+  pre code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.9rem;margin-top:1rem}
+  .feat div{border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;background:#ffffff06}
+  .feat h3{margin:0 0 .25rem;font-size:.98rem}
+  .feat p{margin:0;color:var(--muted);font-size:.87rem;line-height:1.6}
+  .cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.1rem}
+  .cta a{text-decoration:none;border-radius:999px;padding:.6rem 1.1rem;font-size:.9rem;border:1px solid var(--line)}
+  .cta .primary{background:#6366f1;border-color:#6366f1;color:#fff}
+  .cta .ghost{color:var(--ink,#e5e7eb)}
+  .note{border-left:3px solid #f59e0b;background:#f59e0b12;padding:.8rem 1rem;border-radius:0 10px 10px 0;color:var(--muted);font-size:.9rem;margin:1.2rem 0}
+  .note b{color:#fbbf24}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/toolkit/"><span class="brand-badge">🧰</span><span>Toolkit<small>VK TECH LEARN</small></span></a>
+  <nav><a href="/toolkit/">All tools</a><a href="/img/">Image tools</a><a href="/pdf/">PDF tools</a><a href="https://vktechlearn.site/">Main site</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>OpenShorts — long videos into vertical clips</h1>
+    <p class="lead">Paste a YouTube link or upload a file: OpenShorts finds the strongest moments, cuts them
+      into 9:16 clips, adds captions, reframes for faces, and gives you a real editor. Free, open source,
+      no watermark and no plans. It runs on your own computer or server.</p>
+    <div class="chips">
+      <span class="chip">100% free</span>
+      <span class="chip">No watermark</span>
+      <span class="chip">No limits or credits</span>
+      <span class="chip">MIT licence</span>
+    </div>
+  </section>
+
+  <div class="shots">
+    <figure class="shot">
+      <img src="/img/tools/openshorts-clips.webp" alt="OpenShorts clip cards with viral score, titles and edit actions" width="1200" height="700" loading="lazy">
+      <figcaption>Clip cards: viral score, ready-made titles and edit actions.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="/img/tools/openshorts-editor.webp" alt="OpenShorts clip editor with source monitor, program monitor, transcript and segments" width="1568" height="652" loading="lazy">
+      <figcaption>The editor: source and program monitors, transcript, segments.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="/img/tools/openshorts-ugc.webp" alt="OpenShorts AI Shorts gallery with AI actor videos" width="1114" height="612" loading="lazy">
+      <figcaption>AI Shorts: product videos with AI actors (optional fal.ai key).</figcaption>
+    </figure>
+  </div>
+
+  <section class="panel">
+    <h2><span>→</span>What you get</h2>
+    <div class="feat">
+      <div><h3>AI moment picking</h3><p>Ranks the transcript scene by scene, keeps 3–15 moments of 15–60 seconds with a virality score.</p></div>
+      <div><h3>Works with no key</h3><p>A free offline picker scores the transcript itself; a Gemini key or a local Ollama model upgrades the selection.</p></div>
+      <div><h3>Smart 9:16 reframing</h3><p>Face-tracked crop, blurred background, two-speaker split or screencast layout — picked per video.</p></div>
+      <div><h3>Auto captions</h3><p>Word-level timestamps from Whisper, several caption styles, burned into the clip and downloadable as SRT.</p></div>
+      <div><h3>Real clip editor</h3><p>Word-level cuts, extra segments, framing changes and fast re-renders — not a preview mock-up.</p></div>
+      <div><h3>Hooks and titles</h3><p>An opening line for the clip, editable in text, font, style and position, plus titles for each platform.</p></div>
+      <div><h3>YouTube Studio</h3><p>Titles, descriptions with timestamps and thumbnails, ready to upload (key needed for the AI parts).</p></div>
+      <div><h3>API and MCP</h3><p>Same pipeline over REST, plus an MCP endpoint for Claude or ChatGPT-style agents.</p></div>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:1.6rem">
+    <h2><span>→</span>How to run it</h2>
+    <p class="lead">This is a self-hosted tool: it needs Python and ffmpeg, so it cannot run inside a static
+      page like the rest of this toolkit. You install it once on your computer or a small server, then open the
+      dashboard in your browser.</p>
+    <ol class="steps">
+      <li><b>Install the requirements:</b> Python 3.12, ffmpeg, and about 8 GB of RAM for comfortable CPU work (an NVIDIA GPU makes it much faster).</li>
+      <li><b>Get the code and the Python packages:</b> create a virtual environment and install <code>requirements.txt</code>; install the dashboard with <code>npm install</code>.</li>
+      <li><b>Start it:</b> the API runs on port 8000 and the dashboard on port 3000. Paste a link or upload a video and the clips land in the <code>output/</code> folder.</li>
+    </ol>
+    <pre><code>python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+(cd dashboard &amp;&amp; npm install)
+./start.sh</code></pre>
+    <div class="note"><b>Heads-up:</b> the free edition has no subscription, credits or watermark, and it needs no API key to clip a video. Optional keys only add features: Gemini or a local model for smarter moment picking, ElevenLabs for dubbing, fal.ai for AI actors, Upload-Post for auto-publishing.</div>
+    <div class="cta">
+      <a class="primary" href="https://github.com/mutonby/openshorts" target="_blank" rel="noopener noreferrer">View the source on GitHub →</a>
+      <a class="ghost" href="/toolkit/">Back to all tools</a>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:1.6rem">
+    <h2><span>→</span>Good to know</h2>
+    <p class="lead">A 110-second test video took about three minutes to become two finished 1080×1920 clips on a
+      two-core machine. On CPU, budget roughly 3–5 minutes of processing for every minute of source; on a GPU it
+      is closer to real time. Everything stays on your machine — no upload to a third-party service.</p>
+    <div class="related">
+      <a href="/toolkit/gemini-cheat-code.html">Gemini prompt codes</a>
+      <a href="/toolkit/instagram-toolkit.html">Instagram toolkit</a>
+      <a href="/toolkit/image-compressor.html">Image compressor</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap">© 2026 VK Tech Learn · <a href="https://vktechlearn.site/">Main site</a></div></footer>
+</body>
+</html>
