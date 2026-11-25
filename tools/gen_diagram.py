@@ -488,6 +488,83 @@ SPECS = [
         ],
         "foot": "Galtiyan hi syllabus hain — unhe padhna chhodo mat.",
     },
+    {
+        "out": "sql-query-order-hindi.jpg",
+        "kind": "flow",
+        "kicker": "SQL ka kram",
+        "title": "Query likhne aur chalne ka order",
+        "nodes": [
+            {"label": "FROM / JOIN", "sub": "pehle table chuno", "note": "Yahan tay hota hai ki data kahan se aayega."},
+            {"label": "WHERE", "sub": "rows chhaanto", "note": "Jitni jaldi rows kam hon, utna tez query."},
+            {"label": "GROUP BY", "sub": "jodo aur gino", "note": "Har group par SUM, COUNT, AVG laga sakte hain."},
+            {"label": "HAVING", "sub": "group par shart", "note": "WHERE rows par lagta hai, HAVING groups par."},
+            {"label": "ORDER BY + LIMIT", "sub": "ant me sajao", "note": "Bina ORDER BY ke 'top 10' ka koi matlab nahi."},
+        ],
+        "foot": "Likhne me SELECT pehle aata hai, par chalta sabse baad me.",
+    },
+    {
+        "out": "sql-join-types-hindi.jpg",
+        "kind": "cards",
+        "kicker": "JOIN ke prakar",
+        "title": "Kaun si rows saath aayengi",
+        "cards": [
+            {"head": "INNER JOIN", "lines": ["Sirf matching rows", "Sabse aam aur safe"]},
+            {"head": "LEFT JOIN", "lines": ["Bayein sab, daayein jo mile", "Missing ko NULL dikhao"], "accent": "violet"},
+            {"head": "RIGHT JOIN", "lines": ["Ulta LEFT", "Kam istemal hota hai"]},
+            {"head": "FULL JOIN", "lines": ["Dono taraf sab", "Bade data par bhaari"], "accent": "violet"},
+        ],
+        "foot": "JOIN galat chuna to rows chupchap kam ho jaati hain — count se jaancho.",
+    },
+    {
+        "out": "sql-vs-nosql-tradeoffs-hindi.jpg",
+        "kind": "scale",
+        "kicker": "Do model",
+        "title": "Schema pehle ya shape baad me",
+        "panes": [
+            {"head": "Relational (SQL)", "lines": ["Schema pehle se tay", "JOIN aur transaction strong", "Report ke liye behtar"], "bars": [0.5, 0.5, 0.5, 0.5]},
+            {"head": "Document (NoSQL)", "lines": ["Shape badal sakti hai", "Ek document me poora record", "Bade write ke liye aasan"], "accent": "violet", "bars": [0.2, 0.3, 0.45, 0.6, 0.8]},
+        ],
+        "foot": "Zydatar apps SQL se shuru karke hi theek rehte hain.",
+    },
+    {
+        "out": "database-choice-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Faisla",
+        "title": "Database chunne ke chaar sawaal",
+        "nodes": [
+            {"label": "Data ka shape", "sub": "table ya document", "note": "Rishte hain to relational; nested record hai to document."},
+            {"label": "Read ya write", "sub": "kaun zyada", "note": "Read heavy me index aur cache zyada maayne rakhte hain."},
+            {"label": "Consistency", "sub": "paisa ya likes", "note": "Paisa ho to transaction aur strong consistency chahiye."},
+            {"label": "Team ka hunar", "sub": "jo aata hai wahi lo", "note": "Naya database seekhne ki keemat bhi ginti me aati hai."},
+        ],
+        "foot": "Trend dekhkar database na chuno — sawaal se chuno.",
+    },
+    {
+        "out": "excel-formula-families-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Formula parivar",
+        "title": "Chaar parivar, zyadatar kaam",
+        "cards": [
+            {"head": "SUM / COUNT", "lines": ["Jodna aur ginna", "SUMIF se shart ke saath"]},
+            {"head": "IF / IFS", "lines": ["Shart par nateeja", "Nested IF se bacho"], "accent": "violet"},
+            {"head": "VLOOKUP / XLOOKUP", "lines": ["Do table jodo", "XLOOKUP naya aur aasan"]},
+            {"head": "TEXT / DATE", "lines": ["Naam saaf karo", "Mahina nikaalo"]},
+        ],
+        "foot": "Formula yaad karne se pehle socho — kaam kaun se parivar ka hai.",
+    },
+    {
+        "out": "excel-pivot-flow-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Raw se report",
+        "title": "Data se dashboard tak",
+        "nodes": [
+            {"label": "Raw data", "sub": "ek row, ek record", "note": "Header ek hi row me, merge cell nahi, khali row nahi."},
+            {"label": "Table banao", "sub": "Ctrl + T", "note": "Table se range apne aap badhti hai."},
+            {"label": "Pivot table", "sub": "rows, columns, values", "note": "Pehle sawaal tay karo, phir fields kheencho."},
+            {"label": "Chart", "sub": "ek message", "note": "Ek chart, ek baat — sab kuch ek chart me nahi."},
+        ],
+        "foot": "Jo report har hafte banti hai, use pivot se hamesha ke liye bana do.",
+    },
 ]
 
 DRAW = {"cards": draw_cards, "flow": draw_flow, "scale": draw_scale}

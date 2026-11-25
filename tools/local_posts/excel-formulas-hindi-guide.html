@@ -1,0 +1,187 @@
+<p>ज़्यादातर office का काम Excel में होता है — बिक्री की report, attendance, stock, budget, salary sheet. और ज़्यादातर लोग इनमें वही काम हाथ से करते हैं जो एक formula से अपने आप हो सकता है: हर महीने 400 rows को filter करके जोड़ना, दो sheets में नाम मिलाना, या "अगर amount 5000 से ज़्यादा है तो commission" वाली शर्त हर row में लगाना।</p>
+
+<p>इस guide में मैं वही 15 formulas बताऊँगा जो असली काम में सबसे ज़्यादा आते हैं — sum और count वाले, शर्त वाले, lookup वाले, text साफ़ करने वाले और date वाले। साथ में pivot table, error messages का मतलब, पाँच आम गलतियाँ, और मेरा अनुभव। हर formula का उदाहरण है, ताकि आप उसे सीधे अपनी sheet में बदलकर इस्तेमाल कर सकें।</p>
+
+<p><strong>छोटा जवाब:</strong> शुरुआत के लिए पाँच formulas काफ़ी हैं — <code>SUM</code>, <code>SUMIF</code>, <code>COUNTIF</code>, <code>IF</code> और <code>XLOOKUP</code>. इनसे जोड़ना, शर्त के साथ जोड़ना, गिनना, फैसला लेना और दूसरी table से data लाना — चारों हो जाता है। जब यह पक्की हो जाएँ, तो pivot table सीखें; वह 15 formulas से ज़्यादा समय बचाता है।</p>
+
+<h2>Formula ka basic ढाँचा</h2>
+
+<p>हर formula <code>=</code> से शुरू होता है। उसके बाद function का नाम और bracket में उसके inputs आते हैं — जैसे <code>=SUM(A2:A10)</code>. Cell reference में <code>A2</code> का मतलब column A और row 2.</p>
+
+<p>एक चीज़ जो सबसे ज़्यादा confusion पैदा करती है — <code>$</code> का निशान। <code>A2</code> को जब नीचे खींचते हैं, तो वह <code>A3</code>, <code>A4</code> बनता जाता है। पर <code>$A$2</code> खींचने पर भी वहीं रहता है। जब आप किसी fixed cell (जैसे tax rate) का हवाला दें, तो <code>$</code> लगाएँ — वरना हर row में reference खिसक जाएगा और नतीजा गलत आएगा।</p>
+
+<p>ऑपरेटर भी सीधे हैं: <code>+ - * /</code> गणित के लिए, <code>&amp;</code> दो text जोड़ने के लिए, और <code>&gt; &lt; = &lt;&gt;</code> तुलना के लिए।</p>
+
+<h2>15 formulas, chaar parivar me</h2>
+
+<figure>
+<img src="../img/posts/excel-formula-families-hindi.jpg" alt="Excel formulas के चार परिवार — sum/count, if, lookup aur text" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>हर formula याद करने से पहले सोचें — काम किस परिवार का है</figcaption>
+</figure>
+
+<h3>जोड़ना और गिनना</h3>
+
+<p><strong>1. SUM</strong> — <code>=SUM(C2:C100)</code> आपके खर्च का कुल। सबसे सादा और सबसे ज़्यादा इस्तेमाल होने वाला।</p>
+
+<p><strong>2. SUMIF</strong> — शर्त के साथ जोड़ना: <code>=SUMIF(B2:B100, "Delhi", C2:C100)</code> यानी जहाँ column B में "Delhi" है, उन rows का column C जोड़ो। एक शर्त से ज़्यादा चाहिए तो <code>SUMIFS</code> लें।</p>
+
+<p><strong>3. COUNTIF</strong> — गिनना: <code>=COUNTIF(D2:D100, "Pending")</code>. कितने orders pending हैं, यह एक सेकंड में पता चल जाता है।</p>
+
+<p><strong>4. AVERAGEIF</strong> — शर्त के साथ औसत: <code>=AVERAGEIF(B2:B100, "Mumbai", C2:C100)</code>. किस शहर का average order value ज़्यादा है, यह इससे साफ़ होता है।</p>
+
+<h3>फैसला लेना</h3>
+
+<p><strong>5. IF</strong> — <code>=IF(C2&gt;5000, "High", "Low")</code>. शर्त सच हो तो पहला, झूठ हो तो दूसरा।</p>
+
+<p><strong>6. IFS</strong> — कई शर्तें एक साथ: <code>=IFS(C2&gt;10000, "A", C2&gt;5000, "B", TRUE, "C")</code>. Nested IF से यह पढ़ने में बहुत आसान है, क्योंकि हर शर्त अपनी line में है।</p>
+
+<p><strong>7. IFERROR</strong> — error छिपाने के लिए नहीं, संभालने के लिए: <code>=IFERROR(XLOOKUP(A2, Sheet2!A:A, Sheet2!B:B), "Not found")</code>. खाली या गलत reference पर sheet में <code>#N/A</code> की जगह साफ़ message दिखता है।</p>
+
+<h3>दूसरी table से data लाना</h3>
+
+<p><strong>8. XLOOKUP</strong> — आज सबसे अच्छा lookup: <code>=XLOOKUP(A2, Products!A:A, Products!C:C, "N/A")</code>. पहला argument क्या ढूँढना है, दूसरा कहाँ ढूँढना है, तीसरा क्या लौटाना है, चौथा न मिलने पर क्या दिखाना है।</p>
+
+<p><strong>9. VLOOKUP</strong> — पुराना लेकिन अब भी हर जगह मिलता है: <code>=VLOOKUP(A2, Products!A:D, 3, FALSE)</code>. इसमें हमेशा बाईं तरफ़ से खोज होती है और column number याद रखना पड़ता है — इसीलिए XLOOKUP बेहतर है।</p>
+
+<p><strong>10. INDEX + MATCH</strong> — जब पुराने Excel में XLOOKUP न हो: <code>=INDEX(Products!C:C, MATCH(A2, Products!A:A, 0))</code>. यह combination लंबे समय तक standard रहा है।</p>
+
+<h3>Text साफ़ करना</h3>
+
+<p><strong>11. TRIM</strong> — आगे-पीछे की extra spaces हटाता है: <code>=TRIM(A2)</code>. Lookup fail होने की सबसे आम वजह यही invisible space होती है।</p>
+
+<p><strong>12. LEFT / RIGHT / MID</strong> — text का हिस्सा: <code>=LEFT(A2, 3)</code> पहले तीन characters, <code>=MID(A2, 4, 2)</code> चौथे से दो।</p>
+
+<p><strong>13. TEXTJOIN</strong> — कई cells एक में: <code>=TEXTJOIN(", ", TRUE, A2:C2)</code>. <code>&amp;</code> से बेहतर, क्योंकि खाली cells छोड़ सकते हैं।</p>
+
+<h3>Date और number</h3>
+
+<p><strong>14. TEXT</strong> — number को format में दिखाना: <code>=TEXT(A2, "dd-mmm-yyyy")</code> या <code>=TEXT(B2, "₹#,##0")</code>. ध्यान दें — TEXT नतीजे को text बना देता है, इसलिए उस पर फिर गणित न करें।</p>
+
+<p><strong>15. EOMONTH और DATEDIF</strong> — महीने का आख़िरी दिन: <code>=EOMONTH(A2, 0)</code>. दो dates के बीच का फर्क: <code>=DATEDIF(A2, TODAY(), "M")</code> महीनों में, या <code>"Y"</code> सालों में।</p>
+
+<h2>XLOOKUP kyun VLOOKUP se behtar hai</h2>
+
+<p>VLOOKUP में तीन दिक्कतें हैं। पहला — वह सिर्फ़ बाईं तरफ़ से खोज सकता है, यानी lookup column data के बाईं ओर होना चाहिए। दूसरा — column number हाथ से लिखना पड़ता है, और जब बीच में नया column जुड़े तो सब formulas गलत हो जाते हैं। तीसरा — न मिलने पर वह <code>#N/A</code> देता है, जिसे अलग से संभालना पड़ता है।</p>
+
+<p>XLOOKUP तीनों हल करता है: किसी भी तरफ़ से खोज, column का नाम सीधे range से, और चौथे argument में "न मिले तो यह दिखाओ". अगर आपका Excel उसे support करता है, तो VLOOKUP छोड़ दें।</p>
+
+<h3>Dynamic arrays: FILTER, UNIQUE aur SORT</h3>
+
+<p>नए Excel में एक formula पूरी list लौटा सकता है। <code>=UNIQUE(B2:B500)</code> सारे अलग-अलग शहरों की list दे देता है, <code>=SORT(...)</code> उसे सजा देता है, और <code>=FILTER(C2:C500, B2:B500="Delhi")</code> सिर्फ़ दिल्ली वाली rows निकाल देता है।</p>
+
+<p>इनका फायदा यह है कि list अपने आप update होती रहती है — नई row जुड़ी तो नतीजा भी बदला। पहले यह काम filter और copy-paste से होता था, और हर बार दोहराना पड़ता था। ध्यान रखें कि ये formulas नीचे की खाली cells में अपना नतीजा फैलाते हैं, इसलिए उन cells में कुछ और न लिखें, वरना <code>#SPILL!</code> error आएगा।</p>
+
+<h2>Pivot table: 15 formulas se zyada</h2>
+
+<figure>
+<img src="../img/posts/excel-pivot-flow-hindi.jpg" alt="raw data से table, pivot table और chart तक का क्रम" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>पहले सवाल तय करें, फिर fields खींचें — pivot इसी क्रम से काम करता है</figcaption>
+</figure>
+
+<p>Pivot table बिना formula लिखे summary बनाता है। मान लीजिए 5,000 rows का sales data है और चाहिए — हर शहर का हर महीने का total. Formula से यह काम लंबा है; pivot में चार fields खींचने से हो जाता है: शहर rows में, महीना columns में, amount values में।</p>
+
+<p>पाँच आदतें जो pivot को भरोसेमंद बनाती हैं। पहला — data को <code>Ctrl + T</code> से table बनाएँ, ताकि नई rows अपने आप जुड़ें। दूसरा — header एक ही row में रखें, merged cells न हों। तीसरा — हर column में एक ही type का data रखें (date column में सिर्फ़ date). चौथा — खाली rows या subtotal rows data के बीच में न छोड़ें। पाँचवाँ — pivot बनाने से पहले सोचें कि सवाल क्या है; बिना सवाल के pivot सिर्फ़ number का ढेर बन जाता है।</p>
+
+<h2>Formatting jo galtiyan pakadti hai</h2>
+
+<p>दो चीज़ें formulas से भी ज़्यादा काम आती हैं। पहली — conditional formatting: किसी column पर rule लगाएँ कि 10,000 से ज़्यादा हरा और 1,000 से कम लाल दिखे। इससे बड़ी sheet में गलती आँख से दिखने लगती है, बिना हर cell पढ़े।</p>
+
+<p>दूसरी — data validation: किसी column में सिर्फ़ तय values की list allow करें, या date को आज से आगे न जाने दें। जब तीन लोग एक ही sheet भरते हैं, यह एक setting आधी गलतियाँ रोक देती है — जैसे status column में "Completeed" लिखा जाना।</p>
+
+<p>इन दोनों की एक ही सोच है: जो गलती formula से पकड़ी जा सकती है, उसे इंसान की नज़र पर न छोड़ें। Sheet ऐसी बनाएँ कि गलत entry मुश्किल हो, और सही entry अपने आप साफ़ दिखे।</p>
+
+<h2>Error messages ka matlab</h2>
+
+<table>
+  <thead>
+    <tr><th>Error</th><th>मतलब</th><th>क्या करें</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>#N/A</td><td>Lookup में value नहीं मिली</td><td>Spaces, type और exact match जाँचें</td></tr>
+    <tr><td>#VALUE!</td><td>Text को number की तरह इस्तेमाल किया</td><td>Cell का type ठीक करें</td></tr>
+    <tr><td>#REF!</td><td>Reference हट चुका है</td><td>Column delete से बचें</td></tr>
+    <tr><td>#DIV/0!</td><td>शून्य से भाग</td><td>IFERROR या denominator जाँचें</td></tr>
+    <tr><td>#NAME?</td><td>Function का नाम गलत</td><td>Spelling और quotes जाँचें</td></tr>
+  </tbody>
+</table>
+
+<h2>paanch galtiyan</h2>
+
+<p><strong>1. हर जगह हाथ से value लिखना।</strong> जो number किसी और cell से आ रहा है, उसे हाथ से न लिखें — reference दें। वरना source बदलने पर report पुरानी रह जाएगी।</p>
+
+<p><strong>2. Merged cells।</strong> Sorting, filter और pivot सब टूटते हैं। Merged cells की जगह "Center Across Selection" इस्तेमाल करें।</p>
+
+<p><strong>3. पूरा column reference।</strong> <code>A:A</code> आसान है पर बहुत बड़ी sheet में धीमा। जहाँ मुमकिन हो, सीमित range या table reference लें।</p>
+
+<p><strong>4. Text और number मिलाना।</strong> "5000" और 5000 अलग हैं। जब lookup fail हो, तो पहले type जाँचें — <code>ISTEXT</code> या <code>ISNUMBER</code> से।</p>
+
+<p><strong>5. Formula से बदला data copy करके values paste करना भूलना।</strong> जब sheet किसी और को भेजें, तो अक्सर values paste करना ठीक रहता है — वरना उनके यहाँ references टूट सकते हैं।</p>
+
+<p>Excel के formulas अगर रोज़ काम आते हैं, तो SQL भी सीखें — same सोच, बड़े data पर। <a href="/posts/sql-kya-hai-hindi.html">SQL guide</a> से शुरुआत करें, और data के साथ पूरा करियर बनाना हो तो <a href="/posts/data-science-roadmap-india-hindi.html">data science roadmap</a> पढ़ें।</p>
+
+<h2>Shortcuts jo speed badhate hain</h2>
+
+<p>Excel में आधा समय mouse से बचाया जा सकता है। ये दस shortcuts रोज़ काम आते हैं।</p>
+
+<table>
+  <thead>
+    <tr><th>Shortcut</th><th>काम</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ctrl + T</td><td>Range को table बनाना</td></tr>
+    <tr><td>Ctrl + Shift + L</td><td>Filter चालू या बंद</td></tr>
+    <tr><td>Alt + =</td><td>अपने आप SUM formula</td></tr>
+    <tr><td>F2</td><td>Cell में edit मोड</td></tr>
+    <tr><td>F4</td><td>Reference पर $ लगाना</td></tr>
+    <tr><td>Ctrl + Arrow</td><td>Data के आख़िरी कोने तक</td></tr>
+    <tr><td>Ctrl + Shift + Arrow</td><td>पूरी range चुनना</td></tr>
+    <tr><td>Ctrl + PgUp/PgDn</td><td>Sheets बदलना</td></tr>
+    <tr><td>Alt + Enter</td><td>एक cell में नई line</td></tr>
+    <tr><td>Ctrl + Z / Y</td><td>Undo और Redo</td></tr>
+  </tbody>
+</table>
+
+<p>एक आदत और जोड़ें — जब किसी sheet पर हफ़्ते में एक घंटे से ज़्यादा लगे, तो पहले पाँच मिनट यह सोचें कि इसमें से कौन सा हिस्सा हर बार वही है। वही हिस्सा formula, pivot या macro बन जाता है। यही सोच धीरे-धीरे पूरे office के काम को तेज़ कर देती है।</p>
+
+<p>F4 सबसे ज़्यादा समय बचाता है — formula में reference चुनकर F4 दबाने से <code>$</code> अपने आप लग जाता है, और आपको याद नहीं रखना पड़ता कि कहाँ लगाना है। शुरुआत में रोज़ दो shortcuts की आदत डालें; एक हफ़्ते में हाथ अपने आप चलने लगेंगे।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>मैंने कई साल एक ही रिपोर्ट हाथ से बनाई — हर महीने filter, copy, paste, total. उसमें डेढ़ घंटा लगता था और हर बार एक-दो गलती होती थी। जब मैंने उसे pivot table और चार formulas में बदला, वही काम 10 मिनट का हो गया, और सबसे बड़ा फायदा यह हुआ कि गलती की गुंजाइश लगभग खत्म हो गई।</p>
+
+<p>दूसरी बात जो मैंने सीखी: formula को छोटे हिस्सों में जाँचना। जब एक लंबा formula गलत नतीजा दे, तो उसके हर हिस्से को अलग cell में लिखकर देखें। 90% बार गलती किसी एक reference में होती है — अक्सर <code>$</code> की कमी।</p>
+
+<p>तीसरी बात: sheet को दूसरे के लिए बनाएँ। Heading साफ़, हर column का एक ही format, और ऊपर एक छोटी line जो बताए कि यह report क्या दिखाती है। जो sheet खुद समझ में आए, वही अच्छी sheet है।</p>
+
+<h2>नतीजा</h2>
+
+<p>Excel में 15 formulas और एक pivot table — इतना सीख लेने पर office का ज़्यादातर repetitive काम खत्म हो जाता है। शुरुआत पाँच से करें: SUM, SUMIF, COUNTIF, IF और XLOOKUP. जब इनमें उँगली चलने लगे, तो pivot table सीखें और हर हफ़्ते वाली report को एक बार में बना दें। यह एक बार का निवेश है जो हर महीने समय लौटाता रहता है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या XLOOKUP हर Excel में चलता है?</h3>
+
+<p>नए versions में हाँ। पुराने versions में वह नहीं मिलेगा — वहाँ INDEX + MATCH इस्तेमाल करें।</p>
+
+<h3>क्या Google Sheets में ये formulas चलते हैं?</h3>
+
+<p>लगभग सब चलते हैं। कुछ नाम अलग हैं और XLOOKUP की जगह कभी-कभी अलग function लगता है, पर सोच वही है।</p>
+
+<h3>क्या formula सीखने से नौकरी मिलती है?</h3>
+
+<p>अकेले नहीं, पर यह सबसे तेज़ दिखने वाला हुनर है। Analyst और operations के काम में Excel की गति सीधे काम की गति बनती है।</p>
+
+<h3>Pivot table या formulas — पहले क्या?</h3>
+
+<p>पहले पाँच बुनियादी formulas, फिर pivot। Pivot तब समझ आता है जब data की rows और columns की सोच साफ़ हो।</p>
+
+<h3>Sheet धीमी हो जाए तो?</h3>
+
+<p>पूरे column के references, बहुत सारे volatile formulas और बड़ी conditional formatting हटाएँ। ज़रूरत हो तो data को table में बदलें और formulas को सीमित range पर लगाएँ।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://support.microsoft.com/en-us/office/excel-functions-alphabetical-b3944572-255d-4efb-bb96-c6d90033e188" rel="nofollow noopener" target="_blank">Microsoft Support — Excel functions (alphabetical)</a></li>
+  <li><a href="https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576" rel="nofollow noopener" target="_blank">Microsoft Support — Create a PivotTable</a></li>
+</ul>

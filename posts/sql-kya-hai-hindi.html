@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me — VK Tech Learn</title>
+<meta name="description" content="SQL kya hai, SELECT se JOIN aur GROUP BY tak, query chalne ka kram, 10 commands aur 5 common galtiyan — example ke saath Hindi guide. Example ke saath.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me">
+<meta property="og:description" content="SQL kya hai, SELECT se JOIN aur GROUP BY tak, query chalne ka kram, 10 commands aur 5 common galtiyan — example ke saath Hindi guide. Example ke saath.">
+<meta property="og:url" content="https://vktechlearn.site/posts/sql-kya-hai-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/sql-kya-hai-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="SQL, Database, Data">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/sql-kya-hai-hindi.jpg">
+<meta property="og:image:alt" content="SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me">
+<meta property="article:published_time" content="2026-11-25T22:00:00+05:30">
+<meta property="article:modified_time" content="2026-11-25T22:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="SQL">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="Data">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me">
+<meta name="twitter:description" content="SQL kya hai, SELECT se JOIN aur GROUP BY tak, query chalne ka kram, 10 commands aur 5 common galtiyan — example ke saath Hindi guide. Example ke saath.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/sql-kya-hai-hindi.jpg">
+<meta name="twitter:image:alt" content="SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me","description":"SQL kya hai, SELECT se JOIN aur GROUP BY tak, query chalne ka kram, 10 commands aur 5 common galtiyan — example ke saath Hindi guide. Example ke saath.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/sql-kya-hai-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/sql-kya-hai-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/sql-kya-hai-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/sql-kya-hai-hindi.jpg","datePublished":"2026-11-25T22:00:00+05:30","dateModified":"2026-11-25T22:00:00+05:30","articleSection":"SQL","keywords":"SQL, Database, Data"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me","item":"https://vktechlearn.site/posts/sql-kya-hai-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">SQL</span><span class="tag">Database</span>
+      <time datetime="2026-11-25T22:00:00+05:30">25 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/sql-kya-hai-hindi.jpg" alt="SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>एक table, कुछ सवाल — SQL उन सवालों को ऐसी भाषा में लिखता है जिसे database समझता है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>हर company का data किसी table में बैठा होता है — customers, orders, payments, tickets. और उस data से सवाल पूछने की भाषा है SQL. "पिछले महीने किन 5 customers ने सबसे ज़्यादा खरीदा", "किस शहर में delivery सबसे धीमी है", "कितने orders बिना payment के पड़े हैं" — ये सब SQL में कुछ lines में पूछे जाते हैं।</p>
+
+      <p>इस guide में मैं SQL को बिल्कुल शुरुआत से खोलूँगा — table और key का मतलब, पहली query, query का असली क्रम, WHERE और GROUP BY, JOIN के चार प्रकार, आम functions, पाँच गलतियाँ, और मेरा अपना अनुभव। साथ में हर जगह असली दिखने वाले उदाहरण हैं, ताकि आप पढ़ते-पढ़ते खुद लिख सकें।</p>
+
+      <p><strong>छोटा जवाब:</strong> SQL एक भाषा है जिससे हम database से data माँगते हैं। सबसे ज़रूरी चार हिस्से हैं — SELECT (क्या चाहिए), FROM (कहाँ से), WHERE (कौन सी rows), और GROUP BY (जोड़कर गिनना)। JOIN दो tables को जोड़ता है, ORDER BY नतीजा सजाता है, और LIMIT बताता है कि कितनी rows चाहिए। यही 90% काम है; बाकी सब इन्हीं के आसपास है।</p>
+
+      <h2>SQL kya hai — table ka model</h2>
+
+      <p>Relational database में data tables में रहता है। हर table में rows (records) और columns (fields) होते हैं। जैसे <code>customers</code> table में <code>id</code>, <code>name</code>, <code>city</code>, <code>signup_date</code> — और हर row एक customer.</p>
+
+      <p>हर table में एक <strong>primary key</strong> होती है — ऐसा column जो हर row के लिए अलग हो, आमतौर पर <code>id</code>. दूसरी table उसी key को <strong>foreign key</strong> के रूप में रखती है। जैसे <code>orders</code> table में <code>customer_id</code> बताता है कि यह order किसका है। यही रिश्ता दो tables को जोड़ता है — और यही "relational" का मतलब है।</p>
+
+      <p>SQL लगभग हर database में थोड़ा-बहुत एक जैसा है — PostgreSQL, MySQL, SQL Server, SQLite. शुरुआत में किसी एक पर सीखें; दूसरे में बस कुछ फर्क मिलेंगे।</p>
+
+      <h2>पहली query</h2>
+
+      <p>मान लीजिए <code>orders</code> table में <code>id</code>, <code>customer_id</code>, <code>amount</code>, <code>status</code>, <code>created_at</code> हैं। सारे orders देखने के लिए:</p>
+
+      <pre><code>SELECT id, customer_id, amount, status, created_at
+      FROM orders
+      ORDER BY created_at DESC
+      LIMIT 20;</code></pre>
+
+      <p>यहाँ तीन चीज़ें हो रही हैं: कौन से columns चाहिए, किस table से, और नतीजा कैसे सजाना है। <code>LIMIT 20</code> सिर्फ़ 20 rows देता है — बड़े table पर यह आदत ज़रूरी है, वरना query और आपका tool दोनों अटक जाते हैं।</p>
+
+      <p>कुछ rows ऐसी चाहिए जिनमें शर्त हो:</p>
+
+      <pre><code>SELECT id, amount
+      FROM orders
+      WHERE status = 'pending' AND amount &gt; 5000
+      ORDER BY amount DESC;</code></pre>
+
+      <p>ध्यान दें कि text <code>'pending'</code> single quotes में है और number बिना quotes के। यही सबसे आम शुरुआती गलती है — quotes गलत जगह लगाने से query चलती नहीं।</p>
+
+      <h2>Query ka असली kram</h2>
+
+      <figure>
+      <img src="../img/posts/sql-query-order-hindi.jpg" alt="SQL query का क्रम — FROM, WHERE, GROUP BY, HAVING, ORDER BY और LIMIT" loading="lazy" decoding="async">
+      <figcaption>लिखते समय SELECT पहले आता है, पर database उसे सबसे बाद में चलाता है</figcaption>
+      </figure>
+
+      <p>यह क्रम समझना बहुत काम आता है, क्योंकि इससे पता चलता है कि कौन सी चीज़ कहाँ लिखी जाती है। Database पहले table चुनता है, फिर rows छाँटता है, फिर groups बनाता है, फिर groups पर शर्त लगाता है, फिर सजाता है, और अंत में columns चुनता है।</p>
+
+      <p>इसीलिए <code>WHERE</code> में aggregate function नहीं लिख सकते — जैसे <code>WHERE SUM(amount) &gt; 10000</code> गलत है। उसके लिए <code>HAVING</code> है, क्योंकि वह groups बनने के बाद चलता है।</p>
+
+      <h2>GROUP BY: जोड़कर गिनना</h2>
+
+      <p>सबसे ज़्यादा काम इसी से होता है। हर customer के कुल orders और कुल खर्च:</p>
+
+      <pre><code>SELECT customer_id,
+             COUNT(*) AS orders,
+             SUM(amount) AS total_spent
+      FROM orders
+      WHERE status = 'completed'
+      GROUP BY customer_id
+      HAVING SUM(amount) &gt; 20000
+      ORDER BY total_spent DESC;</code></pre>
+
+      <p>यहाँ तीन बातें देखें। <code>COUNT(*)</code> rows गिनता है। <code>SUM(amount)</code> जोड़ता है। और <code>HAVING</code> उन groups को हटाता है जिनका कुल 20,000 से कम है — यह <code>WHERE</code> से अलग है, क्योंकि <code>WHERE</code> rows पर लगता है और <code>HAVING</code> groups पर।</p>
+
+      <h3>NULL ka hisaab</h3>
+
+      <p>NULL का मतलब खाली या शून्य नहीं, बल्कि "पता नहीं" होता है। इसीलिए <code>NULL = NULL</code> सच नहीं होता और <code>COUNT(column)</code> NULL वाली rows नहीं गिनता, जबकि <code>COUNT(*)</code> सब गिनता है। जब किसी column में NULL हों, तो <code>SUM</code> उन्हें छोड़ देता है और <code>AVG</code> का हर भी बदल जाता है — इसलिए रिपोर्ट में हमेशा बताएँ कि कितनी rows में value missing थी।</p>
+
+      <p>एक नियम याद रखें: जो column <code>GROUP BY</code> में नहीं है और जिस पर aggregate नहीं लगाया, उसे SELECT में लिखने से database error देगा (या गलत नतीजा)। यही नियम सबसे ज़्यादा confusion पैदा करता है।</p>
+
+      <h2>JOIN: दो tables जोड़ना</h2>
+
+      <figure>
+      <img src="../img/posts/sql-join-types-hindi.jpg" alt="INNER, LEFT, RIGHT और FULL JOIN में कौन सी rows आती हैं" loading="lazy" decoding="async">
+      <figcaption>JOIN का चुनाव तय करता है कि कौन सी rows चुपचाप गायब होंगी</figcaption>
+      </figure>
+
+      <p>अब मान लीजिए customer का नाम भी चाहिए, जो <code>customers</code> table में है:</p>
+
+      <pre><code>SELECT c.name,
+             COUNT(o.id) AS orders,
+             COALESCE(SUM(o.amount), 0) AS total
+      FROM customers c
+      LEFT JOIN orders o ON o.customer_id = c.id
+      GROUP BY c.name
+      ORDER BY total DESC;</code></pre>
+
+      <p><code>LEFT JOIN</code> का मतलब है — बाईं table के सारे customers रखो, चाहे उनका कोई order न हो। ऐसे customers के लिए order वाले columns <code>NULL</code> आएँगे, और <code>COALESCE</code> उन्हें 0 बना देता है। अगर <code>INNER JOIN</code> लगाते, तो बिना order वाले customers नतीजे में ही नहीं आते — और आपको पता भी नहीं चलता।</p>
+
+      <p>यही वजह है कि JOIN बदलने के बाद हमेशा row count जाँचें। एक छोटा सा बदल हज़ार rows का नतीजा बदल सकता है, और नतीजा सही दिखता रहता है।</p>
+
+      <h2>Subquery aur CTE</h2>
+
+      <p>जब सवाल दो कदम का हो, तो अंदर query लिखी जाती है। जैसे "उन customers के orders जिन्होंने पिछले महीने खरीदा":</p>
+
+      <pre><code>WITH recent AS (
+        SELECT DISTINCT customer_id
+        FROM orders
+        WHERE created_at &gt;= DATE '2026-10-01'
+      )
+      SELECT c.name, COUNT(*) AS orders
+      FROM customers c
+      JOIN recent r ON r.customer_id = c.id
+      JOIN orders o ON o.customer_id = c.id
+      GROUP BY c.name;</code></pre>
+
+      <p><code>WITH</code> वाला हिस्सा CTE कहलाता है — यह query को छोटे हिस्सों में बाँटता है और पढ़ना आसान बनाता है। बड़ी query में मैं हमेशा CTE इस्तेमाल करता हूँ, क्योंकि बाद में खुद को ही समझना होता है कि कौन सा हिस्सा क्या कर रहा है।</p>
+
+      <h2>10 cheezein jo roz kaam aati hain</h2>
+
+      <table>
+        <thead>
+          <tr><th>क्या</th><th>काम</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>COUNT / SUM / AVG</td><td>गिनना, जोड़ना, औसत</td></tr>
+          <tr><td>MIN / MAX</td><td>सबसे छोटा और बड़ा</td></tr>
+          <tr><td>COALESCE</td><td>NULL की जगह value</td></tr>
+          <tr><td>CASE WHEN</td><td>if-else जैसा column</td></tr>
+          <tr><td>ROUND</td><td>दशमलव सीमित करना</td></tr>
+          <tr><td>DATE_TRUNC</td><td>महीने या हफ़्ते में जोड़ना</td></tr>
+          <tr><td>DISTINCT</td><td>दोहराव हटाना</td></tr>
+          <tr><td>ILIKE / LOWER</td><td>case छोड़कर खोजना</td></tr>
+          <tr><td>IN / BETWEEN</td><td>कई values या range</td></tr>
+          <tr><td>LIMIT / OFFSET</td><td>पेज बाँटना</td></tr>
+        </tbody>
+      </table>
+
+      <h2>paanch galtiyan jo mehngi padti hain</h2>
+
+      <p><strong>1. बिना WHERE के UPDATE या DELETE.</strong> एक line की गलती पूरी table खाली कर सकती है। पहले वही शर्त <code>SELECT</code> में चलाएँ, rows देखें, फिर UPDATE करें।</p>
+
+      <p><strong>2. SELECT * बड़े table पर।</strong> 40 columns में से 4 चाहिए तो 4 लिखें। इससे query तेज़ होती है और नतीजा पढ़ना आसान रहता है।</p>
+
+      <p><strong>3. NULL को = से जाँचना।</strong> <code>WHERE city = NULL</code> कभी सही नहीं चलता; इसके लिए <code>IS NULL</code> लिखें।</p>
+
+      <p><strong>4. Date को text की तरह रखना।</strong> <code>'01-12-2026'</code> जैसे text पर sorting और range query गलत नतीजे देते हैं। Date को date type में रखें।</p>
+
+      <p><strong>5. JOIN के बाद count न जाँचना।</strong> JOIN से rows बढ़ या घट सकती हैं। नतीजा भेजने से पहले एक बार गिनती मिलाएँ।</p>
+
+      <p>SQL सीखने के बाद अगला कदम समझना होता है कि query धीमी क्यों होती है — उसका जवाब index में है, और मैंने उसे इसी batch की अगली पोस्ट के लिए रखा है। Data के साथ काम करना है तो <a href="/posts/data-science-roadmap-india-hindi.html">data science roadmap</a> पढ़ें, और अगर अपनी app से data निकालना है तो <a href="/posts/api-kya-hai-hindi.html">API basics</a> काम आएँगे।</p>
+
+      <h2>Query tez karne ke paanch tarike</h2>
+
+      <p>जब query धीमी हो, तो पहला काम है <code>EXPLAIN</code> चलाना — वह बताता है कि database कितनी rows पढ़ रहा है और कहाँ index इस्तेमाल हुआ। पाँच आदतें जो सबसे ज़्यादा फर्क लाती हैं।</p>
+
+      <ol>
+        <li><strong>WHERE वाले columns पर index।</strong> जिस column से rows छाँटते हैं, उस पर index होना चाहिए।</li>
+        <li><strong>Column पर function न लगाएँ।</strong> <code>WHERE DATE(created_at) = '2026-11-01'</code> index नहीं लगने देता; range लिखें — <code>created_at &gt;= '2026-11-01' AND created_at &lt; '2026-11-02'</code>.</li>
+        <li><strong>सिर्फ़ ज़रूरी columns चुनें।</strong> <code>SELECT *</code> बड़े table पर बहुत data खींचता है।</li>
+        <li><strong>JOIN से पहले rows कम करें।</strong> WHERE पहले लगे, JOIN बाद में — इससे जोड़ने का काम ही कम हो जाता है।</li>
+        <li><strong>LIMIT का दुरुपयोग न करें।</strong> LIMIT सिर्फ़ नतीजा रोकता है; database फिर भी सारा काम करता है।</li>
+      </ol>
+
+      <p>Index की एक कीमत भी होती है — हर insert और update पर वह भी अपडेट होता है। इसलिए हर column पर index न लगाएँ, सिर्फ़ उन पर जो सच में खोज और JOIN में आते हैं।</p>
+
+      <p>Practice के लिए सबसे अच्छा तरीका है एक छोटा sample database (जैसे employees और orders) लेकर रोज़ चार-पाँच सवाल हल करना। हर सवाल में पहले सोचें कि कौन सी table चाहिए, फिर GROUP BY, फिर JOIN — यही क्रम interview में भी काम आता है।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>मैंने पहले साल SQL में सब कुछ एक ही बड़ी query में लिखा — पाँच JOIN, तीन subquery, और अंत में एक ORDER BY. वह चलती थी, पर जब नतीजा गलत आता, तो पता ही नहीं चलता कि कौन सा हिस्सा दोषी है। फिर मैंने CTE की आदत डाली और हर हिस्से को अलग नाम दिया। अब गलती ढूँढ़ना मिनटों का काम है।</p>
+
+      <p>दूसरी बात जो मैंने सीखी: query लिखने से पहले कागज़ पर लिखें कि नतीजा कैसा दिखना चाहिए — कौन से columns, कितनी rows, किस क्रम में। आधे सवाल इसी से हल हो जाते हैं, क्योंकि तब पता होता है कि GROUP BY चाहिए या नहीं।</p>
+
+      <p>एक और आदत जो मैंने डाली — हर बार-बार वाली query को नाम देकर save करना। महीने में तीन बार वही report बनाने की जगह एक बार लिखकर रखने से समय भी बचता है और गिनती भी एक जैसी रहती है।</p>
+
+      <p>तीसरी बात: हर query के बाद एक छोटा सवाल पूछें — "यह नतीजा किस वजह से गलत हो सकता है?" अक्सर जवाब होता है duplicate rows, NULL values, या timezone. यही तीन चीज़ें सबसे ज़्यादा reports को गलत बनाती हैं।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>SQL सीखने के लिए चार चीज़ें काफ़ी हैं: SELECT और WHERE, GROUP BY के साथ COUNT/SUM, LEFT JOIN, और ORDER BY के साथ LIMIT. इनसे आप 90% सवाल हल कर सकते हैं। शुरुआत में छोटी query लिखें, नतीजा देखें, फिर उसमें एक-एक हिस्सा जोड़ें — एक बार में पूरी बड़ी query लिखने से debugging मुश्किल हो जाती है।</p>
+
+      <h2>Interview ke chhah sawal</h2>
+
+      <p>SQL के interview में लगभग वही छह सवाल आते हैं। इनका अभ्यास कर लें, तो बाकी आसान लगेगा।</p>
+
+      <p><strong>1. दूसरी सबसे बड़ी salary कैसे निकालें?</strong> <code>LIMIT 1 OFFSET 1</code> काम करता है, पर ties पर गलत हो सकता है। बेहतर जवाब है <code>DENSE_RANK()</code> वाला window function।</p>
+
+      <p><strong>2. Duplicate rows कैसे ढूँढें?</strong> <code>GROUP BY</code> के साथ <code>COUNT(*) &gt; 1</code> — और साथ में बताएँ कि कौन सी row रखनी है।</p>
+
+      <p><strong>3. दो tables में कौन सी rows missing हैं?</strong> <code>LEFT JOIN</code> के बाद <code>WHERE b.id IS NULL</code> — यह pattern बहुत काम आता है।</p>
+
+      <p><strong>4. हर group की top 1 row?</strong> यहाँ window function <code>ROW_NUMBER() OVER (PARTITION BY ...)</code> चाहिए। यह सवाल आम है और इससे पता चलता है कि आपने basics से आगे पढ़ा है।</p>
+
+      <p><strong>5. NULL और शून्य में फर्क?</strong> ऊपर वाला जवाब दोहराएँ — NULL "पता नहीं" है, 0 एक value है।</p>
+
+      <p><strong>6. Query धीमी क्यों है?</strong> पहले <code>EXPLAIN</code>, फिर index, फिर rows की गिनती। जवाब में अंदाज़ा न दें, जाँचने का तरीका बताएँ।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>SQL और MySQL में फर्क?</h3>
+
+      <p>SQL भाषा है, MySQL उसे चलाने वाला database है। PostgreSQL, SQL Server और SQLite भी वही भाषा इस्तेमाल करते हैं, कुछ अंतर के साथ।</p>
+
+      <h3>SQL सीखने में कितना समय लगता है?</h3>
+
+      <p>बुनियादी queries दो हफ़्ते में आ जाती हैं। JOIN और GROUP BY पर अच्छा होने में एक महीना रोज़ practice चाहिए।</p>
+
+      <h3>क्या SQL बिना programming के सीख सकते हैं?</h3>
+
+      <p>हाँ। SQL की अपनी भाषा है और उसे लिखने के लिए कोई दूसरी language नहीं चाहिए। Logic समझना ज़रूरी है।</p>
+
+      <h3>सबसे पहले कौन सा database इस्तेमाल करें?</h3>
+
+      <p>सीखने के लिए SQLite सबसे आसान है क्योंकि कुछ install नहीं करना पड़ता। असली काम के लिए PostgreSQL आज सबसे आम और मज़बूत विकल्प है।</p>
+
+      <h3>क्या SQL अब भी ज़रूरी है?</h3>
+
+      <p>पहले से ज़्यादा। हर analytics tool, हर dashboard और हर data job के पीछे SQL है — चाहे आप Python इस्तेमाल करें, data वहीं से आता है।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://www.postgresql.org/docs/current/tutorial.html" rel="nofollow noopener" target="_blank">PostgreSQL — Official tutorial (SELECT, JOIN, GROUP BY)</a></li>
+        <li><a href="https://dev.mysql.com/doc/refman/8.4/en/tutorial.html" rel="nofollow noopener" target="_blank">MySQL — Official tutorial</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

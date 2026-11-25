@@ -1,0 +1,11 @@
+{
+  "slug": "sql-vs-nosql-database-hindi",
+  "title": "SQL vs NoSQL: Kab Kaunsa Database Chunein, 6 Sawaal",
+  "description": "SQL aur NoSQL ka farq — schema, joins, consistency aur scaling, 6 sawaal jo database chunne se pehle poochhein — Hindi me, udaharan ke saath. Udaharan ke saath.",
+  "published": "2026-11-25T22:20:00+05:30",
+  "labels": ["Database", "SQL", "Backend"],
+  "hero": "img/posts/sql-vs-nosql-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "दोनों जगह data है — फर्क यह है कि उसे पहले बाँधते हैं या बाद में सँभालते हैं"
+}
