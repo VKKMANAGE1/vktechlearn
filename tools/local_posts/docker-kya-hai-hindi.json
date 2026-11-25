@@ -1,0 +1,11 @@
+{
+  "slug": "docker-kya-hai-hindi",
+  "title": "Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me",
+  "description": "Docker kya hai, container aur VM ka farq, Dockerfile se image tak ka safar, 8 commands aur pehla container chalane ki guide. Shuruaat se, commands ke saath.",
+  "published": "2026-11-25T21:00:00+05:30",
+  "labels": ["Docker", "DevOps", "Backend"],
+  "hero": "img/posts/docker-kya-hai-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "एक image, दस container — हर जगह वही चीज़ चलती है, चाहे laptop हो या server"
+}

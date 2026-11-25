@@ -438,6 +438,56 @@ SPECS = [
         ],
         "foot": "Hack ke baad pehla ghanta sabse keemti hota hai.",
     },
+    {
+        "out": "vm-vs-container-hindi.jpg",
+        "kind": "scale",
+        "kicker": "VM vs container",
+        "title": "Do tarah ka isolation",
+        "panes": [
+            {"head": "Virtual machine", "lines": ["Har VM me poora OS", "Boot hone me samay", "Bhaari par alag-alag"], "bars": [0.55, 0.55, 0.55]},
+            {"head": "Container", "lines": ["OS host se share", "Secondon me start", "Halka, par kernel same"], "accent": "violet", "bars": [0.18, 0.18, 0.18, 0.18, 0.18, 0.18]},
+        ],
+        "foot": "Container tez aur halka hai; VM zyada alag aur bhaari.",
+    },
+    {
+        "out": "docker-build-run-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Image se container",
+        "title": "Dockerfile se chalte container tak",
+        "nodes": [
+            {"label": "Dockerfile", "sub": "recipe likhi hui", "note": "Base image, files, install steps aur start command."},
+            {"label": "Image", "sub": "build ka nateeja", "note": "Ek fixed snapshot — same image har machine par same chalti hai."},
+            {"label": "Registry", "sub": "image ka store", "note": "Team aur server yahin se image kheenchte hain."},
+            {"label": "Container", "sub": "chalta hua image", "note": "Ek image se das container, alag-alag port par."},
+        ],
+        "foot": "Image recipe ka nateeja hai; container us recipe ka chalta hua roop.",
+    },
+    {
+        "out": "python-roadmap-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Python roadmap",
+        "title": "Chaar kadam, chhah hafte",
+        "cards": [
+            {"head": "1. Basics", "lines": ["Variables, loops, functions", "Roz 30 minute"]},
+            {"head": "2. Data", "lines": ["Lists, dicts, files", "Chhote scripts"], "accent": "violet"},
+            {"head": "3. Libraries", "lines": ["requests, pandas", "Error handling"]},
+            {"head": "4. Project", "lines": ["Ek asli kaam", "GitHub par daalo"]},
+        ],
+        "foot": "Har kadam par likhna zaroori hai — sirf video dekhna kaafi nahi.",
+    },
+    {
+        "out": "python-practice-loop-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Practice loop",
+        "title": "Seekhne ka chakkar jo chalta rahe",
+        "nodes": [
+            {"label": "Padho", "sub": "ek chhota concept", "note": "Ek baar me ek cheez — 20 minute se zyada nahi."},
+            {"label": "Likhо", "sub": "bina dekhe code", "note": "Copy-paste se seekh nahi hoti; galti se hoti hai."},
+            {"label": "Todo", "sub": "jaan-boojh kar", "note": "Code ka ek hissa hatao aur dobara chalane ki koshish karo."},
+            {"label": "Project me daalo", "sub": "chhota sa use", "note": "Jo concept project me aaya, wahi yaad rehta hai."},
+        ],
+        "foot": "Galtiyan hi syllabus hain — unhe padhna chhodo mat.",
+    },
 ]
 
 DRAW = {"cards": draw_cards, "flow": draw_flow, "scale": draw_scale}

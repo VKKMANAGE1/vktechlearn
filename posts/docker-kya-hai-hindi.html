@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me — VK Tech Learn</title>
+<meta name="description" content="Docker kya hai, container aur VM ka farq, Dockerfile se image tak ka safar, 8 commands aur pehla container chalane ki guide. Shuruaat se, commands ke saath.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me">
+<meta property="og:description" content="Docker kya hai, container aur VM ka farq, Dockerfile se image tak ka safar, 8 commands aur pehla container chalane ki guide. Shuruaat se, commands ke saath.">
+<meta property="og:url" content="https://vktechlearn.site/posts/docker-kya-hai-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/docker-kya-hai-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="Docker, DevOps, Backend">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/docker-kya-hai-hindi.jpg">
+<meta property="og:image:alt" content="Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me">
+<meta property="article:published_time" content="2026-11-25T21:00:00+05:30">
+<meta property="article:modified_time" content="2026-11-25T21:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="Docker">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="Backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me">
+<meta name="twitter:description" content="Docker kya hai, container aur VM ka farq, Dockerfile se image tak ka safar, 8 commands aur pehla container chalane ki guide. Shuruaat se, commands ke saath.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/docker-kya-hai-hindi.jpg">
+<meta name="twitter:image:alt" content="Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me","description":"Docker kya hai, container aur VM ka farq, Dockerfile se image tak ka safar, 8 commands aur pehla container chalane ki guide. Shuruaat se, commands ke saath.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/docker-kya-hai-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/docker-kya-hai-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/docker-kya-hai-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/docker-kya-hai-hindi.jpg","datePublished":"2026-11-25T21:00:00+05:30","dateModified":"2026-11-25T21:00:00+05:30","articleSection":"Docker","keywords":"Docker, DevOps, Backend"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me","item":"https://vktechlearn.site/posts/docker-kya-hai-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">Docker</span><span class="tag">DevOps</span>
+      <time datetime="2026-11-25T21:00:00+05:30">25 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/docker-kya-hai-hindi.jpg" alt="Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>एक image, दस container — हर जगह वही चीज़ चलती है, चाहे laptop हो या server</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>"मेरी machine पर तो चल रहा था" — यह वाक्य software history की सबसे महंगी line है। एक developer के laptop पर app चलती है, server पर वही code fail हो जाता है, क्योंकि वहाँ Node का version अलग है, कोई library missing है, या path कुछ और है। Docker इसी समस्या का जवाब है: app को उसके पूरे माहौल के साथ एक box में बंद कर दो, और वह box जहाँ भी खुले, वहीं वैसे ही चले।</p>
+
+      <p>इस guide में मैं Docker को शुरुआत से खोलूँगा — container क्या है, virtual machine से कैसे अलग है, image और container में फर्क, Dockerfile कैसे लिखें, आपका पहला container, आठ commands जो रोज़ काम आते हैं, Compose कब चाहिए, और वे चार जगहें जहाँ नए लोग गलती करते हैं।</p>
+
+      <p><strong>छोटा जवाब:</strong> Docker एक tool है जो आपकी app को dependencies, settings और files के साथ एक container में पैक करता है। Container एक हल्का box है जो host machine का kernel साझा करता है, इसलिए वह virtual machine से तेज़ चलता है। Image वह पैक है, container उसका चलता हुआ रूप, और Dockerfile वह recipe है जिससे image बनती है।</p>
+
+      <h2>Docker kya hai — समस्या से शुरू करें</h2>
+
+      <p>मान लीजिए आपकी app को तीन चीज़ें चाहिए: Python 3.12, PostgreSQL 16 और एक specific system library. अब सोचें कि यही setup पाँच developers के laptop, दो test servers और एक production server पर बनाना है। हर जगह version थोड़ा अलग, किसी के Mac पर path अलग, किसी के Windows पर library install ही नहीं होती।</p>
+
+      <p>Docker कहता है — यह setup एक बार लिखो, और फिर हर जगह वही चलाओ। जो चीज़ आपने अपने laptop पर test की, वही production में जाती है, क्योंकि दोनों जगह एक ही image चल रही है। यही वजह है कि Docker आज लगभग हर team के deployment का हिस्सा है।</p>
+
+      <p>Docker कोई virtual machine नहीं है, और यह भी याद रखें कि यह security का जादुई tool नहीं है। Container आपको एक जैसा माहौल देता है, पर अगर आपने image में secret डाल दिया, तो वह secret image के साथ ही घूमेगा।</p>
+
+      <h2>Container aur VM ka farq</h2>
+
+      <figure>
+      <img src="../img/posts/vm-vs-container-hindi.jpg" alt="virtual machine में हर VM का पूरा OS और container में host OS साझा करना" loading="lazy" decoding="async">
+      <figcaption>VM पूरा घर है, container एक कमरा — दोनों में अलग रहते हैं, पर एक कीमत पर</figcaption>
+      </figure>
+
+      <p>Virtual machine में हर VM का अपना पूरा operating system होता है। इसका फायदा है पूरा isolation — एक VM अंदर से अलग मशीन जैसी है। नुकसान यह है कि हर VM को boot होने में समय लगता है, हर VM का OS disk और RAM खाता है, और एक host पर कम ही VMs चल पाती हैं।</p>
+
+      <p>Container में OS साझा होता है — वह host के kernel का इस्तेमाल करता है और सिर्फ़ अपनी files, libraries और process लेकर चलता है। इसीलिए वह सेकंडों में शुरू होता है और मेगाबाइट्स में बैठता है, जबकि VM गीगाबाइट्स लेती है।</p>
+
+      <table>
+        <thead>
+          <tr><th>पहलू</th><th>Virtual machine</th><th>Container</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>OS</td><td>हर VM का अपना</td><td>Host से साझा</td></tr>
+          <tr><td>Startup</td><td>मिनटों में</td><td>सेकंडों में</td></tr>
+          <tr><td>Size</td><td>GB में</td><td>MB में</td></tr>
+          <tr><td>Isolation</td><td>बहुत मज़बूत</td><td>अच्छा, पर kernel साझा</td></tr>
+          <tr><td>किसके लिए</td><td>अलग OS, पूरा sandbox</td><td>app पैक करके चलाना</td></tr>
+        </tbody>
+      </table>
+
+      <p>इसका मतलब यह नहीं कि VM पुरानी हो गई। जब आपको अलग OS चलाना हो, या बहुत मज़बूत isolation चाहिए, तो VM सही है। ज़्यादातर app deployment के लिए container हल्का और तेज़ विकल्प है।</p>
+
+      <h2>Image, container, Dockerfile aur registry</h2>
+
+      <figure>
+      <img src="../img/posts/docker-build-run-hindi.jpg" alt="Dockerfile से image, registry से container तक का सफर" loading="lazy" decoding="async">
+      <figcaption>Recipe, पका हुआ पैक, उसका store, और चलता हुआ box — चारों अलग चीज़ें हैं</figcaption>
+      </figure>
+
+      <p><strong>Dockerfile:</strong> एक text file जिसमें लिखा होता है कि image कैसे बनेगी — कौन सी base image, कौन सी files, कौन सी command चलेगी।</p>
+
+      <p><strong>Image:</strong> Dockerfile को build करने पर बनी हुई चीज़। यह read-only है और हर जगह एक जैसी चलती है। इसे एक "स्नैपशॉट" समझें।</p>
+
+      <p><strong>Container:</strong> image का चलता हुआ रूप। एक image से दस containers चला सकते हैं — जैसे एक ही recipe से दस थालियाँ।</p>
+
+      <p><strong>Registry:</strong> images रखने की जगह, जैसे Docker Hub या company का private registry. Server यहीं से image खींचता है।</p>
+
+      <h2>आपका पहला container</h2>
+
+      <p>Docker install करने के बाद terminal खोलें और यह चलाएँ:</p>
+
+      <pre><code>docker run hello-world</code></pre>
+
+      <p>यह छोटी image खींचेगा और एक संदेश दिखाएगा। अब कुछ असली चीज़:</p>
+
+      <pre><code>docker run -d -p 8080:80 --name my-web nginx</code></pre>
+
+      <p>यहाँ चार चीज़ें हो रही हैं। <code>-d</code> का मतलब container पीछे चले, <code>-p 8080:80</code> आपके laptop का port 8080 container के port 80 से जोड़ता है, <code>--name</code> container को नाम देता है, और <code>nginx</code> image का नाम है। अब browser में <code>localhost:8080</code> खोलें — default nginx page दिखेगा।</p>
+
+      <p>देखें कि क्या चल रहा है:</p>
+
+      <pre><code>docker ps</code></pre>
+
+      <p>रोकें और हटाएँ:</p>
+
+      <pre><code>docker stop my-web
+      docker rm my-web</code></pre>
+
+      <p>अगर port पहले से इस्तेमाल में हो तो error आएगा — तब दूसरा port चुनें, जैसे <code>-p 8081:80</code>. यह सबसे आम शुरुआती अड़चन है।</p>
+
+      <h2>Dockerfile kaise likhein</h2>
+
+      <p>मान लीजिए एक छोटी Python app है जिसमें <code>app.py</code> और <code>requirements.txt</code> हैं। Dockerfile ऐसा दिखेगा:</p>
+
+      <pre><code>FROM python:3.12-slim
+      WORKDIR /app
+      COPY requirements.txt .
+      RUN pip install --no-cache-dir -r requirements.txt
+      COPY . .
+      EXPOSE 8000
+      CMD ["python", "app.py"]</code></pre>
+
+      <p>हर line का काम समझें। <code>FROM</code> base image चुनती है — slim वाला छोटा रहता है। <code>WORKDIR</code> अंदर का folder तय करता है। पहले सिर्फ़ requirements copy करके install करना एक तरकीब है: जब code बदले पर requirements न बदलें, तो Docker को install वाला step दोबारा नहीं करना पड़ता और build तेज़ होता है। <code>COPY . .</code> बाकी code डालता है। <code>CMD</code> बताता है कि container शुरू होने पर क्या चले।</p>
+
+      <p>Build और run:</p>
+
+      <pre><code>docker build -t my-app .
+      docker run -p 8000:8000 my-app</code></pre>
+
+      <p>एक ज़रूरी आदत: <code>.dockerignore</code> file बनाएँ और उसमें <code>.git</code>, <code>node_modules</code>, <code>.venv</code>, <code>.env</code> डालें। वरना ये सब image में चले जाएँगे — image भारी होगी और secret भी अंदर आ सकता है।</p>
+
+      <h2>आठ commands जो रोज़ काम आते हैं</h2>
+
+      <table>
+        <thead>
+          <tr><th>Command</th><th>काम</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>docker ps -a</td><td>सारे containers, बंद वाले भी</td></tr>
+          <tr><td>docker images</td><td>local images की सूची</td></tr>
+          <tr><td>docker logs -f name</td><td>container के logs देखना</td></tr>
+          <tr><td>docker exec -it name sh</td><td>container के अंदर shell</td></tr>
+          <tr><td>docker build -t tag .</td><td>image बनाना</td></tr>
+          <tr><td>docker run ...</td><td>container चलाना</td></tr>
+          <tr><td>docker compose up -d</td><td>कई services एक साथ</td></tr>
+          <tr><td>docker system prune</td><td>फालतू data साफ़ करना</td></tr>
+        </tbody>
+      </table>
+
+      <p>"कुछ काम नहीं कर रहा" की सबसे तेज़ जाँच है: <code>docker ps -a</code> से देखें कि container बंद तो नहीं हो गया, फिर <code>docker logs</code> पढ़ें। ज़्यादातर समस्याएँ वहीं साफ़ दिख जाती हैं।</p>
+
+      <h2>Docker Compose kab चाहिए</h2>
+
+      <p>जब app में एक से ज़्यादा हिस्से हों — app, database, cache — तो हर एक को अलग command से चलाना थकाऊ हो जाता है। Compose में सब एक YAML file में लिख दिया जाता है, और एक command से सब चल जाता है।</p>
+
+      <pre><code>services:
+        web:
+          build: .
+          ports: ["8000:8000"]
+          depends_on: [db]
+        db:
+          image: postgres:16
+          environment:
+            POSTGRES_PASSWORD: example
+          volumes:
+            - pgdata:/var/lib/postgresql/data
+      volumes:
+        pgdata:</code></pre>
+
+      <p>Compose में दो आदतें काम आती हैं। पहला — service का नाम इस्तेमाल करें, <code>localhost</code> नहीं। जब app को database से बात करनी हो, तो host <code>db</code> लिखें, क्योंकि container के अंदर <code>localhost</code> का मतलब वह container खुद होता है। दूसरा — values को <code>.env</code> file से लाएँ, code में न लिखें।</p>
+
+      <p>यहाँ <code>volumes</code> वाली line सबसे ज़रूरी है। Container बंद होने पर उसके अंदर का data चला जाता है; database का data बचाने के लिए उसे volume में रखना पड़ता है। यह बात नई team के साथ सबसे ज़्यादा महंगी गलती बनती है — "database खाली क्यों हो गया" का जवाब अक्सर यही होता है।</p>
+
+      <h2>चार जगहें जहाँ ध्यान रखें</h2>
+
+      <p><strong>1. Secret image में न डालें।</strong> Dockerfile या image में API key लिखना उसे हर उस जगह भेज देता है जहाँ image जाती है। Secrets runtime पर environment variables या secret manager से दें।</p>
+
+      <p><strong>2. Image छोटी रखें।</strong> छोटी image तेज़ deploy होती है और उसमें कम कमज़ोरियाँ होती हैं। slim/alpine base चुनें, build के बाद cache साफ़ करें, और ज़रूरत न हो तो पूरा SDK image में न रखें।</p>
+
+      <p><strong>3. root user से न चलाएँ।</strong> Production में container को non-root user से चलाने की आदत डालें। यह एक line का बदलाव है और सुरक्षा में बड़ा फर्क लाता है।</p>
+
+      <p><strong>4. Logs को बाहर निकालें।</strong> Container के अंदर file में log लिखना ठीक नहीं, क्योंकि container हटने पर log भी चला जाएगा। Logs stdout पर लिखें और बाहर से इकट्ठा करें।</p>
+
+      <h2>Container को server पर ले जाना</h2>
+
+      <p>Laptop पर चलाना आधा काम है; server पर चलाना दूसरा आधा। तीन साफ़ रास्ते हैं। पहला — registry: image को tag के साथ push करें, server पर pull करें और run करें। यह सबसे सीधा तरीका है और छोटी team के लिए काफ़ी है। दूसरा — एक ही server पर Compose: जब app, database और cache तीनों एक machine पर चलने हों। तीसरा — managed container platform: जहाँ image देने पर platform खुद scaling, restart और HTTPS सँभालता है।</p>
+
+      <p>किसी भी रास्ते पर एक आदत ज़रूरी है — image को version tag दें, सिर्फ़ <code>latest</code> पर न छोड़ें। जब नया deploy गड़बड़ करे, तो पुराना tag वापस चलाकर दो मिनट में पीछे लौटा जा सकता है। <code>latest</code> के साथ यह पता ही नहीं चलता कि पहले कौन सा version चल रहा था।</p>
+
+      <p>Deploy से पहले तीन जाँच करें: container non-root user से चल रहा है या नहीं, secrets बाहर से आ रहे हैं या image में घुसे हैं, और health check जुड़ा है या नहीं। यही तीन चीज़ें बाद में सबसे ज़्यादा परेशान करती हैं।</p>
+
+      <h2>Docker kab zaroori nahi hai</h2>
+
+      <p>अगर आपके पास एक छोटी static site है जो किसी shared hosting पर चल रही है, तो Docker जोड़ने से सिर्फ़ एक नई परत बनेगी। अगर आप अकेले एक छोटा script चला रहे हैं, तो virtual environment काफ़ी है। अगर team में सिर्फ़ दो लोग हैं और सब एक जैसा laptop इस्तेमाल करते हैं, तो शायद पहले setup document लिखना ज़्यादा फायदेमंद हो।</p>
+
+      <p>Docker तब सबसे ज़्यादा फायदा देता है जब: team बड़ी हो, deployments बार-बार हों, या कई services एक साथ चलानी हों। तब यह "मेरी machine पर चलता था" वाली समस्या को लगभग खत्म कर देता है।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>मेरी पहली Docker image 1.2 GB की थी, क्योंकि मैंने base image के तौर पर पूरा build tools वाला image लिया और <code>.dockerignore</code> नहीं बनाया। Deploy हर बार धीमा होता था और मुझे लगता था कि server खराब है। जब मैंने slim base और multi-stage build इस्तेमाल किया, वही image 180 MB की हो गई और deploy का समय एक-चौथाई रह गया।</p>
+
+      <p>दूसरी बात जो मैंने सीखी: container के अंदर झाँकने की आदत बहुत काम आती है। <code>docker exec -it name sh</code> से अंदर जाकर देखें कि files कहाँ हैं, environment variables क्या हैं, और process चल रहा है या नहीं। आधी समस्याएँ उसी समय साफ़ हो जाती हैं।</p>
+
+      <p>तीसरी बात: Docker सीखने का सबसे अच्छा तरीका अपनी ही app को पैक करना है। कोई tutorial project नहीं — अपना वही project जो आप रोज़ चलाते हैं। जब वह एक command से चलने लगे, तब समझ आती है कि सब कुछ किस हद तक आसान हो सकता है।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>Docker आपकी app और उसके माहौल को एक image में पैक करता है, और container उसे हर जगह एक जैसा चलाता है। VM से यह हल्का है क्योंकि OS साझा होता है। शुरुआत के लिए चार चीज़ें काफ़ी हैं: एक Dockerfile, एक <code>.dockerignore</code>, दो commands (<code>build</code> और <code>run</code>), और logs पढ़ने की आदत। जब दूसरी service जुड़े, तब Compose आ जाएगा।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या Docker सीखने के लिए Linux आना चाहिए?</h3>
+
+      <p>ज़रूरी नहीं। Docker Desktop Windows और Mac पर चल जाता है। पर container के अंदर basic Linux commands — <code>ls</code>, <code>cat</code>, <code>ps</code> — काम आते हैं।</p>
+
+      <h3>क्या container का data बचता है?</h3>
+
+      <p>नहीं, container हटने पर उसके अंदर का data चला जाता है। बचाने के लिए volume इस्तेमाल करें, और database के लिए यह अनिवार्य है।</p>
+
+      <h3>Docker और Kubernetes में क्या रिश्ता है?</h3>
+
+      <p>Docker image बनाता और चलाता है; Kubernetes कई containers को कई machines पर सँभालता है। छोटे setup में Docker काफ़ी है, बड़े में orchestration चाहिए।</p>
+
+      <h3>क्या image को छोटा करना ज़रूरी है?</h3>
+
+      <p>हर बार नहीं, पर फायदेमंद है। छोटी image तेज़ deploy होती है, कम जगह लेती है और उसमें कम अनचाही libraries होती हैं।</p>
+
+      <h3>क्या Docker production के लिए सुरक्षित है?</h3>
+
+      <p>हाँ, अगर basics ठीक हों — non-root user, secrets बाहर, image update, और registry से ही deploy. Container खुद security नहीं देता; वह आपके setup पर निर्भर है।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://docs.docker.com/get-started/" rel="nofollow noopener" target="_blank">Docker — Get started (official)</a></li>
+        <li><a href="https://docs.docker.com/engine/storage/volumes/" rel="nofollow noopener" target="_blank">Docker — Volumes documentation</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>
