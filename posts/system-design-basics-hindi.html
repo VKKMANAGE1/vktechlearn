@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Design Basics: Scalability, Cache aur Load Balancer — VK Tech Learn</title>
+<meta name="description" content="System design ki basic baatein — users ka hisaab, vertical vs horizontal scaling, load balancer, cache, database aur ek chhota design walkthrough — easy guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="System Design Basics: Scalability, Cache aur Load Balancer">
+<meta property="og:description" content="System design ki basic baatein — users ka hisaab, vertical vs horizontal scaling, load balancer, cache, database aur ek chhota design walkthrough — easy guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/system-design-basics-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/system-design-basics-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="System Design, Backend, Software Engineering">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/system-design-basics-hindi.jpg">
+<meta property="og:image:alt" content="System Design Basics: Scalability, Cache aur Load Balancer">
+<meta property="article:published_time" content="2026-11-25T19:20:00+05:30">
+<meta property="article:modified_time" content="2026-11-25T19:20:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="System Design">
+<meta property="article:tag" content="System Design">
+<meta property="article:tag" content="Backend">
+<meta property="article:tag" content="Software Engineering">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="System Design Basics: Scalability, Cache aur Load Balancer">
+<meta name="twitter:description" content="System design ki basic baatein — users ka hisaab, vertical vs horizontal scaling, load balancer, cache, database aur ek chhota design walkthrough — easy…">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/system-design-basics-hindi.jpg">
+<meta name="twitter:image:alt" content="System Design Basics: Scalability, Cache aur Load Balancer">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"System Design Basics: Scalability, Cache aur Load Balancer","description":"System design ki basic baatein — users ka hisaab, vertical vs horizontal scaling, load balancer, cache, database aur ek chhota design walkthrough — easy…","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/system-design-basics-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/system-design-basics-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/system-design-basics-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/system-design-basics-hindi.jpg","datePublished":"2026-11-25T19:20:00+05:30","dateModified":"2026-11-25T19:20:00+05:30","articleSection":"System Design","keywords":"System Design, Backend, Software Engineering"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"System Design Basics: Scalability, Cache aur Load Balancer","item":"https://vktechlearn.site/posts/system-design-basics-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">System Design</span><span class="tag">Backend</span>
+      <time datetime="2026-11-25T19:20:00+05:30">25 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">System Design Basics: Scalability, Cache aur Load Balancer</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/system-design-basics-hindi.jpg" alt="System Design Basics: Scalability, Cache aur Load Balancer" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>एक load balancer, तीन server, और बीच में cache — बड़े system की शुरुआत इतनी ही सादी होती है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>System design वह काम है जिसमें तय होता है कि आपकी app एक हज़ार users पर भी चले और एक लाख पर भी — बिना हर हफ़्ते server बदलने के। यह कोई एक tool या framework नहीं है; यह सवाल पूछने का तरीका है: कितने users, कितनी request, कितना data, कितनी देरी चलेगी, और क्या चीज़ खराब हो सकती है।</p>
+
+      <p>इस guide में मैं वही बुनियादी चीज़ें खोलूँगा जो हर interview और हर असली project में काम आती हैं — चार शुरुआती सवाल, vertical और horizontal scaling, load balancer, cache, database के बुनियादी फैसले, और एक छोटा photo-sharing app का design step-by-step. अंत में वे पाँच गलतियाँ हैं जो शुरुआती engineers सबसे ज़्यादा करते हैं।</p>
+
+      <p><strong>छोटा जवाब:</strong> System design में पहले numbers निकालें — कितनी request प्रति सेकंड, कितना data, कितना read और कितना write. फिर उसी हिसाब से सबसे सादा setup चुनें: एक server, एक database, ऊपर एक cache. जब वह हद पर पहुँचे, तब load balancer और दूसरा server जोड़ें। जो design बिना ज़रूरत के जटिल है, वह बड़ी system नहीं, बड़ी मुसीबत है।</p>
+
+      <h2>System design kya hai</h2>
+
+      <p>एक ही feature को कई तरह से बनाया जा सकता है। "User अपनी profile photo बदल सके" — यह एक line का feature है, पर उसके पीछे तय करना पड़ता है: photo कहाँ रखेंगे, कितने size में, कौन देख सकता है, पुरानी photo कब तक रखेंगे, और अगर storage भर जाए तो क्या होगा। System design इन्हीं फैसलों का नाम है।</p>
+
+      <p>अच्छा design तीन चीज़ें करता है। पहला — ज़रूरत से ज़्यादा नहीं करता; जिस चीज़ की ज़रूरत नहीं, उसे नहीं जोड़ता। दूसरा — बढ़ने की जगह छोड़ता है, यानी आज एक server से चल सके और कल तीन जोड़ सकें बिना code फिर से लिखे। तीसरा — खराबी मानकर चलता है; मान लेता है कि कोई server बंद होगा, कोई request fail होगी, और उसके लिए रास्ता रखता है।</p>
+
+      <h2>चार सवाल जो हर design से पहले पूछें</h2>
+
+      <p><strong>1. कितने users और कितनी request?</strong> "बहुत सारे" एक जवाब नहीं है। 10,000 daily users और 10 लाख daily users के design में ज़मीन-आसमान का फर्क है। शुरुआत में एक rough calculation काफ़ी होती है: daily users × प्रति user request ÷ 86,400 = average request per second. Peak आमतौर पर average का 3–5 गुना होता है, त्योहार या sale के दिन और ज़्यादा।</p>
+
+      <p><strong>2. Read ज़्यादा है या write?</strong> Blog, catalogue और profile pages में read 90% से ज़्यादा होते हैं — वहाँ cache सबसे बड़ा हथियार है। Payment, chat और logging में write ज़्यादा होते हैं — वहाँ queue और database की लिखने की क्षमता मायने रखती है।</p>
+
+      <p><strong>3. कितना data और कितने साल?</strong> एक user का record 2 KB है या 2 MB, यह तय करता है कि सब एक database में रहेगा या बाँटना पड़ेगा। साथ में यह भी सोचें कि data कब तक रखना है — हर चीज़ हमेशा के लिए रखना सबसे महंगा फैसला है।</p>
+
+      <p><strong>4. कितनी देरी और कितनी downtime चलेगी?</strong> एक dashboard के लिए 2 सेकंड ठीक है; payment page के लिए 200 मिलीसेकंड चाहिए। और "साल में 1 घंटा बंद" बनाम "कभी बंद नहीं" — दूसरे के लिए आपको दुगुना खर्च और दुगुनी जटिलता चुकानी पड़ेगी।</p>
+
+      <h2>Scaling: बड़ा server या ज़्यादा server</h2>
+
+      <figure>
+      <img src="../img/posts/scaling-vertical-horizontal-hindi.jpg" alt="vertical scaling में एक server की capacity बढ़ाना और horizontal scaling में servers की गिनती बढ़ाना" loading="lazy" decoding="async">
+      <figcaption>पहला रास्ता आसान पर सीमित; दूसरा रास्ता मुश्किल पर असीमित</figcaption>
+      </figure>
+
+      <p><strong>Vertical scaling</strong> का मतलब है एक ही server में CPU, RAM या disk बढ़ाना। यह सबसे आसान है — code में कुछ नहीं बदलता, बस plan बदलती है। पर हर machine की एक हद होती है, और बड़ी machine का खर्च तेज़ी से बढ़ता है। छोटी team के लिए शुरुआत यहीं से सही है।</p>
+
+      <p><strong>Horizontal scaling</strong> का मतलब है server की गिनती बढ़ाना और आगे load balancer लगाना। इसकी असली शर्त यह है कि आपकी app "stateless" हो — यानी किसी भी server पर request जाए, जवाब वही मिले। अगर session या uploaded file सिर्फ़ एक server की disk पर है, तो दूसरा server उसे नहीं जानता। इसीलिए session को Redis जैसी जगह और files को object storage में रखा जाता है।</p>
+
+      <p>मेरी सलाह: शुरुआत vertical से करें, पर code ऐसा लिखें कि horizontal कल मुमकिन हो — session बाहर रखें, local file पर भरोसा न करें, और हर server को एक जैसा बनाएँ। यह आदत बाद में महीनों का काम बचा देती है।</p>
+
+      <h2>Load balancer क्या करता है</h2>
+
+      <p>Load balancer आने वाली requests को कई servers में बाँटता है। साथ में वह तीन काम और करता है: health check (कौन सा server ज़िंदा है), SSL termination (HTTPS वहीं खत्म हो जाए), और कभी-कभी rate limiting.</p>
+
+      <p>बाँटने के कुछ आम तरीके हैं। <strong>Round robin</strong> बारी-बारी से हर server को request देता है — सबसे सादा। <strong>Least connections</strong> उस server को भेजता है जिस पर सबसे कम काम चल रहा है — तब अच्छा जब requests का वज़न अलग-अलग हो। <strong>IP hash</strong> एक ही user को हमेशा एक ही server पर भेजता है — तब काम आता है जब session कहीं local है, पर यह horizontal scaling की भावना के खिलाफ़ है।</p>
+
+      <p>एक बात जो अक्सर छूट जाती है: load balancer खुद भी एक हिस्सा है जो fail हो सकता है। Production में इसे दो में रखा जाता है, या managed service इस्तेमाल की जाती है। इस विषय को मैंने <a href="/posts/server-cluster-kya-hai-guide.html">server cluster और failover वाली guide</a> में विस्तार से लिखा है।</p>
+
+      <h2>Cache: सबसे सस्ता जवाब वह है जो काम ही न करे</h2>
+
+      <figure>
+      <img src="../img/posts/cache-request-path-hindi.jpg" alt="browser cache, CDN, app cache और database से गुज़रती एक request" loading="lazy" decoding="async">
+      <figcaption>हर परत पर एक ही सवाल — यह जवाब पहले से किसी के पास है क्या?</figcaption>
+      </figure>
+
+      <p>Cache किसी नतीजे को सस्ती जगह पर रख देता है, ताकि अगली बार वही सवाल महंगी जगह तक न पहुँचे। चार परतें आम हैं। <strong>Browser cache</strong> — images, CSS और JS user के फोन में ही रहते हैं। <strong>CDN</strong> — static files दुनिया के किनारों से आते हैं, आपके server तक नहीं आते। <strong>App cache</strong> (Redis जैसा) — database के नतीजे milliseconds में लौटाता है। <strong>Database cache</strong> — database अपने अंदर ही कुछ चीज़ें याद रखता है।</p>
+
+      <p>Cache का सबसे बड़ा सवाल "कब हटाना है" होता है। तीन आम तरीके हैं: <em>TTL</em> (कुछ मिनट बाद अपने आप हट जाए), <em>write-through</em> (जब data बदले तो cache भी बदले), और <em>cache-aside</em> (पहले cache देखो, न मिले तो database से लाओ और cache में डाल दो)। सबसे आम cache-aside है, क्योंकि इसमें cache बंद भी हो जाए तो app चलती रहती है।</p>
+
+      <p>एक चेतावनी: cache में वह data मत रखें जिसे हर बार ताज़ा चाहिए — जैसे bank balance या stock count. और cache को "source of truth" मत बनाएँ; असली data database में रहे, cache सिर्फ़ तेज़ रास्ता हो।</p>
+
+      <h2>Database: तीन फैसले</h2>
+
+      <p><strong>SQL या NoSQL?</strong> अगर data में रिश्ते हैं, पैसा और transaction हैं, और आपको "हर order के साथ उसका customer" जैसी query चाहिए, तो relational database (PostgreSQL, MySQL) सही है। अगर data बहुत बड़ा, shape बदलता हुआ या document जैसा है, तो document store ठीक रहता है। ज़्यादातर apps के लिए PostgreSQL से शुरुआत करना आज भी सबसे समझदारी है।</p>
+
+      <p><strong>Replication:</strong> एक primary database जो लिखता है, और एक-दो replica जो पढ़ते हैं। इससे read का load बँटता है और primary बंद होने पर replica आगे आ सकता है। नुकसान यह है कि replica थोड़ा पीछे रह सकता है — यानी आपने अभी जो लिखा, वह पढ़ने में न मिले। इसे replication lag कहते हैं और UI में इसका ध्यान रखना पड़ता है।</p>
+
+      <p><strong>Sharding:</strong> जब एक database की हद आ जाए, तो data को कई databases में बाँटा जाता है — जैसे user_id के हिसाब से। यह सबसे मुश्किल कदम है, क्योंकि cross-shard query, rebalancing और transactions सब उलझ जाते हैं। इसे तभी करें जब replication और indexing से काम न बने।</p>
+
+      <h2>एक छोटा design walkthrough</h2>
+
+      <p>मान लीजिए हमें एक photo-sharing app बनाना है जहाँ लोग photo upload करें और दूसरे देखें। चलिए numbers से शुरू करें।</p>
+
+      <table>
+        <thead>
+          <tr><th>मान</th><th>हिसाब</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Daily active users</td><td>2 लाख</td></tr>
+          <tr><td>प्रति user 10 photo देखना, 0.2 upload</td><td>20 लाख reads, 40 हज़ार writes प्रति दिन</td></tr>
+          <tr><td>Average per second</td><td>~23 reads/s, ~0.5 writes/s</td></tr>
+          <tr><td>Peak (4x)</td><td>~90 reads/s, ~2 writes/s</td></tr>
+          <tr><td>Photo का average size</td><td>1.5 MB × 40 हज़ार = ~60 GB प्रति दिन</td></tr>
+        </tbody>
+      </table>
+
+      <p>पहला नतीजा: reads writes से 50 गुना ज़्यादा हैं, इसलिए cache और CDN सबसे ज़्यादा फायदा देंगे। दूसरा नतीजा: 60 GB प्रति दिन का मतलब है कि photos database में नहीं, object storage में जाएँगी — database में सिर्फ़ उनका record और link रहेगा।</p>
+
+      <ol>
+        <li><strong>Upload:</strong> app एक pre-signed URL माँगती है, photo सीधे object storage में जाती है, और database में एक row बनती है — user, size, timestamp, visibility.</li>
+        <li><strong>Thumbnail:</strong> upload होने पर एक event निकलता है, एक worker तीन sizes बनाता है। यह काम request के बीच में नहीं, पीछे होता है।</li>
+        <li><strong>Feed:</strong> user के follow किए लोगों की latest photos के IDs cache में रहते हैं। पहली बार database से, उसके बाद cache से।</li>
+        <li><strong>Serve:</strong> photos CDN से जाती हैं, इसलिए app server पर image का load नहीं आता।</li>
+        <li><strong>Failure:</strong> अगर thumbnail worker रुक जाए, तो upload फिर भी सफल रहे — बस thumbnail थोड़ी देर से दिखे। यही "graceful degradation" है।</li>
+      </ol>
+
+      <p>ध्यान दें कि इस design में अभी एक भी load balancer नहीं है — 90 reads/s एक ठीक server और cache से चल जाते हैं। Load balancer तब जोड़ें जब एक server की हद आए, न कि शुरुआत में ही।</p>
+
+      <h2>पाँच गलतियाँ जो शुरुआत में होती हैं</h2>
+
+      <p><strong>1. Microservices से शुरुआत।</strong> छह services, छह deployments और आपस में बात करने का ढाँचा — यह सब एक छोटी team को धीमा कर देता है। पहले एक app, अंदर साफ़ modules. जब कोई module अलग करने की असली वजह आए, तब अलग करें।</p>
+
+      <p><strong>2. Numbers न निकालना।</strong> "Scale के लिए" बहुत सारी चीज़ें जोड़ देना, जबकि असली load 20 requests/s है। पहले नापें, फिर बनाएँ।</p>
+
+      <p><strong>3. Cache को सच मान लेना।</strong> Cache भर जाए, बंद हो जाए या पुराना हो जाए — app को फिर भी चलना चाहिए। अगर cache हटाते ही app टूटे, तो design में कुछ गलत है।</p>
+
+      <p><strong>4. Logs और metrics बाद में।</strong> जब तक समस्या आएगी, तब तक data नहीं होगा। शुरुआत से request time, error rate और queue length नापें।</p>
+
+      <p><strong>5. Backup को अनदेखा करना।</strong> Replication backup नहीं है। गलती से delete हुई row replica में भी delete हो जाएगी। अलग backup और restore की कोशिश — दोनों ज़रूरी हैं।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>मैंने एक बार एक internal dashboard पर दो हफ़्ते cache और queue जोड़ने में लगाए, क्योंकि मुझे लगा load बहुत है। बाद में metrics देखे तो पता चला कि सबसे धीमी चीज़ एक query थी जो बिना index के चल रही थी, और उसे ठीक करने में एक घंटा लगा। उस दिन के बाद मैंने एक नियम बनाया: किसी भी नई परत से पहले सबसे धीमी जगह नापो।</p>
+
+      <p>दूसरी बात जो मैंने सीखी: design का सबसे कीमती हिस्सा diagram नहीं, वह सूची है जिसमें लिखा हो कि क्या चीज़ fail हो सकती है और तब क्या होगा। जब मैं यह सूची बनाता हूँ, तो आधे "ज़रूरी" features अपने आप गिर जाते हैं और डिज़ाइन सादा हो जाता है।</p>
+
+      <p>तीसरी बात: cloud का पूरा फायदा तब मिलता है जब आप managed services का इस्तेमाल समझदारी से करें — database, queue, cache और storage पहले managed लें, और अपनी team का समय सिर्फ़ उस business logic पर लगाएँ जो सच में अलग है। <a href="/posts/aws-cloud-kya-hai-guide.html">AWS Cloud वाली guide</a> में इसका खर्च और शुरुआत दोनों समझाए गए हैं।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>System design की शुरुआत tools से नहीं, numbers से होती है। चार सवाल पूछें — कितने users, read या write, कितना data, कितनी देरी — और जो सबसे सादा setup उन numbers को पूरा करे, वही चुनें। Scaling में पहले vertical, फिर horizontal. Cache को तेज़ रास्ता मानें, सच नहीं। Database में पहले replication, बाद में sharding. और हर design के साथ यह लिखें कि क्या टूट सकता है और तब user को क्या दिखेगा। बाकी सब iteration है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या system design सीखने के लिए cloud ज़रूरी है?</h3>
+
+      <p>ज़रूरी नहीं, पर मदद करता है। एक छोटा app deploy करके load balancer, cache और database को असली में चलाकर देखना सबसे तेज़ सीखने का तरीका है।</p>
+
+      <h3>कितने users पर load balancer चाहिए?</h3>
+
+      <p>कोई जादुई number नहीं। जब एक server का CPU या response time लगातार बढ़ने लगे, तब जोड़ें। छोटे app के लिए एक अच्छा server महीनों चल जाता है।</p>
+
+      <h3>Redis cache कब न लें?</h3>
+
+      <p>जब आपका data बहुत कम हो और query पहले से तेज़ हो। बिना ज़रूरत के cache जोड़ने से सिर्फ़ एक और चीज़ fail होने की जगह बनती है।</p>
+
+      <h3>SQL बड़े scale पर चलता है?</h3>
+
+      <p>हाँ। दुनिया की कई बड़ी companies relational database पर चलती हैं, replication और अच्छे index के साथ। NoSQL तब चुनें जब data का shape या size सच में उसकी माँग करे।</p>
+
+      <h3>Interview में पहले क्या बताएँ?</h3>
+
+      <p>Requirements और numbers. Interviewer को यही देखना होता है कि आप tools से पहले सवाल पूछते हैं।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://aws.amazon.com/architecture/well-architected/" rel="nofollow noopener" target="_blank">AWS — Well-Architected Framework</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside" rel="nofollow noopener" target="_blank">Microsoft Learn — Cache-Aside pattern</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

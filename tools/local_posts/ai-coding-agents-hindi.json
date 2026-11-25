@@ -1,0 +1,11 @@
+{
+  "slug": "ai-coding-agents-hindi",
+  "title": "AI Coding Agents: Claude Code, Codex aur Copilot Ka Farq",
+  "description": "Claude Code, Codex aur Copilot me farq, terminal vs cloud agent, kaam ka setup, guardrails aur kab sirf autocomplete kaafi hota hai — easy Hindi guide.",
+  "published": "2026-11-25T19:00:00+05:30",
+  "labels": ["AI", "AI Coding", "Developer Tools"],
+  "hero": "img/posts/ai-coding-agents-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Terminal, cloud और editor — तीनों जगह agent का काम एक ही है: कम लिखवाना, ज़्यादा जाँचना"
+}

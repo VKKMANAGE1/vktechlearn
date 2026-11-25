@@ -1,0 +1,11 @@
+{
+  "slug": "system-design-basics-hindi",
+  "title": "System Design Basics: Scalability, Cache aur Load Balancer",
+  "description": "System design ki basic baatein — users ka hisaab, vertical vs horizontal scaling, load balancer, cache, database aur ek chhota design walkthrough — easy guide.",
+  "published": "2026-11-25T19:20:00+05:30",
+  "labels": ["System Design", "Backend", "Software Engineering"],
+  "hero": "img/posts/system-design-basics-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "एक load balancer, तीन server, और बीच में cache — बड़े system की शुरुआत इतनी ही सादी होती है"
+}
