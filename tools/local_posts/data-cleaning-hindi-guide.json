@@ -1,0 +1,11 @@
+{
+  "slug": "data-cleaning-hindi-guide",
+  "title": "Data Cleaning Kya Hai? Ganda Data Saaf Karne ka 7-Step Process",
+  "description": "Data cleaning ka 7-step process — missing values, duplicates, type, date format, outliers aur validation, Python aur Excel ke saath — checklist ke saath.",
+  "published": "2026-11-25T23:40:00+05:30",
+  "labels": ["Data", "Data Science", "Analytics"],
+  "hero": "img/posts/data-cleaning-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "गंदा data हटाना नहीं, समझकर ठीक करना — हर खाली cell का एक कारण होता है"
+}

@@ -1,10 +1,10 @@
 # Post plan — 190 documents → 190 posts
 
 Target: **190 posts** built from the reference documents (Google Docs + Drive PDFs).
-Posts live today: **49** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
+Posts live today: **52** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
 pages, which are separate and not counted here).
 
-Remaining: **141 topics** (after batch 1's first three), split into **24 batches of 6**. Each batch = one working turn:
+Remaining: **138 topics**, split into **23 batches of 6**. Batch 1 is complete. Each batch = one working turn:
 write 6 posts (2,000+ words each, Hinglish/Hindi), hero + 2 branded diagrams, build,
 `EXTRA_POSTS` cards, commit, push.
 
@@ -16,14 +16,14 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 
 ---
 
-## Batch 1 — Data & databases `[~]`
+## Batch 1 — Data & databases `[x]`
 
 - [x] 1. SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me
 - [x] 2. SQL vs NoSQL: Kab Kaunsa Database Chunein
 - [x] 3. Excel Formulas: 15 Formulas Jo Office Kaam Aasan Kar Dein
-- [ ] 4. Database Indexing: Query Slow Kyun Hoti Hai
-- [ ] 5. Power BI vs Tableau vs Looker Studio
-- [ ] 6. Data Cleaning: Ganda Data Saaf Karne ka 7-Step Process
+- [x] 4. Database Indexing: Query Slow Kyun Hoti Hai
+- [x] 5. Power BI vs Tableau vs Looker Studio
+- [x] 6. Data Cleaning: Ganda Data Saaf Karne ka 7-Step Process
 
 ## Batch 2 — Web & internet basics `[ ]`
 
@@ -240,3 +240,4 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 | --- | --- |
 | 2026-11-25 | Plan created. 46 posts live; 144 queued in 24 batches. |
 | 2026-11-25 | Batch 1 part 1 pushed: SQL basics, SQL vs NoSQL, Excel formulas are live. 3/6 done in batch 1. |
+| 2026-11-25 | Batch 1 complete: indexing, BI tools, data cleaning pushed. 6/6. Next: batch 2 (web basics). |

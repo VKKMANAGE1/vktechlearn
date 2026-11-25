@@ -1,0 +1,11 @@
+{
+  "slug": "database-indexing-hindi",
+  "title": "Database Indexing Kya Hai? Slow Query ka Asli Karan aur Fix",
+  "description": "Database index kya hai, B-tree kaise kaam karta hai, kis column par index lagega, EXPLAIN se slow query pakadna aur 6 galtiyan — udaharan ke saath, SQL me.",
+  "published": "2026-11-25T23:00:00+05:30",
+  "labels": ["Database", "SQL", "Performance"],
+  "hero": "img/posts/database-indexing-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "किताब का index पहले से क्रम में होता है — database का index भी वही काम करता है"
+}

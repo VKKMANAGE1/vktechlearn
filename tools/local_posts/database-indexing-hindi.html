@@ -1,0 +1,165 @@
+<p>आपकी query कल 200 मिलीसेकंड में चल रही थी, आज 8 सेकंड ले रही है। Code नहीं बदला, server भी वही है — तो फर्क कहाँ आया? ज़्यादातर मामलों में जवाब एक ही होता है: table बड़ी हो गई और database अब हर row पढ़कर देख रहा है। जिस चीज़ की कमी है, वह है index.</p>
+
+<p>इस guide में मैं index को बिल्कुल शुरुआत से खोलूँगा — वह अंदर से कैसा होता है, query को तेज़ कैसे करता है, किस column पर लगाना चाहिए और किस पर नहीं, composite index में column का क्रम क्यों मायने रखता है, EXPLAIN से समस्या कैसे पकड़ें, और वे छह गलतियाँ जो index लगाने के बाद भी query धीमी रखती हैं।</p>
+
+<p><strong>छोटा जवाब:</strong> Index एक अलग, छोटी और क्रम में सजी हुई list है जिसमें हर value के आगे यह लिखा होता है कि असली row कहाँ है। Database पूरी table पढ़ने के बजाय इस list में जगह ढूँढता है और सीधे row पर पहुँच जाता है। Index उन columns पर लगाएँ जिन पर WHERE, JOIN या ORDER BY होता है — और हर column पर नहीं, क्योंकि हर index insert और update को धीमा करता है।</p>
+
+<h2>Index kya hai — किताब का उदाहरण</h2>
+
+<p>किताब के आख़िर में index होता है: "indexing — पेज 143". आप पूरी किताब नहीं पढ़ते; आप index में शब्द ढूँढते हैं और सीधे पेज 143 पर जाते हैं। Database का index भी वही करता है, बस हज़ारों rows के साथ और मिलीसेकंड में।</p>
+
+<p>बिना index के database को sequential scan करना पड़ता है — यानी हर row पढ़कर देखना कि शर्त पूरी होती है या नहीं। 1,000 rows पर यह ठीक है; 10 लाख rows पर यह हर बार पूरी table पढ़ने जैसा है।</p>
+
+<figure>
+<img src="../img/posts/index-lookup-hindi.jpg" alt="database index में key, pointer, क्रम और उसकी कीमत" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>Index में data नहीं, बस रास्ता होता है — key से row तक</figcaption>
+</figure>
+
+<h2>B-tree ka सादा model</h2>
+
+<p>ज़्यादातर relational databases में index B-tree होता है। इसे एक उल्टे पेड़ की तरह सोचें: ऊपर एक root, बीच में कुछ nodes, और नीचे leaves जहाँ असली keys क्रम में रहती हैं। हर node कहता है "इससे छोटा बाएँ, बड़ा दाएँ"।</p>
+
+<p>इसीलिए lookup में steps बहुत कम लगते हैं। 10 लाख rows के index में भी ऊँचाई 3–4 levels की होती है, यानी database 3–4 बार "बाएँ या दाएँ" चुनकर row तक पहुँच जाता है। यही फर्क 8 सेकंड को 8 मिलीसेकंड में बदल देता है।</p>
+
+<p>B-tree इसलिए भी चुना जाता है कि वह range queries में अच्छा है — "1 नवंबर से 30 नवंबर के बीच के orders" जैसे सवाल में database को पहला matching key मिल जाता है और फिर leaves में आगे बढ़ता जाता है। Hash index सिर्फ़ exact match में तेज़ होता है, range में नहीं।</p>
+
+<h2>EXPLAIN: पहले नापो, फिर बदलो</h2>
+
+<figure>
+<img src="../img/posts/index-query-speed-hindi.jpg" alt="धीमी query ठीक करने के चार कदम — नापना, EXPLAIN, index, फिर नापना" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>बिना नापे index जोड़ना अंधेरे में तीर चलाना है</figcaption>
+</figure>
+
+<p>Query धीमी है तो पहला काम है उसे नापना। PostgreSQL में <code>EXPLAIN ANALYZE</code> query को असल में चलाकर बताता है कि हर step में कितना समय लगा और कितनी rows पढ़ी गईं।</p>
+
+<pre><code>EXPLAIN ANALYZE
+SELECT id, amount FROM orders WHERE customer_id = 42;</code></pre>
+
+<p>अगर output में <code>Seq Scan on orders</code> दिखे और rows की संख्या बड़ी हो, तो database पूरी table पढ़ रहा है — यहीं index की ज़रूरत है। Index लगाने के बाद वही query <code>Index Scan using orders_customer_id_idx</code> दिखाएगी और समय गिर जाएगा।</p>
+
+<p>तीन बातें EXPLAIN में देखें: scan का type, rows का अनुमान और असली rows, और कौन सा step सबसे ज़्यादा समय ले रहा है। अक्सर असली गुनहगार वह step होता है जिसकी उम्मीद नहीं थी — जैसे किसी JOIN का nested loop.</p>
+
+<h2>Index kab lagega, kab nahi</h2>
+
+<p>Index तभी काम आता है जब database उसे इस्तेमाल कर पाए। कुछ स्थितियाँ ऐसी हैं जहाँ index होने के बाद भी वह छूट जाता है।</p>
+
+<p><strong>Column पर function लगाना।</strong> <code>WHERE DATE(created_at) = '2026-11-01'</code> में index नहीं लगेगा, क्योंकि database को हर row पर DATE() चलाना पड़ेगा। इसके बजाय range लिखें: <code>created_at &gt;= '2026-11-01' AND created_at &lt; '2026-11-02'</code>.</p>
+
+<p><strong>शुरुआत में wildcard।</strong> <code>WHERE name LIKE '%sharma'</code> index नहीं ले पाता, क्योंकि शुरुआत अज्ञात है। <code>'sharma%'</code> काम करता है।</p>
+
+<p><strong>Type mismatch।</strong> अगर column number है और आप <code>WHERE id = '42'</code> लिखें, तो कुछ databases index छोड़ देते हैं। Type वही रखें।</p>
+
+<p><strong>बहुत कम अलग values।</strong> जिस column में सिर्फ़ दो values हों (जैसे <code>is_active</code>), उस पर index से फायदा कम होता है — database को तो फिर भी आधी table पढ़नी है।</p>
+
+<h2>Composite index: column ka kram</h2>
+
+<p>जब query दो columns पर शर्त लगाती है, तो दोनों को एक index में रखा जा सकता है:</p>
+
+<pre><code>CREATE INDEX orders_customer_status_idx
+ON orders (customer_id, status, created_at);</code></pre>
+
+<p>इस index का फायदा इस बात पर निर्भर है कि query किस क्रम में शर्त लगाती है। यह index <code>customer_id</code> अकेले पर भी काम करेगा, <code>customer_id + status</code> पर भी, और तीनों पर भी। पर सिर्फ़ <code>status</code> पर यह काम नहीं आएगा — जैसे किताब का index अगर उपनाम से बना है, तो नाम से खोजने में मदद नहीं करेगा।</p>
+
+<p>इसलिए नियम यह है: composite index में सबसे पहले वह column रखें जो सबसे ज़्यादा queries में अकेले आता है, फिर बाकी उसी क्रम में जिस क्रम में शर्तें लगती हैं।</p>
+
+<h2>Covering index: data bhi index se</h2>
+
+<p>कभी-कभी query को सिर्फ़ दो columns चाहिए — जैसे <code>status</code> और <code>amount</code>. अगर index में यही दोनों हों, तो database को असली table तक जाना ही नहीं पड़ता:</p>
+
+<pre><code>CREATE INDEX orders_status_amount_idx
+ON orders (status) INCLUDE (amount);</code></pre>
+
+<p>इसे covering index कहते हैं। यह बहुत तेज़ होता है, पर सावधानी चाहिए — जितने columns index में डालेंगे, उतना बड़ा और उतना धीमा update होगा। इसे सिर्फ़ उन queries के लिए बनाएँ जो सबसे ज़्यादा चलती हैं।</p>
+
+<h2>teen jagah index sabse zyada kaam aata hai</h2>
+
+<p><strong>1. Date range वाली queries।</strong> Dashboard हर बार "पिछले 30 दिन" का data माँगता है। <code>created_at</code> पर index न हो, तो हर बार पूरी table पढ़नी पड़ेगी। Date columns पर index लगभग हमेशा फायदेमंद है, क्योंकि उन पर range और sorting दोनों होती हैं।</p>
+
+<p><strong>2. JOIN का foreign key।</strong> जब orders को customers से जोड़ते हैं, तो database को हर order के लिए customer ढूँढना पड़ता है। <code>orders.customer_id</code> पर index न हो, तो यह खोज हर row पर पूरी customers table पढ़ सकती है — यही सबसे आम छिपी हुई धीमी जगह है।</p>
+
+<p><strong>3. Sorting और pagination।</strong> "नए orders पहले" वाला page ORDER BY माँगता है। अगर उसी column पर index है, तो database सीधे क्रम में पढ़ता है और LIMIT पर रुक जाता है। बिना index के वह पूरी table sort करता है, फिर 20 rows देता है।</p>
+
+<h3>Partial aur unique index</h3>
+
+<p>कभी-कभी पूरे column पर index की ज़रूरत नहीं होती। अगर 95% queries सिर्फ़ pending orders देखती हैं, तो partial index बेहतर है:</p>
+
+<pre><code>CREATE INDEX orders_pending_idx
+ON orders (created_at)
+WHERE status = 'pending';</code></pre>
+
+<p>यह छोटा रहता है, तेज़ है, और उसी एक सवाल का जवाब देता है। दूसरी तरफ़ unique index गलत data रोकने का सबसे सस्ता तरीका है — जैसे एक user के एक ही email पर दो account न बनें। जहाँ business नियम "एक ही होना चाहिए" कहता है, वहाँ unique index लगाएँ और database को नियम याद रखने दें।</p>
+
+<h2>Index ki keemat</h2>
+
+<p>Index मुफ़्त नहीं है। पहला — जगह: हर index अपनी copy रखता है, और बड़े table पर यह गीगाबाइट्स में जा सकता है। दूसरा — write की गति: हर insert, update और delete पर सारे indexes अपडेट होते हैं। जिस table पर बहुत writes हों, वहाँ ज़्यादा indexes पूरे system को धीमा कर देते हैं।</p>
+
+<p>तीसरा — maintenance: समय के साथ index में खाली जगह जमा होती है और वह भारी होता जाता है। PostgreSQL में <code>REINDEX</code> या <code>VACUUM</code> समय-समय पर ज़रूरी होता है। एक अनदेखा index धीरे-धीरे फायदे से ज़्यादा नुकसान करने लगता है।</p>
+
+<p>इसीलिए सही सवाल "क्या इस column पर index है" नहीं, बल्कि "क्या यह index सच में इस्तेमाल हो रहा है" है। ज़्यादातर databases में index के usage की जानकारी मिलती है; जो index कभी नहीं चला, उसे हटा देना चाहिए।</p>
+
+<h3>Index aur cache me farq</h3>
+
+<p>दोनों query तेज़ करते हैं, पर अलग तरह से। Index database के अंदर रहता है और हर query को तेज़ करता है — चाहे वह पहली बार चले या हज़ारवीं बार। Cache database के बाहर रहता है और सिर्फ़ वही जवाब याद रखता है जो पहले बन चुका है।</p>
+
+<p>इसलिए पहले index देखें। अगर query पहली बार में ही धीमी है, तो cache कुछ नहीं करेगा — वह पहली बार के लिए भी तेज़ नहीं होती। और अगर query हर बार अलग filter के साथ आती है, तो index ही असली इलाज है। Cache उसके बाद आता है, जब index के बाद भी load बहुत ज़्यादा हो।</p>
+
+<h3>किन indexes को हटाना चाहिए</h3>
+
+<p>तीन तरह के indexes बोझ बन जाते हैं: जो कभी किसी query में नहीं आते, जो दूसरे बड़े index का शुरुआती हिस्सा हैं, और जो किसी ऐसे column पर हैं जिसमें बहुत कम अलग values हैं। इन्हें हटाने से write तेज़ होती है और जगह भी बचती है। हटाने से पहले usage statistics देखें और एक हफ़्ता नापें।</p>
+
+<h2>छह galtiyan</h2>
+
+<p><strong>1. हर column पर index।</strong> इससे writes धीमे होते हैं और फायदा कम। सिर्फ़ वहाँ लगाएँ जहाँ query में इस्तेमाल होता है।</p>
+
+<p><strong>2. बिना EXPLAIN के index जोड़ना।</strong> पहले देखें कि query क्या कर रही है। कई बार समस्या index की नहीं, query के shape की होती है।</p>
+
+<p><strong>3. Function के अंदर column।</strong> <code>LOWER(email) = ...</code> से normal index नहीं लगता; उसके लिए expression index चाहिए।</p>
+
+<p><strong>4. Composite index का गलत क्रम।</strong> <code>(status, customer_id)</code> और <code>(customer_id, status)</code> दो अलग चीज़ें हैं। Query के हिसाब से चुनें।</p>
+
+<p><strong>5. Duplicate indexes।</strong> <code>(a)</code> और <code>(a, b)</code> दोनों रखना अक्सर बेकार है, क्योंकि दूसरा पहले का काम भी करता है।</p>
+
+<p><strong>6. बिना नापे मान लेना कि सुधार हुआ।</strong> Index जोड़ने के बाद वही query फिर चलाएँ। कभी-कभी planner उसे नहीं चुनता, और समस्या बनी रहती है।</p>
+
+<p>Index समझने के बाद SQL की बाकी बातें आसान लगती हैं — बुनियादी queries के लिए <a href="/posts/sql-kya-hai-hindi.html">SQL guide</a> पढ़ें, और database चुनने के फैसले के लिए <a href="/posts/sql-vs-nosql-database-hindi.html">SQL vs NoSQL</a>.</p>
+
+<h2>Mera anubhav</h2>
+
+<p>मेरे एक project में dashboard का एक page 12 सेकंड ले रहा था। मैंने पहले cache जोड़ने की सोची, फिर EXPLAIN चलाया और देखा कि एक query 400,000 rows scan कर रही थी। उस column पर index जोड़ा और वही page 300 मिलीसेकंड का हो गया — बिना cache, बिना नया server।</p>
+
+<p>दूसरी बात जो मैंने सीखी: index की समस्या अक्सर query लिखने के तरीके में होती है। <code>WHERE DATE(created_at) = ...</code> जैसी एक आदत पूरे index को बेकार कर देती है। जब मैंने code में dates की तुलना range से करनी शुरू की, तो कई जगह बिना नया index जोड़े ही सुधार आ गया।</p>
+
+<p>तीसरी बात: हर index को एक छोटा कर्ज़ समझें। जोड़ने से पहले पूछें कि कौन सी query तेज़ होगी, और क्या वह query असल में चलती है। जो index किसी query में नहीं आता, वह सिर्फ़ जगह और write का बोझ है।</p>
+
+<h2>नतीजा</h2>
+
+<p>Index एक छोटी, क्रम में सजी list है जो database को सीधे row तक पहुँचाती है। Query धीमी हो तो पहले <code>EXPLAIN ANALYZE</code> से नापें, फिर WHERE और JOIN के columns पर index दें, और बाद में फिर नापें। Function, wildcard और type mismatch जैसी छोटी आदतें index को बेकार कर सकती हैं। और याद रखें — index तेज़ पढ़ने के लिए है, लिखने की कीमत पर।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या हर table पर index ज़रूरी है?</h3>
+
+<p>Primary key पर अपने आप index बनता है। बाकी indexes ज़रूरत से बनाएँ — जिन columns पर खोज, JOIN या sorting होती है।</p>
+
+<h3>Index लगाने से query फिर भी धीमी क्यों है?</h3>
+
+<p>हो सकता है planner उसे चुन ही न रहा हो — function, type mismatch या बहुत कम अलग values की वजह से। EXPLAIN से पता चलेगा।</p>
+
+<h3>कितने indexes ठीक हैं?</h3>
+
+<p>कोई संख्या नहीं। read-heavy table पर 4–6 सामान्य है; write-heavy table पर कम रखें। मापदंड यह है कि हर index किसी असली query में इस्तेमाल हो।</p>
+
+<h3>क्या index हटाना सुरक्षित है?</h3>
+
+<p>अगर वह किसी query में नहीं चल रहा, तो हाँ। पहले usage statistics देखें, फिर हटाएँ और नापें कि कुछ धीमा तो नहीं हुआ।</p>
+
+<h3>क्या index से sorting भी तेज़ होती है?</h3>
+
+<p>हाँ। अगर ORDER BY वाला column उसी क्रम में index में है, तो database को अलग से sort नहीं करना पड़ता।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://www.postgresql.org/docs/current/indexes.html" rel="nofollow noopener" target="_blank">PostgreSQL — Indexes (official docs)</a></li>
+  <li><a href="https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html" rel="nofollow noopener" target="_blank">MySQL — Optimization and indexes</a></li>
+</ul>
