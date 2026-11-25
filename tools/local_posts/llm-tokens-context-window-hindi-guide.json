@@ -1,0 +1,11 @@
+{
+  "slug": "llm-tokens-context-window-hindi-guide",
+  "title": "LLM Tokens aur Context Window: Poori Aasan Guide",
+  "description": "Token kya hai, Hindi me tokens mehnga kyun, context window ki seema, bada window kab nuksan deta hai aur token bachane ke 6 tarike.",
+  "published": "2026-11-25T12:40:00+05:30",
+  "labels": ["LLM", "AI", "Prompt Engineering"],
+  "hero": "img/posts/llm-tokens-context-window-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Model शब्द नहीं, tokens पढ़ता है — और उसकी मेज़ पर सीमित जगह है"
+}

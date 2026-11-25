@@ -1,0 +1,11 @@
+{
+  "slug": "rag-vs-fine-tuning-kaunsa-chune-hindi",
+  "title": "RAG vs Fine-Tuning: AI Me Kaunsa Tarika Kab Chunein",
+  "description": "RAG vs fine-tuning ka farq, dono ka pipeline, kharch, data ki zaroorat aur wo 4 situations jahan kaunsa tarika sahi hai — easy Hindi guide.",
+  "published": "2026-11-25T11:30:00+05:30",
+  "labels": ["AI", "LLM", "RAG"],
+  "hero": "img/posts/rag-vs-fine-tuning-kaunsa-chune-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "RAG जानकारी देता है, fine-tuning व्यवहार सिखाता है — दोनों की जगह अलग है"
+}

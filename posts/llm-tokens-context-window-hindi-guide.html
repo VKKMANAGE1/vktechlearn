@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Tokens aur Context Window: Poori Aasan Guide — VK Tech Learn</title>
+<meta name="description" content="Token kya hai, Hindi me tokens mehnga kyun, context window ki seema, bada window kab nuksan deta hai aur token bachane ke 6 tarike.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM Tokens aur Context Window: Poori Aasan Guide">
+<meta property="og:description" content="Token kya hai, Hindi me tokens mehnga kyun, context window ki seema, bada window kab nuksan deta hai aur token bachane ke 6 tarike.">
+<meta property="og:url" content="https://vktechlearn.site/posts/llm-tokens-context-window-hindi-guide.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/llm-tokens-context-window-hindi-guide.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="LLM, AI, Prompt Engineering">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/llm-tokens-context-window-hindi.jpg">
+<meta property="og:image:alt" content="LLM Tokens aur Context Window: Poori Aasan Guide">
+<meta property="article:published_time" content="2026-11-25T12:40:00+05:30">
+<meta property="article:modified_time" content="2026-11-25T12:40:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="LLM">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Prompt Engineering">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LLM Tokens aur Context Window: Poori Aasan Guide">
+<meta name="twitter:description" content="Token kya hai, Hindi me tokens mehnga kyun, context window ki seema, bada window kab nuksan deta hai aur token bachane ke 6 tarike.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/llm-tokens-context-window-hindi.jpg">
+<meta name="twitter:image:alt" content="LLM Tokens aur Context Window: Poori Aasan Guide">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"LLM Tokens aur Context Window: Poori Aasan Guide","description":"Token kya hai, Hindi me tokens mehnga kyun, context window ki seema, bada window kab nuksan deta hai aur token bachane ke 6 tarike.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/llm-tokens-context-window-hindi-guide.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/llm-tokens-context-window-hindi-guide.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/llm-tokens-context-window-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/llm-tokens-context-window-hindi.jpg","datePublished":"2026-11-25T12:40:00+05:30","dateModified":"2026-11-25T12:40:00+05:30","articleSection":"LLM","keywords":"LLM, AI, Prompt Engineering"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"LLM Tokens aur Context Window: Poori Aasan Guide","item":"https://vktechlearn.site/posts/llm-tokens-context-window-hindi-guide.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">LLM</span><span class="tag">AI</span>
+      <time datetime="2026-11-25T12:40:00+05:30">25 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">LLM Tokens aur Context Window: Poori Aasan Guide</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/llm-tokens-context-window-hindi.jpg" alt="LLM Tokens aur Context Window: Poori Aasan Guide" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>Model शब्द नहीं, tokens पढ़ता है — और उसकी मेज़ पर सीमित जगह है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>ChatGPT, Claude या Gemini से बात करते समय जो चीज़ सबसे ज़्यादा असर डालती है और सबसे कम समझी जाती है, वह है <strong>token</strong> और <strong>context window</strong>। लंबा document डालें और जवाब अधूरा आ जाता है; बहुत सारा chat history रखें और बिल बढ़ जाता है; एक ही prompt बार-बार भेजें और नतीजा वैसा नहीं आता। इन तीनों परेशानियों की जड़ एक ही है — model text को शब्दों में नहीं, tokens में पढ़ता है, और उसकी एक सीमा होती है।</p>
+
+      <p>इस guide में मैं token की बनावट, context window का असली मतलब, हिंदी में token क्यों महंगा पड़ता है, बड़ी window के छिपे नुकसान, और वे ठोस तरीके बताऊँगा जिनसे खर्च और गलतियाँ दोनों घटती हैं। यह समझने के बाद आप अपना prompt, document size और model का चुनाव बहुत ज़्यादा होशियारी से कर पाएँगे।</p>
+
+      <p><strong>छोटा जवाब:</strong> token text का छोटा टुकड़ा है — औसतन एक अंग्रेज़ी शब्द का 3/4 हिस्सा। context window वह कुल token है जो model एक बार में देख सकता है — आपका prompt, पिछली बातचीत, दिए गए documents और उसका अपना जवाब, सब मिलाकर। Window भर जाने पर पुरानी बात कट जाती है, इसलिए "बड़ी window" होना ज़रूरी नहीं कि हर काम के लिए बेहतर हो।</p>
+
+      <h2>Token क्या है और text कैसे टूटता है</h2>
+
+      <p>Model अक्षर या शब्द नहीं पढ़ता। वह text को subword टुकड़ों में तोड़ता है, जिन्हें token कहते हैं। हर token का एक number होता है, और model इन्हीं numbers के क्रम पर अगला token भविष्यवाणी करता है। "playing" शायद "play" + "ing" बने, "unbelievable" शायद "un" + "believ" + "able"। आम अंग्रेज़ी में 1 token ≈ 4 अक्षर ≈ 0.75 शब्द।</p>
+
+      <p>यह छोटी सी बात तीन जगह मायने रखती है। पहला — खर्च: हर API call का बिल token में लगता है। दूसरा — सीमा: window token में नापी जाती है, शब्दों में नहीं। तीसरा — quality: बहुत छोटे टुकड़ों में बँटा text model के लिए पढ़ना मुश्किल हो जाता है, क्योंकि संदर्भ टूट जाता है।</p>
+
+      <h3>हिंदी में tokens महंगे क्यों पड़ते हैं</h3>
+
+      <p>अधिकांश tokenizer अंग्रेज़ी और लैटिन लिपि पर train हुए हैं। देवनागरी के अक्षर अक्सर पूरे token नहीं बनते — एक शब्द 3–6 tokens में टूट सकता है। इसका सीधा मतलब: वही जानकारी हिंदी में लिखने पर 1.5 से 2.5 गुना ज़्यादा token लग सकते हैं। एक ही 2,000 शब्द का लेख अंग्रेज़ी में 2,700 tokens का हो सकता है और हिंदी में 5,000 का।</p>
+
+      <p>इसका असर दो जगह दिखता है — API का बिल बढ़ता है, और context window जल्दी भरता है। अगर आप हिंदी में लंबे documents process करते हैं, तो window का हिसाब लगाते समय अंग्रेज़ी वाले अनुमान पर भरोसा न करें; असली गिनती करें।</p>
+
+      <figure>
+      <img src="../img/posts/context-window-budget-hindi.jpg" alt="Context window की सीमा तक भरता हुआ token budget और रुके हुए tokens" loading="lazy" decoding="async">
+      <figcaption>Context window एक बजट है — prompt, documents, बातचीत और जवाब, सब इसी में से कटते हैं</figcaption>
+      </figure>
+
+      <h2>Context window क्या है</h2>
+
+      <p>Context window वह अधिकतम token है जो model एक बार में "देख" सकता है। इसमें सब कुछ आता है: system prompt, आपका सवाल, पिछले messages, जो document आपने attach किया, tool के नतीजे, और model का अपना जवाब भी। यह कोई memory नहीं है — यह एक डेस्क है जिसकी सीमित जगह है। जो कागज़ डेस्क पर नहीं रखा, model उसे देख ही नहीं सकता।</p>
+
+      <p>आज के models की window 8 हज़ार से लेकर 10 लाख tokens तक होती है। पर संख्या देखकर चौंकना ठीक नहीं। Window का पूरा इस्तेमाल करना और window का <em>अच्छा</em> इस्तेमाल करना, दो अलग बातें हैं।</p>
+
+      <h3>Input और output tokens अलग-अलग</h3>
+
+      <p>हर API में दो तरह के token गिने जाते हैं: input (जो आप भेजते हैं) और output (जो model लिखता है)। दोनों की कीमत अलग होती है — output आम तौर पर 3–5 गुना महंगा। इसलिए "जवाब छोटा रखो" कहना सिर्फ़ style का निर्देश नहीं, बजट का भी है। और जब आप लंबा document भेजते हैं, तो वही document हर नए सवाल के साथ दोबारा input में जाता है — जब तक आप उसे cache न करें।</p>
+
+      <h3>Window भरने पर असल में क्या होता है</h3>
+
+      <p>दो अलग परिस्थितियाँ हैं, और इन्हें मिलाना भ्रम पैदा करता है। <strong>पहली</strong> — अगर आपका input ही window से बड़ा है, तो API साफ़ error दे देगा; कुछ tools चुपचाप शुरू या आख़िर का हिस्सा काट देते हैं, जिससे जवाब अधूरा लगता है। <strong>दूसरी</strong> — लंबी बातचीत में जब जगह कम पड़ती है, तो app पुराने messages हटा देता है। इसलिए 30 messages बाद model वह बात भूल जाता है जो आपने शुरू में कही थी — यह model की खराबी नहीं, बजट की सीमा है।</p>
+
+      <h2>Tokens का हिसाब: कितना कहाँ जाता है</h2>
+
+      <table>
+        <thead>
+          <tr><th>चीज़</th><th>अनुमानित tokens</th><th>नोट</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1 पेज अंग्रेज़ी text</td><td>500–600</td><td>~400 शब्द</td></tr>
+          <tr><td>1 पेज हिंदी text</td><td>900–1,300</td><td>देवनागरी में टुकड़े छोटे बनते हैं</td></tr>
+          <tr><td>10 पेज PDF (टेबल सहित)</td><td>8,000–15,000</td><td>टेबल और header बहुत token खाते हैं</td></tr>
+          <tr><td>1 घंटे की transcript</td><td>10,000–14,000</td><td>बोलचाल में दोहराव ज़्यादा</td></tr>
+          <tr><td>1 कोड फ़ाइल (500 lines)</td><td>6,000–10,000</td><td>indentation और symbols महंगे</td></tr>
+        </tbody>
+      </table>
+
+      <p>ये अनुमान हैं, नियम नहीं। असली गिनती के लिए हर provider का tokenizer tool इस्तेमाल करें — OpenAI का tokenizer page, Anthropic का token counting API, या Google का countTokens endpoint। दो मिनट की यह जाँच महीनों का बिल बचा सकती है।</p>
+
+      <h2>बड़ी context window हमेशा बेहतर नहीं</h2>
+
+      <p>यह सबसे ज़रूरी हिस्सा है। बड़ी window का मतलब यह नहीं कि model हर कोने की जानकारी बराबर पकड़ता है। शोध में बार-बार यही मिला है कि लंबे context के बीच में रखी जानकारी model कम भरोसे से पकड़ता है — शुरू और आख़िर की बात बेहतर याद रहती है। इसे "lost in the middle" कहा जाता है।</p>
+
+      <p>इसका व्यावहारिक मतलब: 100 पेज एक साथ डालने से अच्छा है 10 सबसे relevant पेज डालना। यही वजह है कि RAG जैसे तरीके बड़ी window के बावजूद इस्तेमाल होते हैं — वे सही जानकारी ढूँढकर window में भेजते हैं, पूरा ढेर नहीं।</p>
+
+      <p>दूसरा पहलू खर्च और रफ़्तार है। दोहरे tokens का मतलब लगभग दोहरा बिल और धीमा जवाब। जब आप हर सवाल के साथ 50 पेज भेजते हैं, तो आप हर बार वही पेज दोबारा खरीद रहे हैं।</p>
+
+      <h2>Tokens बचाने के छह ठोस तरीके</h2>
+
+      <h3>1. साफ़ और छोटा prompt लिखें</h3>
+
+      <p>असली निर्देश 5 lines में आ सकते हैं। "आप एक बहुत अनुभवी, मेहनती, ईमानदार सहायक हैं जो हमेशा..." जैसी 20 lines की भूमिका output नहीं सुधारती, सिर्फ़ बिल बढ़ाती है।</p>
+
+      <h3>2. Prompt caching इस्तेमाल करें</h3>
+
+      <p>अगर आप हर बार वही लंबा document या system prompt भेजते हैं, तो caching से वह हिस्सा दोबारा पूरे दाम पर नहीं गिना जाता। बड़े document पर बातचीत करने का यह सबसे सस्ता तरीका है।</p>
+
+      <h3>3. जवाब की लंबाई तय करें</h3>
+
+      <p>"3 bullet, हर bullet 20 शब्द" जैसा साफ़ निर्देश output tokens को आधा कर देता है। जवाब लंबा होने का बिल सबसे ज़्यादा चुभता है, क्योंकि output महंगा होता है।</p>
+
+      <h3>4. Documents को chunk करें</h3>
+
+      <p>पूरा 80 पेज का manual हर सवाल में न भेजें। सवाल से जुड़े 2–3 हिस्से खोजकर भेजें। इससे खर्च घटता है और जवाब भी सटीक आता है।</p>
+
+      <h3>5. पुरानी बातचीत का summary रखें</h3>
+
+      <p>20 messages की जगह उनका 5-line summary भेजें। ज़रूरी तथ्य बने रहते हैं, और window में जगह बचती है।</p>
+
+      <h3>6. काम के हिसाब से model चुनें</h3>
+
+      <p>हर काम के लिए सबसे बड़ा model ज़रूरी नहीं। Classification, extraction, short answer — इनके लिए छोटा model तेज़ और सस्ता रहता है। बड़ा model सिर्फ़ जटिल planning और लंबी reasoning के लिए रखें।</p>
+
+      <figure>
+      <img src="../img/posts/token-cost-hindi.jpg" alt="Tokens का खर्च, chat bubble और usage meter के साथ token cubes" loading="lazy" decoding="async">
+      <figcaption>हर सवाल में पूरा document दोबारा भेजना सबसे आम और सबसे महंगी आदत है</figcaption>
+      </figure>
+
+      <h2>कितनी window किस काम के लिए</h2>
+
+      <p>एक साधारण नियम जो मैं इस्तेमाल करता हूँ: छोटे सवाल-जवाब और classification के लिए 8K काफ़ी है। Support bot जिसे policy और order history देखनी है — 32K से 64K। पूरी codebase या लंबी research के लिए 128K से ऊपर, पर वहाँ retrieval के साथ। और अगर आपका काम ही "पूरे 300 पेज पढ़ो" है, तो पहले पूछें — क्या सच में पूरा पढ़ना है, या सिर्फ़ 15 पेज काफ़ी हैं?</p>
+
+      <h2>पाँच आम गलतियाँ</h2>
+
+      <h3>1. शब्दों को tokens समझना</h3>
+
+      <p>"1,000 शब्द" और "1,000 tokens" एक चीज़ नहीं। हिंदी में यह अंतर दोगुना तक हो सकता है।</p>
+
+      <h3>2. पूरा chat history भेजते रहना</h3>
+
+      <p>हर नए सवाल के साथ पिछला सारा text दोबारा जाता है। 50 messages के बाद आप असल में 50 गुना बिल दे रहे होते हैं।</p>
+
+      <h3>3. Window का पूरा इस्तेमाल करना</h3>
+
+      <p>जगह है तो भर देना ज़रूरी नहीं। ज़्यादा context अक्सर कम ध्यान देने वाला जवाब देता है।</p>
+
+      <h3>4. हिंदी document पर अंग्रेज़ी का हिसाब</h3>
+
+      <p>अंग्रेज़ी के 1,000 token वाला अनुमान हिंदी पर लगाने से window बीच में ही भर जाता है और जवाब कट जाता है।</p>
+
+      <h3>5. Output limit को भूल जाना</h3>
+
+      <p>कई models की input window बड़ी होती है पर output की सीमा अलग और छोटी। लंबा लेख लिखवाते समय जवाब बीच में रुक सकता है — यह token limit है, model का मूड नहीं।</p>
+
+      <h2>अपने code या workflow में token गिनने का तरीका</h2>
+
+      <p>अगर आप खुद कोई tool बना रहे हैं, तो token का हिसाब लगाने का सही तरीका अनुमान नहीं, मापना है। एक सीधा process जो मैं हर project में दोहराता हूँ:</p>
+
+      <ol>
+        <li><strong>असली input इकट्ठा करें:</strong> 20–30 असली सवाल और वही documents जो users डालते हैं। बनावटी उदाहरण से हिसाब गलत आता है।</li>
+        <li><strong>Provider का counter चलाएँ:</strong> OpenAI का tokenizer, Anthropic का count_tokens या Gemini का countTokens — जो भी आपका model हो। हर request का input और output दोनों नापें।</li>
+        <li><strong>एक table बनाएँ:</strong> सबसे छोटा, औसत और सबसे बड़ा case — तीनों की token संख्या और उसका रुपये में खर्च।</li>
+        <li><strong>सीमा तय करें:</strong> जैसे "input 6,000 tokens से ऊपर नहीं" और "output 500 tokens"। सीमा से ऊपर जाने पर code खुद document को chunk करे, न कि चुपचाप काट दे।</li>
+        <li><strong>हर हफ़्ते बिल से मिलाएँ:</strong> जो अनुमान था और जो असल बिल आया — दोनों का फर्क देखें। यही जाँच सबसे जल्दी गलती पकड़ती है।</li>
+      </ol>
+
+      <p>एक छोटी सी आदत बहुत काम आती है: हर request के साथ उसका token count log करें। जब कोई user कहे "जवाब अधूरा आया", तो log से तुरंत पता चल जाता है कि input window के करीब था या output limit पर रुका। बिना इस log के आप अंदाज़े लगाते रहेंगे।</p>
+
+      <p>दूसरी बात — हिंदी और अंग्रेज़ी दोनों को एक ही सीमा पर मत चलाएँ। अगर आपका product दोनों भाषाओं में है, तो दो अलग सीमाएँ रखें, वरना हिंदी वाले users को छोटे जवाब मिलेंगे या document बीच में कटेगा। यह छोटी सी बात support tickets में सबसे ज़्यादा दिखती है।</p>
+
+      <h2>मेरा अनुभव</h2>
+
+      <p>जब मैंने पहली बार token counting शुरू किया, तो सबसे बड़ा झटका यह था कि मेरा "छोटा" system prompt ही 700 tokens का था — हर सवाल पर 700 tokens सिर्फ़ भूमिका बताने में। उसे 180 tokens तक छोटा करने से जवाब की quality नहीं गिरी, पर खर्च आधे से नीचे आ गया। दूसरी बात — हिंदी में लिखे नोट्स पर काम करते समय मैंने पाया कि अंग्रेज़ी अनुमान से 1.8 गुना जगह लगती है। तब से मैं हर pipeline में असली गिनती रखता हूँ, अनुमान नहीं।</p>
+
+      <p>अगर आप RAG या agent बना रहे हैं, तो context window की समझ सीधे उसके design पर असर डालती है। कितने chunk भेजें, history कितनी रखें, summary कब बनाएँ — ये सब वही सवाल हैं। इन पर विस्तार से <a href="rag-vs-fine-tuning-kaunsa-chune-hindi.html">RAG vs fine-tuning guide</a> और <a href="ai-agents-kya-hain-hindi-guide.html">AI agents guide</a> में लिखा है।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>Token model की भाषा है और context window उसकी मेज़। इन दोनों को समझे बिना लंबे documents, लंबी बातचीत और बड़े बिल तीनों आपको अचानक मिलेंगे। छोटा और साफ़ prompt, ज़रूरत के हिसाब से chunk, summary और caching — इन चार आदतों से ज़्यादातर लोगों का खर्च आधा हो जाता है और जवाब भी बेहतर आते हैं।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>1 token में कितने शब्द होते हैं?</h3>
+
+      <p>अंग्रेज़ी में लगभग 0.75 शब्द। हिंदी में यह आधे से भी कम हो सकता है, इसलिए असली गिनती करें।</p>
+
+      <h3>क्या context window बढ़ाने से जवाब बेहतर होते हैं?</h3>
+
+      <p>हमेशा नहीं। बहुत लंबे context के बीच की जानकारी model कम भरोसे से पकड़ता है, और खर्च-रफ़्तार दोनों बिगड़ते हैं।</p>
+
+      <h3>Chat history कितनी रखनी चाहिए?</h3>
+
+      <p>आम बातचीत में 10–15 messages और उनका summary काफ़ी है। बाकी जानकारी database में रखें और ज़रूरत पर लाएँ।</p>
+
+      <h3>Token कम करने का सबसे आसान तरीका?</h3>
+
+      <p>System prompt छोटा करें और हर सवाल के साथ पूरा document दोबारा न भेजें — caching या retrieval इस्तेमाल करें।</p>
+
+      <h3>क्या सभी models का tokenizer एक जैसा है?</h3>
+
+      <p>नहीं। हर provider का tokenizer अलग है, इसलिए एक model के tokens दूसरे पर सीधे लागू न करें।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://platform.openai.com/tokenizer" rel="nofollow noopener" target="_blank">OpenAI — Tokenizer tool</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/build-with-claude/token-counting" rel="nofollow noopener" target="_blank">Anthropic — Token counting</a></li>
+        <li><a href="https://ai.google.dev/gemini-api/docs/tokens" rel="nofollow noopener" target="_blank">Google AI — Tokens in Gemini API</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>
