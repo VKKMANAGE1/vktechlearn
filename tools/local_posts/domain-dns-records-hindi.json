@@ -1,0 +1,11 @@
+{
+  "slug": "domain-dns-records-hindi",
+  "title": "Domain aur DNS Records: A, CNAME, MX Samjhein",
+  "description": "A, AAAA, CNAME, MX, TXT aur NS records ka matlab, TTL aur propagation, aur domain ko sahi server par jodne ka practical setup — step by step Hinglish guide.",
+  "published": "2026-11-26T15:00:00+05:30",
+  "labels": ["Internet", "Web Basics", "DNS"],
+  "hero": "img/posts/dns-records-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "DNS records वह नक्शा हैं जो बताते हैं कि आपका domain किस server, किस mail service और किस verification को जाए"
+}

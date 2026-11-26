@@ -1,0 +1,163 @@
+<p>जब पहली बार site बनाते हैं, तो सब कुछ अपने laptop पर चलता है — <code>localhost:3000</code> पर page खुलता है और लगता है कि काम हो गया। फिर दोस्त को link भेजते हैं और वह नहीं खुलता। क्यों? क्योंकि आपका laptop internet पर एक public server नहीं है। Site को किसी ऐसी मशीन पर रखना पड़ता है जो 24 घंटे चले, public IP हो, और हर request का जवाब दे — उसी को hosting कहते हैं।</p>
+
+<p>इस guide में मैं hosting के सारे आम options खोलूँगा — shared, VPS, dedicated और cloud — और बताऊँगा कि कौन सा किसके लिए सही है। साथ में static hosting का वह रास्ता भी, जिस पर यह site खुद चल रही है, managed और unmanaged का फर्क, plan चुनने के सात सवाल, और migrate करते समय किन चीज़ों का ध्यान रखना चाहिए।</p>
+
+<p><strong>छोटा जवाब:</strong> Web hosting वह service है जो आपकी site की files एक server पर रखती है और उसे internet से जोड़ती है। Shared hosting में एक server कई sites में बँटा होता है, VPS में आपको उसका एक हिस्सा मिलता है, dedicated में पूरा server, और cloud में आप resources जितने चाहें बढ़ा-घटा सकते हैं। छोटी static site के लिए GitHub Pages जैसी मुफ़्त hosting काफ़ी है।</p>
+
+<h2>Hosting me asal me kya milta hai</h2>
+
+<p>Hosting के तीन हिस्से होते हैं। पहला — <strong>server</strong>, यानी वह मशीन जिस पर आपकी files रहती हैं और जो request का जवाब देती है। दूसरा — <strong>public IP</strong>, जिस पर internet से request आती है। तीसरा — <strong>DNS</strong>, जो आपके domain को उस IP से जोड़ता है।</p>
+
+<p>इसीलिए जब site नहीं खुलती, तो तीनों जाँचने पड़ते हैं। Hosting खरीद ली पर DNS नहीं जोड़ा, तो domain किसी पुरानी जगह जाता रहेगा। DNS जोड़ दिया पर server बंद है, तो connection fail होगा। दोनों ठीक हैं पर firewall port 443 block कर रहा है, तो भी page नहीं खुलेगा। यह क्रम समझ लेने से debugging आधी हो जाती है।</p>
+
+<figure>
+<img src="../img/posts/hosting-types-hindi.jpg" alt="hosting के चार options — shared, VPS, dedicated और cloud, हर एक का अपना हिसाब" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>चार options, चार तरह के हिसाब — कीमत भी और control भी</figcaption>
+</figure>
+
+<h2>Shared hosting: sabse sasta shuruaat</h2>
+
+<p>Shared hosting में एक physical server पर कई websites रखी जाती हैं। CPU, RAM और disk सब साझा होते हैं, और hosting कंपनी हर site को अलग folder और अलग database देती है। यह सबसे सस्ता option है — महीने के कुछ सौ रुपये में शुरू हो जाता है।</p>
+
+<p>फायदा साफ़ है: कीमत कम, setup आसान, cPanel जैसा panel मिल जाता है जिससे WordPress एक click में install हो जाता है। छोटी business site, blog या portfolio के लिए यह अक्सर काफ़ी है।</p>
+
+<p>नुकसान भी साफ़ है — "noisy neighbour" की समस्या। अगर उसी server पर किसी और की site को अचानक बहुत traffic मिल जाए, तो आपकी site भी धीमी हो सकती है। साथ ही आपके पास server की सेटिंग बदलने की आज़ादी नहीं होती; जो software version कंपनी दे, वही चलेगा।</p>
+
+<h2>VPS: apna hissa, apna control</h2>
+
+<p>VPS (Virtual Private Server) में एक physical server को virtualization से कई हिस्सों में बाँटा जाता है। हर हिस्से को अपनी CPU, RAM और disk मिलती है, और वह दूसरे हिस्सों से अलग चलता है। यानी आपको एक छोटा server मिलता है जिसका root access आपके पास है।</p>
+
+<p>यहीं से असली सीख शुरू होती है — आपको Linux, web server (Nginx या Apache), database और firewall खुद सेट करना पड़ता है। यह शुरुआत में डरावना लगता है, पर एक बार सीख जाने पर आपको पता होता है कि अंदर क्या चल रहा है।</p>
+
+<p>VPS की कीमत shared से ज़्यादा होती है, पर control भी ज़्यादा। जब आपको Node.js या Python app चलानी हो, custom software चाहिए हो, या किसी खास port पर service चलानी हो — तब shared hosting काम नहीं करेगी और VPS सही रास्ता है।</p>
+
+<h2>Dedicated aur cloud</h2>
+
+<p><strong>Dedicated hosting</strong> में पूरा physical server सिर्फ़ आपका होता है। सबसे ज़्यादा performance और control, पर सबसे ज़्यादा कीमत और सारी ज़िम्मेदारी आपकी। यह उन्हीं के लिए ठीक है जिनका load भारी और लगातार है — बड़ा e-commerce, video platform या enterprise app.</p>
+
+<p><strong>Cloud hosting</strong> में आप एक server नहीं, बल्कि कई machines पर फैला हुआ system लेते हैं। Resources माँग के हिसाब से बढ़ते-घटते हैं, और एक machine बंद हो जाए तो दूसरी सँभाल लेती है। AWS, Google Cloud और Azure इसी तरह काम करते हैं।</p>
+
+<p>Cloud का फायदा लचीलापन है — Sale के दिन traffic दस गुना हो जाए तो resources बढ़ा दें, और अगले दिन घटा दें। नुकसान यह है कि खर्च का अंदाज़ा लगाना मुश्किल हो सकता है; छोटी गलती से बिल बहुत बड़ा आ सकता है। इसीलिए budget alerts पहले दिन से सेट करें।</p>
+
+<table>
+<thead><tr><th>Option</th><th>किसके लिए</th><th>कीमत</th><th>Control</th></tr></thead>
+<tbody>
+<tr><td>Shared</td><td>Blog, portfolio, छोटी business site</td><td>सबसे कम</td><td>कम</td></tr>
+<tr><td>VPS</td><td>Custom app, सीखने वाले developers</td><td>मध्यम</td><td>ज़्यादा</td></tr>
+<tr><td>Dedicated</td><td>भारी और लगातार load</td><td>ज़्यादा</td><td>पूरा</td></tr>
+<tr><td>Cloud</td><td>बदलता traffic, scaling</td><td>उपयोग के हिसाब से</td><td>ज़्यादा</td></tr>
+<tr><td>Static</td><td>HTML/CSS site, docs, blog</td><td>अक्सर मुफ़्त</td><td>सीमित</td></tr>
+</tbody>
+</table>
+
+<h2>Static hosting: jo is site par chal rahi hai</h2>
+
+<p>अगर आपकी site सिर्फ़ HTML, CSS, JavaScript और images से बनी है — कोई database नहीं, कोई server-side code नहीं — तो आपको VPS की ज़रूरत नहीं। ऐसी files को किसी भी static host पर रखा जा सकता है और वह बहुत तेज़, बहुत सस्ता और बहुत सुरक्षित रहता है।</p>
+
+<p>इस site का हर post एक HTML file है जिसे एक script बनाता है, और वह GitHub पर रखी है। जब भी कोई बदलाव push होता है, GitHub Actions उसे build करके deploy कर देता है। कोई server नहीं, कोई database नहीं, कोई maintenance नहीं — और hosting का खर्च शून्य।</p>
+
+<p>Netlify, Cloudflare Pages और Vercel भी यही काम करते हैं, कुछ अतिरिक्त सुविधाओं के साथ — जैसे form handling, preview deployments और edge caching. अगर आपकी site static है, तो पहले यही रास्ता देखें; VPS पर पैसा और समय दोनों बचेंगे।</p>
+
+<h2>Managed ya unmanaged</h2>
+
+<p>यह फर्क hosting के type से भी ज़्यादा मायने रखता है। <strong>Managed</strong> में कंपनी server का maintenance सँभालती है — updates, backups, security patches और support. आप सिर्फ़ अपनी site पर ध्यान देते हैं। <strong>Unmanaged</strong> में server आपका, और सब कुछ आपकी ज़िम्मेदारी — OS updates से लेकर firewall तक।</p>
+
+<p>शुरुआत में managed चुनें। जब तक आपको यह पता न हो कि SSH क्या है, cron job कैसे लगाता है और log कहाँ मिलते हैं, unmanaged server सिर्फ़ सिरदर्द देगा। और अगर आप सीखना चाहते हैं, तो एक सस्ता VPS लेकर उस पर कुछ महीने प्रयोग करें — पर उस पर कोई ज़रूरी site मत रखें।</p>
+
+<h2>Plan chunne ke saat sawal</h2>
+
+<ol>
+<li><strong>Site कैसी है?</strong> Static है तो static hosting; WordPress है तो shared या managed WordPress; custom app है तो VPS या cloud.</li>
+<li><strong>Traffic कितना है?</strong> महीने के कुछ हज़ार visits पर shared काफ़ी है; लाखों पर cloud या dedicated सोचें।</li>
+<li><strong>कौन सँभालेगा?</strong> आप खुद या कोई team? जवाब से managed/unmanaged तय होता है।</li>
+<li><strong>Backup कौन लेगा?</strong> Hosting के backup पर निर्भर मत रहें; अपना भी रखें।</li>
+<li><strong>SSL मिलेगा या नहीं?</strong> आज मुफ़्त Let's Encrypt हर जगह मिलना चाहिए — न मिले तो दूसरी कंपनी देखें।</li>
+<li><strong>Support कैसा है?</strong> Chat या ticket का जवाब कितनी देर में आता है, यह पहले महीने में पता चल जाता है।</li>
+<li><strong>बाहर निकलना आसान है?</strong> Data export और domain transfer की policy पहले पढ़ लें।</li>
+</ol>
+
+<h2>India ke users ke liye kya matter karta hai</h2>
+
+<p>अगर आपके ज़्यादातर users भारत में हैं, तो server का location मायने रखता है। मुंबई या सिंगापुर का server भारत से 20–50 मिलीसेकंड दूर होता है, जबकि अमेरिका का server 200 मिलीसेकंड से ऊपर जा सकता है। एक request में यह फर्क छोटा लगता है, पर 50 requests वाले page पर यह सेकंडों में बदल जाता है।</p>
+
+<p>इसका सबसे आसान हल है CDN — Content Delivery Network. यह आपकी static files दुनिया के कई शहरों में copy कर देता है और हर user को सबसे नज़दीकी copy देता है। Cloudflare का मुफ़्त plan भी यह काम कर देता है, और साथ में HTTPS और basic protection मिल जाती है।</p>
+
+<figure>
+<img src="../img/posts/hosting-choice-hindi.jpg" alt="hosting चुनने का क्रम — site का type, traffic, budget और support" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>पहले site का type तय करें, फिर बाकी सवाल आसान हो जाते हैं</figcaption>
+</figure>
+
+<h2>Kharch ka asli hisaab</h2>
+
+<p>Hosting की कीमत देखते समय चार चीज़ें जोड़ें। पहली — plan का monthly या yearly charge; yearly अक्सर सस्ता होता है पर पैसा पहले देना पड़ता है। दूसरी — domain का renewal, जो पहले साल के discount के बाद बढ़ जाता है। तीसरी — SSL, अगर मुफ़्त नहीं है। चौथी — backup और email, जो अलग add-on हो सकते हैं।</p>
+
+<p>Cloud में एक और बात जोड़ें — data transfer. बाहर जाने वाला data अलग से charge होता है, और यही अक्सर सबसे बड़ा अंतर पैदा करता है। इसीलिए cloud पर जाने से पहले एक महीने का अनुमानित traffic निकालें: pages × average page size × visits. वही संख्या आपको बता देगी कि बिल किस दिशा में जाएगा।</p>
+
+<p>छोटी site के लिए सबसे समझदारी वाला रास्ता अक्सर यही है — static hosting मुफ़्त, domain सस्ता, CDN मुफ़्त, और पैसा सिर्फ़ domain पर। जब लगे कि database या server-side code चाहिए, तब अगला step लें।</p>
+
+<h2>Migrate karne ka process</h2>
+
+<p><strong>1. पुरानी जगह का पूरा backup लें।</strong> Files, database और email — तीनों. सिर्फ़ files का backup काफ़ी नहीं है।</p>
+
+<p><strong>2. नई जगह पर site सेट करें और test करें।</strong> अभी DNS मत बदलें; पहले hosts file या temporary URL से देखें कि सब चल रहा है।</p>
+
+<p><strong>3. TTL पहले कम करें।</strong> Migration से 24 घंटे पहले DNS records का TTL 300 सेकंड कर दें, ताकि बदलाव जल्दी फैले।</p>
+
+<p><strong>4. DNS बदलें और नापें।</strong> नए IP पर traffic आना शुरू हो जाएगा। दोनों जगह logs देखें कि कुछ छूट तो नहीं रहा।</p>
+
+<p><strong>5. एक हफ़्ते बाद पुरानी जगह बंद करें।</strong> जल्दबाज़ी में बंद करने से वे users प्रभावित होते हैं जिनका DNS cache अभी पुराना है।</p>
+
+<h2>Paanch common galtiyan</h2>
+
+<p><strong>1. सिर्फ़ कीमत देखकर plan लेना।</strong> सस्ता plan अगर हर हफ़्ते बंद हो, तो महंगा पड़ेगा।</p>
+
+<p><strong>2. Backup न रखना।</strong> Hosting कंपनी का backup होता है, पर restore आपको खुद करना पड़ता है — और वह भी तब जब आपने उसे चालू रखा हो।</p>
+
+<p><strong>3. SSL को बाद में देखेंगे कहना।</strong> HTTPS आज optional नहीं है; browsers बिना HTTPS वाली site पर warning दिखाते हैं।</p>
+
+<p><strong>4. Traffic से ज़्यादा storage देखना।</strong> ज़्यादातर छोटी sites पर storage की समस्या नहीं होती; bandwidth और CPU सीमा असली अड़चन है।</p>
+
+<p><strong>5. Domain और hosting एक ही कंपनी से लेना बिना सोचे।</strong> सुविधा अच्छी है, पर बाद में बाहर निकलना मुश्किल हो सकता है। Domain अलग रखने से लचीलापन बढ़ता है।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>मेरी पहली site एक सस्ती shared hosting पर थी। शुरू में सब ठीक चला, फिर एक दिन page 8 सेकंड लेने लगा। Support ने कहा "server पर load है"। दो हफ़्ते बाद समस्या वापस आई। तब मैंने महसूस किया कि shared hosting में मेरे पास कोई control नहीं था — न मैं देख सकता था कि क्या हो रहा है, न बदल सकता था।</p>
+
+<p>उसके बाद मैंने एक छोटा VPS लिया और सीखना शुरू किया। पहले महीने में site दो बार बंद हुई — एक बार disk full होने से, एक बार firewall की गलत setting से। पर उसी महीने में मैंने logs पढ़ना, cron से backup लेना और Nginx configure करना सीख लिया। यह सीख बाद के हर project में काम आई।</p>
+
+<p>आज जब कोई static site बनाता हूँ, तो सबसे पहले static hosting देखता हूँ — जैसे यह site. server की ज़रूरत ही नहीं पड़ती, और जो समय maintenance से बचता है, वह content पर लगता है। यह मेरी सबसे बड़ी सीख रही: जितनी कम चीज़ें आपको सँभालनी हों, उतना बेहतर।</p>
+
+<h2>नतीजा</h2>
+
+<p>Hosting आपकी site को internet पर रखती है — server, IP और DNS तीनों मिलकर। Static site के लिए मुफ़्त static hosting सबसे अच्छा है; छोटी dynamic site के लिए shared या managed; custom app के लिए VPS; बदलते load के लिए cloud. Plan चुनने से पहले site का type, traffic, maintenance और backup तय करें, और migrate करने से पहले TTL घटाकर पूरा backup रखें।</p>
+
+<p>आगे पढ़ें: <a href="/posts/domain-dns-records-hindi.html">domain और DNS records</a> — जहाँ A, CNAME और MX का practical setup है, और <a href="/posts/frontend-vs-backend-vs-full-stack-hindi.html">frontend vs backend</a> — जहाँ बताया है कि hosting पर असल में क्या चलता है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या मुफ़्त hosting पर असली site चला सकते हैं?</h3>
+
+<p>Static site के लिए हाँ — GitHub Pages, Cloudflare Pages और Netlify का मुफ़्त plan काफ़ी है। Database वाली site के लिए नहीं।</p>
+
+<h3>Shared hosting से VPS पर कब जाएँ?</h3>
+
+<p>जब custom software चलाना हो, traffic बढ़ रहा हो, या बार-बार "server load" की शिकायत आ रही हो।</p>
+
+<h3>Hosting बदलने पर site कितनी देर बंद रहती है?</h3>
+
+<p>अगर सही क्रम से करें तो बंद नहीं होती। TTL पहले घटाएँ, नई जगह test करें, फिर DNS बदलें।</p>
+
+<h3>क्या एक hosting पर दो domain चला सकते हैं?</h3>
+
+<p>हाँ, ज़्यादातर plans में add-on domains मिलते हैं। पर हर domain का SSL और DNS अलग से सेट करना पड़ता है।</p>
+
+<h3>Cloud hosting महंगी क्यों पड़ जाती है?</h3>
+
+<p>क्योंकि बिल उपयोग पर निर्भर है — data transfer, storage और requests. बिना alert और limit के खर्च बढ़ सकता है।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://docs.github.com/en/pages" rel="nofollow noopener" target="_blank">GitHub Docs — GitHub Pages (official)</a></li>
+  <li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html" rel="nofollow noopener" target="_blank">AWS — Amazon EC2 concepts (official docs)</a></li>
+</ul>

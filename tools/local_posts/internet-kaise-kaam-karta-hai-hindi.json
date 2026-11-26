@@ -1,0 +1,11 @@
+{
+  "slug": "internet-kaise-kaam-karta-hai-hindi",
+  "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me",
+  "description": "Internet kaise kaam karta hai — IP address, DNS lookup, HTTP request aur packet switching, ek page load ke poore safar ke saath, aasan Hinglish me samjhein.",
+  "published": "2026-11-26T09:00:00+05:30",
+  "labels": ["Internet", "Web Basics", "Networking"],
+  "hero": "img/posts/internet-basics-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Internet ek jaadu nahi — cables, routers aur chhote packets ka ek bahut bada network hai"
+}

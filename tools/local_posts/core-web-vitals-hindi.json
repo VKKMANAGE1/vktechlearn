@@ -1,0 +1,11 @@
+{
+  "slug": "core-web-vitals-hindi",
+  "title": "Core Web Vitals: LCP, INP aur CLS ko Kaise Sudharein",
+  "description": "Core Web Vitals kya hain, LCP, INP aur CLS ke sahi score, field aur lab data ka farq, aur speed sudharne ke 10 practical steps — step by step Hinglish guide.",
+  "published": "2026-11-26T16:30:00+05:30",
+  "labels": ["Performance", "SEO", "Web Basics"],
+  "hero": "img/posts/core-web-vitals-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Speed एक number नहीं, तीन अनुभव हैं — कितनी जल्दी दिखा, कितनी जल्दी चला, और कितना हिला"
+}

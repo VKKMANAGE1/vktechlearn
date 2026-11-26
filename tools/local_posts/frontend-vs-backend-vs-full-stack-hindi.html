@@ -1,0 +1,171 @@
+<p>"Web development सीखना है" — यह सोचकर जब कोई शुरू करता है, तो पहला सवाल यही आता है: frontend सीखूँ या backend? किसमें job ज़्यादा है, किसकी salary बेहतर है, और "full stack" का matlab क्या है? जवाब इससे शुरू होता है कि असल में एक web page बनता कैसे है।</p>
+
+<p>इस guide में मैं दोनों तरफ़ का काम अलग-अलग खोलूँगा — frontend में HTML, CSS, JavaScript और framework क्या करते हैं, backend में server, API और database कैसे जुड़ते हैं, एक request दोनों के बीच कैसे चलती है, और full stack वाला व्यक्ति असल में कितना गहरा होता है। अंत में तीन तरह के शुरुआती profiles के लिए रास्ता और 30 दिन का plan भी है।</p>
+
+<p><strong>छोटा जवाब:</strong> Frontend वह हिस्सा है जो user के browser में चलता है — layout, buttons, forms, animation. Backend वह हिस्सा है जो server पर चलता है — data save करना, login जाँचना, दूसरे services से बात करना. Full stack का मतलब है दोनों का काम कर पाना, पर आम तौर पर एक तरफ़ ज़्यादा गहराई के साथ।</p>
+
+<h2>Frontend: jo aap dekhte hain</h2>
+
+<p>Frontend का काम browser में होता है। जब आप किसी site पर scroll करते हैं, कोई button दबाते हैं, या form भरते हैं — वह सब frontend है। इसकी तीन बुनियादी चीज़ें हैं: <strong>HTML</strong> जो structure बनाता है, <strong>CSS</strong> जो रंग, spacing और layout देता है, और <strong>JavaScript</strong> जो हरकत और logic जोड़ता है।</p>
+
+<p>शुरुआत में यही तीन काफ़ी हैं। पर जब project बड़ा होता है, तो सीधा JavaScript लिखना मुश्किल हो जाता है — इसीलिए frameworks आते हैं। React, Vue और Svelte जैसे tools page को छोटे-छोटे components में बाँट देते हैं, ताकि एक ही header या card को हर जगह दोबारा लिखना न पड़े। Next.js और Nuxt जैसे frameworks उसके ऊपर routing और server-side rendering जोड़ देते हैं।</p>
+
+<p>Frontend में एक और चीज़ बहुत मायने रखती है — <strong>performance</strong>. आपकी site कितनी जल्दी खुलती है, images कितनी भारी हैं, JavaScript कितना है, और mobile पर layout टूटता है या नहीं। भारत में ज़्यादातर users मध्यम दर्जे के फ़ोन और धीमे network पर आते हैं, इसलिए अच्छा frontend वह है जो साधारण device पर भी चले। इसी विषय पर हमारी <a href="/posts/core-web-vitals-hindi.html">Core Web Vitals guide</a> पढ़ें।</p>
+
+<figure>
+<img src="../img/posts/stack-skills-hindi.jpg" alt="frontend, backend, database और DevOps — चार परतों के काम और skills" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>एक ही product में चार परतें — हर परत का काम और tools अलग</figcaption>
+</figure>
+
+<h2>Backend: jo parde ke peeche chalta hai</h2>
+
+<p>Backend server पर चलता है। इसका काम है requests सुनना, data जाँचना, database से बात करना और जवाब भेजना। जब आप login करते हैं, तो frontend आपका email और password भेजता है; backend उसे जाँचता है, session बनाता है और बताता है कि login सफल हुआ या नहीं।</p>
+
+<p>Backend की भाषा कोई एक नहीं है। JavaScript वाले Node.js चुनते हैं, Python वाले Django या FastAPI, Java वाले Spring, PHP वाले Laravel, और Go या C# भी अपनी जगह हैं। भाषा से ज़्यादा मायने रखती हैं वे अवधारणाएँ जो हर जगह एक जैसी हैं — routing, validation, authentication, database queries, caching और error handling।</p>
+
+<p>Backend का सबसे ज़रूरी हिस्सा database है। यहाँ तय होता है कि data कैसे रखा जाएगा — कौन सी table, कौन सा relation, कौन सा index. एक गलत schema बाद में हर query धीमी कर देता है। इसीलिए backend सीखने वालों को SQL की समझ ज़रूर रखनी चाहिए; शुरुआत के लिए <a href="/posts/sql-kya-hai-hindi.html">SQL guide</a> है।</p>
+
+<p>Backend में security सबसे ज़्यादा ज़िम्मेदारी वाला हिस्सा है। Password plain text में कभी नहीं रखना, हर input जाँचना, SQL injection से बचना, permissions सही तरीके से लगाना — ये छोटी-छोटी आदतें तय करती हैं कि आपका system टिकेगा या नहीं।</p>
+
+<h2>Ek request dono ke beech kaise jati hai</h2>
+
+<p>दोनों तरफ़ का काम समझने का सबसे अच्छा तरीका है एक असली action को step by step देखना। मान लें आपने "Order करें" button दबाया।</p>
+
+<figure>
+<img src="../img/posts/frontend-backend-flow-hindi.jpg" alt="button click से database तक — request, validate, save और response का flow" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>एक button click में चार-पाँच चीज़ें होती हैं — और हर step पर कुछ गलत हो सकता है</figcaption>
+</figure>
+
+<ol>
+<li>Frontend button का click पकड़ता है और ज़रूरी data इकट्ठा करता है।</li>
+<li>वह data JSON बनकर API को POST request में जाता है।</li>
+<li>Backend पहले जाँचता है — user logged in है? data सही है? stock है?</li>
+<li>सब ठीक हो तो database में order लिखा जाता है।</li>
+<li>Backend response भेजता है — success या error, कारण के साथ।</li>
+<li>Frontend उस response के हिसाब से UI बदलता है — thank you message या error।</li>
+</ol>
+
+<p>इस पूरे सफ़र में दोनों तरफ़ की गलतियाँ अलग दिखती हैं। अगर button दबाने पर कुछ नहीं होता, तो समस्या frontend में है। अगर "Something went wrong" आता है, तो request पहुँची पर backend में कुछ फेल हुआ। अगर page ही नहीं खुलता, तो समस्या network या hosting की है। यह फर्क जानना debugging में सबसे काम आता है।</p>
+
+<h2>API: dono ke beech ka contract</h2>
+
+<p>Frontend और backend एक दूसरे को सीधे नहीं जानते; वे API के ज़रिए बात करते हैं। API एक तरह का contract है — "इस address पर, इस तरह का data भेजो, और इस तरह का जवाब मिलेगा।" ज़्यादातर modern APIs REST या GraphQL होते हैं, और data JSON में आता-जाता है।</p>
+
+<pre><code>POST /api/orders
+{
+  "product_id": 42,
+  "quantity": 2
+}
+
+// response
+{ "order_id": 9182, "status": "confirmed" }</code></pre>
+
+<p>इस contract का फायदा यह है कि दोनों तरफ़ के लोग अलग-अलग काम कर सकते हैं। Frontend टीम mock data पर UI बना सकती है, और backend टीम उसी contract पर server बना सकती है। जब contract बदले, तो दोनों को पता होना चाहिए — इसीलिए API versioning और documentation ज़रूरी है।</p>
+
+<p>एक practical बात: शुरुआत में लोग API को बहुत जटिल बना देते हैं। ज़रूरत नहीं। पाँच-छह endpoints से शुरू करें, नाम साफ़ रखें, status codes सही दें, और error messages ऐसे लिखें कि frontend उन्हें दिखा सके।</p>
+
+<h2>Full stack ka asli matlab</h2>
+
+<p>Full stack developer वह है जो दोनों तरफ़ काम कर सके — UI बना सके, API लिख सके, database से जोड़ सके, और उसे deploy भी कर सके। यह "सब कुछ जानने वाला" नहीं होता; यह "दोनों तरफ़ का basic से अच्छा" होता है।</p>
+
+<p>छोटी team और freelance काम में full stack की बहुत माँग है, क्योंकि एक ही व्यक्ति पूरा feature बना सकता है। बड़ी कंपनी में अक्सर काम बँटा होता है — एक टीम UI पर, दूसरी API पर, तीसरी infrastructure पर। इसलिए "full stack" एक शुरुआती फायदा है, पर किसी एक क्षेत्र में गहराई बाद में ज़रूरी हो जाती है।</p>
+
+<table>
+<thead><tr><th>पहलू</th><th>Frontend</th><th>Backend</th></tr></thead>
+<tbody>
+<tr><td>कहाँ चलता है</td><td>User का browser</td><td>Server</td></tr>
+<tr><td>मुख्य भाषा</td><td>JavaScript / TypeScript</td><td>Python, Node, Java, PHP, Go</td></tr>
+<tr><td>सबसे बड़ा सवाल</td><td>"कैसा दिखे और कैसे चले"</td><td>"data सही और सुरक्षित रहे"</td></tr>
+<tr><td>आम tools</td><td>React, Vue, Tailwind</td><td>Django, Express, Postgres</td></tr>
+<tr><td>दिखने वाला असर</td><td>तुरंत दिखता है</td><td>धीरे पता चलता है</td></tr>
+</tbody>
+</table>
+
+<h2>Kaun sa rasta chunein</h2>
+
+<p><strong>1. अगर आपको design और visual चीज़ें पसंद हैं</strong> — frontend से शुरू करें। तुरंत नतीजा दिखता है, जिससे motivation बनी रहती है। शुरुआत HTML, CSS और JavaScript से करें, फिर एक framework.</p>
+
+<p><strong>2. अगर आपको logic, data और system पसंद है</strong> — backend से शुरू करें। Python या Node से शुरुआत आसान है। पहले एक छोटा API बनाएँ, फिर database जोड़ें।</p>
+
+<p><strong>3. अगर आपको अपना project जल्दी बनाना है</strong> — full stack रास्ता लें, पर क्रम में। पहले frontend से एक page बनाएँ, फिर उसी page को API से जोड़ें। एक साथ दोनों सीखने की कोशिश में अक्सर दोनों अधूरे रह जाते हैं।</p>
+
+<p>एक और बात — डिग्री से ज़्यादा portfolio मायने रखता है। दो अच्छे projects, जिनमें login, database और असली use case हो, किसी भी certificate से ज़्यादा असर करते हैं। और अगर आप पहली बार programming सीख रहे हैं, तो <a href="/posts/python-seekhne-ka-roadmap-hindi.html">Python roadmap</a> या <a href="/posts/git-github-kya-hai-hindi-guide.html">Git और GitHub guide</a> से शुरुआत करें।</p>
+
+<h2>Teen mahine ka realistic plan</h2>
+
+<p><strong>हफ़्ता 1–2:</strong> HTML और CSS. एक static page बनाएँ — अपना portfolio, बिना JavaScript के।</p>
+
+<p><strong>हफ़्ता 3–4:</strong> JavaScript basics — variables, functions, events, fetch. उसी page पर एक form जोड़ें जो कुछ calculate करे।</p>
+
+<p><strong>हफ़्ता 5–6:</strong> एक framework (React या Vue) और उससे दो-तीन components। यहीं समझ आएगा कि framework क्यों चाहिए।</p>
+
+<p><strong>हफ़्ता 7–8:</strong> Backend basics — एक छोटा API जो data लौटाए, और उसे frontend से जोड़ें।</p>
+
+<p><strong>हफ़्ता 9–10:</strong> Database — एक table, CRUD operations, और validation.</p>
+
+<p><strong>हफ़्ता 11–12:</strong> Deploy — project को live करें, HTTPS लगाएँ, और एक README लिखें जिसमें बताएँ क्या बनाया और क्यों।</p>
+
+<p>यह plan तेज़ लग सकता है, पर रोज़ 2 घंटे देने पर यह काम करता है। ज़रूरी बात यह है कि हर हफ़्ते कुछ ऐसा बने जो चले — tutorial देखने से ज़्यादा अपने हाथ से लिखने से सीखते हैं।</p>
+
+<h2>Portfolio aur interview me kya dekha jata hai</h2>
+
+<p>पहली job के लिए apply करते समय कोई आपका certificate नहीं देखता — वे आपका code और आपकी समझ देखते हैं। दो projects काफ़ी हैं: एक जो static page से आगे जाए, और एक जिसमें login, database और कुछ असली logic हो। हर project के साथ एक छोटा README रखें जिसमें लिखा हो कि क्या बनाया, किस tool से बनाया, और कौन सी समस्या आई और कैसे हल की।</p>
+
+<p>Interview में अक्सर तीन चीज़ें पूछी जाती हैं। पहली — "यह feature कैसे काम करता है?" यहाँ आपको request के सफ़र को शुरू से अंत तक बता पाना चाहिए। दूसरी — "यह bug कैसे ढूँढा?" यहाँ process मायने रखता है, जवाब नहीं। तीसरी — "इसे तेज़ कैसे करेंगे?" यहाँ आपको कम से कम तीन ठोस तरीके बताने चाहिए, जैसे caching, index या image compression।</p>
+
+<p>एक और बात जो अंतर पैदा करती है — आपका project live होना चाहिए। जो link किसी के फ़ोन पर खुल जाए, वह किसी भी screenshot से ज़्यादा असर करता है। इसीलिए deploy करना सीखें, चाहे शुरुआत में मुफ़्त hosting पर ही क्यों न हो।</p>
+
+<h2>Paanch common galatfahmiyan</h2>
+
+<p><strong>1. "Frontend आसान है।"</strong> शुरुआत आसान लगती है, पर accessibility, performance और state management गहरे विषय हैं।</p>
+
+<p><strong>2. "Backend में maths चाहिए।"</strong> ज़्यादातर काम logic और data handling का है, advanced maths का नहीं।</p>
+
+<p><strong>3. "Full stack का मतलब सब expert।"</strong> नहीं — इसका मतलब है दोनों तरफ़ काम चला सकना।</p>
+
+<p><strong>4. "Framework सीखना सबसे ज़रूरी है।"</strong> JavaScript और HTTP की समझ पहले; framework बाद में, और वह भी जल्दी बदलता है।</p>
+
+<p><strong>5. "Job के लिए 10 projects चाहिए।"</strong> दो ठोस projects, जिन्हें आप पूरा समझा सकें, काफ़ी हैं।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>मैंने शुरुआत frontend से की, क्योंकि तुरंत कुछ दिखता था। पहला page बनाया, रंग बदले, और लगा कि सीख गया। फिर जब उस page पर form जोड़ा और data save करना चाहा, तब समझ आया कि असली काम backend में है।</p>
+
+<p>पहली बार API लिखते समय मैंने सब कुछ एक ही file में रख दिया — routes, database queries, validation, सब। दो हफ़्ते बाद जब कुछ बदलना पड़ा, तो पता नहीं चल रहा था कि कहाँ से शुरू करूँ। तभी मैंने files को अलग करना सीखा — routes अलग, models अलग, validation अलग। यह छोटी आदत बाद में सबसे ज़्यादा काम आई।</p>
+
+<p>तीसरी बात: मैंने बहुत समय यह तय करने में लगाया कि "सही" framework कौन सा है। बाद में एहसास हुआ कि framework बदलना आसान है, अवधारणाएँ नहीं। HTTP, database, authentication और caching समझ लें, तो कोई भी framework कुछ हफ़्तों में आ जाता है।</p>
+
+<h2>नतीजा</h2>
+
+<p>Frontend browser में चलता है और दिखने वाला हिस्सा बनाता है; backend server पर चलता है और data, logic और security सँभालता है। दोनों API के ज़रिए जुड़ते हैं, और full stack का मतलब है दोनों तरफ़ काम कर पाना। अपनी रुचि देखकर शुरुआत चुनें, पर पहले HTML/CSS/JavaScript और HTTP की बुनियाद समझें — बाकी सब उसी पर खड़ा है।</p>
+
+<p>आगे पढ़ें: <a href="/posts/web-hosting-kya-hai-hindi.html">web hosting</a> — जहाँ बताया है कि यह backend आख़िर रखा कहाँ जाता है, और <a href="/posts/internet-kaise-kaam-karta-hai-hindi.html">internet कैसे काम करता है</a> — request का पूरा सफ़र।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या frontend के लिए design सीखना ज़रूरी है?</h3>
+
+<p>पूरा design नहीं, पर spacing, colour और typography की basic समझ बहुत काम आती है।</p>
+
+<h3>Backend के लिए कौन सी language सबसे अच्छी है?</h3>
+
+<p>कोई एक सबसे अच्छी नहीं। Python शुरुआत के लिए आसान है, JavaScript में एक ही भाषा दोनों तरफ़ चलती है।</p>
+
+<h3>Full stack बनने में कितना समय लगता है?</h3>
+
+<p>रोज़ 2 घंटे देने पर 8–12 महीने में काम चलाने लायक level आ जाता है; गहराई में सालों लगते हैं।</p>
+
+<h3>क्या mobile app बनाने के लिए भी यही सीखना है?</h3>
+
+<p>React Native या Flutter से mobile apps बनते हैं, और वहाँ भी frontend-backend का वही ढाँचा काम करता है।</p>
+
+<h3>क्या बिना डिग्री job मिल सकती है?</h3>
+
+<p>हाँ, portfolio और interview में समझ दिखे तो कई कंपनियाँ skill देखती हैं। पर कुछ जगह डिग्री filter रहता है।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" rel="nofollow noopener" target="_blank">MDN Web Docs — Learn web development</a></li>
+  <li><a href="https://nodejs.org/en/learn" rel="nofollow noopener" target="_blank">Node.js — official learn documentation</a></li>
+</ul>

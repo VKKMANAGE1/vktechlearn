@@ -1,0 +1,11 @@
+{
+  "slug": "frontend-vs-backend-vs-full-stack-hindi",
+  "title": "Frontend vs Backend vs Full Stack: Kaun Kya Karta Hai",
+  "description": "Frontend, backend aur full stack ka farq, dono ke skills, request ka poora safar, aur shuruaat ke liye 30 din ka plan — aasan Hinglish guide udaharan ke saath.",
+  "published": "2026-11-26T12:00:00+05:30",
+  "labels": ["Web Development", "Career", "Programming"],
+  "hero": "img/posts/frontend-backend-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Browser वाला हिस्सा frontend है, server और database वाला backend — दोनों मिलकर एक page बनाते हैं"
+}

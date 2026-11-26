@@ -14,7 +14,21 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "img", "posts")
-FONTS = "/opt/freestyle/python/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf"
+def _font_dir():
+    local = os.path.join(ROOT, "tools", "fonts")
+    if os.path.exists(os.path.join(local, "DejaVuSans-Bold.ttf")):
+        return local
+    try:
+        import matplotlib
+        cand = os.path.join(os.path.dirname(matplotlib.__file__), "mpl-data", "fonts", "ttf")
+        if os.path.exists(os.path.join(cand, "DejaVuSans-Bold.ttf")):
+            return cand
+    except Exception:
+        pass
+    return "/opt/freestyle/python/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf"
+
+
+FONTS = _font_dir()
 S = 2  # supersample factor
 W, H = 1392, 752
 
@@ -643,6 +657,162 @@ SPECS = [
             {"head": "Outlier", "lines": ["Age 250 saal", "Amount me extra zero"], "accent": "violet"},
         ],
         "foot": "In chaaron ko ignore kiya to model aur report dono galat honge.",
+    },
+    {
+        "out": "internet-layers-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Ek request, chaar layers",
+        "title": "Browser se server tak kaise pahunchti hai",
+        "cards": [
+            {"head": "IP", "lines": ["Packet ka pata", "Har device ka address"]},
+            {"head": "DNS", "lines": ["Naam se address", "Phonebook jaisa"], "accent": "violet"},
+            {"head": "TCP", "lines": ["Bharosemand connection", "Sab sahi order me"]},
+            {"head": "HTTP + TLS", "lines": ["Request aur response", "Data encrypted"], "accent": "violet"},
+        ],
+        "foot": "Koi ek layer ruke to page nahi khulega.",
+    },
+    {
+        "out": "dns-lookup-hindi.jpg",
+        "kind": "flow",
+        "kicker": "DNS lookup",
+        "title": "Naam se IP tak ka safar",
+        "nodes": [
+            {"label": "1. Cache", "sub": "browser aur OS", "note": "Mil gaya to safar yahin khatam."},
+            {"label": "2. Resolver", "sub": "ISP ka server", "note": "Yeh aage poochhne ka kaam karta hai."},
+            {"label": "3. Root aur TLD", "sub": ".com ya .site", "note": "Authoritative server ka naam milta hai."},
+            {"label": "4. Authoritative", "sub": "asli IP address", "note": "Jawab TTL tak cache rehta hai."},
+        ],
+        "foot": "Jawab har level par cache hota hai — isliye dusri baar tez.",
+    },
+    {
+        "out": "tls-handshake-hindi.jpg",
+        "kind": "flow",
+        "kicker": "TLS handshake",
+        "title": "Chaar message me secure connection",
+        "nodes": [
+            {"label": "1. Client Hello", "sub": "version aur ciphers", "note": "Browser batata hai kya kya samajhta hai."},
+            {"label": "2. Server Hello", "sub": "certificate ke saath", "note": "Server apni pehchan saabit karta hai."},
+            {"label": "3. Verification", "sub": "CA, domain, expiry", "note": "Browser certificate jaanchta hai."},
+            {"label": "4. Session key", "sub": "encrypted data", "note": "Ab har request encrypt hoke jati hai."},
+        ],
+        "foot": "TLS 1.3 me yeh safar ek round trip me poora hota hai.",
+    },
+    {
+        "out": "https-padlock-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Taale ke andar",
+        "title": "HTTPS kya deta hai — aur kya nahi",
+        "cards": [
+            {"head": "Certificate", "lines": ["Domain ka naam", "CA ka signature"]},
+            {"head": "Encryption", "lines": ["Data padha nahi ja sakta", "Session key se"], "accent": "violet"},
+            {"head": "Integrity", "lines": ["Raaste me badlav pakda jata hai", "Har packet check hota hai"]},
+            {"head": "Seema", "lines": ["Site imandar hai", "Yeh taala nahi batata"], "accent": "violet"},
+        ],
+        "foot": "Taala bharose ka ishara hai, imandari ka saboot nahi.",
+    },
+    {
+        "out": "stack-skills-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Chaar parat",
+        "title": "Ek product, chaar tarah ka kaam",
+        "cards": [
+            {"head": "Frontend", "lines": ["HTML, CSS, JS", "Dikhne wala hissa"]},
+            {"head": "Backend", "lines": ["API aur logic", "Server par chalta hai"], "accent": "violet"},
+            {"head": "Database", "lines": ["Data kahan rehta hai", "SQL ya NoSQL"]},
+            {"head": "DevOps", "lines": ["Deploy aur monitoring", "Sab chalta rahe"], "accent": "violet"},
+        ],
+        "foot": "Har parat ka apna kaam — aur apni zimmedari.",
+    },
+    {
+        "out": "frontend-backend-flow-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Button click",
+        "title": "Click se database tak",
+        "nodes": [
+            {"label": "1. Click", "sub": "frontend data jodta hai", "note": "UI turant feedback deta hai."},
+            {"label": "2. API call", "sub": "JSON POST request", "note": "Yahan network ka samay lagta hai."},
+            {"label": "3. Backend", "sub": "validate aur save", "note": "Permission aur data dono jaanche jate hain."},
+            {"label": "4. Response", "sub": "success ya error", "note": "Frontend isi se UI badalta hai."},
+        ],
+        "foot": "Error kis step par aaya, usse pata chalta hai kahan dekhna hai.",
+    },
+    {
+        "out": "hosting-types-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Hosting options",
+        "title": "Chaar options, chaar hisaab",
+        "cards": [
+            {"head": "Shared", "lines": ["Ek server, kai sites", "Sasta, kam control"]},
+            {"head": "VPS", "lines": ["Apna hissa server", "Root access"], "accent": "violet"},
+            {"head": "Dedicated", "lines": ["Poora server aapka", "Mehnga, tez"]},
+            {"head": "Cloud", "lines": ["Load ke hisaab se", "Bill bhi badalta hai"], "accent": "violet"},
+        ],
+        "foot": "Kimat se pehle site ka type dekho — static ke liye server hi nahi chahiye.",
+    },
+    {
+        "out": "hosting-choice-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Hosting chunna",
+        "title": "Saat sawaal, ek faisla",
+        "nodes": [
+            {"label": "1. Site ka type", "sub": "static, WordPress, app", "note": "Yahin se aadha faisla ho jata hai."},
+            {"label": "2. Traffic", "sub": "kitne visits", "note": "Shared ya cloud, isi se tay hota hai."},
+            {"label": "3. Kaun sambhale", "sub": "aap ya team", "note": "Managed ya unmanaged ka jawab."},
+            {"label": "4. Budget aur support", "sub": "backup, SSL, exit", "note": "Sasta plan mehnga pad sakta hai."},
+        ],
+        "foot": "Pehle type, phir traffic, phir maintenance — ulta kram mehnga padta hai.",
+    },
+    {
+        "out": "dns-records-types-hindi.jpg",
+        "kind": "cards",
+        "kicker": "DNS records",
+        "title": "Kaun sa record kis kaam ka",
+        "cards": [
+            {"head": "A / AAAA", "lines": ["Site ka IP address", "IPv4 aur IPv6"]},
+            {"head": "CNAME", "lines": ["Naam se naam", "Root par nahi"], "accent": "violet"},
+            {"head": "MX", "lines": ["Email kahan jaye", "Priority ke saath"]},
+            {"head": "TXT", "lines": ["Verification aur SPF", "DMARC bhi yahin"], "accent": "violet"},
+        ],
+        "foot": "Ek record galat ho to site ya email band ho sakta hai.",
+    },
+    {
+        "out": "dns-migration-hindi.jpg",
+        "kind": "flow",
+        "kicker": "DNS badalna",
+        "title": "Safe migration ka kram",
+        "nodes": [
+            {"label": "1. TTL ghatao", "sub": "300 seconds", "note": "24 ghante pehle karo, baad me nahi."},
+            {"label": "2. Naya setup test", "sub": "bina DNS badle", "note": "Temporary URL se sab jaancho."},
+            {"label": "3. Records badlo", "sub": "ek saath, poore", "note": "Aadhe purane, aadhe naye mat chhodo."},
+            {"label": "4. TTL wapas badhao", "sub": "sab theek ho to", "note": "Ek hafta ruk kar purani jagah band karo."},
+        ],
+        "foot": "TTL pehle ghatao, records baad me badlo — yahi safe kram hai.",
+    },
+    {
+        "out": "vitals-three-hindi.jpg",
+        "kind": "cards",
+        "kicker": "Core Web Vitals",
+        "title": "Teen metric, teen sawal",
+        "cards": [
+            {"head": "LCP", "lines": ["Sabse bada element", "2.5s se kam"]},
+            {"head": "INP", "lines": ["Click ka jawab", "200ms se kam"], "accent": "violet"},
+            {"head": "CLS", "lines": ["Layout kitna hila", "0.1 se kam"]},
+            {"head": "Field data", "lines": ["Asli users ka data", "75% visits par"]},
+        ],
+        "foot": "Teeno behtar ho, tabhi page ka anubhav behtar kehlata hai.",
+    },
+    {
+        "out": "vitals-fix-hindi.jpg",
+        "kind": "flow",
+        "kicker": "Speed sudharna",
+        "title": "Naap se sudhar tak",
+        "nodes": [
+            {"label": "1. Field data dekho", "sub": "Search Console", "note": "Asli users ka data sach bolta hai."},
+            {"label": "2. Sabse bhaari cheez", "sub": "image, font, script", "note": "Ek baar me ek hi cheez badlo."},
+            {"label": "3. Badlo aur naapo", "sub": "lab me repeat", "note": "Bina naape pata nahi chalega."},
+            {"label": "4. Field me confirm", "sub": "2–4 hafte baad", "note": "Ranking field data par milti hai."},
+        ],
+        "foot": "Naapo, badlo, dobara naapo — yahi ek tarika hai.",
     },
 ]
 

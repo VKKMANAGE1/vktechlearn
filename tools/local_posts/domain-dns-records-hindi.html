@@ -1,0 +1,175 @@
+<p>Domain खरीद लिया, hosting भी ले ली, files भी upload कर दीं — फिर भी site नहीं खुल रही। यह कहानी हर उस व्यक्ति के साथ होती है जो पहली बार site live करता है, और कारण लगभग हमेशा एक ही होता है: DNS records सही से नहीं जुड़े। Domain और server के बीच की वह कड़ी DNS है, और उस कड़ी में जो entries होती हैं, उन्हें records कहते हैं।</p>
+
+<p>इस guide में मैं records को एक-एक करके खोलूँगा — A, AAAA, CNAME, MX, TXT, NS और CAA — और बताऊँगा कि कौन सा record कब लगता है, कौन सा कहाँ नहीं लग सकता, और क्यों। साथ में एक practical setup, TTL और propagation की सच्चाई, और वे गलतियाँ जो सबसे ज़्यादा देर करवाती हैं।</p>
+
+<p><strong>छोटा जवाब:</strong> DNS records बताते हैं कि आपके domain के साथ क्या होना चाहिए। <code>A</code> record domain को IP address से जोड़ता है, <code>CNAME</code> एक नाम को दूसरे नाम पर भेजता है, <code>MX</code> email कहाँ जाएगा यह तय करता है, और <code>TXT</code> में verification और spam-control की जानकारी रहती है। गलत record या गलत nameserver — site और email दोनों बंद कर सकते हैं।</p>
+
+<h2>Domain, registrar aur registry</h2>
+
+<p>Domain खरीदने का मतलब यह नहीं कि आपके पास कोई file है। आपको एक साल के लिए <strong>registration</strong> मिलती है, जो एक registry में दर्ज होती है — जैसे <code>.com</code> के लिए Verisign और <code>.in</code> के लिए NIXI. बीच में आपका <strong>registrar</strong> होता है, जो यह काम करवाता है और आपको control panel देता है।</p>
+
+<p>उसी panel में दो चीज़ें होती हैं जो सबसे ज़्यादा मायने रखती हैं: <strong>nameservers</strong> और <strong>DNS records</strong>. Nameserver बताता है कि आपके records किस server पर रखे हैं। Records उस server पर रखे होते हैं। अगर आपने hosting की nameserver डाली है, तो records hosting panel में बनेंगे; अगर registrar की डिफ़ॉल्ट nameserver रखी है, तो records वहीं बनेंगे। दो जगह आधे-अधूरे records बनाना सबसे आम गलती है।</p>
+
+<h2>Records ka parichay</h2>
+
+<figure>
+<img src="../img/posts/dns-records-types-hindi.jpg" alt="DNS records के प्रकार — A, CNAME, MX, TXT और NS, हर एक का काम" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>हर record एक सवाल का जवाब देता है — site कहाँ, mail कहाँ, और पहचान कैसे</figcaption>
+</figure>
+
+<p>DNS records कई तरह के होते हैं, पर रोज़ के काम में पाँच-छह ही आते हैं। हर record में तीन चीज़ें होती हैं: <strong>name</strong> (किस नाम के लिए), <strong>type</strong> (कौन सा record), और <strong>value</strong> (जवाब क्या है)। चौथी चीज़ TTL है, जो बताती है कि इसे कितनी देर cache करना है।</p>
+
+<table>
+<thead><tr><th>Record</th><th>काम</th><th>उदाहरण value</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>नाम → IPv4 address</td><td>185.199.108.153</td></tr>
+<tr><td>AAAA</td><td>नाम → IPv6 address</td><td>2606:50c0:8000::153</td></tr>
+<tr><td>CNAME</td><td>नाम → दूसरा नाम</td><td>example.com</td></tr>
+<tr><td>MX</td><td>Email कहाँ जाए</td><td>10 mail.example.com</td></tr>
+<tr><td>TXT</td><td>Verification, SPF, DMARC</td><td>v=spf1 include:...</td></tr>
+<tr><td>NS</td><td>Records किस server पर</td><td>ns1.hosting.com</td></tr>
+<tr><td>CAA</td><td>कौन certificate दे सकता है</td><td>0 issue "letsencrypt.org"</td></tr>
+</tbody>
+</table>
+
+<h2>A record: site ka pata</h2>
+
+<p>A record सबसे बुनियादी है — यह domain को एक IPv4 address से जोड़ता है। जब कोई <code>example.com</code> खोलता है, तो DNS यही record लौटाता है और browser उस IP पर connection बनाता है।</p>
+
+<p>एक domain के कई A records हो सकते हैं, और तब DNS बारी-बारी से अलग-अलग IP लौटाता है। इसे round-robin कहते हैं। यह सस्ता load balancing है, पर यह नहीं जानता कि कौन सा server ज़्यादा load में है या बंद है — इसलिए असली load balancing के लिए अलग system चाहिए।</p>
+
+<p><code>AAAA</code> record वही काम IPv6 के लिए करता है। अगर आपकी hosting IPv6 support करती है, तो दोनों records डालें; जो user IPv6 पर आए, उसे तेज़ रास्ता मिलेगा।</p>
+
+<p>एक practical बात — अगर आप static hosting (जैसे GitHub Pages या Netlify) पर हैं, तो उनकी documentation में दिए गए exact IPs इस्तेमाल करें। अपने laptop का IP या कोई अनुमानित IP डालने से site कभी नहीं खुलेगी, क्योंकि वह address आपके घर के router का है, server का नहीं।</p>
+
+<h2>CNAME: ek naam se doosre naam tak</h2>
+
+<p>CNAME कहता है "यह नाम उस नाम जैसा है"। जब कोई <code>www.example.com</code> खोलता है, तो DNS पहले CNAME पढ़ता है, फिर उसका A record ढूँढता है और अंत में IP लौटाता है। यानी दो कदम, पर फायदा यह है कि अगर server का IP बदले, तो सिर्फ़ एक जगह बदलना पड़ेगा।</p>
+
+<p>CNAME का सबसे बड़ा फायदा यही है — hosting बदलने पर आपको IP याद नहीं रखना पड़ता। इसीलिए <code>www</code> के लिए CNAME आम है, और कई services (जैसे mail, CDN, verification) CNAME ही माँगती हैं।</p>
+
+<p>पर एक सख्त नियम है: <strong>root domain पर CNAME नहीं लग सकता</strong>। <code>example.com</code> (बिना www) पर CNAME डालने से DNS standard टूट जाता है, क्योंकि उसी नाम पर MX और NS records भी होते हैं और CNAME के साथ कोई दूसरा record नहीं रह सकता। इसका हल है <strong>ALIAS</strong> या <strong>ANAME</strong> record, जो कुछ DNS providers देते हैं — काम वही करता है पर root पर सुरक्षित है। अगर आपका provider यह नहीं देता, तो root पर सीधे A records डालें।</p>
+
+<h2>MX: email ka rasta</h2>
+
+<p>MX record तय करता है कि आपके domain पर आने वाला email किस server पर जाए। इसमें एक <strong>priority</strong> number भी होता है — जो सबसे छोटा होता है, वह पहले try होता है; न मिले तो अगला।</p>
+
+<pre><code>example.com.  MX  10  aspmx.l.google.com.
+example.com.  MX  20  alt1.aspmx.l.google.com.</code></pre>
+
+<p>यहाँ एक बात ध्यान रखें: MX record <strong>IP नहीं, नाम</strong> माँगता है। अगर आप वहाँ IP डाल दें, तो email काम नहीं करेगा। और MX का नाम किसी ऐसे domain का होना चाहिए जिसका A record हो — वरना mail server मिलेगा ही नहीं।</p>
+
+<p>अगर आपके पास कोई email service नहीं है और आप domain पर mail नहीं चाहते, तो भी एक "null MX" डालना अच्छा अभ्यास है — <code>MX 0 .</code> — जो साफ़ बताता है कि यहाँ mail नहीं लिया जाता। इससे spam दूसरे रास्ते नहीं ढूँढता।</p>
+
+<h2>TXT: verification aur spam control</h2>
+
+<p>TXT record में कोई भी text रखा जा सकता है, और इसीलिए यह सबसे ज़्यादा इस्तेमाल होने वाला record बन गया है। तीन काम इसके सबसे आम हैं।</p>
+
+<p><strong>1. Verification.</strong> Google Search Console, mail services और कई tools कहते हैं "यह TXT record डालो"। वे उसे पढ़कर पुष्टि करते हैं कि domain आपका है।</p>
+
+<p><strong>2. SPF.</strong> SPF बताता है कि कौन से servers आपके domain से email भेज सकते हैं। इसका format simple है — <code>v=spf1 include:_spf.google.com ~all</code>। एक domain पर सिर्फ़ एक SPF record होना चाहिए; दो होने पर दोनों बेकार हो जाते हैं।</p>
+
+<p><strong>3. DMARC.</strong> DMARC बताता है कि अगर SPF या DKIM fail हो तो क्या करना है — <code>p=none</code> सिर्फ़ report, <code>p=quarantine</code> spam में डालो, <code>p=reject</code> पूरी तरह रोक दो। इसे <code>_dmarc.example.com</code> पर TXT के रूप में डाला जाता है।</p>
+
+<p>DKIM अलग record है — यह <code>selector._domainkey.example.com</code> जैसे नाम पर रहता है और email के signature जाँचने का public key रखता है। तीनों मिलकर तय करते हैं कि आपका email inbox में पहुँचे या spam में।</p>
+
+<h2>NS, CAA aur baaki</h2>
+
+<p><strong>NS</strong> records बताते हैं कि आपके domain के records किस nameserver पर हैं। ये registrar पर सेट होते हैं और इन्हीं की वजह से बाकी records कहीं और रखे जा सकते हैं। <strong>CAA</strong> बताता है कि कौन सी CA आपके domain के लिए certificate बना सकती है — यह एक अतिरिक्त सुरक्षा परत है। <strong>SRV</strong> किसी service का host और port बताता है, जैसे video call या chat के लिए।</p>
+
+<p>इनके अलावा <code>PTR</code> (reverse lookup), <code>SOA</code> (zone की जानकारी) और <code>TLSA</code> जैसे records भी हैं, पर सामान्य website के लिए उन्हें छेड़ने की ज़रूरत नहीं पड़ती।</p>
+
+<p>NS records को छेड़ना सबसे संवेदनशील काम है, क्योंकि उन्हें बदलने से आपके सारे records किसी दूसरे server पर चले जाते हैं — यानी site, email और verification, तीनों एक साथ। इसलिए nameserver बदलने से पहले नई जगह पर सारे records बना लें, और पुराने records का export रखें। अगर nameserver बदलने के बाद email बंद हो जाए, तो सबसे पहले MX records जाँचें — अक्सर वे नई जगह पर बने ही नहीं होते।</p>
+
+<h2>Ek practical setup</h2>
+
+<p>मान लें आपकी site <code>example.com</code> पर है, hosting का IP <code>203.0.113.10</code> है, और email Google Workspace पर है। Records कुछ इस तरह दिखेंगे।</p>
+
+<pre><code>; site
+A      @                203.0.113.10
+CNAME  www              example.com.
+
+; email
+MX     @     10         aspmx.l.google.com.
+MX     @     20         alt1.aspmx.l.google.com.
+TXT    @                "v=spf1 include:_spf.google.com ~all"
+
+; verification (example)
+TXT    @                "google-site-verification=xxxxx"
+TXT    _dmarc           "v=DMARC1; p=none; rua=mailto:dmarc@example.com"</code></pre>
+
+<p>यहाँ <code>@</code> का मतलब root domain है। ध्यान दें कि <code>www</code> पर CNAME है और root पर A. यही सबसे सुरक्षित ढाँचा है। अगर आप <code>www</code> को default रखना चाहते हैं, तो उल्टा भी कर सकते हैं, पर तब root पर redirect चाहिए।</p>
+
+<h2>TTL aur propagation ki sacchai</h2>
+
+<p>TTL (Time To Live) बताता है कि कोई record कितनी देर तक resolvers के cache में रहेगा। 3600 का मतलब एक घंटा, 300 का मतलब पाँच मिनट। जब आप record बदलते हैं, तो दुनिया भर के resolvers को तुरंत पता नहीं चलता — पुराना जवाब उनके cache में TTL खत्म होने तक रहता है।</p>
+
+<figure>
+<img src="../img/posts/dns-migration-hindi.jpg" alt="DNS बदलने का सुरक्षित क्रम — TTL घटाएँ, records बदलें, जाँचें और फिर TTL बढ़ाएँ" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>Migration में जल्दबाज़ी सबसे महंगी पड़ती है — TTL पहले घटाएँ</figcaption>
+</figure>
+
+<p>इसीलिए migration से पहले TTL घटाना ज़रूरी है। अगर TTL 24 घंटे है और आपने record बदला, तो कुछ users को अगले दिन तक पुरानी site दिखेगी। TTL 300 करके 24 घंटे रुकें, फिर बदलाव करें — तब फैलाव मिनटों में होगा।</p>
+
+<p>एक और बात — "propagation" कोई अलग process नहीं है। यह सिर्फ़ पुराने caches का खत्म होना है। अगर आपको तुरंत जाँचना है, तो किसी online DNS checker से अलग-अलग शहरों से lookup करें। और अपने ही laptop पर बार-बार test करने से पहले DNS cache साफ़ करें।</p>
+
+<h2>Aath common galtiyan</h2>
+
+<p><strong>1. Root पर CNAME।</strong> Standard नहीं मानता; कुछ providers मना कर देंगे, कुछ चुपचाप तोड़ देंगे।</p>
+
+<p><strong>2. www और root में से एक छोड़ना।</strong> दोनों को सेट करें, एक को दूसरे पर redirect करें।</p>
+
+<p><strong>3. दो SPF records।</strong> दोनों अमान्य हो जाते हैं; सबको एक में मिलाएँ।</p>
+
+<p><strong>4. MX में IP डालना।</strong> MX नाम चाहता है, IP नहीं।</p>
+
+<p><strong>5. आधे records registrar पर, आधे hosting पर।</strong> Nameserver किसकी है, वहीं सब रखें।</p>
+
+<p><strong>6. Migration से पहले TTL न घटाना।</strong> इससे घंटों की देरी होती है।</p>
+
+<p><strong>7. डिलीट किए गए record को याद न रखना।</strong> Verification TXT और CAA अक्सर भुला दिए जाते हैं और बाद में email या certificate fail होता है।</p>
+
+<p><strong>8. मान लेना कि "कुछ देर में अपने आप ठीक हो जाएगा"।</strong> गलत record कभी ठीक नहीं होता; उसे बदलना पड़ता है।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>पहली बार site live करते समय मैंने <code>www</code> के लिए CNAME डाला और root के लिए कुछ नहीं। नतीजा — <code>www.example.com</code> खुलता था, <code>example.com</code> नहीं। मुझे लगा कि DNS में time लगता है, और दो घंटे इंतज़ार करता रहा। बाद में पता चला कि record ही मौजूद नहीं था।</p>
+
+<p>दूसरी बार email की समस्या आई — मेल जा रहा था पर inbox में नहीं पहुँच रहा। कारण SPF था: मैंने दो अलग records डाल दिए थे, एक hosting का और एक Google का। दोनों मिलकर अमान्य हो गए थे। एक record बनाकर दोनों को उसमें जोड़ा और समस्या खत्म हुई।</p>
+
+<p>तीसरी सीख — हर record की एक वजह लिखकर रखें। मैंने एक छोटी table बनाई: कौन सा record, किस service के लिए, कब डाला। जब छह महीने बाद कुछ टूटा, तो उसी table से पता चल गया कि कहाँ देखना है। DNS में सबसे खतरनाक चीज़ अंधेरा है — जो record आपने खुद नहीं डाला और नहीं जानते किसका है।</p>
+
+<h2>नतीजा</h2>
+
+<p>DNS records आपके domain का नक्शा हैं। A और AAAA site का address देते हैं, CNAME एक नाम को दूसरे से जोड़ता है (root पर नहीं), MX email का रास्ता तय करता है, TXT verification और spam control करता है, और NS बताते हैं कि सब कहाँ रखा है। TTL समझकर बदलाव करें, और एक जगह पर सारे records रखें।</p>
+
+<p>आगे पढ़ें: <a href="/posts/internet-kaise-kaam-karta-hai-hindi.html">internet कैसे काम करता है</a> — जहाँ DNS lookup का पूरा क्रम है, और <a href="/posts/web-hosting-kya-hai-hindi.html">web hosting</a> — जहाँ बताया है कि यह सब किस server पर रखा जाता है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>DNS बदलाव में कितना समय लगता है?</h3>
+
+<p>TTL जितना सेट है, उतना। 300 सेकंड पर आम तौर पर 5–15 मिनट में फैल जाता है।</p>
+
+<h3>क्या एक domain पर कई A records हो सकते हैं?</h3>
+
+<p>हाँ, और DNS उन्हें बारी-बारी लौटाता है। इसे round-robin कहते हैं।</p>
+
+<h3>www और बिना www — कौन सा सही है?</h3>
+
+<p>दोनों चल सकते हैं; बस एक को दूसरे पर 301 redirect करें, ताकि duplicate page न बने।</p>
+
+<h3>SPF, DKIM और DMARC सब ज़रूरी हैं?</h3>
+
+<p>Email deliverability के लिए हाँ। SPF सबसे बुनियादी है, DMARC बताता है कि fail होने पर क्या करना है।</p>
+
+<h3>DNS बदलने से email बंद हो सकता है?</h3>
+
+<p>हाँ, अगर MX records गलती से हट जाएँ। इसलिए बदलाव से पहले सारे records का screenshot या export रखें।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc1035.html" rel="nofollow noopener" target="_blank">IETF RFC 1035 — Domain names: implementation and specification</a></li>
+  <li><a href="https://www.icann.org/resources/pages/what-2012-02-25-en" rel="nofollow noopener" target="_blank">ICANN — What is a domain name?</a></li>
+</ul>

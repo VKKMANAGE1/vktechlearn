@@ -1,10 +1,10 @@
 # Post plan — 190 documents → 190 posts
 
 Target: **190 posts** built from the reference documents (Google Docs + Drive PDFs).
-Posts live today: **52** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
+Posts live today: **58** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
 pages, which are separate and not counted here).
 
-Remaining: **138 topics**, split into **23 batches of 6**. Batch 1 is complete. Each batch = one working turn:
+Remaining: **132 topics**, split into **22 batches of 6**. Batches 1 and 2 are complete. Each batch = one working turn:
 write 6 posts (2,000+ words each, Hinglish/Hindi), hero + 2 branded diagrams, build,
 `EXTRA_POSTS` cards, commit, push.
 
@@ -25,14 +25,14 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 - [x] 5. Power BI vs Tableau vs Looker Studio
 - [x] 6. Data Cleaning: Ganda Data Saaf Karne ka 7-Step Process
 
-## Batch 2 — Web & internet basics `[ ]`
+## Batch 2 — Web & internet basics `[x]`
 
-- [ ] 7. Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP
-- [ ] 8. HTTP se HTTPS: SSL/TLS Aasan Bhasha Me
-- [ ] 9. Frontend vs Backend vs Full Stack
-- [ ] 10. Web Hosting Kya Hai? Shared, VPS aur Cloud
-- [ ] 11. Domain aur DNS Records: A, CNAME, MX Samjhein
-- [ ] 12. Website Speed: Core Web Vitals aur 10 Optimizations
+- [x] 7. Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP
+- [x] 8. HTTP se HTTPS: SSL/TLS Aasan Bhasha Me
+- [x] 9. Frontend vs Backend vs Full Stack
+- [x] 10. Web Hosting Kya Hai? Shared, VPS aur Cloud
+- [x] 11. Domain aur DNS Records: A, CNAME, MX Samjhein
+- [x] 12. Website Speed: Core Web Vitals aur 10 Optimizations
 
 ## Batch 3 — Cloud & DevOps `[ ]`
 
@@ -241,3 +241,4 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 | 2026-11-25 | Plan created. 46 posts live; 144 queued in 24 batches. |
 | 2026-11-25 | Batch 1 part 1 pushed: SQL basics, SQL vs NoSQL, Excel formulas are live. 3/6 done in batch 1. |
 | 2026-11-25 | Batch 1 complete: indexing, BI tools, data cleaning pushed. 6/6. Next: batch 2 (web basics). |
+| 2026-11-26 | Batch 2 complete: internet/DNS/HTTP, HTTPS/TLS, frontend vs backend, hosting, DNS records, Core Web Vitals. 12/190 live. |

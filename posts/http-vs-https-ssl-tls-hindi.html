@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me — VK Tech Learn</title>
+<meta name="description" content="HTTP aur HTTPS me farq kya hai, TLS handshake kaise hota hai, certificate kaun deta hai aur padlock ka kya matlab hai — step by step Hinglish guide me.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me">
+<meta property="og:description" content="HTTP aur HTTPS me farq kya hai, TLS handshake kaise hota hai, certificate kaun deta hai aur padlock ka kya matlab hai — step by step Hinglish guide me.">
+<meta property="og:url" content="https://vktechlearn.site/posts/http-vs-https-ssl-tls-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/http-vs-https-ssl-tls-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="Internet, Security, Web Basics">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/https-security-hindi.jpg">
+<meta property="og:image:alt" content="HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me">
+<meta property="article:published_time" content="2026-11-26T10:30:00+05:30">
+<meta property="article:modified_time" content="2026-11-26T10:30:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="Internet">
+<meta property="article:tag" content="Internet">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Web Basics">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me">
+<meta name="twitter:description" content="HTTP aur HTTPS me farq kya hai, TLS handshake kaise hota hai, certificate kaun deta hai aur padlock ka kya matlab hai — step by step Hinglish guide me.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/https-security-hindi.jpg">
+<meta name="twitter:image:alt" content="HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me","description":"HTTP aur HTTPS me farq kya hai, TLS handshake kaise hota hai, certificate kaun deta hai aur padlock ka kya matlab hai — step by step Hinglish guide me.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/http-vs-https-ssl-tls-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/http-vs-https-ssl-tls-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/https-security-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/https-security-hindi.jpg","datePublished":"2026-11-26T10:30:00+05:30","dateModified":"2026-11-26T10:30:00+05:30","articleSection":"Internet","keywords":"Internet, Security, Web Basics"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me","item":"https://vktechlearn.site/posts/http-vs-https-ssl-tls-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">Internet</span><span class="tag">Security</span>
+      <time datetime="2026-11-26T10:30:00+05:30">26 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/https-security-hindi.jpg" alt="HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>HTTPS का ताला सिर्फ़ दिखावा नहीं — इसके पीछे certificate, keys और एक handshake होता है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>आपने कभी सोचा है कि browser में वह छोटा ताला क्या बताता है? ज़्यादातर लोग समझते हैं कि "site सुरक्षित है" — पर ताला यह नहीं कहता कि site ईमानदार है, यह सिर्फ़ इतना कहता है कि आपके और server के बीच की बातचीत encrypted है और server ने अपनी पहचान साबित की है। यह फर्क समझना ज़रूरी है, क्योंकि phishing sites भी HTTPS इस्तेमाल करती हैं।</p>
+
+      <p>इस guide में मैं HTTP से HTTPS तक का पूरा सफ़र खोलूँगा — encryption में symmetric और asymmetric keys का काम, TLS handshake के steps, certificate कौन बनाता है और browser उसे कैसे जाँचता है, ताला क्या नहीं बताता, और अपनी site पर HTTPS लगाने के practical steps. अंत में वे गलतियाँ भी, जिनकी वजह से ताला आ जाने के बाद भी browser warning देता है।</p>
+
+      <p><strong>छोटा जवाब:</strong> HTTP data को plain text में भेजता है, इसलिए बीच में कोई पढ़ सकता है। HTTPS वही HTTP है, पर TLS layer के ऊपर — data encrypt होकर जाता है और server अपना certificate दिखाकर साबित करता है कि वह वही है जो होने का दावा कर रहा है। आज हर site पर HTTPS ज़रूरी है, और Let's Encrypt जैसे tools इसे मुफ़्त कर देते हैं।</p>
+
+      <h2>HTTP aur HTTPS me asli farq</h2>
+
+      <p>दोनों में request और response का ढाँचा एक जैसा है — method, headers, status codes सब वही। फर्क सिर्फ़ एक layer का है: HTTPS में HTTP की हर बात पहले TLS से गुज़रती है, जो उसे encrypt करके भेजती है। इसीलिए HTTPS को "HTTP over TLS" कहते हैं।</p>
+
+      <table>
+      <thead><tr><th>पहलू</th><th>HTTP</th><th>HTTPS</th></tr></thead>
+      <tbody>
+      <tr><td>Data</td><td>Plain text</td><td>Encrypted</td></tr>
+      <tr><td>Port</td><td>80</td><td>443</td></tr>
+      <tr><td>पहचान</td><td>कोई proof नहीं</td><td>Certificate से proof</td></tr>
+      <tr><td>बीच में बदलाव</td><td>संभव</td><td>पकड़ा जाता है</td></tr>
+      <tr><td>Browser</td><td>"Not secure"</td><td>ताला दिखाता है</td></tr>
+      </tbody>
+      </table>
+
+      <p>यह छोटा सा फर्क बहुत बड़ा है। सादे HTTP में आपका password, cookie और form data ऐसे ही जाता है — जैसे postcard पर लिखा संदेश, जिसे रास्ते में हर डाकिया पढ़ सकता है। HTTPS उसे sealed envelope बना देता है। और सिर्फ़ पढ़ना ही खतरा नहीं — बीच में बैठा कोई data बदल भी सकता है, जैसे bank के page में अपना account number डाल देना। TLS इसे भी रोकता है।</p>
+
+      <h2>TLS handshake: das line me poora khel</h2>
+
+      <p>Connection बनने से पहले browser और server कुछ messages का आदान-प्रदान करते हैं। इसे handshake कहते हैं। इसमें दो चीज़ें तय होती हैं — दोनों एक ही secret key पर सहमत होते हैं, और browser server की पहचान जाँचता है।</p>
+
+      <figure>
+      <img src="../img/posts/tls-handshake-hindi.jpg" alt="TLS handshake के चार कदम — hello, certificate, key exchange और encrypted data" loading="lazy" decoding="async">
+      <figcaption>चार messages में तय होता है कि आगे की सारी बातचीत किस key से encrypt होगी</figcaption>
+      </figure>
+
+      <ol>
+      <li><strong>Client Hello.</strong> Browser कहता है — मैं TLS 1.3 और 1.2 समझता हूँ, ये cipher suites चलते हैं, और यह मेरा random number है।</li>
+      <li><strong>Server Hello.</strong> Server चुनता है कि कौन सा version और cipher चलेगा, अपना random number भेजता है।</li>
+      <li><strong>Certificate.</strong> Server अपना certificate भेजता है, जिसमें public key और domain का नाम होता है।</li>
+      <li><strong>Verification.</strong> Browser जाँचता है कि certificate किसी भरोसेमंद CA ने बनाया है, expire नहीं हुआ, और उसी domain के लिए है।</li>
+      <li><strong>Key exchange.</strong> दोनों मिलकर एक session key बनाते हैं — TLS 1.3 में यह Diffie-Hellman से होता है, और public key से encryption नहीं होती।</li>
+      <li><strong>Finished.</strong> दोनों पुष्टि करते हैं कि handshake बिना बदलाव के पूरा हुआ।</li>
+      <li><strong>Encrypted data.</strong> अब HTTP की हर request और response उसी session key से encrypt होती है।</li>
+      </ol>
+
+      <p>TLS 1.3 में यह पूरा सफ़र एक round trip में हो जाता है, जबकि TLS 1.2 में दो लगते थे। यही वजह है कि नए servers पर पहला page थोड़ा जल्दी खुलता है। और अगर आपने पहले उसी site से connection बनाया है, तो session ticket की मदद से data पहले message के साथ ही भेजा जा सकता है — इसे 0-RTT कहते हैं।</p>
+
+      <h2>Symmetric aur asymmetric — dono kyun</h2>
+
+      <p>यहाँ एक उलझन आती है जो हर किसी को होती है: अगर सब कुछ encrypt करना है, तो key कैसे भेजें? Key को encrypt करने के लिए दूसरी key चाहिए, और उसके लिए तीसरी... यह कभी खत्म नहीं होगा। इसी समस्या का हल है — दो अलग तरह की cryptography एक साथ।</p>
+
+      <p><strong>Asymmetric (public key)</strong> में दो keys होती हैं: public key जो सबको दी जा सकती है और private key जो सिर्फ़ server के पास रहती है। Public key से encrypt किया हुआ data सिर्फ़ private key से खुलता है। यह धीमा होता है, इसलिए इसे सिर्फ़ शुरुआत में इस्तेमाल करते हैं — या TLS 1.3 में तो सिर्फ़ signature जाँचने के लिए।</p>
+
+      <p><strong>Symmetric</strong> में एक ही key से encrypt और decrypt होता है। यह बहुत तेज़ है। असली data इसी से encrypt होता है। दिक्कत यह है कि दोनों को वही key चाहिए, और उसे सुरक्षित तरीके से share करना पड़ता है — यही काम Diffie-Hellman जैसे key exchange algorithms करते हैं। वे बिना key भेजे दोनों तरफ़ एक ही secret बना देते हैं।</p>
+
+      <p>इसीलिए आधुनिक TLS में public key का काम सिर्फ़ पहचान साबित करना और key exchange में मदद करना है; असली data तेज़ symmetric key से जाता है। इसे hybrid encryption कहते हैं — और यही सब जगह चलता है, बैंक से लेकर WhatsApp तक।</p>
+
+      <h2>Certificate kaun deta hai</h2>
+
+      <p>Certificate एक digital document है जिसमें domain का नाम, public key, वैधता की तारीख़ें और जारी करने वाले की जानकारी होती है — और यह सब उस CA (Certificate Authority) के private key से signed होता है। Browser के पास दुनिया के भरोसेमंद CAs की सूची पहले से होती है, इसलिए वह signature जाँच सकता है।</p>
+
+      <figure>
+      <img src="../img/posts/https-padlock-hindi.jpg" alt="HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me" loading="lazy" decoding="async">
+      <figcaption>ताला चार चीज़ें देता है — और एक बात वह नहीं बताता</figcaption>
+      </figure>
+
+      <p>Certificates तीन तरह के होते हैं। <strong>Domain Validated (DV)</strong> सिर्फ़ यह जाँचता है कि आपका domain पर control है — यह मुफ़्त और सबसे आम है। <strong>Organization Validated (OV)</strong> में कंपनी के दस्तावेज़ भी जाँचे जाते हैं। <strong>Extended Validation (EV)</strong> सबसे कड़ी जाँच है, पर आज browsers उसे अलग से नहीं दिखाते — पुराने हरे address bar वाला फर्क अब नहीं रहा।</p>
+
+      <p>ज़्यादातर sites के लिए DV पर्याप्त है। ज़रूरी बात यह है कि certificate में लिखा domain आपके URL से मेल खाए। <code>www.example.com</code> और <code>example.com</code> दोनों के लिए एक ही certificate चल सकता है, अगर उसमें दोनों नाम (SAN) हों। वरना browser "certificate name mismatch" देगा — और यह सबसे आम गलती है जो hosting बदलने के बाद होती है।</p>
+
+      <p>एक और चीज़ — chain. Server सिर्फ़ अपना certificate नहीं भेजता, बल्कि बीच के certificates भी भेजता है जो उसे root CA तक जोड़ते हैं। अगर बीच का certificate गायब हो, तो कुछ browsers चुपचाप काम कर लेंगे (क्योंकि उनके पास cache है) और कुछ error देंगे। यही वजह है कि "मेरे laptop पर तो ठीक खुलता है" वाली समस्या होती है।</p>
+
+      <h2>Taala kya batata hai — aur kya nahi</h2>
+
+      <p>यह हिस्सा सबसे ज़रूरी है, क्योंकि यहीं लोग ठगे जाते हैं।</p>
+
+      <p><strong>ताला यह बताता है:</strong> आपके और server के बीच की बातचीत encrypted है, data रास्ते में बदला नहीं जा सकता, और server के पास उस domain का valid certificate है। यानी आप जिस address पर गए हैं, वह उसी server पर गया है।</p>
+
+      <p><strong>ताला यह नहीं बताता:</strong> site अच्छी है, कंपनी असली है, या आपका data ईमानदारी से सँभाला जाएगा। कोई भी व्यक्ति एक domain खरीदकर मुफ़्त certificate लगा सकता है। इसीलिए <code>sbi-kyc-verify.xyz</code> जैसी site पर भी ताला दिख सकता है। फ़ैसला domain नाम पढ़कर करें, ताले से नहीं।</p>
+
+      <p>एक और सीमा — HTTPS सिर्फ़ आपके और server के बीच है। Server के अंदर data कैसे सँभाला जाता है, किसे बेचा जाता है, या database कैसे सुरक्षित है — यह सब ताले से बाहर है। यानी HTTPS ज़रूरी है, पर काफ़ी नहीं।</p>
+
+      <h2>Apni site par HTTPS lagane ke chaar kadam</h2>
+
+      <p><strong>1. Certificate लें।</strong> ज़्यादातर hosting में एक click में मुफ़्त Let's Encrypt certificate मिल जाता है। अगर server अपने हाथ में है, तो Certbot जैसा tool install करें जो certificate लेता है और auto-renew भी करता है।</p>
+
+      <p><strong>2. Port 443 खोलें।</strong> Firewall या cloud security group में 443 allow होना चाहिए। Port 80 भी खुला रखें, क्योंकि Let's Encrypt उसी से domain verify करता है और redirect भी वहीं से होता है।</p>
+
+      <p><strong>3. HTTP से HTTPS पर redirect करें।</strong> Server level पर 301 redirect सेट करें, ताकि पुराने links और typed URLs अपने आप secure version पर जाएँ। Apache में <code>RewriteRule</code>, Nginx में <code>return 301 https://...</code>.</p>
+
+      <p><strong>4. HSTS चालू करें।</strong> <code>Strict-Transport-Security</code> header browser को बताता है कि अगली बार सीधे HTTPS पर आना। इसे पहले छोटे <code>max-age</code> से test करें, क्योंकि गलत सेट होने पर browser काफ़ी देर तक site नहीं खोलेगा।</p>
+
+      <pre><code>server {
+        listen 80;
+        server_name example.com;
+        return 301 https://example.com$request_uri;
+      }</code></pre>
+
+      <p>इसके बाद तीन चीज़ें जाँचें: सारे internal links https पर जा रहे हैं या नहीं, images और scripts भी https से आ रहे हैं या नहीं, और <code>www</code> वाला version भी सही certificate दिखा रहा है या नहीं। यही तीन जगहें सबसे ज़्यादा warning पैदा करती हैं।</p>
+
+      <h2>Mixed content: taala aane ke baad bhi warning</h2>
+
+      <p>Mixed content तब होता है जब page HTTPS से आता है पर उसके अंदर कोई image, script या stylesheet अभी भी <code>http://</code> से लोड हो रही है। Browser इसे असुरक्षित मानता है, क्योंकि वह हिस्सा बीच में बदला जा सकता है।</p>
+
+      <p>आज के browsers active mixed content (scripts, iframes) को ब्लॉक कर देते हैं और passive content (images) पर warning देते हैं। इसे ठीक करने का तरीका सीधा है — code में हर जगह <code>http://</code> को <code>https://</code> करें, और जहाँ हो सके protocol-relative या relative URLs इस्तेमाल करें। फिर browser के Console में देखें; वह हर blocked request का पता देता है।</p>
+
+      <h2>TLS 1.3 me kya naya hai</h2>
+
+      <p>TLS 1.3 (2018) में पुराने और कमज़ोर algorithms हटा दिए गए — RC4, SHA-1 और static RSA key exchange जैसे। सिर्फ़ मज़बूत cipher suites बचे, इसलिए गलत configuration की गुंजाइश कम है। Handshake एक round trip में पूरा होता है, और 0-RTT से वापसी पर और भी तेज़।</p>
+
+      <p>एक नुकसान भी है: 0-RTT data replay हो सकता है, इसलिए इसे सिर्फ़ उन requests के लिए इस्तेमाल करें जिन्हें दोबारा चलाना सुरक्षित हो — जैसे page का GET. किसी payment या form submit के लिए नहीं।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>एक बार मैंने नए server पर site शिफ़्ट की और ताला आ गया, पर mobile पर पुराना warning दिख रहा था। Desktop पर सब ठीक था। दो घंटे बाद पता चला कि certificate सिर्फ़ <code>example.com</code> के लिए था, <code>www.example.com</code> के लिए नहीं — और mobile browser मुझे <code>www</code> वाले version पर भेज रहा था। एक SAN entry जोड़ने से समस्या खत्म हो गई।</p>
+
+      <p>दूसरी बार एक client की site पर "Not secure" आ रहा था, जबकि certificate बिल्कुल नया था। कारण — एक पुराना analytics script <code>http://</code> से लोड हो रहा था। Console में एक लाल line ने पूरी समस्या बता दी।</p>
+
+      <p>तीसरी बात जो मैंने सीखी: auto-renew को हर महीने जाँचना। Let's Encrypt के certificates 90 दिन के होते हैं और renewal अक्सर cron या systemd timer से होता है। एक बार वह timer चुपचाप fail हुआ और certificate expire हो गया — site पर कोई बदलाव नहीं हुआ था, फिर भी लोगों को warning दिखने लगा। अब मैंने एक reminder रखा है कि हर महीने एक बार expiry date देख लूँ।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>HTTPS वही HTTP है, पर TLS के ऊपर — data encrypted, पहचान verified और रास्ते में बदलाव पकड़ा जाता है। Handshake में browser server का certificate जाँचता है और दोनों एक session key पर सहमत होते हैं; असली data उसी तेज़ symmetric key से जाता है। ताला भरोसे का संकेत है, ईमानदारी का सबूत नहीं। अपनी site पर मुफ़्त certificate लगाएँ, redirect और HSTS सेट करें, और mixed content साफ़ करें।</p>
+
+      <p>आगे पढ़ें: <a href="/posts/internet-kaise-kaam-karta-hai-hindi.html">internet कैसे काम करता है</a> — जहाँ DNS और HTTP का पूरा सफ़र है, और <a href="/posts/domain-dns-records-hindi.html">DNS records</a> — जहाँ बताया है कि domain किस server पर जाएगा, यह कैसे तय होता है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या HTTPS से site धीमी होती है?</h3>
+
+      <p>पहले थोड़ा handshake जुड़ता है, पर HTTP/2 और HTTP/3 के लिए HTTPS ज़रूरी है, इसलिए कुल मिलाकर site तेज़ होती है।</p>
+
+      <h3>SSL और TLS एक ही हैं?</h3>
+
+      <p>SSL पुराना नाम है; आज जो चलता है वह TLS है। लोग बोलचाल में SSL कहते हैं।</p>
+
+      <h3>मुफ़्त certificate कमज़ोर होता है क्या?</h3>
+
+      <p>नहीं। Let's Encrypt वही encryption देता है जो paid certificate देता है; फर्क सिर्फ़ validation के level और support में है।</p>
+
+      <h3>क्या ताला होने से site हैक नहीं हो सकती?</h3>
+
+      <p>नहीं। HTTPS रास्ते को सुरक्षित करता है; server, code और database की सुरक्षा अलग विषय है।</p>
+
+      <h3>Certificate expire हो जाए तो क्या होता है?</h3>
+
+      <p>Browser पूरा warning page दिखाता है और ज़्यादातर लोग site छोड़ देते हैं। इसलिए auto-renew और reminder दोनों रखें।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8446.html" rel="nofollow noopener" target="_blank">IETF RFC 8446 — The Transport Layer Security (TLS) Protocol 1.3</a></li>
+        <li><a href="https://letsencrypt.org/docs/" rel="nofollow noopener" target="_blank">Let's Encrypt — official documentation</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

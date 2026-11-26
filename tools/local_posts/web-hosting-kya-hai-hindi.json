@@ -1,0 +1,11 @@
+{
+  "slug": "web-hosting-kya-hai-hindi",
+  "title": "Web Hosting Kya Hai? Shared, VPS aur Cloud ka Farq",
+  "description": "Web hosting kya hai, shared, VPS, dedicated aur cloud hosting me farq, static hosting kab kaafi hai aur plan chunne ke 7 sawal — ek practical Hinglish guide.",
+  "published": "2026-11-26T13:30:00+05:30",
+  "labels": ["Web Hosting", "Web Basics", "Cloud"],
+  "hero": "img/posts/web-hosting-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "आपकी site का हर page किसी न किसी server पर रखा होता है — hosting वही जगह तय करती है"
+}

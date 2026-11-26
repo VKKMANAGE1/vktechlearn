@@ -1,0 +1,163 @@
+<p>आप फ़ोन में <code>vktechlearn.site</code> टाइप करते हैं और दो सेकंड में पेज खुल जाता है। इस बीच आपके फ़ोन से लेकर किसी दूसरे शहर के server तक कम से कम छह अलग-अलग चीज़ें काम करती हैं — और उनमें से एक भी रुक जाए तो पेज नहीं खुलता। ज़्यादातर लोग इंटरनेट को "हवा में तैरता जादू" समझते हैं, पर असल में यह तार, router, और छोटे-छोटे packets का एक बहुत बड़ा network है।</p>
+
+<p>इस guide में मैं वही सफ़र शुरू से खोलूँगा — internet असल में क्या है, data छोटे टुकड़ों में क्यों जाता है, IP address क्या होता है, DNS नाम को address में कैसे बदलता है, HTTP browser और server की भाषा कैसे बनता है, और एक page load में असल में क्या-क्या होता है। बीच में वे पाँच कारण भी आएँगे जिनकी वजह से कोई site नहीं खुलती।</p>
+
+<p><strong>छोटा जवाब:</strong> Internet अलग-अलग networks का network है जो IP protocol पर बात करता है। आपका browser पहले DNS से पूछता है कि इस नाम का IP address क्या है, फिर उस address पर HTTP request भेजता है, server जवाब में HTML भेजता है, और browser उसे screen पर बना देता है। बीच का सारा data छोटे packets में टूटकर अलग-अलग रास्तों से जाता है और मंज़िल पर फिर जुड़ जाता है।</p>
+
+<h2>Internet kya hai — cable, router aur packet</h2>
+
+<p>सबसे पहले एक गलतफहमी दूर करें: internet किसी एक कंपनी का नहीं है और किसी एक server पर नहीं चलता। यह हज़ारों networks का आपस में जुड़ा हुआ समूह है — इसीलिए इसे "network of networks" कहते हैं। आपके घर का router आपके ISP (Jio, Airtel, BSNL) के network से जुड़ता है, वह ISP दूसरे ISPs से, और वे सब मिलकर समुद्र के नीचे पड़े fibre optic cables तक पहुँचते हैं।</p>
+
+<p>हाँ, समुद्र के नीचे cables। दुनिया का लगभग पूरा अंतरदेशीय data इन्हीं cables से जाता है, satellite से नहीं। जब आप भारत से किसी अमेरिकी site को खोलते हैं, तो आपका request मुंबई या चेन्नई के landing station से होते हुए किसी submarine cable पर चढ़ता है और दूसरे छोर पर उतरता है। यह सफ़र मिलीसेकंड में होता है, इसलिए हमें लगता है कि सब कहीं नहीं है।</p>
+
+<figure>
+<img src="../img/posts/internet-layers-hindi.jpg" alt="internet के चार layers — IP, DNS, HTTP और TLS, हर layer का अपना काम" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>एक ही request में चार अलग layers काम करती हैं — कोई एक रुके तो page नहीं खुलेगा</figcaption>
+</figure>
+
+<p>इस पूरे system को समझने का सबसे आसान तरीका है layers में देखना। सबसे नीचे है <strong>IP</strong> — जो packets को पते तक पहुँचाता है। उसके ऊपर <strong>DNS</strong> — जो नाम को address बनाता है। फिर <strong>TCP</strong> — जो दोनों तरफ़ भरोसेमंद connection बनाता है। सबसे ऊपर <strong>HTTP</strong> — जो बताता है कि कौन सा page माँगना है और जवाब कैसा दिखेगा। और आजकल HTTP के नीचे एक और layer है, <strong>TLS</strong>, जो सारी बातचीत को encrypt कर देती है।</p>
+
+<h2>Packet switching: data tukdon me kyun jata hai</h2>
+
+<p>अगर आप 5 MB की कोई photo भेजते हैं, तो वह एक टुकड़े में नहीं जाती। वह हज़ारों छोटे packets में टूटती है, हर packet पर एक header लगता है जिसमें लिखा होता है कि यह किसका है, किसको जाना है और किस नंबर का टुकड़ा है। यही तरीका <em>packet switching</em> कहलाता है।</p>
+
+<p>पुराने telephone network में जब आप call करते थे, तो आपके और सामने वाले के बीच पूरी लाइन आपकी हो जाती थी — चाहे आप बोलें या चुप रहें। Internet में ऐसा नहीं होता। आपका packet जब तक रास्ते में है, उसी लाइन पर किसी और का packet भी जा सकता है। हर router देखता है कि अगला कदम कहाँ लेना है, और packet आगे बढ़ा देता है।</p>
+
+<p>इसका सबसे बड़ा फायदा है मज़बूती। अगर बीच का कोई रास्ता बंद हो जाए, तो packets दूसरे रास्ते से चले जाते हैं और आपको पता भी नहीं चलता। नुकसान यह है कि packets अलग-अलग क्रम में पहुँच सकते हैं, इसलिए ऊपर की layer को उन्हें फिर सही क्रम में लगाना पड़ता है — TCP यही करता है।</p>
+
+<p>यही वजह है कि video call में आवाज़ कभी-कभी रुकती है। Video packets को देर हो जाए तो उन्हें फेंक दिया जाता है, क्योंकि दो सेकंड पुराना frame दिखाने से बेहतर है कि अगला frame दिखे। लेकिन file download में ऐसा नहीं होता — वहाँ हर packet ज़रूरी है, इसलिए गुम packet दोबारा माँगा जाता है।</p>
+
+<h2>IP address: har device ka pata</h2>
+
+<p>IP address वह पता है जिस पर packet पहुँचाया जाता है। आज दो versions चल रहे हैं: IPv4, जैसे <code>142.250.183.78</code>, और IPv6, जैसे <code>2404:6800:4009:82f::200e</code>. IPv4 में कुल 4.3 अरब address हैं और वे लगभग खत्म हो चुके हैं, इसलिए IPv6 धीरे-धीरे जगह ले रहा है।</p>
+
+<p>एक बात जो शुरुआत में उलझाती है — आपके घर का public IP और आपके laptop का private IP अलग होते हैं। घर के अंदर laptop को router <code>192.168.1.5</code> जैसा private address देता है। बाहर की दुनिया को सिर्फ़ router का public IP दिखता है। जब आप कोई request भेजते हैं, तो router उसे अपने public IP से बाहर भेजता है और जवाब आने पर याद रखता है कि यह किस device के लिए था। इस तरह हज़ारों घर एक ही public IP साझा कर लेते हैं।</p>
+
+<p>DHCP वह system है जो यह private address अपने आप देता है। जब आप फ़ोन WiFi से जोड़ते हैं, तो router DHCP से कहता है "इसे एक address दे दो", और फ़ोन को IP, gateway और DNS server की जानकारी मिल जाती है। इसीलिए अगर WiFi जुड़ा है पर internet नहीं चल रहा, तो अक्सर DHCP या DNS की सेटिंग में गड़बड़ होती है।</p>
+
+<h2>DNS: naam se address tak</h2>
+
+<p>इंसान नाम याद रखता है, machine address. DNS वही अनुवाद करता है — <code>vktechlearn.site</code> जैसे नाम को किसी IP address में बदल देता है। इसे internet की phonebook कहना ठीक है, बस यह phonebook किसी एक जगह नहीं रहती; यह दुनिया भर में फैली हुई है और हर level पर अलग server है।</p>
+
+<figure>
+<img src="../img/posts/dns-lookup-hindi.jpg" alt="DNS lookup का क्रम — browser cache, resolver, root, TLD और authoritative server" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>एक नाम के पीछे चार-पाँच सवाल — और जवाब हर level पर cache हो जाता है</figcaption>
+</figure>
+
+<p>जब आप पहली बार कोई site खोलते हैं, तो lookup कुछ इस क्रम में होता है। पहले browser अपना cache देखता है, फिर operating system का। न मिले तो request आपके ISP के <strong>resolver</strong> के पास जाता है। Resolver सीधे जवाब नहीं जानता, इसलिए वह <strong>root server</strong> से पूछता है — root कहता है "इस TLD के लिए उस server से पूछो"। TLD server (<code>.site</code>, <code>.com</code>) बताता है कि उस domain के <strong>authoritative nameserver</strong> कौन हैं। अंत में वही nameserver असली जवाब देता है — यानी IP address।</p>
+
+<p>तीन बातें इस process में मायने रखती हैं। पहली — <strong>cache</strong>: हर step पर जवाब कुछ समय के लिए याद रखा जाता है, इसीलिए दूसरी बार वही site जल्दी खुलती है। दूसरी — <strong>TTL</strong>: हर record के साथ लिखा होता है कि इसे कितनी देर याद रखना है। तीसरी — <strong>nameserver</strong>: आपका domain किस server की सुनता है, यह आपके registrar पर सेट होता है। अगर आपने hosting बदली और nameserver नहीं बदले, तो site नई जगह से नहीं खुलेगी।</p>
+
+<p>DNS में गड़बड़ होने पर error साफ़ दिखता है — "DNS_PROBE_FINISHED_NXDOMAIN" का मतलब है नाम मिला ही नहीं, और "DNS_PROBE_FINISHED_NO_INTERNET" का मतलब है request बाहर ही नहीं गया। दोनों अलग समस्याएँ हैं, इसलिए पहले error पढ़ें, फिर मोबाइल data पर try करें। अगर मोबाइल data पर site खुल जाए, तो समस्या आपके WiFi या ISP के DNS में है।</p>
+
+<h2>HTTP: browser aur server ki bhasha</h2>
+
+<p>Address मिल जाने के बाद browser उस IP पर एक HTTP request भेजता है। HTTP एक text-based protocol है — यानी request असल में कुछ lines का text होता है जिसमें method, path, headers और कभी-कभी body होती है। सबसे आम method है <code>GET</code>, जो कहता है "यह चीज़ दो"।</p>
+
+<pre><code>GET /posts/internet-kaise-kaam-karta-hai-hindi.html HTTP/2
+Host: vktechlearn.site
+Accept: text/html
+User-Agent: Mozilla/5.0</code></pre>
+
+<p>Server जवाब में status code, headers और body भेजता है। Status code का पहला अंक ही बहुत कुछ बता देता है: 2xx ठीक, 3xx कहीं और जाओ, 4xx तुम्हारी request में गड़बड़, 5xx server में गड़बड़। इसीलिए 404 का मतलब है "पेज नहीं मिला" और 500 का मतलब है "server टूट गया" — दोनों में फर्क जानना debugging में सबसे पहला कदम है।</p>
+
+<table>
+<thead><tr><th>Method</th><th>काम</th><th>आम उदाहरण</th></tr></thead>
+<tbody>
+<tr><td>GET</td><td>कुछ पढ़ना</td><td>Page या image माँगना</td></tr>
+<tr><td>POST</td><td>नया data भेजना</td><td>Form submit करना</td></tr>
+<tr><td>PUT / PATCH</td><td>मौजूद data बदलना</td><td>Profile update</td></tr>
+<tr><td>DELETE</td><td>हटाना</td><td>Post delete करना</td></tr>
+</tbody>
+</table>
+
+<p>Headers में वह जानकारी होती है जो body से अलग है — कौन सा browser है, कौन सी language चाहिए, cache करना है या नहीं, cookie क्या है। जवाब में <code>Content-Type</code> बताता है कि body HTML है या JSON या image, और <code>Cache-Control</code> बताता है कि इसे कितनी देर याद रखना है। अगर किसी API का जवाब browser में कच्चा text दिख रहा है, तो अक्सर <code>Content-Type</code> गलत सेट हुआ होता है।</p>
+
+<h2>Ek page load ka poora safar</h2>
+
+<p>अब सब जोड़कर देखें कि जब आप URL टाइप करके Enter दबाते हैं, तो क्रम में क्या होता है।</p>
+
+<ol>
+<li>Browser URL पढ़ता है और तय करता है कि यह search है या address.</li>
+<li>अगर HTTPS है, तो पहले server से secure connection बनता है — TLS handshake.</li>
+<li>DNS से domain का IP address मिलता है (या cache से आता है)।</li>
+<li>Browser उस IP के 443 port पर TCP connection जोड़ता है।</li>
+<li>HTTP request जाती है — कौन सा page, कौन सा browser, कौन सी language.</li>
+<li>Server HTML लौटाता है, अक्सर पहले कुछ KB ही, ताकि browser काम शुरू कर सके।</li>
+<li>Browser HTML पढ़कर CSS, JavaScript और images के लिए नई requests भेजता है।</li>
+<li>CSS आते ही page का layout बनता है, JavaScript आते ही interactivity जुड़ती है।</li>
+<li>तीसरे पक्ष के tools (analytics, fonts, ads) की requests भी चलती हैं — यहीं सबसे ज़्यादा देर होती है।</li>
+<li>सब कुछ आने पर page पूरा बन जाता है और आप उसे पढ़ पाते हैं।</li>
+</ol>
+
+<p>इस पूरे सफ़र में सबसे धीमा हिस्सा अक्सर server नहीं होता, बल्कि network और browser होते हैं। एक औसत page में 50–100 requests होती हैं, और हर नई connection में कुछ मिलीसेकंड लगते हैं। इसीलिए "server तेज़ करो" से पहले यह देखना ज़रूरी है कि समय कहाँ जा रहा है — इसी पर हमारी <a href="/posts/core-web-vitals-hindi.html">Core Web Vitals guide</a> में detail है।</p>
+
+<h2>HTTP/1.1, HTTP/2 aur HTTP/3</h2>
+
+<p>HTTP का नाम वही है, पर उसके नीचे का तरीका बदलता रहा है। HTTP/1.1 में एक connection पर एक ही request एक बार में चलती थी, इसलिए browser कई connections खोलता था — और हर connection का अपना overhead था।</p>
+
+<table>
+<thead><tr><th>Version</th><th>क्या नया</th><th>असर</th></tr></thead>
+<tbody>
+<tr><td>HTTP/1.1</td><td>एक connection, एक request</td><td>कई connections, header हर बार दोहराया</td></tr>
+<tr><td>HTTP/2</td><td>एक connection पर कई requests, header compression</td><td>तेज़, पर packet loss पर सब रुकता है</td></tr>
+<tr><td>HTTP/3</td><td>TCP की जगह QUIC (UDP पर)</td><td>खराब network पर भी कम रुकावट</td></tr>
+</tbody>
+</table>
+
+<p>आपको इन versions को configure नहीं करना पड़ता — CDN और hosting अक्सर अपने आप HTTP/2 या HTTP/3 दे देते हैं। पर एक चीज़ ध्यान रखें: HTTP/2 और HTTP/3 के लिए HTTPS ज़रूरी है। इसलिए आज SSL सिर्फ़ security नहीं, speed का भी हिस्सा है। इस पर अलग guide है — <a href="/posts/http-vs-https-ssl-tls-hindi.html">HTTP से HTTPS</a>.</p>
+
+<h2>Jab site nahi khulti — paanch common wajah</h2>
+
+<p><strong>1. DNS resolve नहीं हो रहा।</strong> नाम का address नहीं मिला। कारण: nameserver गलत, record हट गया, या domain expire हो गया। जाँच: किसी दूसरे network पर खोलें, और <code>nslookup</code> या <code>dig</code> चलाएँ।</p>
+
+<p><strong>2. Connection बन ही नहीं रहा।</strong> Address मिल गया पर server जवाब नहीं दे रहा। कारण: server बंद, firewall port block कर रहा है, या गलत port. जाँच: <code>curl -v</code> से देखें कि connection step तक पहुँचा या नहीं।</p>
+
+<p><strong>3. Certificate की समस्या।</strong> Browser "Not secure" या "certificate expired" कहता है। कारण: certificate expire, गलत domain के लिए बना, या chain अधूरी। जाँच: browser में certificate देखें और expiry date पढ़ें।</p>
+
+<p><strong>4. 404 या 403।</strong> Server जवाब दे रहा है पर चीज़ मिल नहीं रही या permission नहीं है। यह network की नहीं, configuration की समस्या है।</p>
+
+<p><strong>5. Page खुल रहा है पर टूटा दिख रहा है।</strong> HTML आ गया, CSS या JavaScript नहीं आया। अक्सर path गलत होता है — जैसे <code>/img/...</code> की जगह <code>img/...</code>. Browser के Network tab में लाल entries यही बताती हैं।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>शुरुआत में जब कोई site नहीं खुलती थी, मैं सीधे hosting के support को message कर देता था। एक बार जवाब आया — "आपका domain हमारे पास नहीं है" — और तब समझ आया कि समस्या सिर्फ़ nameserver की थी। उस दिन के बाद मैंने एक आदत बनाई: पहले तीन चीज़ें क्रम से देखना — DNS resolve हो रहा है या नहीं, port 443 खुला है या नहीं, और certificate valid है या नहीं।</p>
+
+<p>दूसरी चीज़ जो मैंने सीखी: browser का Network tab सबसे ईमानदार जवाब देता है। वह बताता है कि कौन सी request कितने समय में आई, किसने रोका और कौन सा status code लौटा। जब मैंने एक बार "site धीमी है" की शिकायत पर Network tab खोला, तो पता चला कि असली कारण एक third-party font था जो 4 सेकंड ले रहा था — server बिल्कुल ठीक था।</p>
+
+<p>तीसरी बात: "इंटरनेट बंद है" और "site बंद है" दोनों अलग हैं। एक ही WiFi पर दूसरी site खुल जाए, तो आपका internet ठीक है — समस्या उस एक site की है। यह छोटी जाँच आधे confusion की जड़ काट देती है।</p>
+
+<h2>नतीजा</h2>
+
+<p>Internet cables, routers और packets का एक बड़ा network है जो IP पर चलता है। नाम को address में DNS बदलता है, address पर पहुँचने का रास्ता TCP बनाता है, और browser-server की बातचीत HTTP में होती है — आजकल TLS की सुरक्षा के साथ। कोई site न खुले तो क्रम से देखें: DNS, connection, certificate, status code और फिर assets. यही पाँच जाँचें 90% समस्याएँ पकड़ लेती हैं।</p>
+
+<p>आगे पढ़ने के लिए: <a href="/posts/domain-dns-records-hindi.html">DNS records की guide</a> में A, CNAME और MX को detail में समझाया है, और <a href="/posts/web-hosting-kya-hai-hindi.html">web hosting</a> वाली guide बताती है कि server कहाँ रखा जाता है और कौन सा plan आपके लिए सही है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>क्या internet और WiFi एक ही चीज़ है?</h3>
+
+<p>नहीं। WiFi सिर्फ़ आपके device को router तक जोड़ने का तरीका है। Internet उससे आगे का पूरा network है।</p>
+
+<h3>IP address बदलता क्यों है?</h3>
+
+<p>घर के public IP अक्सर ISP समय-समय पर बदलता है, और private IP router हर बार नया दे सकता है। यह सामान्य है।</p>
+
+<h3>DNS cache कैसे साफ़ करें?</h3>
+
+<p>Windows में <code>ipconfig /flushdns</code>, macOS में <code>sudo dscacheutil -flushcache</code>. Browser का अपना cache भी होता है, उसे settings से साफ़ करें।</p>
+
+<h3>HTTP में data encrypt होता है क्या?</h3>
+
+<p>नहीं। सादा HTTP plain text है। Encryption TLS से आता है, यानी HTTPS में।</p>
+
+<h3>एक page के लिए कितनी requests सामान्य हैं?</h3>
+
+<p>कोई तय संख्या नहीं, पर 50–100 आम है। जितनी कम और जितनी हल्की, उतना तेज़।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" rel="nofollow noopener" target="_blank">IETF RFC 9110 — HTTP Semantics (official standard)</a></li>
+  <li><a href="https://www.rfc-editor.org/rfc/rfc1034.html" rel="nofollow noopener" target="_blank">IETF RFC 1034 — Domain Names: Concepts and Facilities</a></li>
+</ul>

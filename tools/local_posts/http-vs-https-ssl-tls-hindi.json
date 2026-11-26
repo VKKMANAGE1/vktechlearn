@@ -1,0 +1,11 @@
+{
+  "slug": "http-vs-https-ssl-tls-hindi",
+  "title": "HTTP se HTTPS: SSL/TLS aur Certificate Aasan Bhasha Me",
+  "description": "HTTP aur HTTPS me farq kya hai, TLS handshake kaise hota hai, certificate kaun deta hai aur padlock ka kya matlab hai — step by step Hinglish guide me.",
+  "published": "2026-11-26T10:30:00+05:30",
+  "labels": ["Internet", "Security", "Web Basics"],
+  "hero": "img/posts/https-security-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "HTTPS का ताला सिर्फ़ दिखावा नहीं — इसके पीछे certificate, keys और एक handshake होता है"
+}
