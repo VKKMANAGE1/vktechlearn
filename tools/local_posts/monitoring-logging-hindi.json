@@ -1,0 +1,11 @@
+{
+  "slug": "monitoring-logging-hindi",
+  "title": "Monitoring aur Logging: Production Me Kya Napein",
+  "description": "Monitoring, logging aur tracing ka farq, 4 golden signals, SLO-based alerts, dashboard, incident ke 15 minute aur retention — production ke liye guide.",
+  "published": "2026-11-27T10:30:00+05:30",
+  "labels": ["DevOps", "Monitoring", "Cloud"],
+  "hero": "img/posts/monitoring-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Production में आँखें तीन होती हैं — metrics बताते हैं क्या हो रहा है, logs बताते हैं क्यों, traces बताते हैं कहाँ"
+}

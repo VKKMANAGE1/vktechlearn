@@ -1,0 +1,180 @@
+<p>कल तक deploy एक event था — शुक्रवार शाम, सब चुप, एक व्यक्ति SSH करके files copy करता था, और अगर कुछ टूटा तो सोमवार तक इंतज़ार। आज deploy एक आदत बन सकती है — दिन में दस बार, बिना डर के। यह बदलाव तकनीक से कम, process से ज़्यादा है: जो काम हाथ से होता था, उसे एक pipeline को सौंप देना।</p>
+
+<p>इस guide में मैं CI और CD का फर्क खोलूँगा, pipeline के stages, एक छोटा GitHub Actions example, tests की सही मात्रा, secrets और environments का हिसाब, rollback का तरीका, और वे सात गलतियाँ जो pipeline को धीमा और बेकार बना देती हैं।</p>
+
+<p><strong>छोटा जवाब:</strong> CI (Continuous Integration) का मतलब है कि हर code change पर अपने आप build और tests चलें, ताकि गलती उसी दिन पकड़ी जाए। CD दो तरह का है — Continuous Delivery में हर सही build deploy के लिए तैयार रहता है (बटन दबाना पड़ता है), और Continuous Deployment में हर सही build अपने आप production तक जाता है।</p>
+
+<h2>CI kya hai — aur kyun zaroori hai</h2>
+
+<p>Continuous Integration का सीधा मतलब है — सब लोग एक ही main branch में छोटे-छोटे बदलाव जल्दी-जल्दी merge करें, और हर merge पर build और test अपने आप चलें। इसका फायदा यह है कि गलती तब पकड़ी जाती है जब वह छोटी होती है।</p>
+
+<p>इसके बिना जो होता है, वह सबने देखा है — तीन हफ़्ते की branch, फिर merge पर 40 files का conflict, और किसी की गलती से पूरा build टूट जाता है। जब हर दिन merge होता है, तो हर conflict छोटा होता है और हर टूटन उसी दिन ठीक हो जाती है।</p>
+
+<p>CI का दूसरा फायदा भरोसा है। जब tests हर बदलाव पर चलते हैं, तो team को पता होता है कि main branch काम कर रही है। इससे कोई भी व्यक्ति किसी भी समय release कर सकता है — किसी एक "release manager" का इंतज़ार नहीं करना पड़ता।</p>
+
+<h2>CD: delivery aur deployment me farq</h2>
+
+<p>बहुत लोग CD को एक चीज़ समझते हैं, पर इसमें दो level हैं। <strong>Continuous Delivery</strong> में हर सही build production के लिए तैयार होती है, पर deploy करने के लिए एक इंसानी फ़ैसला चाहिए — कोई बटन दबाता है। <strong>Continuous Deployment</strong> में वह बटन भी नहीं; हर सही build अपने आप production तक जाती है।</p>
+
+<p>कौन सा चुनें? अगर product में payment, compliance या बहुत संवेदनशील data है, तो Delivery सही है — बटन एक छोटा safety valve है। अगर product एक internal tool या अक्सर बदलने वाली web app है, तो Deployment से टीम तेज़ होती है। ज़रूरी बात यह है कि दोनों में commit से production तक का रास्ता वही हो — फर्क सिर्फ़ आख़िरी कदम का।</p>
+
+<h2>Pipeline ke stages</h2>
+
+<figure>
+<img src="../img/posts/ci-cd-stages-hindi.jpg" alt="CI/CD pipeline के stages — commit, build, test, deploy और monitor" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>हर stage एक फ़िल्टर है — जो इसे पार करे, वही आगे जाए</figcaption>
+</figure>
+
+<ol>
+<li><strong>Trigger.</strong> कोई commit या pull request आती है। Pipeline शुरू।</li>
+<li><strong>Checkout और setup।</strong> Code लाया जाता है, भाषा और dependencies तैयार होती हैं।</li>
+<li><strong>Lint और type check।</strong> छोटी गलतियाँ सबसे पहले, सबसे सस्ते में पकड़ें।</li>
+<li><strong>Build।</strong> Code compile या bundle होता है, image बनती है।</li>
+<li><strong>Tests।</strong> Unit, integration और कभी-कभी end-to-end.</li>
+<li><strong>Artifact।</strong> तैयार build एक जगह रखी जाती है — ताकि वही चीज़ deploy हो जो test हुई।</li>
+<li><strong>Deploy।</strong> Staging पर पहले, फिर production पर।</li>
+<li><strong>Verify।</strong> Deploy के बाद health check और smoke test।</li>
+</ol>
+
+<p>इस क्रम में एक नियम याद रखें — सस्ते check पहले। Lint दो सेकंड में चलता है, integration tests पाँच मिनट में। अगर उल्टा करेंगे, तो हर छोटी typo के लिए पाँच मिनट इंतज़ार करना पड़ेगा और लोग pipeline को bypass करने लगेंगे।</p>
+
+<h2>Ek chhota GitHub Actions example</h2>
+
+<p>सबसे आसान शुरुआत एक ही job से होती है — install, lint, test. नीचे एक छोटा example है जो हर push और pull request पर चलता है।</p>
+
+<pre><code>name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test</code></pre>
+
+<p>तीन बातें इस file में ध्यान देने लायक हैं। <code>npm ci</code> lockfile से exact versions install करता है, इसलिए build हर बार एक जैसा रहता है। <code>cache: npm</code> dependencies को बार-बार download होने से बचाता है। और job का नाम <code>test</code> रखने से branch protection में इसे "required check" बनाया जा सकता है — यानी test fail हो तो merge ही न हो।</p>
+
+<p>जब यह चलने लगे, तब deploy job जोड़ें — पर उसे सिर्फ़ main branch पर और test pass होने के बाद चलाएँ। <code>needs: test</code> यही करता है। इसके बाद staging, और फिर production — हर step पिछले के बाद।</p>
+
+<h2>Tests kitne chahiye</h2>
+
+<p>Pipeline में tests की सही मात्रा एक पुराना बहस है। व्यवहार में एक ढाँचा काम करता है — बहुत सारे unit tests (तेज़, सस्ते), कुछ integration tests (धीमे, ज़्यादा भरोसेमंद), और बहुत कम end-to-end tests (सबसे धीमे, सबसे नाज़ुक)। इसे testing pyramid कहते हैं।</p>
+
+<p>एक practical नियम: pipeline 10 मिनट में पूरा होना चाहिए। अगर इससे ज़्यादा लगे, तो लोग commit करने से पहले सोचने लगते हैं और pipeline का फायदा कम हो जाता है। लंबे tests को रात में या merge के बाद चलाएँ, हर commit पर नहीं।</p>
+
+<p>और एक बात — flaky tests सबसे बड़ी दुश्मन हैं। जो test कभी pass और कभी fail हो, वह भरोसा खत्म कर देता है। उसे ठीक करें या हटाएँ; "फिर से run कर दो" आदत बन जाए तो pipeline का मतलब ही खत्म।</p>
+
+<figure>
+<img src="../img/posts/ci-cd-gates-hindi.jpg" alt="CI/CD के चार gates — lint, build, test और deploy, हर एक का काम" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>हर gate एक सवाल पूछता है — अगर जवाब न मिले तो आगे मत जाओ</figcaption>
+</figure>
+
+<h2>Environments, secrets aur permissions</h2>
+
+<p>अच्छी pipeline में कम से कम दो environments होते हैं — staging और production। Staging production जैसा होना चाहिए, वरना वहाँ मिली समस्या वहाँ नहीं दिखेगी। Production deploy के लिए manual approval रखें, कम से कम शुरुआत में।</p>
+
+<p>Secrets कभी code में नहीं। उन्हें platform के secret store में रखें — GitHub Actions में repository या environment secrets. ध्यान रखें कि pull request किसी दूसरे repo से आए तो secrets न दें; यह एक आम सुरक्षा गलती है।</p>
+
+<p>Permissions भी कम से कम दें। Deploy token को सिर्फ़ उतना ही access चाहिए जितना deploy के लिए ज़रूरी है — पूरे cloud account का admin नहीं।</p>
+
+<h2>Pehla pipeline: paanch din ka plan</h2>
+
+<p>अगर आपके पास अभी कोई pipeline नहीं है, तो पूरी चीज़ एक साथ मत बनाएँ। पाँच दिन में एक काम करने वाला ढाँचा बन जाता है।</p>
+
+<p><strong>दिन 1 — build।</strong> सिर्फ़ इतना कि code install हो और build हो जाए। किसी भी push पर चलें। लक्ष्य यह देखना है कि सब dependencies सही हैं।</p>
+
+<p><strong>दिन 2 — एक test।</strong> पूरा test suite नहीं, एक भी सही test काफ़ी है। अब pipeline का मतलब बनने लगता है।</p>
+
+<p><strong>दिन 3 — artifact।</strong> Build का output एक जगह रखें, ताकि वही चीज़ आगे deploy हो जो test हुई।</p>
+
+<p><strong>दिन 4 — staging deploy।</strong> Main branch पर merge होते ही staging पर जाए। यहाँ पहली बार पूरा सफ़र दिखेगा।</p>
+
+<p><strong>दिन 5 — production।</strong> Manual approval के साथ production deploy जोड़ें, और एक health check के बाद ही सफल मानें।</p>
+
+<p>इस क्रम में सबसे ज़रूरी बात यह है कि हर दिन कुछ चलता हुआ हो। अधूरी pipeline जो किसी काम नहीं आती, उससे बेहतर है छोटी pipeline जो रोज़ चलती है।</p>
+
+<h3>Monorepo aur matrix builds</h3>
+
+<p>जब एक ही repository में कई packages हों (monorepo), तो हर बदलाव पर सब कुछ test करना बहुत धीमा हो जाता है। इसका हल path filters हैं — जो test सिर्फ़ उसी package के लिए चलें जिसमें बदलाव हुआ। दूसरा हल matrix builds हैं, जहाँ एक ही test कई versions या platforms पर समांतर चलता है।</p>
+
+<p>ध्यान रहे कि matrix हर जगह फायदेमंद नहीं। अगर आपके पास 4 jobs हैं और हर एक 2 मिनट लेती है, तो समांतर चलाने से 8 मिनट 2 मिनट हो जाएँगे। पर अगर jobs एक-दूसरे पर निर्भर हैं, तो समांतरता से कुछ नहीं मिलेगा।</p>
+
+<h3>Deploy ke baad kya dekhna</h3>
+
+<p>Deploy सफल होने का मतलब सिर्फ़ यह है कि command पूरी हुई। असली सवाल यह है कि app ठीक चल रहा है या नहीं। इसलिए हर deploy के बाद तीन चीज़ें देखें — health endpoint का जवाब, error rate का graph, और सबसे ज़रूरी user flow का एक छोटा test.</p>
+
+<p>इस जाँच को pipeline में ही रखें, ताकि वह हर बार अपने आप हो। अगर deploy के दो मिनट बाद error rate बढ़े और कोई न देखे, तो pipeline का हरा होना कोई मतलब नहीं रखता।</p>
+
+<h2>Rollback aur feature flags</h2>
+
+<p>हर deploy के साथ rollback का plan होना चाहिए। सबसे आसान तरीका है — पिछली image या artifact को वापस deploy करना। इसीलिए artifacts को version के साथ रखें और deploy को हमेशा "नई चीज़ लगाना" न समझें, बल्कि "एक ज्ञात version चुनना" समझें।</p>
+
+<p>दूसरा तरीका feature flags हैं। नया feature code में मौजूद रहता है पर flag से बंद रहता है। अगर production में दिक्कत आए, तो deploy वापस करने की ज़रूरत नहीं — सिर्फ़ flag बंद कर दें। यह सेकंडों में होता है और database migration जैसी मुश्किलें नहीं छोड़ता।</p>
+
+<h2>Saat common galtiyan</h2>
+
+<p><strong>1. Pipeline बहुत लंबी।</strong> 40 मिनट की pipeline का इस्तेमाल लोग टालने लगते हैं।</p>
+
+<p><strong>2. सिर्फ़ main पर test चलाना।</strong> Pull request पर चलाएँ, वरना गलती merge के बाद पकड़ी जाएगी।</p>
+
+<p><strong>3. Secrets code में।</strong> एक बार commit हो गए तो history में हमेशा रहेंगे; बदलने पड़ेंगे।</p>
+
+<p><strong>4. Deploy के बाद verify न करना।</strong> Pipeline हरा होना का मतलब यह नहीं कि app ठीक चल रहा है।</p>
+
+<p><strong>5. हर छोटे बदलाव के लिए अलग pipeline।</strong> एक ही रास्ता रखें, वरना कोई एक रास्ता अनदेखा रह जाएगा।</p>
+
+<p><strong>6. Staging में production जैसा data न होना।</strong> फिर staging में कभी वे bugs नहीं दिखते जो production में आते हैं।</p>
+
+<p><strong>7. Rollback की कोशिश पहली बार आपदा में करना।</strong> महीने में एक बार rollback test करें।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>शुरुआत में मैं deploy हाथ से करता था — FTP से files, फिर browser खोलकर देखना कि सब ठीक है। एक बार आधी files upload हुईं और connection टूट गया। Site आधे घंटे तक टूटी रही, क्योंकि पता ही नहीं चला कि कौन सी file पुरानी है और कौन सी नई।</p>
+
+<p>उसके बाद मैंने सबसे छोटी pipeline बनाई — सिर्फ़ build और एक health check. पहले हफ़्ते में ही दो गलतियाँ पकड़ी गईं जो हाथ से deploy में कभी नहीं दिखतीं। फिर मैंने tests जोड़े, फिर staging, और फिर production पर manual approval. हर step जोड़ने पर डर कम होता गया।</p>
+
+<p>तीसरी सीख — pipeline को product की तरह देखें। अगर वह धीमी है, तो वह एक bug है। अगर वह अक्सर fail होती है, तो वह भी bug है। जिस दिन मैंने pipeline का समय 18 मिनट से 6 मिनट किया, उस दिन team के commits की संख्या लगभग दुगनी हो गई — बिना किसी नए feature के।</p>
+
+<h2>नतीजा</h2>
+
+<p>CI हर बदलाव पर build और tests चलाता है; CD उस build को तैयार या सीधे production तक भेजता है। Pipeline में lint, build, test, artifact, deploy और verify का क्रम रहता है — सस्ते check पहले। Tests की सही मात्रा वह है जो pipeline को 10 मिनट के अंदर रखे। Secrets platform के store में, permissions कम से कम, और rollback का अभ्यास पहले से।</p>
+
+<p>आगे पढ़ें: <a href="/posts/devops-kya-hai-hindi.html">DevOps क्या है</a> — जहाँ culture और practices हैं, और <a href="/posts/terraform-basics-hindi.html">Terraform basics</a> — जहाँ infrastructure भी code की तरह version-controlled होती है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>CI/CD सीखने के लिए कौन सा tool पहले?</h3>
+
+<p>GitHub Actions सबसे आसान शुरुआत है, क्योंकि वह repo के साथ ही आता है। बाद में GitLab CI या Jenkins समझना आसान होगा।</p>
+
+<h3>क्या छोटे project को भी pipeline चाहिए?</h3>
+
+<p>हाँ, छोटी pipeline — build और एक test. यह बाद में बड़ी हो सकती है, पर शुरू से होना ज़रूरी है।</p>
+
+<h3>Deploy कितनी बार करना चाहिए?</h3>
+
+<p>जितनी बार छोटा बदलाव तैयार हो। बड़े deploy ज़्यादा जोखिम लाते हैं; छोटे deploy आसानी से rollback होते हैं।</p>
+
+<h3>क्या pipeline production में सीधे deploy कर सकती है?</h3>
+
+<p>कर सकती है, पर शुरुआत में manual approval रखें। भरोसा बनने पर उसे हटाया जा सकता है।</p>
+
+<h3>Tests fail हों पर deploy ज़रूरी हो तो?</h3>
+
+<p>उस test को ठीक करें या उसे जान-बूझकर skip करें — पर skip को document करें, चुपचाप नहीं।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://docs.github.com/en/actions" rel="nofollow noopener" target="_blank">GitHub Docs — Actions (official documentation)</a></li>
+  <li><a href="https://12factor.net/" rel="nofollow noopener" target="_blank">The Twelve-Factor App — build, release, run</a></li>
+</ul>

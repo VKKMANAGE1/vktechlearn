@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai — VK Tech Learn</title>
+<meta name="description" content="Serverless kya hai, AWS Lambda kaise chalta hai, cold start ki sacchai, kharch ka hisaab aur kab serverless nahi lena chahiye — practical Hinglish guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai">
+<meta property="og:description" content="Serverless kya hai, AWS Lambda kaise chalta hai, cold start ki sacchai, kharch ka hisaab aur kab serverless nahi lena chahiye — practical Hinglish guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/serverless-kya-hai-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/serverless-kya-hai-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="Cloud, Serverless, DevOps">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/serverless-hindi.jpg">
+<meta property="og:image:alt" content="Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai">
+<meta property="article:published_time" content="2026-11-27T09:00:00+05:30">
+<meta property="article:modified_time" content="2026-11-27T09:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="Cloud">
+<meta property="article:tag" content="Cloud">
+<meta property="article:tag" content="Serverless">
+<meta property="article:tag" content="DevOps">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai">
+<meta name="twitter:description" content="Serverless kya hai, AWS Lambda kaise chalta hai, cold start ki sacchai, kharch ka hisaab aur kab serverless nahi lena chahiye — practical Hinglish guide.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/serverless-hindi.jpg">
+<meta name="twitter:image:alt" content="Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai","description":"Serverless kya hai, AWS Lambda kaise chalta hai, cold start ki sacchai, kharch ka hisaab aur kab serverless nahi lena chahiye — practical Hinglish guide.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/serverless-kya-hai-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/serverless-kya-hai-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/serverless-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/serverless-hindi.jpg","datePublished":"2026-11-27T09:00:00+05:30","dateModified":"2026-11-27T09:00:00+05:30","articleSection":"Cloud","keywords":"Cloud, Serverless, DevOps"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai","item":"https://vktechlearn.site/posts/serverless-kya-hai-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">Cloud</span><span class="tag">Serverless</span>
+      <time datetime="2026-11-27T09:00:00+05:30">27 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/serverless-hindi.jpg" alt="Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>Serverless में server होता है — बस उसे आप नहीं सँभालते</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>"Serverless" नाम सुनकर लगता है कि server ही नहीं होता। सच यह है कि server होता है — बस उसे आप नहीं सँभालते। आप एक function लिखते हैं, बताते हैं कि उसे कब चलाना है, और platform बाकी सब करता है: machine उठाना, code चलाना, load के हिसाब से बढ़ाना और बंद करना। आपको बिल सिर्फ़ उस समय का लगता है जब code असल में चला।</p>
+
+      <p>इस guide में मैं serverless का basic model खोलूँगा, AWS Lambda के limits, cold start की सच्चाई, खर्च का गणित, वे design patterns जो अच्छे चलते हैं, testing और debugging, और वे हालात जिनमें serverless गलत चुनाव है। साथ में छह गलतियाँ भी, जो पहली बार में सब करते हैं।</p>
+
+      <p><strong>छोटा जवाब:</strong> Serverless में आप code (function) लिखते हैं और platform उसे event पर चलाता है — HTTP request, file upload, queue message या schedule. आप server, OS या scaling नहीं सँभालते, और बिल सिर्फ़ execution time और requests पर आता है। यह उन कामों के लिए बेहतरीन है जो रुक-रुक कर आते हैं; लगातार भारी काम के लिए अक्सर महंगा पड़ता है।</p>
+
+      <h2>Serverless ka model</h2>
+
+      <p>पारंपरिक setup में आप एक machine लेते हैं जो 24×7 चलती है। अगर रात 2 बजे कोई request नहीं आई, तब भी वह machine चल रही है और बिल बन रहा है। Serverless में ऐसा नहीं — platform request आने पर function चलाता है, काम खत्म होते ही बंद कर देता है।</p>
+
+      <p>तीन चीज़ें इस model को बनाती हैं। पहली — <strong>event</strong>: function अपने आप नहीं चलता, किसी घटना पर चलता है। दूसरी — <strong>stateless</strong>: हर execution अलग है; पिछली बार का data भरोसे से नहीं मिलेगा। तीसरी — <strong>managed scaling</strong>: एक साथ हज़ार requests आएँ तो platform हज़ार executions चला देता है — बिना आपके कुछ किए।</p>
+
+      <figure>
+      <img src="../img/posts/serverless-flow-hindi.jpg" alt="serverless request का flow — event, function, cold start और response" loading="lazy" decoding="async">
+      <figcaption>हर request पर function उठता है, काम करता है और बंद हो जाता है</figcaption>
+      </figure>
+
+      <p>Stateless होने का असर यह है कि आपको हर चीज़ बाहर रखनी पड़ती है — session database में, file storage में, cache किसी managed service में। यह शुरुआत में झंझट लगता है, पर बाद में फायदा देता है, क्योंकि कोई भी instance कभी भी बंद हो सकता है।</p>
+
+      <h2>AWS Lambda: limits jo pata hone chahiye</h2>
+
+      <p>Lambda सबसे आम serverless service है। इसकी कुछ सीमाएँ हैं जो design पर सीधा असर डालती हैं।</p>
+
+      <table>
+      <thead><tr><th>चीज़</th><th>सीमा</th></tr></thead>
+      <tbody>
+      <tr><td>Execution timeout</td><td>15 मिनट</td></tr>
+      <tr><td>Memory</td><td>128 MB से 10 GB</td></tr>
+      <tr><td>Deployment package</td><td>50 MB zipped, 250 MB unzipped</td></tr>
+      <tr><td>Ephemeral storage</td><td>512 MB (बढ़ाया जा सकता है)</td></tr>
+      <tr><td>Concurrent executions</td><td>Region के हिसाब से limit, बढ़ाई जा सकती है</td></tr>
+      </tbody>
+      </table>
+
+      <p>यहाँ सबसे बड़ी बात है 15 मिनट की सीमा। लंबे video processing, बड़े report generation या heavy ML training Lambda पर नहीं चलेंगे। उनके लिए container, batch job या अलग compute चाहिए — और Lambda को सिर्फ़ trigger के लिए रखें।</p>
+
+      <p>Memory का चुनाव भी दिलचस्प है। Lambda में CPU memory के साथ बढ़ता है — ज़्यादा memory का मतलब तेज़ function. कई बार 512 MB से 1 GB पर जाने से समय आधा हो जाता है और कुल बिल कम हो जाता है, क्योंकि बिल समय × memory पर है। इसलिए इसे नापकर चुनें, अंदाज़े से नहीं।</p>
+
+      <h2>Cold start ki sacchai</h2>
+
+      <p>Cold start तब होता है जब platform को function के लिए नया environment बनाना पड़ता है — code download, runtime शुरू, और आपका initialization code. इसमें कुछ सौ मिलीसेकंड से लेकर कुछ सेकंड लग सकते हैं, खासकर Java या बड़े packages में।</p>
+
+      <p>अगर function कुछ समय में फिर चला, तो वही environment दोबारा इस्तेमाल होता है और cold start नहीं होता (warm start)। इसीलिए लगातार traffic पर यह समस्या कम दिखती है और रुक-रुक कर आने वाले traffic पर ज़्यादा।</p>
+
+      <p>इसे कम करने के चार तरीके हैं। पहला — package छोटा रखें; सिर्फ़ ज़रूरी dependencies. दूसरा — initialization code को handler के बाहर रखें, ताकि वह हर invocation पर न चले। तीसरा — provisioned concurrency इस्तेमाल करें, जो कुछ instances पहले से तैयार रखता है (पर बिल बढ़ता है)। चौथा — हल्का runtime चुनें, जैसे Node.js या Python.</p>
+
+      <pre><code>// handler ke bahar — ek hi baar chalta hai
+      const db = createConnection();
+
+      exports.handler = async (event) =&gt; {
+        return await db.query("SELECT 1");
+      };</code></pre>
+
+      <h2>Kab sahi hai, kab nahi</h2>
+
+      <figure>
+      <img src="../img/posts/serverless-compare-hindi.jpg" alt="serverless और server वाले setup की तुलना — चार अंतर जो फैसला बदलते हैं" loading="lazy" decoding="async">
+      <figcaption>फैसला एक सवाल पर टिका है — आपका load लगातार है या टुकड़ों में</figcaption>
+      </figure>
+
+      <p><strong>Serverless सही है जब:</strong> traffic अनियमित हो (रात में कम, दिन में ज़्यादा), काम छोटा हो (कुछ सेकंड), webhook या scheduled job हो, और team छोटी हो जिसे server नहीं सँभालना। उदाहरण — contact form, image thumbnail, daily report, payment webhook.</p>
+
+      <p><strong>Serverless गलत है जब:</strong> काम लगातार भारी हो, WebSocket या लंबे connection चाहिए, बहुत बड़ा package हो, या latency बहुत कम चाहिए (जैसे game server)। इन हालात में एक चालू machine या container सस्ता और सरल पड़ता है।</p>
+
+      <p>एक और हालत जो अक्सर छूट जाती है — database connections. हर Lambda invocation का अपना connection होता है, और अचानक हज़ार invocations से database के connections खत्म हो सकते हैं। इसका हल connection pooling service या RDS Proxy जैसा tool है, वरना database "too many connections" कहकर मना कर देगा।</p>
+
+      <h2>Kharch ka ganit</h2>
+
+      <p>Serverless का बिल दो चीज़ों पर है — requests की संख्या और execution का समय × memory. एक उदाहरण: महीने में 10 लाख requests, हर request 200 मिलीसेकंड, 512 MB memory. कुल समय 2,00,000 सेकंड × 0.5 GB = 1,00,000 GB-seconds. अगर दर $0.0000166667 प्रति GB-second है, तो लगभग $1.67 — यानी बहुत कम।</p>
+
+      <p>पर यही function अगर हर request पर 3 सेकंड ले और 1 GB memory माँगे, तो वही 10 लाख requests 30,00,000 GB-seconds बन जाती हैं — लगभग $50. और अगर traffic 10 गुना हो जाए, तो $500. इसीलिए serverless में performance सीधे पैसे से जुड़ी होती है; एक धीमा function महंगा function है।</p>
+
+      <p>एक practical आदत — हर function का समय और memory नापें, और महीने में एक बार सबसे महंगे तीन functions देखें। अक्सर वहाँ एक ऐसा function मिलता है जो बहुत बार चलता है पर उसका काम किसी और step में हो सकता था।</p>
+
+      <p>एक और बात जो बिल को चुपचाप बढ़ाती है — concurrency. अगर आपका function किसी बाहरी API को बुलाता है जो धीमा है, तो हर request के लिए एक instance चलेगा और हज़ारों instances बन सकते हैं। इसे reserved concurrency से सीमित करें, और बाहरी calls के लिए timeout रखें। वरना एक धीमा third-party service आपका बिल और आपकी latency दोनों बढ़ा देगा।</p>
+
+      <h2>Design patterns jo achhe chalte hain</h2>
+
+      <p><strong>1. API + function.</strong> HTTP request आती है, function validate करता है, database में लिखता है, जवाब देता है। सबसे आम pattern.</p>
+
+      <p><strong>2. Queue + worker.</strong> ज़्यादा भारी काम queue में डालें और अलग function से निकालें। इससे timeout की समस्या कम होती है और retry अपने आप मिलता है।</p>
+
+      <p><strong>3. Scheduled job.</strong> रोज़ सुबह report बनाना या cache साफ़ करना — cron की जगह event rule.</p>
+
+      <p><strong>4. Event-driven.</strong> File upload होते ही thumbnail बनाना, या database बदलते ही notification भेजना। इसमें function को किसी ने बुलाया नहीं, घटना ने बुलाया।</p>
+
+      <p>इन चारों में एक बात समान है — काम छोटा और साफ़ होना चाहिए। एक function में पाँच अलग काम डालने से timeout, debugging और permissions तीनों मुश्किल हो जाते हैं।</p>
+
+      <h2>Lambda ke bahar: baaki options</h2>
+
+      <p>Serverless सिर्फ़ Lambda नहीं है। अगर आपको request का जवाब बहुत तेज़ चाहिए और function छोटा है, तो Cloudflare Workers या Vercel Edge Functions बेहतर हैं — वे दुनिया के कई शहरों में चलते हैं और cold start बहुत कम होता है।</p>
+
+      <p>अगर काम लंबा है — जैसे 30 मिनट का video render या बड़ा report — तो serverless containers (Cloud Run, Fargate) या batch jobs सही हैं, क्योंकि वहाँ 15 मिनट की सीमा नहीं होती। और अगर काम बहुत भारी और लगातार है, तो सीधे एक चालू server या cluster सस्ता पड़ेगा।</p>
+
+      <p>चुनाव का सबसे साफ़ तरीका यह है कि पहले तीन सवाल लिखें — काम कितना लंबा है, traffic कैसा है, और latency कितनी ज़रूरी है। इन तीनों के जवाब से tool अपने आप सामने आ जाता है।</p>
+
+      <h3>Vendor lock-in ka sawaal</h3>
+
+      <p>Serverless में lock-in असली विषय है, क्योंकि function का code सिर्फ़ code नहीं होता — उसके साथ events, permissions, queues और storage जुड़े होते हैं। एक provider से दूसरे पर जाना आसान नहीं होता।</p>
+
+      <p>इसका इलाज यह है कि business logic को अलग रखें — function में सिर्फ़ glue code रहे, और असली logic एक सामान्य library या package में। तब provider बदलने पर सिर्फ़ glue बदलना पड़ता है। यह छोटी आदत बाद में बहुत समय बचाती है।</p>
+
+      <h2>Testing aur debugging</h2>
+
+      <p>Serverless में debugging थोड़ी अलग है, क्योंकि आपके पास SSH नहीं है। तीन चीज़ें काम आती हैं। पहली — <strong>structured logs</strong>: हर log में request id, user id और step का नाम। दूसरी — <strong>local testing</strong>: platform के emulator या सीधे function को unit test की तरह बुलाना। तीसरी — <strong>traces</strong>: एक request किन-किन services से गुज़री, इसका पूरा नक्शा।</p>
+
+      <p>एक आदत जो बहुत मदद करती है — हर function में एक unique request id generate करें और उसे हर log line में डालें। जब कुछ टूटे, तो उस id से सारी entries एक साथ दिख जाती हैं। बिना इसके logs में सुई ढूँढनी पड़ती है।</p>
+
+      <h2>Chhah common galtiyan</h2>
+
+      <p><strong>1. हर function में पूरा framework load करना।</strong> Package भारी, cold start लंबा, बिल ज़्यादा।</p>
+
+      <p><strong>2. state function के अंदर रखना।</strong> अगला invocation दूसरे instance पर जा सकता है।</p>
+
+      <p><strong>3. database connections न सँभालना।</strong> अचानक load पर connections खत्म हो जाते हैं।</p>
+
+      <p><strong>4. timeout को default पर छोड़ना।</strong> 3 सेकंड का काम 15 मिनट तक लटका रह सकता है और बिल बढ़ाता है।</p>
+
+      <p><strong>5. retry को बिना सोचे चालू रखना।</strong> गलत function बार-बार चलकर duplicate data बना सकता है।</p>
+
+      <p><strong>6. monitoring न लगाना।</strong> serverless में server नहीं दिखता, इसलिए metrics और alerts ही आँखें हैं।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>मेरा पहला serverless project एक image-resize function था। शुरुआत में सब अच्छा चला — महीने का बिल कुछ डॉलर। फिर एक दिन उपयोगकर्ताओं ने शिकायत की कि कुछ images नहीं बन रहीं। जाँच में पता चला कि बड़ी images पर function timeout हो रहा था, क्योंकि मैंने उसे 3 सेकंड पर सेट कर दिया था और image 8 MB की थी।</p>
+
+      <p>ठीक करते समय मैंने दो बदलाव किए। पहला — timeout 30 सेकंड किया, पर साथ में memory 1 GB कर दी, जिससे प्रोसेसिंग तेज़ हुई और कुल बिल लगभग वही रहा। दूसरा — बड़ी images के लिए एक queue जोड़ी, ताकि अगर कोई image बहुत बड़ी हो तो वह अलग से चले और बाकी प्रभावित न हों।</p>
+
+      <p>तीसरी सीख — serverless में सबसे ज़्यादा समय debugging में लगा, क्योंकि मैंने शुरू में structured logs नहीं रखे थे। जब हर log में सिर्फ़ "error" लिखा हो, तो पता नहीं चलता कि कौन सी file, किस user की, और किस step पर फेल हुई। request id जोड़ने के बाद वही समस्या मिनटों में पकड़ी जाने लगी।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>Serverless में server होता है, पर उसे platform सँभालता है। आप event पर चलने वाले छोटे, stateless functions लिखते हैं और बिल सिर्फ़ उपयोग पर आता है। यह अनियमित और हल्के काम के लिए बेहतरीन है; लगातार भारी काम, लंबे connections और बहुत कम latency वाले काम के लिए नहीं। Package छोटा रखें, timeout और memory नापें, connections सँभालें और logs में request id डालें।</p>
+
+      <p>आगे पढ़ें: <a href="/posts/cloud-computing-kya-hai-hindi.html">cloud computing</a> — जहाँ IaaS और PaaS का फर्क है, और <a href="/posts/monitoring-logging-hindi.html">monitoring और logging</a> — जहाँ production में क्या नापना है, यह समझाया है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>क्या serverless सस्ता होता है?</h3>
+
+      <p>कम और अनियमित traffic पर हाँ; लगातार भारी load पर अक्सर चालू server सस्ता पड़ता है।</p>
+
+      <h3>क्या serverless में database चल सकता है?</h3>
+
+      <p>हाँ, पर connection pooling ज़रूरी है। कई managed databases serverless के लिए अलग endpoint देते हैं।</p>
+
+      <h3>Cold start कितना होता है?</h3>
+
+      <p>आम तौर पर 100–800 मिलीसेकंड; भारी package और Java जैसे runtime में कुछ सेकंड तक।</p>
+
+      <h3>क्या Lambda पर पूरा backend बन सकता है?</h3>
+
+      <p>बन सकता है, पर हर endpoint के लिए अलग function रखें और shared logic को library में रखें।</p>
+
+      <h3>Serverless में testing कैसे करें?</h3>
+
+      <p>Function को सामान्य function की तरह unit test करें, और पूरा flow local emulator या staging पर जाँचें।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://docs.aws.amazon.com/lambda/latest/dg/welcome.html" rel="nofollow noopener" target="_blank">AWS — Lambda developer guide (official)</a></li>
+        <li><a href="https://developers.cloudflare.com/workers/" rel="nofollow noopener" target="_blank">Cloudflare — Workers documentation (official)</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

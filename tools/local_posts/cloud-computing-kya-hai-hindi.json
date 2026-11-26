@@ -1,0 +1,11 @@
+{
+  "slug": "cloud-computing-kya-hai-hindi",
+  "title": "Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq",
+  "description": "Cloud computing kya hai, IaaS, PaaS aur SaaS me farq, public-private-hybrid cloud, kharch ka hisaab aur kab on-prem better hai — ek practical Hinglish guide.",
+  "published": "2026-11-26T18:00:00+05:30",
+  "labels": ["Cloud", "DevOps", "Infrastructure"],
+  "hero": "img/posts/cloud-computing-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Cloud कोई जगह नहीं, एक तरीका है — किसी और के data center से resources किराए पर लेना"
+}

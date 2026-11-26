@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DevOps Kya Hai? Culture, Tools aur 6 Practices — VK Tech Learn</title>
+<meta name="description" content="DevOps ka matlab, culture aur tools ka role, CI/CD, IaC, monitoring aur blameless postmortem — 6 practices aur 90-din plan ke saath, aasan Hinglish guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DevOps Kya Hai? Culture, Tools aur 6 Practices">
+<meta property="og:description" content="DevOps ka matlab, culture aur tools ka role, CI/CD, IaC, monitoring aur blameless postmortem — 6 practices aur 90-din plan ke saath, aasan Hinglish guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/devops-kya-hai-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/devops-kya-hai-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="DevOps, Cloud, Career">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/devops-hindi.jpg">
+<meta property="og:image:alt" content="DevOps Kya Hai? Culture, Tools aur 6 Practices">
+<meta property="article:published_time" content="2026-11-26T21:00:00+05:30">
+<meta property="article:modified_time" content="2026-11-26T21:00:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="DevOps">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="Cloud">
+<meta property="article:tag" content="Career">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DevOps Kya Hai? Culture, Tools aur 6 Practices">
+<meta name="twitter:description" content="DevOps ka matlab, culture aur tools ka role, CI/CD, IaC, monitoring aur blameless postmortem — 6 practices aur 90-din plan ke saath, aasan Hinglish guide.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/devops-hindi.jpg">
+<meta name="twitter:image:alt" content="DevOps Kya Hai? Culture, Tools aur 6 Practices">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"DevOps Kya Hai? Culture, Tools aur 6 Practices","description":"DevOps ka matlab, culture aur tools ka role, CI/CD, IaC, monitoring aur blameless postmortem — 6 practices aur 90-din plan ke saath, aasan Hinglish guide.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/devops-kya-hai-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/devops-kya-hai-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/devops-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/devops-hindi.jpg","datePublished":"2026-11-26T21:00:00+05:30","dateModified":"2026-11-26T21:00:00+05:30","articleSection":"DevOps","keywords":"DevOps, Cloud, Career"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"DevOps Kya Hai? Culture, Tools aur 6 Practices","item":"https://vktechlearn.site/posts/devops-kya-hai-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">DevOps</span><span class="tag">Cloud</span>
+      <time datetime="2026-11-26T21:00:00+05:30">26 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">DevOps Kya Hai? Culture, Tools aur 6 Practices</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/devops-hindi.jpg" alt="DevOps Kya Hai? Culture, Tools aur 6 Practices" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>DevOps दो टीमों को जोड़ने का नाम है — एक जो बनाती है, और एक जो चलाती है</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>"DevOps engineer चाहिए" — यह line आज हर job board पर है, और उसके नीचे जो requirements लिखी होती हैं, वे अक्सर आपस में मेल नहीं खातीं: Linux, Kubernetes, Terraform, Python, CI/CD, monitoring, और साथ में "अच्छी communication skills". इसे देखकर लगता है कि DevOps कोई tool है जो सीख लिया जाए। असल में यह एक तरीका है — software बनाने और चलाने वालों के बीच की दीवार गिराने का।</p>
+
+      <p>इस guide में मैं DevOps को उसकी शुरुआत से खोलूँगा — यह शब्द कहाँ से आया, culture का असली मतलब, वे छह practices जो इसे ज़मीन पर उतारती हैं, tools का सही रोल, और DevOps engineer बनने का realistic रास्ता। साथ में वे गलतियाँ भी जो "DevOps" के नाम पर सिर्फ़ एक और सिलो बना देती हैं।</p>
+
+      <p><strong>छोटा जवाब:</strong> DevOps एक culture और practice है जिसमें development और operations टीमें मिलकर काम करती हैं, ताकि software तेज़ी से और भरोसे के साथ production तक पहुँचे। इसके छह मुख्य हिस्से हैं — छोटे बदलाव, CI/CD, infrastructure as code, monitoring, incident response और blameless postmortem. Tools इन्हें आसान बनाते हैं, पर tools ही DevOps नहीं हैं।</p>
+
+      <h2>DevOps shabd kahan se aaya</h2>
+
+      <p>2000 के दशक में software बनाने वाली team और उसे चलाने वाली team अलग-अलग थीं, और उनके हित उल्टे थे। Developers को जल्दी feature चाहिए था; operations को स्थिरता। नतीजा — developers code फेंकते थे, operations उसे चलाने में जूझती थी, और हर release एक लड़ाई बन जाती थी।</p>
+
+      <p>DevOps उसी दीवार को गिराने की कोशिश है। इसका मतलब यह नहीं कि operations की job खत्म हो गई — इसका मतलब है कि जो code लिखता है, वह उसे चलने की ज़िम्मेदारी भी समझे, और जो उसे चलाता है, वह बनाने की प्रक्रिया में शुरू से शामिल रहे।</p>
+
+      <p>एक practical पहचान: अगर आपकी टीम में कोई कहता है "यह मेरा code नहीं, server की समस्या है", तो वहाँ DevOps नहीं है। DevOps में सवाल "किसकी गलती है" नहीं, "क्या सुधारें" होता है।</p>
+
+      <figure>
+      <img src="../img/posts/devops-loop-hindi.jpg" alt="DevOps loop के चार चरण — plan, build, deploy और monitor, हर चरण अगले को जानकारी देता है" loading="lazy" decoding="async">
+      <figcaption>DevOps एक लाइन नहीं, एक loop है — monitoring से मिली जानकारी फिर plan में जाती है</figcaption>
+      </figure>
+
+      <h2>Culture: jo tools se pehle aata hai</h2>
+
+      <p>DevOps की शुरुआत culture से होती है, और culture की शुरुआत भरोसे से। तीन आदतें इसे साफ़ दिखाती हैं। पहली — <strong>shared responsibility</strong>: feature का मालिक वही है जो उसे production में चलते देखता है। दूसरी — <strong>blameless काम</strong>: गलती होने पर system सुधारा जाता है, व्यक्ति नहीं। तीसरी — <strong>feedback loop</strong>: monitoring का data सिर्फ़ alert के लिए नहीं, अगले काम की योजना के लिए भी इस्तेमाल होता है।</p>
+
+      <p>Blameless होना कमज़ोरी नहीं है। जिस team में लोग डरकर गलती छिपाते हैं, वहाँ छोटी गलती बड़ी आपदा बन जाती है। जहाँ लोग खुलकर बताते हैं, वहाँ समस्या जल्दी पकड़ी जाती है — और यही असली स्थिरता है।</p>
+
+      <h2>Chhah practices</h2>
+
+      <p><strong>1. छोटे और लगातार बदलाव।</strong> बड़े release में जोखिम ज़्यादा होता है। हफ़्ते में एक बार के बजाय दिन में कई बार छोटा deploy करें — हर बदलाव को समझना और rollback करना आसान होता है।</p>
+
+      <p><strong>2. CI/CD।</strong> हर commit पर build और tests, और तैयार build का अपने आप deploy. इससे "यह मेरे machine पर चलता है" वाली समस्या खत्म होती है।</p>
+
+      <p><strong>3. Infrastructure as code।</strong> Server, network और database को console में click करके नहीं, code में लिखें। इससे environment दोबारा बनाया जा सकता है और बदलाव का record रहता है।</p>
+
+      <p><strong>4. Monitoring और alerting।</strong> Users को पता चलने से पहले आपको पता चले। Metrics, logs और traces तीनों ज़रूरी हैं, और alerts कम पर सही होने चाहिए।</p>
+
+      <p><strong>5. Incident response।</strong> जब कुछ टूटे, तो एक साफ़ process हो — कौन lead करेगा, status कहाँ अपडेट होगा, और communication कैसे होगी। बिना process के हर incident पहली बार जैसा लगता है।</p>
+
+      <p><strong>6. Postmortem।</strong> Incident के बाद एक छोटा document — क्या हुआ, कितनी देर, क्या ठीक किया, और आगे क्या बदलेगा। इसमें नाम नहीं, system की बात होती है।</p>
+
+      <figure>
+      <img src="../img/posts/devops-practices-hindi.jpg" alt="DevOps की चार आदतें — छोटे बदलाव, CI/CD, infrastructure as code और monitoring" loading="lazy" decoding="async">
+      <figcaption>Tools बाद में आते हैं — पहले यह चार आदतें टीम में आनी चाहिए</figcaption>
+      </figure>
+
+      <h2>Tools ka sahi role</h2>
+
+      <p>DevOps tools बहुत हैं, और यही सबसे बड़ी उलझन है। पर उन्हें चार श्रेणियों में रखें तो तस्वीर साफ़ हो जाती है। <strong>Version control और CI</strong> — Git, GitHub Actions, GitLab CI. <strong>Containers और orchestration</strong> — Docker, Kubernetes. <strong>Infrastructure</strong> — Terraform, Ansible. <strong>Observability</strong> — Prometheus, Grafana, Loki, OpenTelemetry.</p>
+
+      <p>ज़रूरी बात यह है कि tool चुनने से पहले समस्या समझें। अगर आपकी टीम महीने में एक बार deploy करती है, तो Kubernetes लाने से पहले CI/CD ठीक करें। अगर alerts रोज़ झूठ बोलते हैं, तो नया dashboard नहीं, alert rules साफ़ करने चाहिए।</p>
+
+      <table>
+      <thead><tr><th>ज़रूरत</th><th>शुरुआत का tool</th><th>कब बदलें</th></tr></thead>
+      <tbody>
+      <tr><td>CI/CD</td><td>GitHub Actions</td><td>जब self-hosted runners या complex pipelines चाहिए</td></tr>
+      <tr><td>Containers</td><td>Docker</td><td>जब कई services और scaling चाहिए</td></tr>
+      <tr><td>Orchestration</td><td>Managed platform (ECS, Cloud Run)</td><td>जब multi-cloud या खास networking चाहिए</td></tr>
+      <tr><td>IaC</td><td>Terraform</td><td>जब team बड़ी हो और modules चाहिए</td></tr>
+      <tr><td>Monitoring</td><td>Managed service</td><td>जब cost या data ownership की समस्या हो</td></tr>
+      </tbody>
+      </table>
+
+      <p>एक और बात tools चुनते समय — जो tool आपकी team पहले से जानती है, वह अक्सर नए और बेहतर tool से ज़्यादा काम करता है। नया tool सीखने में लगा समय उसी चीज़ से निकलता है जो असल में सुधार ला सकती थी। इसीलिए पहले process ठीक करें, फिर tool देखें।</p>
+
+      <h2>SRE, platform engineering aur DevOps</h2>
+
+      <p>इन तीनों शब्दों को अक्सर एक साथ सुना जाता है, पर तीनों अलग ज़ोर देते हैं। <strong>DevOps</strong> एक culture है — दोनों टीमों को जोड़ने का तरीका। <strong>SRE</strong> (Site Reliability Engineering) उस culture को engineering के नियमों से लागू करता है — SLO, error budget और toil कम करने पर ज़ोर। <strong>Platform engineering</strong> developers के लिए एक आंतरिक platform बनाता है — जहाँ deploy, database और monitoring self-service हों।</p>
+
+      <p>फर्क एक उदाहरण से समझें। DevOps कहेगा "दोनों टीमें मिलकर काम करें"। SRE कहेगा "हमारा SLO 99.9% है, इस महीने budget खत्म हो गया है, इसलिए नए feature रोकें"। Platform engineering कहेगा "developer को deploy के लिए किसी को email नहीं करना पड़े — एक command काफ़ी हो।"</p>
+
+      <p>छोटी team के लिए यह बहस ज़्यादा मायने नहीं रखती। जब तक pipeline, monitoring और backup ठीक न हों, नाम बदलने से कुछ नहीं होता।</p>
+
+      <h2>Ek team me DevOps kaise shuru karein</h2>
+
+      <p><strong>पहले 30 दिन।</strong> पहले नापें — deploy में कितना समय लगता है, कितनी बार fail होता है, incidents कितने आते हैं और कितनी देर में पता चलता है। बिना नापे सुधार का दावा नहीं किया जा सकता। इसी महीने एक छोटी CI pipeline चालू करें।</p>
+
+      <p><strong>अगले 30 दिन।</strong> Deploy को दोहराने लायक बनाएँ — एक command, एक जैसा नतीजा। Staging बनाएँ अगर नहीं है। और monitoring में कम से कम error rate, latency और uptime जोड़ें।</p>
+
+      <p><strong>आख़िरी 30 दिन।</strong> Infrastructure के कम से कम एक हिस्से को code में लाएँ — जैसे network या एक service. एक incident postmortem लिखें, चाहे छोटा ही हो। और on-call का एक साफ़ rotation बनाएँ।</p>
+
+      <p>इस 90 दिन में कोई नया tool खरीदने की ज़रूरत नहीं पड़ती। जो पहले से है, उसे ठीक से इस्तेमाल करना ही सबसे बड़ा सुधार होता है।</p>
+
+      <h3>On-call ko insaani rakhein</h3>
+
+      <p>On-call का मतलब है कि किसी हफ़्ते एक व्यक्ति alerts का जवाब दे। यह ज़रूरी है, पर इसे सज़ा न बनाएँ। तीन नियम मदद करते हैं — जो alert action नहीं माँगता, उसे हटा दें; रात में सिर्फ़ उन चीज़ों के लिए जगाएँ जो users को प्रभावित करती हैं; और अगले दिन उस व्यक्ति को हल्का काम दें।</p>
+
+      <p>जो team on-call को ठीक से चलाती है, वहाँ incidents कम नहीं होते — पर उनका असर कम होता है, क्योंकि जवाब तेज़ और साफ़ होता है।</p>
+
+      <h3>Chaar numbers jo asli sudhar batate hain</h3>
+
+      <p>DORA ने वर्षों की research के बाद चार numbers तय किए जो software delivery की सेहत बताते हैं। इन्हें अपनी team पर लगाकर देखें — सुधार का दावा इन्हीं से साबित होता है।</p>
+
+      <p><strong>1. Deployment frequency।</strong> आप कितनी बार production में deploy करते हैं — महीने में एक बार या दिन में कई बार।</p>
+
+      <p><strong>2. Lead time for changes।</strong> Commit से production तक कितना समय लगता है।</p>
+
+      <p><strong>3. Change failure rate।</strong> कितने प्रतिशत deploys के बाद कुछ टूटा और ठीक करना पड़ा।</p>
+
+      <p><strong>4. Time to restore।</strong> जब कुछ टूटे, तो ठीक होने में कितना समय लगा।</p>
+
+      <p>इन चारों में सबसे ज़्यादा ध्यान तीसरे और चौथे पर दें। पहले दो बढ़ाना आसान है, पर अगर failure rate और restore time खराब हैं, तो तेज़ deploy सिर्फ़ तेज़ आपदा है।</p>
+
+      <h2>DevOps engineer banta kaise hai</h2>
+
+      <p>यह सबसे ज़्यादा पूछा जाने वाला सवाल है। सच यह है कि DevOps सीधे सीखा नहीं जाता — यह किसी और चीज़ के ऊपर आता है। ज़्यादातर अच्छे DevOps लोग developer, system administrator या tester रहे हैं, और फिर उन्होंने automation सीखी।</p>
+
+      <p>अगर आप शुरुआत कर रहे हैं, तो एक रास्ता यह है: पहले Linux की बुनियाद (files, permissions, processes, network), फिर एक language (Python या Bash), फिर Git, फिर Docker, फिर एक cloud provider, फिर CI/CD, और अंत में Terraform और monitoring. हर step पर कुछ बनाएँ — सिर्फ़ tutorial देखकर नहीं।</p>
+
+      <p>एक और बात — interview में tools की सूची से ज़्यादा यह देखा जाता है कि आप किसी समस्या को कैसे तोड़ते हैं। "Production में 502 आ रहा है, आप क्या करेंगे?" जैसे सवाल का जवाब tools से नहीं, सोच के क्रम से आता है।</p>
+
+      <h2>Aath galtiyan jo DevOps ko nakli bana deti hain</h2>
+
+      <p><strong>1. Tool खरीदना और culture न बदलना।</strong> Kubernetes लाने से सिलो नहीं टूटते।</p>
+
+      <p><strong>2. एक "DevOps टीम" बनाना जो बाकी सबके लिए deploy करे।</strong> यह वही पुरानी दीवार है, नए नाम के साथ।</p>
+
+      <p><strong>3. सब कुछ automate करने की कोशिश।</strong> जो काम महीने में एक बार होता है, उसे automate करने में समय बर्बाद मत करें।</p>
+
+      <p><strong>4. Alerts की बाढ़।</strong> जब हर चीज़ alert करती है, तो कोई नहीं देखता।</p>
+
+      <p><strong>5. Postmortem में दोषी ढूँढना।</strong> इससे अगली बार जानकारी छिपेगी।</p>
+
+      <p><strong>6. Documentation न रखना।</strong> जो चीज़ code में है पर समझी नहीं गई, वह अगली छुट्टी पर टूटेगी।</p>
+
+      <p><strong>7. बिना backup के बदलाव।</strong> Automation गलती को भी तेज़ करती है।</p>
+
+      <p><strong>8. "DevOps" को सिर्फ़ deployment समझना।</strong> Deployment उसका एक हिस्सा है; बाकी reliability और feedback है।</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>मैंने DevOps की शुरुआत एक गलत जगह से की — tools से। तीन महीने Kubernetes सीखा, फिर एक छोटी सी app को उस पर चलाया जिसे एक साधारण VPS पर आसानी से चलाया जा सकता था। सीखने के लिए ठीक था, पर असली समस्या उससे नहीं हल हुई।</p>
+
+      <p>असली समस्या थी कि हमें पता ही नहीं था कि production में क्या हो रहा है। कोई log नहीं, कोई metric नहीं, कोई alert नहीं। जब एक बार database की disk भर गई, तो पता दो दिन बाद चला — जब users ने शिकायत की। उसके बाद मैंने पहले monitoring लगाया, फिर backup, फिर CI/CD. Kubernetes बहुत बाद में आया।</p>
+
+      <p>तीसरी सीख — सबसे बड़ा फायदा process से आया, technology से नहीं। जिस दिन हमने तय किया कि हर incident के बाद एक छोटा postmortem लिखेंगे, उसके छह महीने में दोहराई गई गलतियाँ लगभग खत्म हो गईं। किसी नए tool ने वह नहीं किया।</p>
+
+      <h2>नतीजा</h2>
+
+      <p>DevOps एक culture है जिसमें बनाने और चलाने वाले एक साथ ज़िम्मेदारी लेते हैं, और उसे छह practices ज़मीन पर उतारती हैं — छोटे बदलाव, CI/CD, infrastructure as code, monitoring, incident response और postmortem. Tools इन्हें आसान बनाते हैं, पर वे खुद DevOps नहीं हैं। शुरुआत Linux, Git, Docker, एक cloud और CI/CD से करें, और हर step पर कुछ बनाएँ।</p>
+
+      <p>आगे पढ़ें: <a href="/posts/ci-cd-pipeline-kya-hai-hindi.html">CI/CD pipeline</a> — जहाँ GitHub Actions का practical example है, और <a href="/posts/monitoring-logging-hindi.html">monitoring और logging</a> — जहाँ production में क्या नापना है, यह समझाया है।</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>DevOps और SRE एक ही हैं?</h3>
+
+      <p>करीब हैं। SRE reliability को engineering की तरह देखता है — SLO, error budget और automation के साथ।</p>
+
+      <h3>क्या DevOps के लिए coding ज़रूरी है?</h3>
+
+      <p>हाँ। Scripting (Python या Bash) और infrastructure code पढ़ना-लिखना आना चाहिए।</p>
+
+      <h3>क्या DevOps कोई certification चाहिए?</h3>
+
+      <p>ज़रूरी नहीं, पर cloud या Kubernetes का certification कुछ जगह शॉर्टलिस्ट में मदद करता है।</p>
+
+      <h3>छोटी team DevOps कैसे शुरू करे?</h3>
+
+      <p>CI/CD से — सबसे पहले हर commit पर build और test, फिर staging, फिर monitoring.</p>
+
+      <h3>क्या DevOps से salary बेहतर होती है?</h3>
+
+      <p>आम तौर पर हाँ, क्योंकि इसमें development और infrastructure दोनों की समझ माँगी जाती है।</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://dora.dev/" rel="nofollow noopener" target="_blank">DORA — research on software delivery performance (official site)</a></li>
+        <li><a href="https://docs.github.com/en/actions" rel="nofollow noopener" target="_blank">GitHub Docs — Actions (official documentation)</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>

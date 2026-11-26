@@ -1,0 +1,11 @@
+{
+  "slug": "serverless-kya-hai-hindi",
+  "title": "Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai",
+  "description": "Serverless kya hai, AWS Lambda kaise chalta hai, cold start ki sacchai, kharch ka hisaab aur kab serverless nahi lena chahiye — practical Hinglish guide.",
+  "published": "2026-11-27T09:00:00+05:30",
+  "labels": ["Cloud", "Serverless", "DevOps"],
+  "hero": "img/posts/serverless-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Serverless में server होता है — बस उसे आप नहीं सँभालते"
+}

@@ -1,0 +1,187 @@
+<p>एक server बनाना आसान है — console में दो click और हो गया। पर छह महीने बाद जब वही setup दोबारा बनाना पड़े, तो याद नहीं रहता कि कौन सा security group कहाँ लगाया था, कौन सा subnet किससे जुड़ा था, और किसने क्या बदला। Infrastructure as Code इसी समस्या का जवाब है — server को हाथ से बनाने के बजाय उसकी परिभाषा एक file में लिखना, जिसे Git में रखा जा सके, review किया जा सके और दोबारा चलाया जा सके।</p>
+
+<p>इस guide में मैं IaC का basic विचार खोलूँगा, Terraform कैसे काम करता है, उसका workflow, state का सबसे ज़रूरी concept, modules और variables, और सात गलतियाँ जो शुरुआत में सब करते हैं। अंत में दूसरे tools से तुलना भी है — ताकि पता हो कि Terraform कब सही है और कब नहीं।</p>
+
+<p><strong>छोटा जवाब:</strong> Infrastructure as Code का मतलब है server, network, database जैसी चीज़ों को code में परिभाषित करना। Terraform एक tool है जो उस code को पढ़कर बताता है कि क्या बनेगा, क्या बदलेगा और क्या हटेगा — और फिर उसे लागू करता है। इसका सबसे ज़रूरी हिस्सा state file है, जो याद रखती है कि अभी क्या बना हुआ है।</p>
+
+<h2>IaC kya hai — aur kyun</h2>
+
+<p>Infrastructure as Code में आप "जाओ और बनाओ" नहीं कहते, बल्कि "ऐसा होना चाहिए" लिखते हैं। फिर tool वर्तमान स्थिति और मनचाही स्थिति का फर्क निकालकर सिर्फ़ वही बदलता है जो ज़रूरी है। इसे declarative कहते हैं — आप परिणाम बताते हैं, तरीका tool तय करता है।</p>
+
+<p>इसके चार फायदे हैं। पहला — <strong>दोहराव</strong>: वही setup staging और production में बन जाता है, हाथ की गलती के बिना। दूसरा — <strong>review</strong>: infrastructure का बदलाव pull request में दिखता है, इसलिए किसी ने चुपचाप port खोल दिया तो पता चलता है। तीसरा — <strong>history</strong>: Git में पता रहता है किसने, कब और क्यों बदला। चौथा — <strong>recovery</strong>: पूरा environment खोकर दोबारा बनाया जा सकता है।</p>
+
+<figure>
+<img src="../img/posts/iac-benefits-hindi.jpg" alt="Infrastructure as code के चार फायदे — दोहराव, review, history और recovery" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>एक file, चार फायदे — और सबसे बड़ा फायदा यह कि setup दोबारा बन सकता है</figcaption>
+</figure>
+
+<p>एक बात साफ़ कर लें — IaC का मतलब यह नहीं कि सब कुछ code से ही हो। Database का data, DNS के कुछ records या manually बने पुराने resources अलग तरह से सँभाले जाते हैं। शुरुआत में जो नया बना रहे हैं, उसे code से बनाएँ; पुराने को धीरे-धीरे लाएँ।</p>
+
+<h2>Terraform kaise kaam karta hai</h2>
+
+<p>Terraform की files <code>.tf</code> extension की होती हैं और उनमें HCL भाषा लिखी जाती है। हर resource एक block होता है — जैसे "एक storage bucket बनाओ" या "एक virtual machine बनाओ"। Terraform उन blocks को पढ़कर provider की API से बात करता है।</p>
+
+<p>Provider वह plugin है जो Terraform को बताता है कि AWS, Azure, Google Cloud या किसी और service से कैसे बात करनी है। जब आप पहली बार <code>terraform init</code> चलाते हैं, तो Terraform provider download करता है — यही कारण है कि हर project folder में एक <code>.terraform</code> directory बनती है।</p>
+
+<p>Terraform की सबसे बड़ी खासियत यह है कि वह किसी एक cloud से बंधा नहीं। आप एक ही configuration में AWS का database और Cloudflare का DNS रख सकते हैं। यही उसे दूसरे tools से अलग बनाता है।</p>
+
+<pre><code>terraform {
+  required_providers {
+    aws = { source = "hashicorp/aws", version = "~&gt; 5.0" }
+  }
+}</code></pre>
+
+<h2>Ek chhota example</h2>
+
+<p>मान लें हमें एक S3 bucket चाहिए जिस पर versioning चालू हो। पूरी configuration इतनी है।</p>
+
+<pre><code>resource "aws_s3_bucket" "logs" {
+  bucket = "my-app-logs-2026"
+}
+
+resource "aws_s3_bucket_versioning" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}</code></pre>
+
+<p>यहाँ दो बातें देखें। पहली — <code>aws_s3_bucket.logs.id</code> से दूसरा resource पहले वाले को refer कर रहा है। Terraform इन references से खुद समझ जाता है कि कौन पहले बनेगा। दूसरी — किसी भी resource का नाम (जैसे <code>logs</code>) सिर्फ़ configuration के अंदर का नाम है, असली cloud में नहीं।</p>
+
+<p>यही सबसे बड़ा फायदा है — आपको क्रम याद नहीं रखना पड़ता। जब दो resources जुड़े होते हैं, Terraform उन्हें सही क्रम में बनाता है और हटाते समय उल्टे क्रम में हटाता है।</p>
+
+<h2>Workflow: init, plan, apply</h2>
+
+<figure>
+<img src="../img/posts/terraform-flow-hindi.jpg" alt="Terraform workflow — लिखें, init, plan, apply और state" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>Plan वह step है जिसे कभी skip नहीं करना चाहिए — वही बताता है कि असल में क्या बदलेगा</figcaption>
+</figure>
+
+<ol>
+<li><strong>लिखें।</strong> <code>.tf</code> files में resources लिखें।</li>
+<li><strong>init।</strong> Providers download करें और backend तैयार करें। हर नए project या नए module पर।</li>
+<li><strong>fmt और validate।</strong> Formatting और syntax जाँचें — CI में यही चलता है।</li>
+<li><strong>plan।</strong> Terraform दिखाता है कि क्या जोड़ा, बदला या हटाया जाएगा। इसे ध्यान से पढ़ें।</li>
+<li><strong>apply।</strong> plan लागू करें। हर बदलाव के लिए हाँ कहना पड़ता है (या <code>-auto-approve</code> CI में)।</li>
+<li><strong>state अपडेट।</strong> Terraform state में लिखता है कि अब क्या बना है।</li>
+</ol>
+
+<p>Plan पढ़ते समय तीन संकेत देखें — <code>+</code> यानी बनेगा, <code>~</code> यानी बदलेगा, और <code>-/+</code> यानी हटकर दोबारा बनेगा। तीसरा सबसे खतरनाक है, क्योंकि कुछ resources बदलने के लिए Terraform उन्हें हटाकर नया बनाता है — और अगर वह database था, तो data चला जाएगा।</p>
+
+<h2>State: sabse zaroori concept</h2>
+
+<p>State file एक JSON है जिसमें Terraform याद रखता है कि कौन सा resource किस ID से बना है। इसके बिना वह नहीं जान सकता कि "जो मैंने पहले बनाया था" और "जो अभी cloud में है" एक ही चीज़ है।</p>
+
+<p>इसीलिए state को संभालना सबसे ज़रूरी काम है। तीन नियम याद रखें। पहला — state को Git में commit न करें; उसमें संवेदनशील जानकारी हो सकती है। दूसरा — उसे remote backend पर रखें (S3, GCS या Terraform Cloud), ताकि टीम साझा कर सके। तीसरा — locking चालू करें, वरना दो लोग एक साथ apply करेंगे और state बिगड़ जाएगी।</p>
+
+<pre><code>terraform {
+  backend "s3" {
+    bucket         = "my-tf-state"
+    key            = "prod/network.tfstate"
+    region         = "ap-south-1"
+    dynamodb_table = "tf-lock"
+    encrypt        = true
+  }
+}</code></pre>
+
+<p>एक practical बात — state खो जाए तो घबराएँ नहीं, पर हाथ से न छेड़ें। Terraform में <code>import</code> है, जिससे मौजूद resource को state में जोड़ा जा सकता है। पहले backup लें, फिर step by step करें।</p>
+
+<h2>Modules aur variables</h2>
+
+<p>जब एक ही तरह का setup दो बार बनाना हो — जैसे staging और production — तो उसे module में रखें। Module एक folder है जिसमें resources हैं और variables से उसे अलग-अलग मान दिए जा सकते हैं।</p>
+
+<pre><code>variable "env" { type = string }
+variable "instance_type" { default = "t3.micro" }
+
+module "app" {
+  source        = "./modules/app"
+  env           = "staging"
+  instance_type = "t3.small"
+}</code></pre>
+
+<p>Variables का फायदा यह है कि मान code से अलग रहते हैं। पर सावधानी — संवेदनशील मान (password, key) variables में hardcode न करें; उन्हें secret store या environment से दें, और <code>sensitive = true</code> लगाएँ ताकि output में न दिखें।</p>
+
+<p>Modules की एक सीमा भी है। बहुत ज़्यादा abstraction करने से configuration पढ़ना मुश्किल हो जाता है — किसी चीज़ को ढूँढने के लिए पाँच files खोलनी पड़ती हैं। शुरुआत में दो-तीन modules काफ़ी हैं।</p>
+
+<p>Modules को भी code की तरह test करें। सबसे आसान तरीका — हर module के लिए एक छोटी example directory रखें जो उसे किसी परीक्षण account में लगाए। जब module बदले, तो CI में वह example <code>plan</code> चलाए, ताकि पता चले कि output और resources वही रहे या बदले। यह एक छोटा अभ्यास है, पर module का भरोसा इसी से बनता है।</p>
+
+<h2>Environments alag kaise rakhein</h2>
+
+<p>तीन तरीके आम हैं। पहला — अलग folders (<code>envs/staging</code>, <code>envs/prod</code>) जिनमें अलग state हो। दूसरा — workspaces, जहाँ एक ही code और अलग state. तीसरा — एक ही configuration में variables से environment बदलना।</p>
+
+<p>अभ्यास में पहला तरीका सबसे साफ़ है, खासकर जब environments में फर्क हो — production में ज़्यादा replicas, अलग network, अलग permissions. Workspaces छोटे और एक जैसे setups के लिए ठीक हैं, पर बड़े फर्क के लिए भ्रम पैदा करते हैं।</p>
+
+<h3>Drift: jab code aur asli setup alag ho jayein</h3>
+
+<p>Drift तब होता है जब कोई व्यक्ति console से कुछ बदल देता है और code में वह बदलाव नहीं आता। अगली बार <code>plan</code> चलाने पर Terraform वह बदलाव वापस पुरानी स्थिति में लौटा सकता है — जो कभी सही होता है, कभी नहीं।</p>
+
+<p>इसे पकड़ने के दो तरीके हैं। पहला — CI में हर रात <code>plan</code> चलाएँ और देखें कि कुछ बदल रहा है या नहीं; अगर बिना किसी commit के plan खाली नहीं है, तो drift है। दूसरा — जो बदलाव असल में चाहिए था, उसे code में लाएँ, ताकि अगली बार वही स्थिति बने।</p>
+
+<p>सबसे अच्छा बचाव यह है कि console का access सीमित रखें, और जो भी बदलाव ज़रूरी हो, उसे code से करें — चाहे वह एक छोटा tag ही क्यों न हो।</p>
+
+<h2>Saat common galtiyan</h2>
+
+<p><strong>1. State Git में।</strong> यह सबसे आम और सबसे खतरनाक गलती है।</p>
+
+<p><strong>2. Locking नहीं।</strong> दो लोगों के apply से state टूट सकती है।</p>
+
+<p><strong>3. Plan न पढ़ना।</strong> <code>-/+</code> वाला बदलाव database पर data खत्म कर सकता है।</p>
+
+<p><strong>4. Console से बदलाव करना।</strong> फिर code और असल में फर्क आ जाता है — इसे drift कहते हैं।</p>
+
+<p><strong>5. सब कुछ एक state में।</strong> एक गलती से पूरा environment प्रभावित होता है।</p>
+
+<p><strong>6. Secrets code में।</strong> वे Git history में हमेशा रह जाते हैं।</p>
+
+<p><strong>7. Version pin न करना।</strong> Provider का नया version अचानक कुछ बदल देता है और plan अलग आने लगता है।</p>
+
+<h2>Terraform, Ansible aur CloudFormation</h2>
+
+<p>तीनों अलग कामों के लिए हैं। <strong>Terraform</strong> infrastructure बनाता और बदलता है — declarative, multi-cloud. <strong>Ansible</strong> मौजूद machines के अंदर configuration करता है — packages, files, services; यह procedural है। <strong>CloudFormation</strong> AWS का अपना tool है, जो अच्छी तरह integrated है पर सिर्फ़ AWS के लिए।</p>
+
+<p>अक्सर ये साथ चलते हैं — Terraform से server बनाएँ, Ansible से उसके अंदर software लगाएँ। पर आजकल containers के ज़माने में दूसरा हिस्सा अक्सर Docker image और user-data script से हो जाता है।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>पहली बार Terraform इस्तेमाल करते समय मैंने state को अपने laptop पर रखा और दूसरे developer को configuration दी। उसने apply किया और उसकी state बनी — जिसमें वही resources दोबारा बनने लगे। दो घंटे बाद हमारे पास एक ही database की दो copies थीं और बिल भी दुगना।</p>
+
+<p>उसके बाद हमने state को S3 पर ले जाया और locking जोड़ी। यह छोटा बदलाव सबसे बड़ा सुधार था। दूसरी बात — हमने plan को CI में चलाना शुरू किया, ताकि हर pull request पर दिखे कि क्या बदलेगा। इससे एक बार वह गलती पकड़ी गई जिसमें किसी ने production database का instance type बदल दिया था — plan में <code>-/+</code> दिख रहा था, और merge से पहले रुक गया।</p>
+
+<p>तीसरी सीख — Terraform को छोटा रखें। शुरुआत में हमने सब कुछ एक ही state में डाल दिया था: network, database, app, DNS. जब कुछ बदलना होता, तो पूरा plan धीमा चलता और हर बदलाव का असर पूरे setup पर दिखता। बाद में हमने हिस्से बाँटे — network अलग, data अलग, app अलग।</p>
+
+<h2>नतीजा</h2>
+
+<p>Infrastructure as Code का मतलब है setup को file में लिखना, ताकि वह दोहराया जा सके और review हो सके। Terraform उन files को पढ़कर plan बनाता है और सिर्फ़ ज़रूरी बदलाव लागू करता है। State उसकी याददाश्त है — उसे remote रखें, lock करें और Git से बाहर रखें। छोटे modules बनाएँ, plan पढ़ें, और console से बदलाव करने की आदत छोड़ें।</p>
+
+<p>इस एक आदत से बहुत फायदा होता है: हर बदलाव छोटा रखें। एक commit में एक ही चीज़ बदलें — कभी network, कभी instance size, कभी नया service. जब कुछ टूटे, तो वापस जाना आसान होता है और plan पढ़ना भी सरल रहता है।</p>
+
+<p>आगे पढ़ें: <a href="/posts/ci-cd-pipeline-kya-hai-hindi.html">CI/CD pipeline</a> — जहाँ plan को pull request में चलाने का तरीका है, और <a href="/posts/cloud-computing-kya-hai-hindi.html">cloud computing</a> — जहाँ IaaS और PaaS का फर्क समझाया है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>Terraform सीखने में कितना समय लगता है?</h3>
+
+<p>Basic workflow (init, plan, apply, state) एक-दो हफ़्ते में आ जाता है; modules और बड़े setups में कुछ महीने लगते हैं।</p>
+
+<h3>क्या Terraform cloud account के बिना चलता है?</h3>
+
+<p>हाँ। Terraform binary खुला है; आप local state या अपना S3 backend इस्तेमाल कर सकते हैं।</p>
+
+<h3>State file delete कर दें तो क्या होगा?</h3>
+
+<p>Terraform को याद नहीं रहेगा कि क्या बना है। पहले backup लें, फिर <code>import</code> से resources वापस जोड़ें।</p>
+
+<h3>क्या Terraform से database बनाना सुरक्षित है?</h3>
+
+<p>बनाना सुरक्षित है, पर बदलाव सावधानी से — कुछ बदलावों में database दोबारा बनता है और data जा सकता है।</p>
+
+<h3>Terraform और Pulumi में क्या चुनें?</h3>
+
+<p>अगर team को HCL ठीक लगे तो Terraform; अगर वही भाषा (Python/TypeScript) में infrastructure लिखना चाहें तो Pulumi.</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://developer.hashicorp.com/terraform/docs" rel="nofollow noopener" target="_blank">HashiCorp — Terraform documentation (official)</a></li>
+  <li><a href="https://developer.hashicorp.com/terraform/language/state" rel="nofollow noopener" target="_blank">Terraform — State documentation (official)</a></li>
+</ul>

@@ -1,0 +1,11 @@
+{
+  "slug": "devops-kya-hai-hindi",
+  "title": "DevOps Kya Hai? Culture, Tools aur 6 Practices",
+  "description": "DevOps ka matlab, culture aur tools ka role, CI/CD, IaC, monitoring aur blameless postmortem — 6 practices aur 90-din plan ke saath, aasan Hinglish guide.",
+  "published": "2026-11-26T21:00:00+05:30",
+  "labels": ["DevOps", "Cloud", "Career"],
+  "hero": "img/posts/devops-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "DevOps दो टीमों को जोड़ने का नाम है — एक जो बनाती है, और एक जो चलाती है"
+}

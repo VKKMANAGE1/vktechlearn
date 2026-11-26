@@ -1,0 +1,11 @@
+{
+  "slug": "terraform-basics-hindi",
+  "title": "Infrastructure as Code: Terraform Basics Hindi Guide",
+  "description": "Infrastructure as Code kya hai, Terraform ka workflow, state ka role, modules aur 7 common galtiyan — practical Hinglish guide, aur ek udaharan ke saath.",
+  "published": "2026-11-26T22:30:00+05:30",
+  "labels": ["DevOps", "Terraform", "Cloud"],
+  "hero": "img/posts/terraform-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Infrastructure as code का मतलब — server बनाना नहीं, server की परिभाषा लिखना"
+}

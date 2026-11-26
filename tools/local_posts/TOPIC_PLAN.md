@@ -1,10 +1,10 @@
 # Post plan — 190 documents → 190 posts
 
 Target: **190 posts** built from the reference documents (Google Docs + Drive PDFs).
-Posts live today: **58** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
+Posts live today: **64** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
 pages, which are separate and not counted here).
 
-Remaining: **132 topics**, split into **22 batches of 6**. Batches 1 and 2 are complete. Each batch = one working turn:
+Remaining: **126 topics**, split into **21 batches of 6**. Batches 1, 2 and 3 are complete. Each batch = one working turn:
 write 6 posts (2,000+ words each, Hinglish/Hindi), hero + 2 branded diagrams, build,
 `EXTRA_POSTS` cards, commit, push.
 
@@ -34,14 +34,14 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 - [x] 11. Domain aur DNS Records: A, CNAME, MX Samjhein
 - [x] 12. Website Speed: Core Web Vitals aur 10 Optimizations
 
-## Batch 3 — Cloud & DevOps `[ ]`
+## Batch 3 — Cloud & DevOps `[x]`
 
-- [ ] 13. Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq
-- [ ] 14. CI/CD Pipeline Kya Hai? Step-by-Step Setup
-- [ ] 15. DevOps Kya Hai? Culture, Tools aur 6 Practices
-- [ ] 16. Infrastructure as Code: Terraform Basics
-- [ ] 17. Serverless Kya Hai? Lambda aur Kab Sahi Hai
-- [ ] 18. Monitoring aur Logging: Production Me Kya Napein
+- [x] 13. Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq
+- [x] 14. CI/CD Pipeline Kya Hai? Step-by-Step Setup
+- [x] 15. DevOps Kya Hai? Culture, Tools aur 6 Practices
+- [x] 16. Infrastructure as Code: Terraform Basics
+- [x] 17. Serverless Kya Hai? Lambda aur Kab Sahi Hai
+- [x] 18. Monitoring aur Logging: Production Me Kya Napein
 
 ## Batch 4 — AI foundations `[ ]`
 
@@ -242,3 +242,4 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 | 2026-11-25 | Batch 1 part 1 pushed: SQL basics, SQL vs NoSQL, Excel formulas are live. 3/6 done in batch 1. |
 | 2026-11-25 | Batch 1 complete: indexing, BI tools, data cleaning pushed. 6/6. Next: batch 2 (web basics). |
 | 2026-11-26 | Batch 2 complete: internet/DNS/HTTP, HTTPS/TLS, frontend vs backend, hosting, DNS records, Core Web Vitals. 12/190 live. |
+| 2026-11-27 | Batch 3 complete: cloud computing, CI/CD, DevOps, Terraform, serverless, monitoring. 18/190 live. |

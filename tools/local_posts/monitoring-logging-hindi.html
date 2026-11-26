@@ -1,0 +1,173 @@
+<p>जब production में कुछ टूटता है, तो सबसे पहला सवाल होता है — "कब से?" और दूसरा — "किसको असर पड़ा?" अगर इन दोनों का जवाब आपको users से पहले नहीं पता, तो आपके पास monitoring नहीं है। ज़्यादातर teams monitoring तब लगाती हैं जब एक बड़ा incident हो चुका होता है — और तब तक बहुत देर हो चुकी होती है।</p>
+
+<p>इस guide में मैं monitoring, logging और tracing का फर्क खोलूँगा, चार golden signals, alerts को सही तरीके से सेट करने का तरीका, logs लिखने के नियम, dashboards, एक छोटा practical setup, और वे सात गलतियाँ जो monitoring को शोर में बदल देती हैं।</p>
+
+<p><strong>छोटा जवाब:</strong> Metrics संख्याएँ हैं (कितनी requests, कितना समय, कितनी errors), logs घटनाओं का विवरण हैं (क्या हुआ, किसके लिए), और traces एक request का पूरा रास्ता हैं (कौन से service में कितना समय)। तीनों मिलकर observability बनाते हैं — यानी system के बारे में बिना अनुमान लगाए सवाल पूछ पाना।</p>
+
+<h2>Monitoring, logging aur observability</h2>
+
+<p>Monitoring एक सवाल का जवाब देता है — "क्या सब ठीक है?" जैसे CPU 80% है, error rate 2% है, response time 200ms है। Logging बताता है "क्या हुआ" — कौन सा user, कौन सी request, कौन सा error. Observability एक कदम आगे है — वह नए सवालों के जवाब भी देती है जो आपने पहले नहीं पूछे थे।</p>
+
+<p>फर्क को एक उदाहरण से समझें। Monitoring कहेगा "error rate बढ़ा है"। Logs कहेंगे "payment service से 502 आ रहा है"। Trace कहेगा "request ने 4.2 सेकंड लिए, जिसमें 3.9 सेकंड सिर्फ़ payment API में गए"। तीनों मिलकर असली कारण तक पहुँचाते हैं।</p>
+
+<figure>
+<img src="../img/posts/monitoring-pillars-hindi.jpg" alt="observability के तीन pillars — metrics, logs और traces, और हर एक का काम" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>तीन अलग चीज़ें, तीन अलग सवाल — एक के बिना दूसरा अधूरा है</figcaption>
+</figure>
+
+<h2>Chaar golden signals</h2>
+
+<p>हर service के लिए चार चीज़ें नापें। ये इतनी काम की हैं कि Google की SRE book में इन्हें golden signals कहा गया है।</p>
+
+<p><strong>1. Latency.</strong> Request को कितना समय लग रहा है। सिर्फ़ औसत नहीं — p95 और p99 भी देखें, क्योंकि औसत उन धीमे users को छिपा देता है जो सबसे ज़्यादा नाराज़ होते हैं।</p>
+
+<p><strong>2. Traffic.</strong> कितनी requests आ रही हैं। यह बताता है कि load सामान्य है या अचानक बढ़ा है।</p>
+
+<p><strong>3. Errors.</strong> कितनी requests fail हो रही हैं — और किस तरह (4xx, 5xx, timeout). 5xx अक्सर आपकी गलती है; 4xx अक्सर client की।</p>
+
+<p><strong>4. Saturation.</strong> resources कितने भरे हैं — CPU, memory, disk, database connections, queue length. यह सबसे पहले warning देता है, क्योंकि जब यह 100% होता है तब देर हो चुकी होती है।</p>
+
+<p>इन चारों को हर service के लिए एक dashboard पर रखें। जब कोई incident हो, तो पहला काम यही dashboard खोलना चाहिए — न कि अलग-अलग जगह जाकर data जोड़ना।</p>
+
+<h3>User-facing metrics alag rakhein</h3>
+
+<p>सबसे ज़रूरी metrics वे हैं जो user का अनुभव दिखाते हैं, न कि server का हाल। एक ही latency को तीन तरह से देखें: server का processing time, network का समय, और browser में दिखने का समय। तीनों अलग-अलग समस्याएँ बताते हैं।</p>
+
+<p>इसके लिए दो चीज़ें जोड़ें। पहली — success rate को endpoint-wise नापें, न कि पूरी site का औसत; वरना एक टूटा endpoint पूरे average में छिप जाता है। दूसरी — business metrics भी रखें, जैसे कितने orders बने या कितने signups हुए। जब ये अचानक गिरें, तो तकनीकी metrics ठीक दिख सकते हैं और समस्या फिर भी असली होती है।</p>
+
+<h2>Alerts: kam, par sahi</h2>
+
+<figure>
+<img src="../img/posts/alert-flow-hindi.jpg" alt="alert बनने का सही क्रम — SLO, error budget, alert और runbook" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>Alert का मकसद यह बताना है कि user प्रभावित है — न कि यह कि कोई number बढ़ा है</figcaption>
+</figure>
+
+<p>Alerts में सबसे बड़ी समस्या शोर है। जब हर चीज़ alert करती है, तो लोग alerts देखना बंद कर देते हैं — और असली incident छूट जाता है। इसका इलाज यह है कि alerts को user के अनुभव से जोड़ें, न कि machine के numbers से।</p>
+
+<p>इसका सबसे अच्छा तरीका SLO है — Service Level Objective. जैसे "99.9% requests 500ms के अंदर सफल हों"। इससे एक error budget बनता है — महीने में कितनी गलती की गुंजाइश है। Alert तब लगाएँ जब error budget तेज़ी से खत्म हो रहा हो, न कि जब CPU 70% हो जाए।</p>
+
+<p>तीन नियम काम आते हैं। पहला — हर alert के साथ एक runbook हो, जिसमें लिखा हो कि पहले क्या देखें। दूसरा — हर alert का एक मालिक हो। तीसरा — महीने में एक बार alerts की समीक्षा करें और जो 30 दिन में एक बार भी काम का न निकला, उसे हटा दें।</p>
+
+<h2>Logs likhne ke saat niyam</h2>
+
+<p><strong>1. Structured लिखें।</strong> Plain text के बजाय JSON — जिसमें timestamp, level, service, request id और message अलग-अलग fields हों। इससे search और aggregation आसान होती है।</p>
+
+<p><strong>2. Levels सही इस्तेमाल करें।</strong> DEBUG सिर्फ़ development में, INFO सामान्य घटनाओं के लिए, WARN उसके लिए जो देखना चाहिए, ERROR उसके लिए जो अभी ठीक करना है।</p>
+
+<p><strong>3. Request id हर log में।</strong> इसके बिना एक request की सारी entries जोड़ना मुश्किल है।</p>
+
+<p><strong>4. Secrets कभी नहीं।</strong> Password, token, card number और पूरा personal data logs में न जाए। यह सबसे आम compliance गलती है।</p>
+
+<p><strong>5. बहुत ज़्यादा न लिखें।</strong> हर loop iteration पर log लिखने से storage और बिल दोनों बढ़ते हैं, और असली जानकारी दब जाती है।</p>
+
+<p><strong>6. Context डालें।</strong> user id, endpoint, status code, duration — इनसे पता चलता है कि असर कितने लोगों पर हुआ।</p>
+
+<p><strong>7. Retention तय करें।</strong> सब कुछ हमेशा के लिए न रखें। 7–30 दिन के लिए पूरा log, उसके बाद सिर्फ़ errors या summaries.</p>
+
+<pre><code>{"ts":"2026-11-27T10:12:03Z","level":"ERROR",
+ "service":"payments","request_id":"a41f9c",
+ "route":"POST /api/pay","status":502,
+ "duration_ms":3912,"msg":"gateway timeout"}</code></pre>
+
+<h2>Dashboard kaise banayein</h2>
+
+<p>Dashboard का मकसद किसी को प्रभावित करना नहीं, सवाल का जवाब देना है। इसलिए हर dashboard के ऊपर एक सवाल लिखें — "क्या site ठीक चल रही है?", "कौन सा endpoint सबसे धीमा है?", "क्या payment fail हो रहे हैं?"</p>
+
+<p>एक अच्छे dashboard में चार हिस्से होते हैं: सबसे ऊपर एक बड़ा संकेत (सब ठीक है या नहीं), फिर चार golden signals, फिर service-wise breakdown, और अंत में हाल के deploys और incidents का marker. वह आख़िरी हिस्सा बहुत काम आता है — जब graph में अचानक बदलाव दिखे, तो पता चल जाता है कि उसी समय कोई deploy हुआ था।</p>
+
+<p>Dashboard बहुत ज़्यादा न बनाएँ। तीन-चार अच्छे dashboards पचास से बेहतर हैं, क्योंकि पचास में कोई नहीं जानता कि कहाँ देखना है।</p>
+
+<p>Dashboard बनाते समय एक बात याद रखें — graph का मकसद सजावट नहीं, फैसला है। हर graph के नीचे एक line लिखें कि वह क्या बताता है और क्या करना चाहिए। जो graph किसी फैसले से नहीं जुड़ा, वह जगह और ध्यान दोनों लेता है।</p>
+
+<h2>Ek chhota practical setup</h2>
+
+<p>अगर आप शुरुआत कर रहे हैं, तो सबसे आसान रास्ता managed service है — जैसे किसी cloud का monitoring service या कोई SaaS. उसमें metrics, logs और alerts एक ही जगह मिल जाते हैं और setup कम होता है।</p>
+
+<p>अगर आपको control चाहिए, तो खुला stack है — Prometheus metrics के लिए, Loki या Elasticsearch logs के लिए, और Grafana dashboards के लिए। इसमें सीखने का समय ज़्यादा लगता है, पर खर्च और data ownership आपके हाथ में रहते हैं।</p>
+
+<p>तीसरी चीज़ जो शुरू से रखनी चाहिए — uptime check. कोई बाहरी service हर मिनट आपकी site को खोलकर देखे कि वह जवाब दे रही है। यह सबसे सस्ता और सबसे ज़रूरी alert है, क्योंकि अगर पूरी site बंद है तो अंदर के metrics भी नहीं आएँगे।</p>
+
+<h2>Incident ke waqt pehle pandrah minute</h2>
+
+<p>जब alert आए, तो पहले 15 मिनट सबसे कीमती होते हैं। एक साफ़ क्रम होना चाहिए, वरना पूरी team एक ही चीज़ देखती रहती है और कोई फ़ैसला नहीं होता।</p>
+
+<p><strong>मिनट 1–3: पुष्टि करें।</strong> क्या यह असली है? Dashboard और एक uptime check देखें। कई बार alert गलत होता है, और उसे पहले ही पकड़ लेना बेहतर है।</p>
+
+<p><strong>मिनट 3–6: असर नापें।</strong> कितने users प्रभावित हैं, कौन सा हिस्सा, और कब से। यह जानकारी बाद में communication के लिए भी चाहिए।</p>
+
+<p><strong>मिनट 6–10: हाल का बदलाव देखें।</strong> पिछले घंटे में कोई deploy, migration या configuration change हुआ? यह सबसे तेज़ रास्ता होता है।</p>
+
+<p><strong>मिनट 10–15: एक काम चुनें।</strong> Rollback करना है या ठीक करना है? दोनों साथ मत करें। और एक व्यक्ति को communication सौंप दें, ताकि बाकी लोग ठीक करने पर ध्यान दें।</p>
+
+<h3>Postmortem ka chhota template</h3>
+
+<p>Incident के बाद एक page लिखें — क्या हुआ, कितनी देर, कितने users प्रभावित, कैसे पकड़ा गया, कैसे ठीक हुआ, और तीन ऐसे बदलाव जो दोबारा न होने दें। भाषा ऐसी रखें कि कोई नाम दोषी न दिखे; सवाल यह है कि system ने गलती क्यों होने दी।</p>
+
+<p>हर postmortem में कम से कम एक ऐसा action निकलना चाहिए जो अगले महीने पूरा हो। वरना वह document सिर्फ़ एक कहानी बनकर रह जाता है।</p>
+
+<h2>Kharch aur retention</h2>
+
+<p>Monitoring का बिल अक्सर logs से बढ़ता है, metrics से नहीं। metrics की संख्या सीमित होती है, पर logs हर request पर बढ़ते रहते हैं। तीन आदतें बिल काबू में रखती हैं: high-volume logs को sample करें, debug logs production में बंद रखें, और retention तय करें।</p>
+
+<p>एक उदाहरण — अगर महीने में 1 करोड़ requests हैं और हर request पर 2 KB log लिखा जाए, तो 20 GB log बनता है। यह ठीक है। पर अगर हर request पर 200 KB (जैसे पूरा response body) लिखा जाए, तो 2 TB बन जाएगा — और बिल भी।</p>
+
+<p>इसलिए शुरू में ही तय करें कि क्या ज़रूरी है: errors पूरे, requests का सारांश, और बाकी sample. जो data कभी नहीं देखा गया, उसे रखने का कोई फायदा नहीं।</p>
+
+<h2>Saat common galtiyan</h2>
+
+<p><strong>1. सिर्फ़ CPU और memory देखना।</strong> Users को latency और errors महसूस होते हैं, CPU नहीं।</p>
+
+<p><strong>2. हर चीज़ पर alert।</strong> शोर के बीच असली alert छूट जाता है।</p>
+
+<p><strong>3. Logs में secrets।</strong> एक बार जमा हो गए तो साफ़ करना मुश्किल।</p>
+
+<p><strong>4. Runbook न रखना।</strong> रात 3 बजे कोई सोचता है "अब क्या करूँ"।</p>
+
+<p><strong>5. Deploy markers न होना।</strong> Graph में बदलाव दिखता है, पर कारण नहीं।</p>
+
+<p><strong>6. एक ही dashboard सबके लिए।</strong> Developer को detail चाहिए, manager को सारांश।</p>
+
+<p><strong>7. Retention न सोचना।</strong> कुछ महीनों में बिल चौंका देता है।</p>
+
+<h2>Mera anubhav</h2>
+
+<p>एक बार हमारी API रात में धीमी हो गई और सुबह तक किसी को पता नहीं चला। सुबह देखा तो database के connections खत्म हो रहे थे। समस्या यह थी कि हमारे पास CPU और memory के alerts थे, पर connections और latency के नहीं।</p>
+
+<p>उसके बाद हमने चार golden signals को हर service के लिए अनिवार्य किया। दूसरी बात — हमने alerts को SLO से जोड़ा। पहले हमें रोज़ 20–30 alerts आते थे, जिनमें से ज़्यादातर अपने आप ठीक हो जाते थे। SLO लागू करने के बाद वे घटकर हफ़्ते में दो-तीन रह गए — और उनमें से हर एक असली समस्या थी।</p>
+
+<p>तीसरी सीख — logs में request id जोड़ने का फायदा मैंने एक incident में देखा। एक user शिकायत लेकर आया कि उसका payment कट गया पर order नहीं बना। पहले हमें तीन अलग services के logs में उसका email ढूँढना पड़ता। request id से तीनों entries एक साथ मिल गईं और दस मिनट में पता चल गया कि कहाँ अटका था।</p>
+
+<h2>नतीजा</h2>
+
+<p>Metrics संख्याएँ देते हैं, logs विवरण, और traces रास्ता — तीनों मिलकर observability बनाते हैं। हर service के लिए latency, traffic, errors और saturation नापें, alerts को SLO से जोड़ें, और logs structured, बिना secrets और सीमित retention के रखें। Dashboard कम रखें पर हर एक का सवाल साफ़ हो, और uptime check पहले दिन से लगाएँ।</p>
+
+<p>आगे पढ़ें: <a href="/posts/devops-kya-hai-hindi.html">DevOps क्या है</a> — जहाँ incident response और postmortem की बात है, और <a href="/posts/serverless-kya-hai-hindi.html">serverless</a> — जहाँ monitoring ही आपकी एकमात्र आँख है।</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>Monitoring और logging एक ही है?</h3>
+
+<p>नहीं। Monitoring numbers और alerts देखता है; logging घटनाओं का विवरण रखता है। दोनों साथ चाहिए।</p>
+
+<h3>छोटी team कहाँ से शुरू करे?</h3>
+
+<p>Uptime check, error rate, latency और एक structured log — चार चीज़ों से।</p>
+
+<h3>कितने alerts ठीक हैं?</h3>
+
+<p>इतने कि हर alert पर काम किया जा सके। हफ़्ते में दो-तीन असली alerts अच्छा संकेत है।</p>
+
+<h3>Logs कितने दिन रखें?</h3>
+
+<p>आम तौर पर 7–30 दिन पूरे, और errors या summaries लंबे समय तक।</p>
+
+<h3>क्या tracing ज़रूरी है?</h3>
+
+<p>एक service में शायद नहीं; कई services वाले system में यह सबसे तेज़ रास्ता है यह पता लगाने का कि समय कहाँ जा रहा है।</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://sre.google/sre-book/monitoring-distributed-systems/" rel="nofollow noopener" target="_blank">Google SRE Book — Monitoring Distributed Systems</a></li>
+  <li><a href="https://opentelemetry.io/docs/" rel="nofollow noopener" target="_blank">OpenTelemetry — official documentation</a></li>
+</ul>

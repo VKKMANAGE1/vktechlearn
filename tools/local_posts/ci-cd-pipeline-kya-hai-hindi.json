@@ -1,0 +1,11 @@
+{
+  "slug": "ci-cd-pipeline-kya-hai-hindi",
+  "title": "CI/CD Pipeline Kya Hai? Step-by-Step Setup Guide",
+  "description": "CI/CD pipeline kya hai, build-test-deploy ke stages, GitHub Actions ka chhota example, secrets, rollback aur pehla pipeline — step by step Hinglish guide.",
+  "published": "2026-11-26T19:30:00+05:30",
+  "labels": ["DevOps", "Automation", "Cloud"],
+  "hero": "img/posts/ci-cd-pipeline-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Pipeline एक कामचोर मशीन नहीं — हर बदलाव को जाँचकर आगे भेजने वाला रास्ता है"
+}
