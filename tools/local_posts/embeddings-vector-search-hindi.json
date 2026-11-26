@@ -1,0 +1,15 @@
+{
+  "slug": "embeddings-vector-search-hindi",
+  "title": "Embeddings Kya Hain? Vector Search Aasan Bhasha Me Guide",
+  "description": "Embeddings kya hain, text se vector kaise banta hai, similarity, vector database aur RAG me iska role — ek practical Hinglish guide, example ke saath.",
+  "published": "2026-11-27T21:20:00+05:30",
+  "labels": [
+    "AI",
+    "Search",
+    "LLM"
+  ],
+  "hero": "img/posts/embeddings-hero-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Embeddings me matlab numbers ban jata hai — aur paas-paas wale numbers ka matlab bhi paas-paas hota hai"
+}

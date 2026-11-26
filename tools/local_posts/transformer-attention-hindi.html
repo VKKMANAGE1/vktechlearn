@@ -1,0 +1,129 @@
+<p>“Bank” ka matlab kya hai? Agar sentence ho “paise bank me jama karo” to woh financial institution hai; agar ho “river bank par baitho” to woh kinara hai. Insaan yeh turant samajh leta hai kyunki woh aas-paas ke shabdon ko dekhta hai. 2017 tak machine translation aur language model isi kaam me bahut ladkhadate the — kyunki purane model shabd ko ek-ek karke padhte the, aur door ka context bhool jate the. Transformer ne yahi badla: usne model ko poora sentence ek saath dekhne aur yeh tay karne diya ki kaun sa shabd kis par dhyan de.</p>
+
+<p>Is guide me main attention ko bilkul seedhe example se kholunga, query-key-value ka matlab bina math ke samjhaunga, multi-head attention kyun chahiye, positional encoding ka role, aur ek poora transformer block andar se kya karta hai. Aakhir me batunga ki is architecture ke do bade nuksan kya hain — kyunki har interview me yahi poocha jata hai.</p>
+
+<p><strong>Chhota jawab:</strong> Transformer ek neural network architecture hai jo poore sequence ko ek saath process karti hai. Iska core <em>self-attention</em> hai: har token ke liye model query, key aur value banata hai, query ko sab keys se match karke weights nikalti hai, aur un weights se values ka mix banata hai. Isse har shabd apne aas-paas aur door ke relevant shabdon se context leta hai — parallel me, ek saath.</p>
+
+<h2>Transformer se pehle kya tha</h2>
+
+<p>2017 se pehle sequence ke liye RNN aur LSTM chalte the. Woh shabd ko ek-ek karke padhte the aur apne andar ek “memory” le chalte the. Isme do dikkat thi. Pehli — raftaar: sequence lamba ho to step-by-step chalna slow hota hai, GPU ka parallel power waste jata hai. Doosri — lambi nirbharta: 50 shabd pehle ka context dheere-dheere dhundhla ho jata tha.</p>
+
+<p>2017 ke paper “Attention Is All You Need” ne seedha attention par poora model khada kar diya, recurrence hata di. Fayda turant dikha — training parallel ho gayi, isliye bada data aur bada model possible hua. Aaj ke GPT, Claude, Gemini, sab isi family ke hain. Naam “transformer” isliye pada ki model input ko ek representation se doosri me transform karta hai.</p>
+
+<p>Ek baat note karein: transformer sirf text ke liye nahi hai. Image ko patches me kaat kar, audio ko frames me todkar, yahan tak ki protein sequence par bhi yahi architecture chalti hai. Isliye ise samajhna aaj ek general skill hai.</p>
+
+<h2>Attention ka matlab — ek seedha example</h2>
+
+<p>Sentence lein: “Ravi ne apni cycle isliye bech di kyunki usme brake kharab tha.” Ab “usme” ka matlab kya hai? Insaan ka dimaag turant “cycle” par jata hai, “Ravi” par nahi. Attention model ko yahi karna sikhata hai — har token ke liye baaki tokens me se relevant wale chunna aur unse information lena.</p>
+
+<p>Iska matlab yeh nahi ki model “samajhta” hai. Woh numbers ke through correlation seekhta hai: training me aise lakhon examples dekhe ki “usme” ke baad jo kaam ka shabd aata hai, woh aksar pehle aaye noun se juda hota hai. Attention woh raasta hai jisse yeh jodi banti hai.</p>
+
+<figure>
+<img src="../img/posts/attention-qkv-hindi.jpg" alt="Transformer attention me query, key aur value ka role" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>Query sawaal hai, key pehchan hai, value asli information — teenon milkar attention banate hain</figcaption>
+</figure>
+
+<h2>Query, key, value — bina math ke</h2>
+
+<p>Library ka example lein. Aap counter par jaate hain aur kehte hain “mujhe 1984 ki novel chahiye” — yeh aapka <strong>query</strong> hai. Counter ke peeche har book par ek label chipka hai — title, author, year. Woh labels <strong>keys</strong> hain. Aap apni query ko labels se match karte hain, aur jo book sabse achhi match karti hai, uski poori information aap le aate hain — woh <strong>value</strong> hai.</p>
+
+<p>Transformer me har token teen alag vectors banata hai: query (main kya dhoondh raha hoon), key (main kya hoon, kis cheez se match karunga), aur value (mere paas kya information hai). Phir har query ka har key ke saath dot product liya jata hai — zyada match, zyada score. Scores ko softmax se 0–1 ke weights me badla jata hai, aur un weights se values ka weighted average banta hai.</p>
+
+<p>Isi ko formula me likhte hain:</p>
+
+<pre><code>Attention(Q, K, V) = softmax(Q · Kᵀ / √d) · V</code></pre>
+
+<p>Yahan <code>√d</code> se divide karna sirf isliye hai ki values bahut bade na ho jayein aur softmax ek hi jagah par 1 na de de. Bas itna hi hai — koi jaadu nahi. Poora attention ek weighted average hai jisme weights query aur key ki similarity se aate hain.</p>
+
+<h3>Masking: future dekhna mana hai</h3>
+
+<p>Text generate karte waqt model ko aage ka shabd nahi dikhna chahiye, warna woh bas copy kar lega. Isliye decoder me <em>causal mask</em> lagta hai — har position sirf apne se pehle wale tokens ko dekh sakti hai. Yehi wajah hai ki GPT jaisa model ek-ek token aage badhta hai, poora paragraph ek saath nahi likhta.</p>
+
+<h2>Multi-head attention kyun</h2>
+
+<p>Ek attention “head” ek hi tarah ka rishta pakadta hai. Par bhasha me kai rishte ek saath hote hain — grammar (subject-verb), meaning (pronoun ka referent), aur position (paas ka shabd). Isliye transformer 8, 16 ya 32 heads chalata hai, har head ke apne query-key-value projections hote hain, aur aakhir me sab heads ke outputs jod diye jate hain.</p>
+
+<p>Sochne ka tarika: ek head “kis shabd ka kis se rishta hai” dekhta hai, doosra “kaun sa adjective kis noun par lag raha hai”, teesra “sentence ka tone kya hai”. Sab heads ek saath parallel chalte hain, isliye kharch bahut nahi badhta. Research me dikha hai ki kai heads redundant hote hain — isliye model compression me unhe prune kiya jata hai.</p>
+
+<h2>Positional encoding: shabd ka kram kaise pata chale</h2>
+
+<p>Attention ko kram ka koi natural ehsaas nahi hota — woh sab tokens ko ek set ki tarah dekhta hai. “Ram ne Shyam ko maara” aur “Shyam ne Ram ko maara” me shabd same hain, par matlab ulta hai. Isliye har token ke saath ek position signal joda jata hai.</p>
+
+<p>Do tareeke aam hain. Purana — sine-cosine waves se bane fixed patterns jo har position par alag hote hain. Naya — <em>RoPE</em> (rotary position embedding), jisme query aur key ko position ke hisaab se ghuma diya jata hai; aaj ke zyadatar open model isi ka istemal karte hain kyunki yeh lambe context me behtar generalise karta hai. Position ka signal chhota sa lagta hai, par iske bina model shabd ka order hi kho deta hai.</p>
+
+<figure>
+<img src="../img/posts/transformer-block-hindi.jpg" alt="Transformer block ka flow — tokenize, embed, attention, feed-forward aur next token" width="1392" height="752" loading="lazy" decoding="async">
+<figcaption>Ek block me attention aur feed-forward — aur yeh block 30 se 100 baar dohraya jata hai</figcaption>
+</figure>
+
+<h2>Ek transformer block ke andar</h2>
+
+<p>Ek block me do hisse hote hain. Pehla — multi-head self-attention, jo tokens ke beech information exchange karta hai. Doosra — feed-forward network, jo har token par alag-alag (position-wise) ek chhota 2-layer MLP chalata hai; yahin model ki zyada parameters rehti hain aur yahin “knowledge” store hone ki baat hoti hai.</p>
+
+<p>Dono hisson ke around <em>residual connection</em> aur <em>layer normalization</em> hoti hai. Residual connection ka matlab — input ko output me jod dena, taaki gehri training me gradient ghoomkar wapas aa sake. Normalization se values ka scale theek rehta hai. Ye do chhoti cheezein na ho to 50-layer model train hi nahi hota.</p>
+
+<ol>
+<li><strong>Tokenize.</strong> Text ko tokens me todo — “learning” shayad “learn” + “ing” bane.</li>
+<li><strong>Embed.</strong> Har token ko vector banao, aur position signal jodo.</li>
+<li><strong>Attention.</strong> Tokens aapas me information exchange karte hain, kai heads me.</li>
+<li><strong>Feed-forward.</strong> Har token apne vector par MLP chalata hai.</li>
+<li><strong>Repeat.</strong> Yeh block 30–100 baar dohraya jata hai.</li>
+<li><strong>Output.</strong> Aakhri vector se next token ki probability nikalti hai।</li>
+</ol>
+
+<h2>Training aur inference me farq</h2>
+
+<p>Training me poora sequence ek saath diya jata hai aur model har position par “agla token kya hoga” predict karta hai — ek hi forward pass me hazaaron predictions. Isliye training bahut efficient hai. Inference (jab aap chat karte hain) me model ko ek-ek token generate karna padta hai, aur har naye token par poora context dobara process hota hai — isliye chat me har shabd par thoda samay lagta hai.</p>
+
+<p>Isi wajah se <em>KV cache</em> ka concept aaya: pehle se compute kiye gaye keys aur values memory me rakh lo, taaki har baar dobara na banao. Isse generation tez hoti hai, par lamba context zyada memory khaata hai. Aapke API bill aur latency ka bada hissa isi cache ke size se juda hai — isliye context window ka hosh se istemal karna zaroori hai.</p>
+
+<p>Ek practical observation: bahut se log sochte hain ki model “poora jawab soch kar” likhta hai. Nahi — woh har step par sirf agla token chunta hai. Isliye ek galat shuruaat aage ke poore paragraph ko galat disha me le ja sakti hai, aur isi se hallucination jaisi cheezein nikalti hain.</p>
+
+<h2>Do bade nuksan</h2>
+
+<p><strong>1. Quadratic cost.</strong> Attention har token ko har token se compare karta hai, isliye sequence double karne par kaam chaar guna hota hai. 100,000 token ka context isliye mehnga hai. Iske jawab me sliding window, sparse attention, linear attention aur state-space model (Mamba jaise) aaye hain — par aaj bhi zyadatar production model vanilla attention hi istemal karte hain, kyunki quality sabse achhi wahin milti hai.</p>
+
+<p><strong>2. Bina position ke order nahi.</strong> Upar dekha — positional encoding ke bina model ko kram ka pata nahi. Iske alawa attention ko “kaun pehle aaya” ka natural ehsaas nahi hota, isliye lambe document me door ki cheezein jodne me galti hoti hai. Yeh limitation aaj bhi research ka garam topic hai.</p>
+
+<h2>Mera anubhav</h2>
+
+<p>Jab maine pehli baar attention ka code likha, mujhe laga kuch galat hai — itna simple? Teen matrix multiply, ek softmax, aur bas. Maine ek chhota sentence le kar attention weights print kiye aur dekha ki “it” ka sabse zyada weight “dog” par ja raha hai. Us din samajh aaya ki architecture ka jaadu complexity me nahi, <em>scale</em> me hai: yahi simple block 96 baar, 100,000 GPU ghante, aur arabon tokens par chalta hai.</p>
+
+<p>Doosri sikh practical thi. Hum ek internal search tool bana rahe the aur model ko 30 page ka manual de rahe the. Jawab galat aa rahe the. Maine socha context window badha dein, par asli dikkat alag thi — document me numbering aur tables the, aur tokenizer unhe bahut chhote tukdon me tod raha tha, jisse structure hi kho gaya. Jab humne document ko saaf headings me badla, wahi model kaafi behtar jawab dene laga. Aaj bhi jab koi kahe “model kamzor hai”, main pehle input ka format dekhta hoon.</p>
+
+<h2>Nateeja</h2>
+
+<p>Transformer ka core self-attention hai — har token query, key aur value banata hai, query ko keys se match karta hai, aur values ka weighted mix leta hai. Multi-head attention kai tarah ke rishte ek saath pakadta hai, positional encoding kram batata hai, aur attention + feed-forward ka block kai baar dohraya jata hai. Iska fayda parallel training hai; nuksan quadratic cost aur position ki kamzori.</p>
+
+<p>Ise samajhne ka sabse achha tarika hai code. Kisi bhi chhote transformer implementation me attention ke 10 line likhkar ek sentence par chalao aur weights dekho — theory se zyada woh 10 line sikhayengi. Aur jab aap LLM ka bill ya latency dekhein, to yaad rakhein ki har token par yahi attention dobara chal raha hai.</p>
+
+<p>Aage padhein: <a href="/posts/llm-tokens-context-window-hindi-guide.html">LLM tokens aur context window</a> — attention ka kharch yahin samajh aata hai; <a href="/posts/embeddings-vector-search-hindi.html">embeddings aur vector search</a> — jo transformer ke andar bane vectors par chalti hai; aur <a href="/posts/rag-vs-fine-tuning-kaunsa-chune-hindi.html">RAG vs fine-tuning</a> — kab naya gyaan dena hai aur kab model badalna.</p>
+
+<h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+<h3>Transformer aur LLM ek hi cheez hai?</h3>
+
+<p>Nahi. Transformer architecture hai; LLM us architecture par train kiya gaya bada language model hai. Har transformer LLM nahi hota — vision aur audio model bhi transformer hote hain.</p>
+
+<h3>Attention ko simple shabdon me kaise samjhayein?</h3>
+
+<p>Har shabd poochta hai “mere baaki shabdon me se kis par dhyan dena chahiye”, aur jawab ke hisaab se unse information leta hai.</p>
+
+<h3>Multi-head attention me 8 head kyun, 1 kyun nahi?</h3>
+
+<p>Ek head ek tarah ka rishta pakadta hai. Kai heads alag-alag rishte (grammar, meaning, position) ek saath dekh sakte hain.</p>
+
+<h3>Transformer ko position kaise pata chalta hai?</h3>
+
+<p>Positional encoding se — purane model sine-cosine patterns use karte the, aaj ke zyadatar model RoPE istemal karte hain.</p>
+
+<h3>Kya transformer bahut mehnga hai?</h3>
+
+<p>Attention ka kharch sequence length ke saath quadratic badhta hai. Isliye lamba context mehnga hota hai aur KV cache memory khaata hai.</p>
+
+<h2>स्रोत</h2>
+
+<ul>
+  <li><a href="https://arxiv.org/abs/1706.03762" rel="nofollow noopener" target="_blank">Vaswani et al. — Attention Is All You Need (original paper)</a></li>
+  <li><a href="https://huggingface.co/docs/transformers" rel="nofollow noopener" target="_blank">Hugging Face — Transformers documentation (official)</a></li>
+</ul>

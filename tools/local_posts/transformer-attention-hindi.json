@@ -1,0 +1,15 @@
+{
+  "slug": "transformer-attention-hindi",
+  "title": "Transformer Architecture: Attention Kaise Kaam Karta Hai",
+  "description": "Transformer architecture kaise kaam karti hai — attention, query-key-value, multi-head aur positional encoding, aasan Hinglish example ke saath samjhaya.",
+  "published": "2026-11-27T21:10:00+05:30",
+  "labels": [
+    "AI",
+    "LLM",
+    "Machine Learning"
+  ],
+  "hero": "img/posts/transformer-hero-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Attention ka matlab — har shabd yeh tay karta hai ki baaki shabdon me se kis par dhyan dena hai"
+}

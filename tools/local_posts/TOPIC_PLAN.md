@@ -1,10 +1,10 @@
 # Post plan — 190 documents → 190 posts
 
 Target: **190 posts** built from the reference documents (Google Docs + Drive PDFs).
-Posts live today: **64** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
+Posts live today: **70** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
 pages, which are separate and not counted here).
 
-Remaining: **126 topics**, split into **21 batches of 6**. Batches 1, 2 and 3 are complete. Each batch = one working turn:
+Remaining: **120 topics**, split into **20 batches of 6**. Batches 1–4 are complete. Each batch = one working turn:
 write 6 posts (2,000+ words each, Hinglish/Hindi), hero + 2 branded diagrams, build,
 `EXTRA_POSTS` cards, commit, push.
 
@@ -43,14 +43,14 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 - [x] 17. Serverless Kya Hai? Lambda aur Kab Sahi Hai
 - [x] 18. Monitoring aur Logging: Production Me Kya Napein
 
-## Batch 4 — AI foundations `[ ]`
+## Batch 4 — AI foundations `[x]`
 
-- [ ] 19. Neural Network Kya Hai? Layer, Weight aur Training
-- [ ] 20. Transformer Architecture: Attention Kaise Kaam Karta Hai
-- [ ] 21. Embeddings Kya Hain? Vector Search Aasan Bhasha Me
-- [ ] 22. LLM Hallucination: Kyun Hota Hai aur Kaise Kam Karein
-- [ ] 23. AI Model Evaluation: Accuracy Se Aage Kya Dekhein
-- [ ] 24. AI Ethics aur Bias: Business Ke Liye 7 Checks
+- [x] 19. Neural Network Kya Hai? Layer, Weight aur Training
+- [x] 20. Transformer Architecture: Attention Kaise Kaam Karta Hai
+- [x] 21. Embeddings Kya Hain? Vector Search Aasan Bhasha Me
+- [x] 22. LLM Hallucination: Kyun Hota Hai aur Kaise Kam Karein
+- [x] 23. AI Model Evaluation: Accuracy Se Aage Kya Dekhein
+- [x] 24. AI Ethics aur Bias: Business Ke Liye 7 Checks
 
 ## Batch 5 — AI applied `[ ]`
 
@@ -243,3 +243,4 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 | 2026-11-25 | Batch 1 complete: indexing, BI tools, data cleaning pushed. 6/6. Next: batch 2 (web basics). |
 | 2026-11-26 | Batch 2 complete: internet/DNS/HTTP, HTTPS/TLS, frontend vs backend, hosting, DNS records, Core Web Vitals. 12/190 live. |
 | 2026-11-27 | Batch 3 complete: cloud computing, CI/CD, DevOps, Terraform, serverless, monitoring. 18/190 live. |
+| 2026-11-27 | Batch 4 complete: neural network, transformer/attention, embeddings, hallucination, model evaluation, AI ethics/bias. 24/190 live. |

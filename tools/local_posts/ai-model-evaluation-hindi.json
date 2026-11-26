@@ -1,0 +1,15 @@
+{
+  "slug": "ai-model-evaluation-hindi",
+  "title": "AI Model Evaluation: Accuracy Se Aage Kya Dekhein Guide",
+  "description": "AI model evaluation kaise karein — precision, recall, F1, latency, cost, human review aur golden dataset ka practical Hinglish guide, example ke saath.",
+  "published": "2026-11-27T21:40:00+05:30",
+  "labels": [
+    "AI",
+    "Machine Learning",
+    "Metrics"
+  ],
+  "hero": "img/posts/model-eval-hero-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Ek number kabhi poora sach nahi batata — evaluation kai sawaalon ka jawab hai"
+}

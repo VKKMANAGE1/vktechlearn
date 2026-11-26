@@ -1,0 +1,15 @@
+{
+  "slug": "neural-network-kya-hai-hindi",
+  "title": "Neural Network Kya Hai? Layer, Weight aur Training Guide",
+  "description": "Neural network kya hai, neuron ke andar weight aur bias ka kaam, layers, training loop, overfitting aur kab zaroorat nahi — seedhi aur saaf Hinglish guide.",
+  "published": "2026-11-27T21:00:00+05:30",
+  "labels": [
+    "AI",
+    "Machine Learning",
+    "Basics"
+  ],
+  "hero": "img/posts/neural-network-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Neural network ka poora kaam ek hi sawaal par tikа hai — output kitna galat tha, aur galti kis weight ki thi"
+}

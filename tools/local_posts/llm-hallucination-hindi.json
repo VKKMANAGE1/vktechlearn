@@ -1,0 +1,15 @@
+{
+  "slug": "llm-hallucination-hindi",
+  "title": "LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?",
+  "description": "LLM hallucination kyun hoti hai, kaun se paanch pattern me dikhti hai, RAG aur citations se kaise kam karein — business ke liye practical Hinglish guide.",
+  "published": "2026-11-27T21:30:00+05:30",
+  "labels": [
+    "AI",
+    "LLM",
+    "Reliability"
+  ],
+  "hero": "img/posts/hallucination-hero-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "Hallucination ka sabse khatarnak hissa — galat jawab bhi utna hi confident lagta hai"
+}

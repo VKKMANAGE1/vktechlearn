@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein? — VK Tech Learn</title>
+<meta name="description" content="LLM hallucination kyun hoti hai, kaun se paanch pattern me dikhti hai, RAG aur citations se kaise kam karein — business ke liye practical Hinglish guide.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?">
+<meta property="og:description" content="LLM hallucination kyun hoti hai, kaun se paanch pattern me dikhti hai, RAG aur citations se kaise kam karein — business ke liye practical Hinglish guide.">
+<meta property="og:url" content="https://vktechlearn.site/posts/llm-hallucination-hindi.html">
+<link rel="canonical" href="https://vktechlearn.site/posts/llm-hallucination-hindi.html">
+<!--seo:start-->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#05070d">
+<meta name="keywords" content="AI, LLM, Reliability">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:image" content="https://vktechlearn.site/img/posts/hallucination-hero-hindi.jpg">
+<meta property="og:image:alt" content="LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?">
+<meta property="article:published_time" content="2026-11-27T21:30:00+05:30">
+<meta property="article:modified_time" content="2026-11-27T21:30:00+05:30">
+<meta property="article:author" content="Vïnâý Kúshwâhå">
+<meta property="article:section" content="AI">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Reliability">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?">
+<meta name="twitter:description" content="LLM hallucination kyun hoti hai, kaun se paanch pattern me dikhti hai, RAG aur citations se kaise kam karein — business ke liye practical Hinglish guide.">
+<meta name="twitter:image" content="https://vktechlearn.site/img/posts/hallucination-hero-hindi.jpg">
+<meta name="twitter:image:alt" content="LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?","description":"LLM hallucination kyun hoti hai, kaun se paanch pattern me dikhti hai, RAG aur citations se kaise kam karein — business ke liye practical Hinglish guide.","inLanguage":"hi","mainEntityOfPage":{"@type":"WebPage","@id":"https://vktechlearn.site/posts/llm-hallucination-hindi.html"},"author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/","logo":{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/publisher-logo.png"}},"url":"https://vktechlearn.site/posts/llm-hallucination-hindi.html","image":[{"@type":"ImageObject","url":"https://vktechlearn.site/img/posts/hallucination-hero-hindi.jpg"}],"thumbnailUrl":"https://vktechlearn.site/img/posts/hallucination-hero-hindi.jpg","datePublished":"2026-11-27T21:30:00+05:30","dateModified":"2026-11-27T21:30:00+05:30","articleSection":"AI","keywords":"AI, LLM, Reliability"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?","item":"https://vktechlearn.site/posts/llm-hallucination-hindi.html"}]}]}</script>
+<!--seo:end-->
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../post.min.css">
+</head>
+<body>
+<header class="post-head">
+  <div class="wrap">
+    <a class="brand" href="../index.html">VK <span>TECH</span> LEARN</a>
+    <a class="back" href="../index.html#latest">&larr; All posts</a>
+  </div>
+</header>
+<main class="post">
+  <div class="wrap">
+    <div class="meta">
+      <span class="tag">AI</span><span class="tag">LLM</span>
+      <time datetime="2026-11-27T21:30:00+05:30">27 November 2026</time>
+      <span class="author" style="color: var(--muted); font-size: .78rem;">by Vïnâý Kúshwâhå</span>
+    </div>
+    <h1 class="post-title">LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?</h1>
+        <figure class="post-hero">
+      <img src="../img/posts/hallucination-hero-hindi.jpg" alt="LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?" width="1392" height="752" loading="eager" decoding="async" fetchpriority="high">
+      <figcaption>Hallucination ka sabse khatarnak hissa — galat jawab bhi utna hi confident lagta hai</figcaption>
+    </figure>
+    <article class="post-body">
+      <p>Ek vakil ne chat model se poocha, “is case me kaun se judgments cite karun?” Model ne teen citations diye — case names, court, year, sab kuch perfect format me. Teenon mein se do aise judgments the jo kabhi likhe hi nahi gaye. Vakil ko court me pata chala. Yeh kahani coffee par sunane me mazedaar lagti hai, par asli sabak yeh hai: model ne jhooth nahi bola, usne <em>plausible</em> jawab banaya — aur uske liye koi “jhooth bolne ka irada” nahi tha.</p>
+
+      <p>Is guide me main hallucination ko seedhe technical angle se kholunga — kyun hoti hai, kis-kis shape me dikhti hai, generation settings ka asli role kya hai, aur production me ise kam karne ke chhe practical tarike. Saath me yeh bhi batunga ki hallucination <em>rate</em> kaise naapni chahiye, kyunki “model kabhi galat nahi hota” jaisa claim koi bhi serious team nahi karti.</p>
+
+      <p><strong>Chhota jawab:</strong> Hallucination tab hoti hai jab model confident tarike se aisa jawab deta hai jo facts se match nahi karta. Iska mool karan hai model ka training objective — woh “sach likhna” nahi, “agla token kya aayega” seekhta hai. Jab knowledge missing, ambiguous ya contradictory ho, to woh sabse plausible-sounding continuation chun leta hai. Isse RAG, citations, constrained output, verification aur human review se kaafi kam kiya ja sakta hai — par zero nahi.</p>
+
+      <h2>Hallucination kya hai — definition se aage</h2>
+
+      <p>Sabse kaam ki definition: <strong>output jo user ke liye galat hai, aur model ke paas uske liye koi valid basis nahi tha.</strong> Isme do hisse hain — output galat hai, aur model ko iska pata nahi. Agar model ne kaha “mujhe nahi pata” to woh hallucination nahi, woh ek imandar jawab hai. Agar model ne purane data se sahi jawab diya jo aaj galat ho gaya, to woh bhi thoda alag category hai (staleness), par user ke liye nuksan wahi hai.</p>
+
+      <p>Isliye hallucination ko “bug” ki tarah nahi, “expected behaviour” ki tarah treat karna padta hai. Jaise car me brake zaroori hai, waise AI product me verification zaroori hai. Jo team ise edge case samajhti hai, woh production me sabse zyada fasati hai.</p>
+
+      <h2>Kyun hoti hai — paanch asli karan</h2>
+
+      <p><strong>1. Training ka objective.</strong> Model ko “agla token predict karo” sikhaya jata hai. Is objective me “mujhe nahi pata” kehna kabhi sabse “likely” continuation nahi hota — kyunki training data me sawaalon ke baad jawab hote hain, “pata nahi” nahi. Isliye model ko helpful, complete aur confident dikhna sikhaya jata hai. Yeh hallucination ka structural karan hai, koi occasional glitch nahi.</p>
+
+      <p><strong>2. Compression.</strong> Model ne arabon tokens ko kuch billion parameters me sikha hai. Yeh lossy compression hai — jaise kisi ne 1,000 kitabein padhkar 20 page ka summary likha ho. Summary me details missing hongi, aur jo missing hai woh model bharke ga, kyunki usse pata hoga ki jagah khaali hai.</p>
+
+      <p><strong>3. Missing ya purana knowledge.</strong> Jo cheez training data me nahi thi — aapki company ki internal policy, kal ka news, aaj ka price — us par model ke paas kuch nahi hota. Par sawaal ka jawab aana chahiye, isliye woh sabse milta-julta pattern use karta hai.</p>
+
+      <p><strong>4. Ambiguity aur contradictory data.</strong> Agar internet par kisi cheez ke do alag numbers hain, to model dono seekh leta hai aur sawaal par dono ke beech kuch bana deta hai. Isliye “India me X kitne hain” jaise sawaalon par numbers aksar milte-julte par galat aate hain.</p>
+
+      <p><strong>5. Sycophancy.</strong> Model ko human feedback se aise train kiya jata hai ki user khush ho. Isliye jab user apne sawaal me hi galat assumption daal deta hai — “jab se yeh feature 2024 me aaya hai…” — model aksar us assumption ko sudhare bina aage badh jata hai. Yeh hallucination ka woh roop hai jo sabse kam pakda jata hai, kyunki jawab theek lagta hai.</p>
+
+      <figure>
+      <img src="../img/posts/hallucination-causes-hindi.jpg" alt="LLM hallucination ke paanch karan — training objective, compression, missing data, ambiguity aur sycophancy" loading="lazy" decoding="async">
+      <figcaption>Paanch alag karan, ek hi nateeja — confident par galat jawab</figcaption>
+      </figure>
+
+      <h2>Paanch pattern jinme hallucination dikhti hai</h2>
+
+      <p><strong>1. Fake citation.</strong> Sabse mashhoor. Paper, judgment, book, article — naam aur format sahi, cheez maujood nahi. Isliye research me har citation khud verify karein, chahe woh kitni hi asli lage.</p>
+
+      <p><strong>2. Galat number.</strong> Statistic, date, price, version number. Model “approximately” keh sakta hai, par aksar exact number de deta hai. Numbers par koi bhi AI output bina source ke mat maanein.</p>
+
+      <p><strong>3. Invented API ya feature.</strong> Code likhte waqt model aisa function bana deta hai jo library me hai hi nahi — naam bilkul plausible. Isliye AI-generated code chalakar dekhein, padhkar nahi.</p>
+
+      <p><strong>4. Summary me apni baat.</strong> Lambe document ka summary karte waqt model woh point add kar deta hai jo document me nahi tha, par us topic par hona chahiye tha. Yeh sabse khatarnak hai kyunki summary padhne wala original nahi padhta.</p>
+
+      <p><strong>5. User ki assumption ko sach banana.</strong> “Mere pichhle message me jo file thi…” — jab koi file thi hi nahi, aur model us file ka content “yaad” kar deta hai. Yeh multiturn chat me aam hai.</p>
+
+      <h2>Temperature ka asli role</h2>
+
+      <p>Bahut jagah likha milta hai “temperature 0 kar do, hallucination chali jayegi”. Yeh aadha sach hai. Temperature se output ki randomness kam hoti hai, isliye <em>alag-alag galat jawab</em> kam aate hain — par jo ek galat jawab aata hai, woh sthir ho jata hai. Problem ka source architecture aur missing knowledge hai, sampling setting nahi.</p>
+
+      <p>Isliye temperature ko deterministic behaviour ke liye use karein — extraction, classification, structured output — par ise hallucination ka ilaaj mat samjhein. Aur ek baat: temperature 0 par bhi model galat ho sakta hai, kyunki woh sabse probable token chun raha hai, sach wala nahi.</p>
+
+      <p>Iske ulta, kuch cases me thoda temperature zaroori hota hai — brainstorming, creative writing. Yahan “hallucination” ka concept hi lagu nahi hota, kyunki koi factual claim nahi hai. Farq yeh hai ki aap model se kya maang rahe hain.</p>
+
+      <h2>Kam karne ke chhe practical tarike</h2>
+
+      <p>Yeh list importance ke kram me hai, aur pehle teen sabse zyada asar dalte hain. Sab ek saath lagane ki zaroorat nahi — apne use case ke hisaab se chuno.</p>
+
+      <figure>
+      <img src="../img/posts/hallucination-guardrails-hindi.jpg" alt="Hallucination kam karne ke guardrails — retrieval, citation, structured output aur human review" loading="lazy" decoding="async">
+      <figcaption>Chaar parat ka bachav — har parat alag tarah ki galti pakadti hai</figcaption>
+      </figure>
+
+      <p><strong>1. Retrieval (RAG)।</strong> Jawab model ki yaad se nahi, aapke documents se banao. Query se relevant chunks lao, unhe context me do, aur saaf likho: “sirf diye gaye context se jawab do, warna ‘pata nahi’ likho”. Yeh sabse bada single improvement hai. Details <a href="/posts/rag-vs-fine-tuning-kaunsa-chune-hindi.html">RAG vs fine-tuning</a> wale post me hain.</p>
+
+      <p><strong>2. Citation.</strong> Model ko har claim ke saath source ka naam ya chunk ID likhne do, aur aap code me check karo ki woh ID asli hai. Citation ka fayda yeh hai ki galat claim pakadna aasan ho jata hai — user bhi khud verify kar sakta hai.</p>
+
+      <p><strong>3. Structured output.</strong> Jahan possible ho, free text ke bajaye JSON schema do — field, type, allowed values. Schema se bahut si “creative” galtiyan ruk jati hain, kyunki model ko exactly wohi shape bharni hoti hai.</p>
+
+      <p><strong>4. “Pata nahi” ko allowed banao.</strong> Prompt me saaf likho ki agar context me jawab nahi hai to exactly “NOT_FOUND” likho. Aur product me us state ka UI banao — “is document me yeh information nahi mili” ek achha jawab hai, kamzori nahi.</p>
+
+      <p><strong>5. Verification layer.</strong> Jawab generate hone ke baad ek sasta check chalao — kya numbers context me hain, kya citation valid hai, kya JSON schema pass hua. Yeh 100–200 ms ka step bahut si galtiyan production tak pahunchne se rok deta hai.</p>
+
+      <p><strong>6. Human review.</strong> High-stakes kaam me (legal, medical, financial advice) insaan ka review rakhein. Model ko draft banane do, faisla insaan kare. Yeh slow lagta hai, par ek galat advice ka kharch usse kai guna hota hai.</p>
+
+      <h3>Prompt me kya likhna asar karta hai</h3>
+
+      <p>Teen chhoti lines bahut farq karti hain: “Sirf diye gaye context ka istemal karo”, “Har factual claim ke baad source likho”, aur “Agar jawab nahi milta to saaf likho ki nahi milta”. Iske ulta, “bilkul sahi jawab do” ya “guess mat karo” jaise general nirdesh kam kaam karte hain, kyunki model ke paas follow karne ka koi concrete rule nahi hota.</p>
+
+      <p>Ek aur practical baat — sawaal ko chhota karein. “Company ki policy kya hai” bahut bada sawaal hai; “maternity leave kitne din ki hai, 2026 policy ke hisaab se” chhota aur specific hai. Chhote sawaal par retrieval aur jawab dono behtar hote hain.</p>
+
+      <h2>Hallucination rate kaise naapein</h2>
+
+      <p>Agar aap ise naap nahi rahe, to aap sudhar bhi nahi rahe. Sabse simple tareeka: 50–100 asli sawaalon ka set banao, har sawaal ka verified jawab ya source rakho, aur hafte me ek baar model ka output usse compare karo. Teen number note karo.</p>
+
+      <ul>
+      <li><strong>Factual error rate:</strong> kitne jawabon me koi galat claim tha.</li>
+      <li><strong>Unsupported claim rate:</strong> kitne claims ka source nahi mila (citation check se).</li>
+      <li><strong>Abstention rate:</strong> kitni baar model ne “pata nahi” kaha. Yeh bahut kam ho to model zaroorat se zyada confident hai; bahut zyada ho to retrieval kamzor hai.</li>
+      </ul>
+
+      <p>In teenon ko saath dekhein. Sirf error rate girakar abstention badha dena sudhar nahi hai — model ne jawab dena hi chhod diya. Aur sirf abstention girakar error rate badha dena sabse kharab trade hai, kyunki product confident tarike se galat hone lagega.</p>
+
+      <p>Ek chhoti si baat: apne sawaal asli users se lo, team ke banaye hue “test cases” se nahi. Team ke sawaal saaf aur complete hote hain; users ke sawaal adhoore, Hinglish me, typo ke saath, aur context ke bina hote hain — aur wahin hallucination sabse zyada dikhti hai.</p>
+
+      <h2>Business me kitni allowed hai</h2>
+
+      <p>Iska jawab use case se aata hai. Marketing copy me ek galat adjective ka nuksan kam hai. Legal citation, medical dosage, ya customer ke paise ka hisaab — yahan ek bhi galat jawab mehnga hai. Isliye pehle yeh likhein ki aapke use case me “acceptable error rate” kya hai, aur usi ke hisaab se guardrails chunein.</p>
+
+      <p>Ek practical framework: teen category banao. <em>Low risk</em> — draft, idea, summary (human review ke saath). <em>Medium</em> — customer support answer (retrieval + citation + escalation). <em>High</em> — legal, medical, financial, HR decisions (insaan ka final review, model sirf research). Har category ke liye alag guardrail aur alag owner rakhein.</p>
+
+      <h2>Mera anubhav</h2>
+
+      <p>Ek client ke liye humne product documentation par chatbot banaya. Launch ke pehle demo perfect tha. Do hafte baad ek customer ne poocha, “kya yeh tool X ko support karta hai?” Model ne haan kaha, detail ke saath. Tool X support hi nahi karta tha — model ne product ke naam se milta-julta feature bana diya.</p>
+
+      <p>Us din humne do cheezein badli. Pehli — retrieval ka threshold: agar top chunk ka score kam ho to jawab “nahi mila”. Doosri — har jawab ke saath source link dikhane lage. Dono chhote badlav the, par support tickets 60% gir gaye, kyunki log khud source dekh kar bharosa kar sakte the.</p>
+
+      <p>Doosri sikh — “pata nahi” bolna model ko sikhana padta hai. Pehle humne prompt me likha tha “agar sure nahi ho to mat batao”. Model ne usse ignore kiya. Jab humne exact string “NOT_FOUND” define ki aur code me usse handle kiya, tab behaviour badla. Model ko concrete rule chahiye, general salah nahi.</p>
+
+      <h2>Nateeja</h2>
+
+      <p>Hallucination model ka structural behaviour hai, bug nahi — kyunki woh plausible text generate karta hai, sach verify nahi. Iske paanch karan hain: next-token objective, compression, missing data, ambiguity aur sycophancy. Temperature se symptoms chhupte hain, problem nahi jaati. RAG, citation, structured output, “pata nahi” ka option, verification layer aur human review — in chhe se ise kaafi kam kiya ja sakta hai.</p>
+
+      <p>Aur sabse zaroori — ise naapo. 50 sawaalon ka set, teen numbers (error, unsupported, abstention), aur hafte me ek baar review. Bina naape aap sirf andaaze par product bana rahe hain, aur AI product me andaaza sabse mehnga hota hai.</p>
+
+      <p>Aage padhein: <a href="/posts/embeddings-vector-search-hindi.html">embeddings aur vector search</a> — RAG ka pehla hissa; <a href="/posts/ai-model-evaluation-hindi.html">AI model evaluation</a> — hallucination ke saath baaki metrics kaise naapein; aur <a href="/posts/prompt-engineering-hindi-guide.html">prompt engineering</a> — concrete instructions kaise likhein.</p>
+
+      <h2>अक्सर पूछे जाने वाले सवाल</h2>
+
+      <h3>Kya bade model me hallucination kam hoti hai?</h3>
+
+      <p>Aam taur par haan, par khatam nahi hoti. Bade model kam galtiyan karte hain, par galat hone par zyada confident lagte hain.</p>
+
+      <h3>Temperature 0 karne se hallucination rukti hai?</h3>
+
+      <p>Nahi. Woh output ko sthir karta hai — ek hi galat jawab baar-baar aata hai. Asli ilaaj retrieval aur verification hai.</p>
+
+      <h3>Kya RAG se hallucination zero ho jati hai?</h3>
+
+      <p>Nahi, par bahut kam ho jati hai. Model context ko galat padh sakta hai ya context me na ho to bana sakta hai — isliye citation check zaroori hai.</p>
+
+      <h3>Model ko “sach bolo” likhne se farq padta hai?</h3>
+
+      <p>Bahut kam. Concrete rule likhein — “sirf context se”, “source do”, “nahi mile to NOT_FOUND likho”.</p>
+
+      <h3>Hallucination detect karne ka sasta tarika kya hai?</h3>
+
+      <p>Har claim ke liye citation maango aur code se check karo ki source asli hai. Jo claim cited nahi, use unflagged maano.</p>
+
+      <h2>स्रोत</h2>
+
+      <ul>
+        <li><a href="https://arxiv.org/abs/2311.05232" rel="nofollow noopener" target="_blank">Huang et al. — A Survey on Hallucination in Large Language Models</a></li>
+        <li><a href="https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations" rel="nofollow noopener" target="_blank">Anthropic — Reduce hallucinations (official docs)</a></li>
+      </ul>
+    </article>
+    <div class="post-foot">
+      <a href="../index.html#latest">&larr; Back to all posts</a>
+    </div>
+  </div>
+</main>
+<footer class="site-foot">
+  <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
+</footer>
+</body>
+</html>
