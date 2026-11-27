@@ -1167,9 +1167,38 @@
     });
 
     /* ---------- trending / popular ---------- */
+    const VIEW_KEY = "vk-post-views";
+    const slugOf = (post) => {
+      const match = /posts\/([a-z0-9-]+)\.html$/i.exec((post && post.url) || "");
+      return match ? match[1] : "";
+    };
+    const viewCounts = () => {
+      try { return JSON.parse(localStorage.getItem(VIEW_KEY) || "{}"); } catch (error) { return {}; }
+    };
+    const bumpView = (slug) => {
+      if (!slug) return;
+      const seen = "vk-viewed:" + slug;
+      try {
+        if (sessionStorage.getItem(seen)) return;
+        const counts = viewCounts();
+        counts[slug] = (counts[slug] || 0) + 1;
+        localStorage.setItem(VIEW_KEY, JSON.stringify(counts));
+        sessionStorage.setItem(seen, "1");
+      } catch (error) { /* storage blocked */ }
+    };
+    function trendingPicks() {
+      const counts = viewCounts();
+      const base = POSTS.slice(1, 6);
+      const ranked = POSTS
+        .filter((post) => (counts[slugOf(post)] || 0) > 0)
+        .sort((a, b) => (counts[slugOf(b)] || 0) - (counts[slugOf(a)] || 0))
+        .slice(0, 5);
+      return ranked.concat(base.filter((post) => !ranked.includes(post))).slice(0, 5);
+    }
+
     function renderTrending() {
       els.trending.replaceChildren();
-      POSTS.slice(1, 6).forEach((post, index) => {
+      trendingPicks().forEach((post, index) => {
         const item = document.createElement("li");
         const link = document.createElement("a");
         link.className = "trend-item";
@@ -1649,6 +1678,12 @@
       state.shown += PAGE_SIZE;
       renderGrid();
     });
+    document.addEventListener("click", (event) => {
+      const link = event.target && event.target.closest ? event.target.closest('a[href*="posts/"]') : null;
+      if (!link) return;
+      const match = /posts\/([a-z0-9-]+)\.html/.exec(link.getAttribute("href") || "");
+      if (match) bumpView(match[1]);
+    }, true);
     els.toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" }));
     window.addEventListener("scroll", () => {
       els.toTop.classList.toggle("is-visible", window.scrollY > 600);

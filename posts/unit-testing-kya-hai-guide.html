@@ -247,5 +247,21 @@
 <footer class="site-foot">
   <div class="wrap">&copy; 2026 VK Tech Learn &middot; All rights reserved &middot; <a href="../index.html">vktechlearn</a></div>
 </footer>
+<script>
+  (function () {
+    try {
+      var m = /\/posts\/([a-z0-9-]+)\.html$/i.exec(location.pathname);
+      if (!m) return;
+      var slug = m[1];
+      var key = "vk-post-views";
+      var seen = "vk-viewed:" + slug;
+      if (sessionStorage.getItem(seen)) return;
+      var map = JSON.parse(localStorage.getItem(key) || "{}");
+      map[slug] = (map[slug] || 0) + 1;
+      localStorage.setItem(key, JSON.stringify(map));
+      sessionStorage.setItem(seen, "1");
+    } catch (e) {}
+  })();
+</script>
 </body>
 </html>
