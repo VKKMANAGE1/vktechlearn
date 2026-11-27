@@ -1,142 +1,382 @@
 [
   {
-    "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-    "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business &amp; Video Creation) – Real Use Cases Ke Saath",
-    "label": "Tech",
-    "ext": 19,
-    "words": 827
-  },
-  {
-    "slug": "infinix-gt-30-5g",
-    "title": "Infinix GT 30 5G+ – गेमिंग और पावरफुल परफॉर्मेंस का नया चैंपियन",
-    "label": "Tech",
-    "ext": 8,
-    "words": 278
-  },
-  {
-    "slug": "win-11",
-    "title": "Win 11 में नया प्रिंटर कैसे सेट करें | कंप्यूटर बेसिक्स",
-    "label": "Tech",
-    "ext": 8,
-    "words": 252
-  },
-  {
-    "slug": "best-remote-access-software-two",
-    "title": "Best Remote Access Software &amp; Two PC/Laptop कैसे कनेक्ट करें (2026)",
-    "label": "Tech",
-    "ext": 6,
-    "words": 832
-  },
-  {
-    "slug": "blog-post-2",
-    "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में",
-    "label": "Tech",
-    "ext": 6,
-    "words": 2480
-  },
-  {
-    "slug": "windows-10",
-    "title": "Windows Me C Drive Space Kaise Increase Kare | Step by Step Complete Guide",
-    "label": "Tech",
-    "ext": 6,
-    "words": 663
-  },
-  {
-    "slug": "whatsapp-call",
-    "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका",
-    "label": "Tech",
-    "ext": 5,
-    "words": 787
-  },
-  {
-    "slug": "android-16-7",
-    "title": "Android 16 के टॉप फीचर्स जो बदल देंगे स्मार्टफोन इस्तेमाल करने का तरीका",
-    "label": "Tech",
-    "ext": 4,
-    "words": 404
-  },
-  {
-    "slug": "airtel-perplexity-pro-chatgpt-go-199",
-    "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)",
-    "label": "Tech",
-    "ext": 3,
-    "words": 966
-  },
-  {
-    "slug": "bahubali-satellite-2026",
-    "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति",
-    "label": "Tech",
-    "ext": 3,
-    "words": 1036
-  },
-  {
-    "slug": "2026",
-    "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें",
-    "label": "Tech",
-    "ext": 2,
-    "words": 672
-  },
-  {
-    "slug": "artificial-intelligence-ai-tools-in",
-    "title": "Artificial Intelligence (AI) Tools in Everyday Computing – Practical Use in Productivity, Coding &amp; Automation",
-    "label": "Tech",
-    "ext": 2,
-    "words": 274
-  },
-  {
-    "slug": "basic-computer-fundamentals-in-hindi",
-    "title": "Basic Computer Fundamentals in Hindi – Complete Notes for Beginners",
-    "label": "Tech",
-    "ext": 2,
-    "words": 3318
-  },
-  {
-    "slug": "google-maps",
-    "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा",
-    "label": "Tech",
-    "ext": 2,
-    "words": 889
-  },
-  {
-    "slug": "google-pixel-10-whatsapp",
-    "title": "Google Pixel 10: WhatsApp पर सैटेलाइट कॉल करने वाला पहला फोन | हिंदी ब्लॉग",
-    "label": "Tech",
-    "ext": 2,
-    "words": 486
-  },
-  {
-    "slug": "how-to-use-same-whatsapp-number-on-two",
-    "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi",
-    "label": "Tech",
-    "ext": 2,
-    "words": 729
-  },
-  {
-    "slug": "iphone-17",
-    "title": "iPhone 17: क्या अब अपग्रेड करने का सही समय है?",
-    "label": "Tech",
-    "ext": 2,
-    "words": 756
-  },
-  {
-    "slug": "openai-sora-2-tiktok-youtube-shorts",
-    "title": "OpenAI का ‘Sora 2’ मचाएगा सोशल मीडिया पर तहलका: TikTok और YouTube Shorts को सीधी टक्कर",
-    "label": "Tech",
-    "ext": 2,
-    "words": 516
-  },
-  {
     "slug": "10",
     "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके",
-    "label": "Tech",
-    "ext": 1,
-    "words": 605
+    "label": "Tech"
   },
   {
     "slug": "17-4",
     "title": "आईफोन 17 से पहले सैमसंग का बड़ा दांव, 4 सितंबर को होगा ‘गैलेक्सी अनपैक्ड’ इवेंट, लॉन्च होंगे ये धांसू डिवाइस",
-    "label": "Tech",
-    "ext": 1,
-    "words": 297
+    "label": "Tech"
+  },
+  {
+    "slug": "2026",
+    "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें",
+    "label": "Tech"
+  },
+  {
+    "slug": "5000",
+    "title": "रील बनाइए और कमाइए ₹5000! सरकार का शानदार मौका",
+    "label": "Tech"
+  },
+  {
+    "slug": "6-deepseek-r1-ai-prompt-to-make-money",
+    "title": "6 DeepSeek R1 AI Prompt to Make Money Online",
+    "label": "Tech"
+  },
+  {
+    "slug": "7",
+    "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स",
+    "label": "Tech"
+  },
+  {
+    "slug": "8-34",
+    "title": "सरकारी कर्मचारियों के लिए खुशखबरी! 8वें वेतन आयोग से 34% तक बढ़ सकती है सैलर",
+    "label": "Tech"
+  },
+  {
+    "slug": "ai-80",
+    "title": "AI के बढ़ते प्रभाव से 80% नौकरियां खतरे में – क्या अब इंसानों की जगह लेगा आर्टिफिशियल इंटेलिजेंस?",
+    "label": "Tech"
+  },
+  {
+    "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
+    "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath",
+    "label": "Tech"
+  },
+  {
+    "slug": "ai-vs-gut-feeling-body-font-family",
+    "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!",
+    "label": "Tech"
+  },
+  {
+    "slug": "ai",
+    "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे",
+    "label": "Tech"
+  },
+  {
+    "slug": "airtel-perplexity-pro-chatgpt-go-199",
+    "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)",
+    "label": "Tech"
+  },
+  {
+    "slug": "amazon-black-friday-sale-2025",
+    "title": "Amazon Black Friday Sale 2025 की शुरुआती डील्स भारत में लाइव।",
+    "label": "Tech"
+  },
+  {
+    "slug": "android-16-7",
+    "title": "Android 16 के टॉप फीचर्स जो बदल देंगे स्मार्टफोन इस्तेमाल करने का तरीका",
+    "label": "Tech"
+  },
+  {
+    "slug": "apple-apple-1-whatsapp",
+    "title": "Apple : Apple ऐप स्टोर पर नंबर 1 बना ‘मेड-इन-इंडिया’ ऐप ‘अरट्टई’, WhatsApp के सामने बड़ी चुनौती!",
+    "label": "Tech"
+  },
+  {
+    "slug": "artificial-intelligence-ai-tools-in",
+    "title": "Artificial Intelligence (AI) Tools in Everyday Computing – Practical Use in Productivity, Coding & Automation",
+    "label": "Tech"
+  },
+  {
+    "slug": "ayaneo-pocket-ds-android-nintendo-ds",
+    "title": "Ayaneo Pocket DS: अब Android पर Nintendo DS जैसा अनुभव",
+    "label": "Tech"
+  },
+  {
+    "slug": "bahubali-satellite-2026",
+    "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति",
+    "label": "Tech"
+  },
+  {
+    "slug": "basic-computer-fundamentals-in-hindi",
+    "title": "Basic Computer Fundamentals in Hindi – Complete Notes for Beginners",
+    "label": "Tech"
+  },
+  {
+    "slug": "best-remote-access-software-two",
+    "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)",
+    "label": "Tech"
+  },
+  {
+    "slug": "blog-post-2",
+    "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में",
+    "label": "Tech"
+  },
+  {
+    "slug": "blog-post-3",
+    "title": "कम्प्यूटर क्या है — परिचय, परिभाषा, इतिहास, विशेषताएं, प्रकार और करियर",
+    "label": "Tech"
+  },
+  {
+    "slug": "blog-post-4",
+    "title": "हैकिंग — परिभाषा, प्रकार, सुरक्षा और जरूरी जानकारी",
+    "label": "Tech"
+  },
+  {
+    "slug": "blog-post-6",
+    "title": "क्या है नीला आधार कार्ड और कैसे बनवाएं? जानिए पूरी प्रक्रिया",
+    "label": "Tech"
+  },
+  {
+    "slug": "blogging-step-by-step",
+    "title": "Blogging की शुरुआत कैसे करें – Step by Step पूरी जानकारी हिंदी में",
+    "label": "Tech"
+  },
+  {
+    "slug": "browser-cache-dns",
+    "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड",
+    "label": "Tech"
+  },
+  {
+    "slug": "bsod",
+    "title": "ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?",
+    "label": "Tech"
+  },
+  {
+    "slug": "chatgpt-ai-image-step-by-step",
+    "title": "ChatGPT से AI Image कैसे बनाएं (Step-by-Step गाइड)",
+    "label": "Tech"
+  },
+  {
+    "slug": "computer-ki-puri-knowledge-kya-hai",
+    "title": "1 अगस्त 2025 से बदल जाएंगे UPI के नियम – जानिए BHIM, GPay, PhonePe पर असर",
+    "label": "Tech"
+  },
+  {
+    "slug": "computer-network-what-is-computer",
+    "title": "Computer Network क्या है? (What is Computer Network in Hindi)",
+    "label": "Tech"
+  },
+  {
+    "slug": "deepseek-deepseek-ai",
+    "title": "DeepSeek : कैसे चीन की सेना DeepSeek को बना रही अपना हथियार — क्या AI खुद ही टारगेट पहचानकर हमला करेगा?",
+    "label": "Tech"
+  },
+  {
+    "slug": "gmail-gmail",
+    "title": "Gmail : बार-बार फुल हो रहा है Gmail का स्टोरेज? इन आसान तरीकों से मिनटों में करें क्लियर, नहीं होगी परेशानी",
+    "label": "Tech"
+  },
+  {
+    "slug": "google-ai-risk-ai",
+    "title": "Google AI Risk : गूगल AI से नकली आधार–पैन तैयार, सुरक्षा पर उठे सवाल",
+    "label": "Tech"
+  },
+  {
+    "slug": "google-maps",
+    "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा",
+    "label": "Tech"
+  },
+  {
+    "slug": "google-pixel-10-whatsapp",
+    "title": "Google Pixel 10: WhatsApp पर सैटेलाइट कॉल करने वाला पहला फोन | हिंदी ब्लॉग",
+    "label": "Tech"
+  },
+  {
+    "slug": "google-pixel-9-pro-flipkart-goat",
+    "title": "Google Pixel 9 Pro पर Flipkart GOAT सेल में तगड़ा डिस्काउंट, जानें नई कीमत और फीचर्स",
+    "label": "Tech"
+  },
+  {
+    "slug": "gpay-phonepe-15-upi",
+    "title": "Gpay-PhonePe : 15 सितंबर से बदल जाएंगे UPI ट्रांजैक्शन के नियम",
+    "label": "Tech"
+  },
+  {
+    "slug": "hindi-typing-practice",
+    "title": "Hindi Typing Practice",
+    "label": "Tech"
+  },
+  {
+    "slug": "honor",
+    "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए",
+    "label": "Tech"
+  },
+  {
+    "slug": "how-to-transfer-your-fastag-from-one",
+    "title": "How to Transfer Your FASTag from One Bank to Another: A Complete Guide",
+    "label": "Tech"
+  },
+  {
+    "slug": "how-to-use-same-whatsapp-number-on-two",
+    "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi",
+    "label": "Tech"
+  },
+  {
+    "slug": "infinix-gt-30-5g",
+    "title": "Infinix GT 30 5G+ – गेमिंग और पावरफुल परफॉर्मेंस का नया चैंपियन",
+    "label": "Tech"
+  },
+  {
+    "slug": "iphone-17-iphone-17-pro-iphone-17",
+    "title": "iPhone 17 और iPhone 17 Pro की भारतीय कीमतें और फीचर्स लॉन्च से पहले सामने आई। जानें iPhone 17 सीरीज की कीमत, फीचर्स और लॉन्च डेट।\"",
+    "label": "Tech"
+  },
+  {
+    "slug": "iphone-17",
+    "title": "iPhone 17: क्या अब अपग्रेड करने का सही समय है?",
+    "label": "Tech"
+  },
+  {
+    "slug": "iphone-iphone-16e-6300-ai",
+    "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स",
+    "label": "Tech"
+  },
+  {
+    "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
+    "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i",
+    "label": "Tech"
+  },
+  {
+    "slug": "link-voter-id-card-with-aadhaar-card-in",
+    "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें",
+    "label": "Tech"
+  },
+  {
+    "slug": "made-in-india-apps",
+    "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौती, सुरक्षा और प्राइवेसी पर जोर",
+    "label": "Tech"
+  },
+  {
+    "slug": "namecheap-74-com",
+    "title": "Namecheap पर ₹74 में .COM डोमेन कैसे रजिस्टर करें",
+    "label": "Tech"
+  },
+  {
+    "slug": "network-device-network-device-in-hindi",
+    "title": "Network Device क्या है? (Network Device in Hindi)",
+    "label": "Tech"
+  },
+  {
+    "slug": "oneplus-15-snapdragon-8-elite-gen-5",
+    "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5 और नया डिजाइन",
+    "label": "Tech"
+  },
+  {
+    "slug": "openai-sora-2-tiktok-youtube-shorts",
+    "title": "OpenAI का ‘Sora 2’ मचाएगा सोशल मीडिया पर तहलका: TikTok और YouTube Shorts को सीधी टक्कर",
+    "label": "Tech"
+  },
+  {
+    "slug": "pan-20",
+    "title": "PAN 2.0 स्कैम से सावधान! सरकार ने जारी की चेतावनी, फर्जी ईमेल लिंक से ऐसे बचें",
+    "label": "Tech"
+  },
+  {
+    "slug": "perplexity-ai-india-comet-browser-ai",
+    "title": "Perplexity AI ने India में Comet Browser और AI Email Assistant लॉन्च किया",
+    "label": "Tech"
+  },
+  {
+    "slug": "pf-balance-pf",
+    "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत",
+    "label": "Tech"
+  },
+  {
+    "slug": "pixel-10-10",
+    "title": "Pixel 10: पिक्सेल 10 में ‘रंगीन बर्फ’ डिस्प्ले समस्या | क्या है वजह और क्या करें",
+    "label": "Tech"
+  },
+  {
+    "slug": "realme-15-pro-5g-24-7000mah-80w-ai",
+    "title": "Realme 15 Pro 5G भारत में 24 जुलाई को होगा लॉन्च: 7000mAh बैटरी, 80W फास्ट चार्जिंग और AI कैमरा के साथ आएगा ये धांसू फोन!",
+    "label": "Tech"
+  },
+  {
+    "slug": "samsung-galaxy-z-fold-7-discount",
+    "title": "Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सबसे पावरफुल फोल्डेबल फोन पर साल की सबसे बड़ी गिरावट",
+    "label": "Tech"
+  },
+  {
+    "slug": "smart-tv",
+    "title": "Smart TV पर टाइपिंग का झंझट खत्म",
+    "label": "Tech"
+  },
+  {
+    "slug": "smartphone-slow-charging",
+    "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके",
+    "label": "Tech"
+  },
+  {
+    "slug": "top-10-free-games-websites-for-online",
+    "title": "Top 10 Free Games Websites For Online Gaming in 2025",
+    "label": "Tech"
+  },
+  {
+    "slug": "top-free-ai-websites-in-hindi-2026",
+    "title": "Top Free AI Websites In Hindi (2026)",
+    "label": "Tech"
+  },
+  {
+    "slug": "tv-remote-broken",
+    "title": "Tv Remote Broken : अपने स्मार्टफोन को बनाएं रिमोट और चैनल बदलें आसानी से",
+    "label": "Tech"
+  },
+  {
+    "slug": "upi-autopay-paytm-phonepe-google-pay",
+    "title": "UPI AutoPay : कैसे बंद करें: Paytm, PhonePe और Google Pay में आसान तरीका",
+    "label": "Tech"
+  },
+  {
+    "slug": "vk-tech-learn-ai-assistant-ai-chatbot",
+    "title": "VK Tech Learn AI Assistant: AI Chatbot Powered by Gemini",
+    "label": "Tech"
+  },
+  {
+    "slug": "vonr-5g",
+    "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉलिंग की सुविधा",
+    "label": "Tech"
+  },
+  {
+    "slug": "whatsapp-2",
+    "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज",
+    "label": "Tech"
+  },
+  {
+    "slug": "whatsapp-aadhaar-whatsapp",
+    "title": "WhatsApp Aadhaar : WhatsApp से ऐसे डाउनलोड करें अपना आधार कार्ड — स्टेप-बाय-स्टेप तरीका और सुरक्षा टिप्स",
+    "label": "Tech"
+  },
+  {
+    "slug": "whatsapp-call",
+    "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका",
+    "label": "Tech"
+  },
+  {
+    "slug": "whatsapp-pnr",
+    "title": "WhatsApp से अब चेक करें PNR और लाइव ट्रेन स्टेटस — आसान तरीका विस्तार से",
+    "label": "Tech"
+  },
+  {
+    "slug": "whatsapp-real-time-message-translation",
+    "title": "WhatsApp Real-time Message Translation फीचर: अब अलग-अलग भाषाओं में चैट करना हुआ आसान",
+    "label": "Tech"
+  },
+  {
+    "slug": "whatsapp",
+    "title": "WhatsApp : के फालतू फोटोज से नहीं भरेगी फोन की गैलरी, बस बंद कर दें ये एक फीचर — जानें आसान तरीका",
+    "label": "Tech"
+  },
+  {
+    "slug": "wi-fi-speed",
+    "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने वाई-फाई के ‘चोर’",
+    "label": "Tech"
+  },
+  {
+    "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
+    "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को कर रहे हैं बर्बाद, अभी करें दूर!",
+    "label": "Tech"
+  },
+  {
+    "slug": "win-11",
+    "title": "Win 11 में नया प्रिंटर कैसे सेट करें | कंप्यूटर बेसिक्स",
+    "label": "Tech"
+  },
+  {
+    "slug": "windows-10",
+    "title": "Windows Me C Drive Space Kaise Increase Kare | Step by Step Complete Guide",
+    "label": "Tech"
   }
 ]
