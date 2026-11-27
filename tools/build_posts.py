@@ -278,6 +278,45 @@ def _swap_cover(page, spec):
     return page[:pos] + "\n\n    " + figure + page[pos:]
 
 
+def _localize_jsonld(page, local):
+    """Rewrite every image URL inside the article JSON-LD to the local cover."""
+    def walk(node):
+        if isinstance(node, dict):
+            if node.get("@type") == "ImageObject" and str(node.get("url", "")).startswith("http"):
+                node["url"] = local
+            if str(node.get("thumbnailUrl", "")).startswith("http"):
+                node["thumbnailUrl"] = local
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    def replace(match):
+        try:
+            data = json.loads(match.group(1))
+        except ValueError:
+            return match.group(0)
+        walk(data)
+        return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "</script>"
+
+    return re.sub(r'<script type="application/ld\+json">(.*?)</script>', replace, page, flags=re.S)
+
+
+def localize_og(page, slug):
+    """Point social/JSON-LD images at the local branded cover, not the source site."""
+    if not os.path.exists(os.path.join(ROOT, "img", "posts", f"{slug}-cover.jpg")):
+        return page
+    local = f"https://vktechlearn.site/img/posts/{slug}-cover.jpg"
+    match = re.search(r'property="og:image" content="([^"]*)"', page)
+    if not match or match.group(1) == local:
+        return _localize_jsonld(page, local)
+    head, sep, tail = page.partition("</head>")
+    if match.group(1) not in head:
+        return _localize_jsonld(page, local)
+    return _localize_jsonld(head.replace(match.group(1), local) + sep + tail, local)
+
+
 def apply_audit_flags(posts_dir=None):
     """Add noindex to thin posts and swap hotlinked photos for local covers."""
     posts_dir = posts_dir or OUT_DIR
@@ -306,6 +345,7 @@ def apply_audit_flags(posts_dir=None):
                     '<meta name="robots" content="noindex, follow">\n<meta name="description"',
                     1,
                 )
+        page = localize_og(page, slug)
         spec = covers.get(slug)
         if spec and "-cover.jpg" not in page:
             page = _swap_cover(page, spec)
