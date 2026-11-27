@@ -1,10 +1,10 @@
 # Post plan — 190 documents → 190 posts
 
 Target: **190 posts** built from the reference documents (Google Docs + Drive PDFs).
-Posts live today: **70** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
+Posts live today: **76** repo-owned posts in `tools/local_posts/` (plus the Blogger-synced
 pages, which are separate and not counted here).
 
-Remaining: **120 topics**, split into **20 batches of 6**. Batches 1–4 are complete. Each batch = one working turn:
+Remaining: **114 topics**, split into **19 batches of 6**. Batches 1–5 are complete. Each batch = one working turn:
 write 6 posts (2,000+ words each, Hinglish/Hindi), hero + 2 branded diagrams, build,
 `EXTRA_POSTS` cards, commit, push.
 
@@ -52,14 +52,14 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 - [x] 23. AI Model Evaluation: Accuracy Se Aage Kya Dekhein
 - [x] 24. AI Ethics aur Bias: Business Ke Liye 7 Checks
 
-## Batch 5 — AI applied `[ ]`
+## Batch 5 — AI applied `[x]`
 
-- [ ] 25. AI Chatbot Kaise Banayein: No-Code se API Tak
-- [ ] 26. AI se Data Analysis: Pandas + LLM Workflow
-- [ ] 27. AI Image Generation: Prompt se Poster Tak
-- [ ] 28. AI Voice aur Transcription Tools: Practical Guide
-- [ ] 29. AI se Video Editing aur Shorts: Free Workflow
-- [ ] 30. AI Automation: Zapier aur n8n se Roz ke Kaam
+- [x] 25. AI Chatbot Kaise Banayein: No-Code se API Tak
+- [x] 26. AI se Data Analysis: Pandas + LLM Workflow
+- [x] 27. AI Image Generation: Prompt se Poster Tak
+- [x] 28. AI Voice aur Transcription Tools: Practical Guide
+- [x] 29. AI se Video Editing aur Shorts: Free Workflow
+- [x] 30. AI Automation: Zapier aur n8n se Roz ke Kaam
 
 ## Batch 6 — Programming fundamentals `[ ]`
 
@@ -244,3 +244,4 @@ Status key: `[x]` live · `[~]` in progress · `[ ]` queued
 | 2026-11-26 | Batch 2 complete: internet/DNS/HTTP, HTTPS/TLS, frontend vs backend, hosting, DNS records, Core Web Vitals. 12/190 live. |
 | 2026-11-27 | Batch 3 complete: cloud computing, CI/CD, DevOps, Terraform, serverless, monitoring. 18/190 live. |
 | 2026-11-27 | Batch 4 complete: neural network, transformer/attention, embeddings, hallucination, model evaluation, AI ethics/bias. 24/190 live. |
+| 2026-11-28 | Batch 5 complete: AI chatbot, pandas + LLM analysis, AI image generation, voice/transcription, video shorts, Zapier/n8n automation. 30/190 live. |

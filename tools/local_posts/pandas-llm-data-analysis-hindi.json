@@ -1,0 +1,15 @@
+{
+  "slug": "pandas-llm-data-analysis-hindi",
+  "title": "Pandas + LLM se Data Analysis: Practical Workflow Guide",
+  "description": "Pandas aur LLM se data analysis ka practical workflow: cleaning, groupby, LLM se code aur summary, number verification aur report kaise banayein bina galti.",
+  "published": "2026-11-27T22:30:00+05:30",
+  "labels": [
+    "AI",
+    "Data Analysis",
+    "Python"
+  ],
+  "hero": "img/posts/pandas-llm-hero-hindi.jpg",
+  "hero_width": 1392,
+  "hero_height": 752,
+  "hero_caption": "LLM se analysis tez hoti hai, par har number ka source pandas ka output hona chahiye"
+}
