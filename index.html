@@ -947,7 +947,7 @@
       "game": "#ff5c8a",
       "Computer Class": "#4dd4ff"
     };
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 12;
 
     const els = {
       grid: document.getElementById("post-grid"),
@@ -986,6 +986,12 @@
       if (/^posts\/[a-z0-9-]+\.html$/i.test(raw)) return raw;
       try { const url = new URL(raw); return url.protocol === "https:" ? url.href : ""; }
       catch (error) { return ""; }
+    };
+    const safeImage = (value) => {
+      const raw = typeof value === "string" ? value.trim().replace(/^\.\//, "") : "";
+      if (raw.includes("..")) return "";
+      if (/^(?:\/)?img\/[a-z0-9._/-]+\.(?:jpe?g|png|webp|gif|avif)$/i.test(raw)) return raw;
+      return safeUrl(raw);
     };
     const formatDate = (value) => {
       const time = Date.parse(value);
@@ -1261,7 +1267,7 @@
       thumb.href = post.url;
       thumb.rel = "noopener noreferrer";
       thumb.setAttribute("aria-label", "पढ़ें: " + post.title);
-      const image = safeUrl(post.image);
+      const image = safeImage(post.image);
       if (image) {
         const img = document.createElement("img");
         img.src = image;
