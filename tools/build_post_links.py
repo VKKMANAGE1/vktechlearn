@@ -182,6 +182,101 @@ THEMES = [
     (r"seo|blog|adsense|ranking|hosting|domain", "seo"),
 ]
 
+
+# Hand-picked related posts where the automatic match has nothing close to offer.
+# Regeneration keeps these: tools/post_sources.json is output, this map is the input.
+OVERRIDES = {
+    "10": ["whatsapp-pnr", "how-to-transfer-your-fastag-from-one"],
+    "5000": ["ai-video-editing-shorts-hindi", "openai-sora-2-tiktok-youtube-shorts"],
+    "7": ["basic-computer-fundamentals-in-hindi", "excel-formulas-hindi-guide", "ms-word-how-to-delete-page-in-word"],
+    "8-34": ["pf-balance-pf", "link-voter-id-card-with-aadhaar-card-in"],
+    "ai-80": ["ai-ethics-bias-hindi", "ai-readiness-assessment-checklist-25-points", "machine-learning-vs-deep-learning-hindi"],
+    "ai-vs-gut-feeling-body-font-family": ["ai-ethics-bias-hindi", "ai-model-evaluation-hindi"],
+    "amazon-black-friday-sale-2025": [
+        "google-pixel-9-pro-flipkart-goat",
+        "iphone-iphone-16e-6300-ai",
+        "black-friday-2026-gpu-deals-india",
+    ],
+    "ayaneo-pocket-ds-android-nintendo-ds": [
+        "infinix-gt-30-5g",
+        "android-16-7",
+        "top-10-free-games-websites-for-online",
+    ],
+    "blog-post-2": ["gmail-gmail", "cybersecurity-basics-hindi"],
+    "blog-post-3": [
+        "basic-computer-fundamentals-in-hindi",
+        "application-software-kya-hai-guide",
+        "system-software-kya-hai-guide",
+    ],
+    "blog-post-6": [
+        "whatsapp-aadhaar-whatsapp",
+        "link-voter-id-card-with-aadhaar-card-in",
+        "pan-20",
+    ],
+    "bsod": ["tv", "windows-10", "win-11"],
+    "cybersecurity-basics-hindi": ["blog-post-4", "pan-20", "google-ai-risk-ai"],
+    "elon-musk-vs-apple-ai": ["apple-apple-1-whatsapp", "google-ai-risk-ai", "ai-ethics-bias-hindi"],
+    "event-driven-architecture-real-time-decisions-hindi": [
+        "system-design-basics-hindi",
+        "serverless-kya-hai-hindi",
+        "api-kya-hai-hindi",
+    ],
+    "gmail": ["gmail-gmail", "windows-10"],
+    "google-maps": ["whatsapp-pnr", "how-to-transfer-your-fastag-from-one", "internet-kaise-kaam-karta-hai-hindi"],
+    "gpay-phonepe-15-upi": [
+        "upi-autopay-paytm-phonepe-google-pay",
+        "computer-ki-puri-knowledge-kya-hai",
+        "pf-balance-pf",
+    ],
+    "hindi-typing-practice": ["7", "basic-computer-fundamentals-in-hindi"],
+    "how-to-transfer-your-fastag-from-one": [
+        "upi-autopay-paytm-phonepe-google-pay",
+        "gpay-phonepe-15-upi",
+        "whatsapp-pnr",
+    ],
+    "infinix-gt-30-5g": ["ayaneo-pocket-ds-android-nintendo-ds", "android-16-7"],
+    "made-in-india-apps": ["apple-apple-1-whatsapp", "whatsapp-real-time-message-translation"],
+    "namecheap-74-com": ["domain-dns-records-hindi", "web-hosting-kya-hai-hindi", "seo"],
+    "network-device-network-device-in-hindi": [
+        "computer-network-what-is-computer",
+        "internet-kaise-kaam-karta-hai-hindi",
+        "domain-dns-records-hindi",
+    ],
+    "openai-sora-2-tiktok-youtube-shorts": [
+        "ai-video-editing-shorts-hindi",
+        "chatgpt-ai-image-step-by-step",
+        "ai-image-generation-hindi-guide",
+    ],
+    "pf-balance-pf": ["upi-autopay-paytm-phonepe-google-pay", "gpay-phonepe-15-upi", "pan-20"],
+    "pixel-10-10": ["google-pixel-10-whatsapp", "google-pixel-9-pro-flipkart-goat", "android-16-7"],
+    "samsung-galaxy-z-fold-7-discount": [
+        "google-pixel-9-pro-flipkart-goat",
+        "iphone-iphone-16e-6300-ai",
+        "amazon-black-friday-sale-2025",
+    ],
+    "seo": ["new-blog-ko-rank-kaise-kare-15", "core-web-vitals-hindi", "blogging-step-by-step"],
+    "smart-tv": ["tv-remote-broken", "android-16-7", "win-11"],
+    "sovereign-cloud-kya-hai-india-guide": [
+        "cloud-computing-kya-hai-hindi",
+        "aws-cloud-kya-hai-guide",
+        "private-llm-enterprise-self-host-guide",
+    ],
+    "talent-acquisition-kya-hai-guide": ["project-management-tools-guide", "data-science-roadmap-india-hindi"],
+    "top-free-ai-websites-in-hindi-2026": [
+        "ai-tools-ki-wave-2025-top-free-ai-tools",
+        "chatgpt-ai-image-step-by-step",
+    ],
+    "unit-testing-kya-hai-guide": [
+        "ci-cd-pipeline-kya-hai-hindi",
+        "git-github-kya-hai-hindi-guide",
+        "python-seekhne-ka-roadmap-hindi",
+    ],
+    "vk-tech-learn-ai-assistant-ai-chatbot": [
+        "ai-chatbot-kaise-banayein-hindi",
+        "ai-agents-kya-hain-hindi-guide",
+    ],
+}
+
 STOPWORDS = {
     "क्या", "कैसे", "करें", "करे", "और", "के", "का", "की", "को", "में", "से", "है", "हैं", "नहीं",
     "पूरी", "जानकारी", "अच्छा", "बेहतर", "सही", "नया", "नई", "आप", "करेगा", "करता", "करते", "हिंदी",
@@ -210,13 +305,6 @@ def title_of(page):
     return html.unescape(match.group(1)).replace(" — VK Tech Learn", "").strip() if match else ""
 
 
-def label_of(page):
-    match = re.search(r'<span class="label"[^>]*>(.*?)</span>', page, re.S)
-    if not match:
-        match = re.search(r'<span class="tag"[^>]*>(.*?)</span>', page, re.S)
-    return html.unescape(re.sub(r"<[^>]+>", "", match.group(1))).strip() if match else "Tech"
-
-
 def without_generated(page):
     for pattern in GENERATED:
         page = pattern.sub("", page)
@@ -241,7 +329,6 @@ def short_title(text, limit=68):
 def tokens(text):
     words = re.findall(r"[a-z0-9\u0900-\u097f]{3,}", re.sub(r"#\S+", " ", text.lower()))
     return {word for word in words if word not in STOPWORDS}
-
 
 
 def pick_sources(title):
@@ -346,8 +433,7 @@ def main():
         title = title_of(page)
         posts[slug] = {
             "title": title,
-            "label": label_of(page),
-            "tokens": tokens(title + " " + label_of(page)),
+            "tokens": tokens(title),
             "sources": has_sources(page),
             "internal": has_internal(page),
             "text": body_text(page),
@@ -378,6 +464,18 @@ def main():
                 entry["related"] = related
         if entry:
             mapping[slug] = entry
+
+    for slug, related in OVERRIDES.items():
+        if slug not in posts:
+            raise SystemExit(f"OVERRIDES has unknown slug: {slug}")
+        unknown = [other for other in related if other not in posts]
+        if unknown:
+            raise SystemExit(f"OVERRIDES[{slug}] has unknown slugs: {unknown}")
+        mapping.setdefault(slug, {})["related"] = [
+            {"slug": other, "title": short_title(posts[other]["title"])}
+            for other in related
+            if other != slug
+        ]
 
     with open(OUT, "w", encoding="utf-8") as handle:
         json.dump(mapping, handle, ensure_ascii=False, indent=2)
