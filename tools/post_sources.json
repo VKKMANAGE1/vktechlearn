@@ -2,143 +2,135 @@
   "10": {
     "sources": [
       {
-        "label": "DGCA — official page",
+        "label": "DGCA — aviation regulator",
         "url": "https://www.dgca.gov.in/"
       }
     ],
     "related": [
       {
         "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       },
       {
         "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       }
     ]
   },
   "17-4": {
     "sources": [
       {
-        "label": "Apple Newsroom — official page",
-        "url": "https://www.apple.com/newsroom/"
+        "label": "iPhone और iOS support",
+        "url": "https://support.apple.com/iphone"
       },
       {
-        "label": "Samsung Newsroom India — official page",
-        "url": "https://news.samsung.com/in/"
+        "label": "Samsung support (India)",
+        "url": "https://www.samsung.com/in/support/"
       }
     ],
     "related": [
       {
         "slug": "honor",
-        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए"
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
       },
       {
         "slug": "oneplus-15-snapdragon-8-elite-gen-5",
-        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5 और नया डिजाइन"
+        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5…"
       },
       {
-        "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
+        "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
+        "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
       }
     ]
   },
   "2025-ai-ev": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
+        "slug": "honor",
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
+      },
+      {
         "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       },
       {
         "slug": "best-screen-recording-software-2025-pc",
         "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
-      },
-      {
-        "slug": "honor",
-        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए"
       }
     ]
   },
   "2026": {
     "sources": [
       {
-        "label": "Microsoft Support — official page",
-        "url": "https://support.microsoft.com/"
+        "label": "Microsoft 365 Copilot",
+        "url": "https://support.microsoft.com/copilot"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "best-remote-access-software-two",
+        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "top-free-ai-websites-in-hindi-2026",
+        "title": "Top Free AI Websites In Hindi (2026)"
       },
       {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
+        "slug": "bahubali-satellite-2026",
+        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजि…"
       }
     ]
   },
   "5000": {
     "sources": [
       {
-        "label": "India.gov.in — official page",
-        "url": "https://www.india.gov.in/"
+        "label": "myScheme — government schemes",
+        "url": "https://www.myscheme.gov.in/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "upi-autopay-paytm-phonepe-google-pay",
+        "title": "UPI AutoPay : कैसे बंद करें: Paytm, PhonePe और Google Pay में आसान…"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
-      },
-      {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "pf-balance-pf",
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       }
     ]
   },
   "6-deepseek-r1-ai-prompt-to-make-money": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
-        "slug": "ai-image-generation-hindi-guide",
-        "title": "AI Image Generation: Prompt se Poster Tak Complete Guide"
-      },
-      {
         "slug": "prompt-engineering-hindi-guide",
         "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "deepseek-deepseek-ai",
+        "title": "DeepSeek : कैसे चीन की सेना DeepSeek को बना रही अपना हथियार — क्या…"
+      },
+      {
+        "slug": "top-10-free-games-websites-for-online",
+        "title": "Top 10 Free Games Websites For Online Gaming in 2025"
       }
     ]
   },
   "7": {
     "sources": [
       {
-        "label": "Microsoft Learn — Windows — official page",
+        "label": "Microsoft Learn — Windows",
         "url": "https://learn.microsoft.com/windows/"
       }
     ],
@@ -148,78 +140,66 @@
         "title": "कंप्यूटर को फॉर्मेट कैसे करें (Windows और Mac)"
       },
       {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
-      },
-      {
-        "slug": "blog-post-2",
-        "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में"
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       }
     ]
   },
   "8-34": {
     "sources": [
       {
-        "label": "7th CPC — official page",
-        "url": "https://7cpc.india.gov.in/"
+        "label": "India.gov.in — pay & pension",
+        "url": "https://www.india.gov.in/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
-      },
-      {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
       }
     ]
   },
   "agile-methodology-complete-guide-hindi": {
     "sources": [
       {
-        "label": "Scrum Guide — official page",
-        "url": "https://scrumguides.org/"
+        "label": "Microsoft Learn",
+        "url": "https://learn.microsoft.com/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "product-development-process-stages-hindi-guide",
+        "title": "Product Development Kya Hai? Stages, Types aur Best Practices ki Po…"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "system-software-kya-hai-guide",
+        "title": "System Software Kya Hai? Types, Examples aur Kaam"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "application-software-kya-hai-guide",
+        "title": "Application Software Kya Hai? Types, Examples aur Farq"
       }
     ]
   },
   "ai-80": {
     "sources": [
       {
-        "label": "Intel — official page",
-        "url": "https://www.intel.in/"
+        "label": "Intel support",
+        "url": "https://www.intel.in/content/www/in/en/support.html"
       }
     ],
     "related": [
       {
         "slug": "ai-vs-gut-feeling-body-font-family",
-        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!"
+        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजें…"
       },
       {
-        "slug": "bsod",
-        "title": "ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
@@ -230,200 +210,188 @@
         "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
       },
       {
-        "slug": "ai-automation-zapier-n8n-hindi",
-        "title": "AI Automation: Zapier aur n8n se Roz ke Kaam Aasan Guide"
+        "slug": "free-productivity-apps-guide",
+        "title": "Free Productivity Apps: 12 Tools Jo Kaam Aasan Kar Dein"
       },
       {
-        "slug": "ai-coding-agents-hindi",
-        "title": "AI Coding Agents: Claude Code, Codex aur Copilot Ka Farq"
+        "slug": "self-service-apps-kya-hai-guide",
+        "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam"
       }
     ]
   },
   "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "prompt-engineering-hindi-guide",
+        "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
-      },
-      {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       }
     ]
   },
   "ai-presentation-behtar-kaise-kare-8-steps": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "talent-acquisition-kya-hai-guide",
+        "title": "Talent Acquisition Kya Hai? Hiring Process aur 7 Steps"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "zepto-founder-business-model-guide",
+        "title": "Zepto Founder Kaun Hai? 10-Minute Delivery ka Business Model"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "ai-chatbot-kaise-banayein-hindi",
+        "title": "AI Chatbot Kaise Banayein: No-Code se API Tak Full Guide"
       }
     ]
   },
   "ai-readiness-assessment-checklist-25-points": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
-        "slug": "ai-ethics-bias-hindi",
-        "title": "AI Ethics aur Bias: Business Ke Liye 7 Practical Checks"
+        "slug": "meesho-founder-business-model-guide",
+        "title": "Meesho Founder Kaun Hai? Business Model aur 6 Lessons"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "zepto-founder-business-model-guide",
+        "title": "Zepto Founder Kaun Hai? 10-Minute Delivery ka Business Model"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       }
     ]
   },
   "ai-tools-ki-wave-2025-top-free-ai-tools": {
     "sources": [
       {
-        "label": "Blogger Help — official page",
+        "label": "Blogger Help",
         "url": "https://support.google.com/blogger/"
       }
     ],
     "related": [
       {
+        "slug": "iot-examples-india-guide",
+        "title": "IoT Examples India Me: 8 Real Use Cases aur Setup Guide"
+      },
+      {
         "slug": "best-screen-recording-software-2025-pc",
         "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
       },
       {
-        "slug": "top-10-free-games-websites-for-online",
-        "title": "Top 10 Free Games Websites For Online Gaming in 2025"
-      },
-      {
-        "slug": "how-to-use-same-whatsapp-number-on-two",
-        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
+        "slug": "claude-code-android-phone-free-models-guide",
+        "title": "Phone Pe Claude Code: Free AI Models ke Saath Step-by-Step Setup"
       }
     ]
   },
   "ai-vs-gut-feeling-body-font-family": {
     "sources": [
       {
-        "label": "Intel — official page",
-        "url": "https://www.intel.in/"
+        "label": "Intel support",
+        "url": "https://www.intel.in/content/www/in/en/support.html"
       }
     ],
     "related": [
       {
-        "slug": "bsod",
-        "title": "ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "prompt-engineering-hindi-guide",
+        "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
       }
     ]
   },
   "ai": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
-        "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
-      },
-      {
         "slug": "blog-post-5",
-        "title": "भारत का सेमीकंडक्टर रेवोल्यूशन: क्यों हर किसी को इसके बारे में जानना चाहिए"
+        "title": "भारत का सेमीकंडक्टर रेवोल्यूशन: क्यों हर किसी को इसके बारे में जानन…"
       },
       {
-        "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
+        "slug": "bahubali-satellite-2026",
+        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजि…"
       }
     ]
   },
   "airtel-perplexity-pro-chatgpt-go-199": {
     "sources": [
       {
-        "label": "OpenAI — official page",
+        "label": "OpenAI news",
         "url": "https://openai.com/news/"
       },
       {
-        "label": "Perplexity — official page",
-        "url": "https://www.perplexity.ai/"
+        "label": "Perplexity blog",
+        "url": "https://www.perplexity.ai/hub/blog"
       }
     ],
     "related": [
+      {
+        "slug": "vonr-5g",
+        "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉ…"
+      },
       {
         "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
         "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
       },
       {
         "slug": "samsung-galaxy-z-fold-7-discount",
-        "title": "Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सबसे पावरफुल फोल्डेबल फोन पर साल की सबसे बड़ी गिरावट"
-      },
-      {
-        "slug": "vonr-5g",
-        "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉलिंग की सुविधा"
+        "title": "Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सब…"
       }
     ]
   },
   "amazon-black-friday-sale-2025": {
     "sources": [
       {
-        "label": "Amazon India — official page",
-        "url": "https://www.amazon.in/"
+        "label": "Amazon India customer service",
+        "url": "https://www.amazon.in/gp/help/customer/display.html"
       }
     ],
     "related": [
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "black-friday-2026-gpu-deals-india",
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       },
       {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "low-price-fast-ai-hosting-black-friday-2026",
+        "title": "Low Price Fast AI Hosting ki Jankari: Black Friday 2026 Deal"
       },
       {
-        "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
+        "slug": "blog-post-5",
+        "title": "भारत का सेमीकंडक्टर रेवोल्यूशन: क्यों हर किसी को इसके बारे में जानन…"
       }
     ]
   },
   "amd-radeon-rx-9000-price-hike-2026": {
     "sources": [
       {
-        "label": "AMD Radeon — official page",
-        "url": "https://www.amd.com/en/products/graphics/radeon.html"
+        "label": "AMD Radeon",
+        "url": "https://www.amd.com/en/products/graphics/desktops/radeon.html"
       }
     ],
     "related": [
@@ -432,67 +400,67 @@
         "title": "GPU Price Hike 2026: Graphics Card 35% Mehnga, India Me Kya Karein?"
       },
       {
-        "slug": "nvidia-rtx-spark-india-laptops-price-2026",
-        "title": "NVIDIA RTX Spark India: AI Laptop ki Nayi Generation, Price aur Full Guide"
+        "slug": "black-friday-2026-gpu-deals-india",
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "nvidia-rtx-spark-india-laptops-price-2026",
+        "title": "NVIDIA RTX Spark India: AI Laptop ki Nayi Generation, Price aur Ful…"
       }
     ]
   },
   "android-16-7": {
     "sources": [
       {
-        "label": "Android Developers — official page",
+        "label": "Android Developers",
         "url": "https://developer.android.com/"
       }
     ],
     "related": [
       {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      },
-      {
         "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       },
       {
-        "slug": "iphone-17",
-        "title": "iPhone 17: क्या अब अपग्रेड करने का सही समय है?"
+        "slug": "iphone-iphone-16e-6300-ai",
+        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल…"
+      },
+      {
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       }
     ]
   },
   "apple-apple-1-whatsapp": {
     "sources": [
       {
-        "label": "Apple Newsroom — official page",
+        "label": "Apple Newsroom",
         "url": "https://www.apple.com/newsroom/"
       },
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
     "related": [
       {
         "slug": "made-in-india-apps",
-        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौती, सुरक्षा और प्राइवेसी पर जोर"
+        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौत…"
       },
       {
-        "slug": "deepseek-deepseek-ai",
-        "title": "DeepSeek : कैसे चीन की सेना DeepSeek को बना रही अपना हथियार — क्या AI खुद ही टारगेट पहचानकर हमला करेगा?"
+        "slug": "whatsapp-call",
+        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं…"
       },
       {
-        "slug": "how-to-use-same-whatsapp-number-on-two",
-        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
+        "slug": "whatsapp-2",
+        "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज"
       }
     ]
   },
   "application-software-kya-hai-guide": {
     "sources": [
       {
-        "label": "Microsoft Learn — official page",
+        "label": "Microsoft Learn",
         "url": "https://learn.microsoft.com/"
       }
     ],
@@ -506,38 +474,38 @@
         "title": "Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq"
       },
       {
-        "slug": "docker-kya-hai-hindi",
-        "title": "Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me"
+        "slug": "proof-of-concept-poc-meaning-process-hindi",
+        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Exam…"
       }
     ]
   },
   "artificial-intelligence-ai-tools-in": {
     "sources": [
       {
-        "label": "Intel — official page",
-        "url": "https://www.intel.in/"
+        "label": "Google AI blog",
+        "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
+        "slug": "ai-voice-transcription-tools-hindi",
+        "title": "AI Voice aur Transcription Tools: Practical Hindi Guide"
+      },
+      {
+        "slug": "free-productivity-apps-guide",
+        "title": "Free Productivity Apps: 12 Tools Jo Kaam Aasan Kar Dein"
+      },
+      {
         "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
-      },
-      {
-        "slug": "best-screen-recording-software-2025-pc",
-        "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
-      },
-      {
-        "slug": "how-to-use-same-whatsapp-number-on-two",
-        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       }
     ]
   },
   "aws-cloud-kya-hai-guide": {
     "sources": [
       {
-        "label": "AWS Documentation — official page",
-        "url": "https://docs.aws.amazon.com/"
+        "label": "AWS overview (docs)",
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html"
       }
     ],
     "related": [
@@ -546,8 +514,8 @@
         "title": "Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq"
       },
       {
-        "slug": "serverless-kya-hai-hindi",
-        "title": "Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai"
+        "slug": "sovereign-cloud-kya-hai-india-guide",
+        "title": "Sovereign Cloud Kya Hai? India Me Data Residency aur Rules"
       },
       {
         "slug": "web-hosting-kya-hai-hindi",
@@ -558,122 +526,114 @@
   "ayaneo-pocket-ds-android-nintendo-ds": {
     "sources": [
       {
-        "label": "Android Developers — official page",
+        "label": "Android Developers",
         "url": "https://developer.android.com/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "whatsapp",
+        "title": "WhatsApp : के फालतू फोटोज से नहीं भरेगी फोन की गैलरी, बस बंद कर दें…"
       }
     ]
   },
   "bahubali-satellite-2026": {
     "sources": [
       {
-        "label": "Department of Telecom — official page",
-        "url": "https://dot.gov.in/"
+        "label": "DoT telecom policies",
+        "url": "https://dot.gov.in/telecom-policies"
       }
     ],
     "related": [
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "blog-post",
+        "title": "इंटरनेट का महाजाल: फाइबर ऑप्टिक और सैटेलाइट नेटवर्क कैसे काम करते ह…"
       },
       {
-        "slug": "blog-post-5",
-        "title": "भारत का सेमीकंडक्टर रेवोल्यूशन: क्यों हर किसी को इसके बारे में जानना चाहिए"
+        "slug": "best-remote-access-software-two",
+        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
       },
       {
-        "slug": "browser-cache-dns",
-        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड"
+        "slug": "top-free-ai-websites-in-hindi-2026",
+        "title": "Top Free AI Websites In Hindi (2026)"
       }
     ]
   },
   "basic-computer-fundamentals-in-hindi": {
     "sources": [
       {
-        "label": "Microsoft Learn — Windows — official page",
+        "label": "Microsoft Learn — Windows",
         "url": "https://learn.microsoft.com/windows/"
       }
     ],
     "related": [
       {
-        "slug": "windows-10",
-        "title": "Windows Me C Drive Space Kaise Increase Kare | Step by Step Complete Guide"
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "application-software-kya-hai-guide",
+        "title": "Application Software Kya Hai? Types, Examples aur Farq"
       }
     ]
   },
   "best-remote-access-software-two": {
     "sources": [
       {
-        "label": "Microsoft Learn — official page",
+        "label": "Microsoft Learn",
         "url": "https://learn.microsoft.com/"
       }
     ],
     "related": [
       {
-        "slug": "top-free-ai-websites-in-hindi-2026",
-        "title": "Top Free AI Websites In Hindi (2026)"
-      },
-      {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
+        "slug": "gta-6-pc-requirements-2026-laptop-pc",
+        "title": "🎮 GTA 6 PC Requirements 2026: क्या आपका Laptop या PC GTA 6 चला पाएग…"
       },
       {
         "slug": "best-screen-recording-software-2025-pc",
         "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
+      },
+      {
+        "slug": "2026",
+        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
       }
     ]
   },
   "best-screen-recording-software-2025-pc": {
     "sources": [
       {
-        "label": "Microsoft Learn — official page",
+        "label": "Microsoft Learn",
         "url": "https://learn.microsoft.com/"
       }
     ],
     "related": [
       {
+        "slug": "project-management-tools-guide",
+        "title": "Project Management Tools: Team Ke Liye Kaise Chunen"
+      },
+      {
+        "slug": "best-remote-access-software-two",
+        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
+      },
+      {
         "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
-      },
-      {
-        "slug": "top-10-free-games-websites-for-online",
-        "title": "Top 10 Free Games Websites For Online Gaming in 2025"
-      },
-      {
-        "slug": "tv",
-        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker, Slow Laptop और Printer की पूरी Guide"
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       }
     ]
   },
   "black-friday-2026-gpu-deals-india": {
     "sources": [
       {
-        "label": "NVIDIA GeForce — official page",
+        "label": "NVIDIA GeForce",
         "url": "https://www.nvidia.com/en-in/geforce/"
       },
       {
-        "label": "AMD Radeon — official page",
-        "url": "https://www.amd.com/en/products/graphics/radeon.html"
+        "label": "AMD Radeon",
+        "url": "https://www.amd.com/en/products/graphics/desktops/radeon.html"
       }
     ],
     "related": [
@@ -686,37 +646,33 @@
         "title": "Low Price Fast AI Hosting ki Jankari: Black Friday 2026 Deal"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "amd-radeon-rx-9000-price-hike-2026",
+        "title": "AMD Radeon RX 9000 Price Hike: RX 9070 XT, 9070 aur 9060 XT India M…"
       }
     ]
   },
   "blog-post-2": {
     "sources": [
       {
-        "label": "Gmail Help — official page",
+        "label": "Gmail Help",
         "url": "https://support.google.com/mail/"
       }
     ],
     "related": [
       {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
       },
       {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
-      },
-      {
-        "slug": "network-device-network-device-in-hindi",
-        "title": "Network Device क्या है? (Network Device in Hindi)"
+        "slug": "browser-cache-dns",
+        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरन…"
       }
     ]
   },
   "blog-post-3": {
     "sources": [
       {
-        "label": "Microsoft Learn — Windows — official page",
+        "label": "Microsoft Learn — Windows",
         "url": "https://learn.microsoft.com/windows/"
       }
     ],
@@ -726,118 +682,164 @@
         "title": "हैकिंग — परिभाषा, प्रकार, सुरक्षा और जरूरी जानकारी"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
   "blog-post-4": {
     "sources": [
       {
-        "label": "CERT-In — official page",
+        "label": "CERT-In advisories",
         "url": "https://www.cert-in.org.in/"
       }
     ],
     "related": [
       {
         "slug": "blog-post-3",
-        "title": "कम्प्यूटर क्या है — परिचय, परिभाषा, इतिहास, विशेषताएं, प्रकार और करियर"
+        "title": "कम्प्यूटर क्या है — परिचय, परिभाषा, इतिहास, विशेषताएं, प्रकार और कर…"
       },
       {
         "slug": "made-in-india-apps",
-        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौती, सुरक्षा और प्राइवेसी पर जोर"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौत…"
       }
     ]
   },
   "blog-post-5": {
     "sources": [
       {
-        "label": "MeitY — official page",
-        "url": "https://www.meity.gov.in/"
+        "label": "MeitY schemes & projects",
+        "url": "https://www.meity.gov.in/content/schemes-projects"
       }
     ],
     "related": [
       {
         "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई…"
       },
       {
         "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजि…"
       }
     ]
   },
   "blog-post-6": {
     "sources": [
       {
-        "label": "UIDAI — official page",
-        "url": "https://uidai.gov.in/"
+        "label": "UIDAI",
+        "url": "https://uidai.gov.in/en/"
       }
     ],
     "related": [
       {
         "slug": "link-voter-id-card-with-aadhaar-card-in",
-        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें"
+        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को…"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
   "blog-post": {
     "sources": [
       {
-        "label": "Department of Telecom — official page",
-        "url": "https://dot.gov.in/"
+        "label": "DoT telecom policies",
+        "url": "https://dot.gov.in/telecom-policies"
       }
     ],
     "related": [
       {
         "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
+        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजि…"
       },
       {
         "slug": "browser-cache-dns",
-        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड"
+        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरन…"
       },
       {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
+        "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
+        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके…"
       }
     ]
   },
   "blogging-step-by-step": {
     "sources": [
       {
-        "label": "Google Search Central — official page",
+        "label": "Google — helpful content guidance",
         "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
       }
     ],
     "related": [
       {
-        "slug": "ai-vs-gut-feeling-body-font-family",
-        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!"
+        "slug": "legacy-system-modernization-roadmap-guide",
+        "title": "Legacy System Modernization: Cost, Strategy aur 6-Step Roadmap"
       },
       {
-        "slug": "bsod",
-        "title": "ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?"
+        "slug": "claude-code-android-phone-free-models-guide",
+        "title": "Phone Pe Claude Code: Free AI Models ke Saath Step-by-Step Setup"
+      },
+      {
+        "slug": "ci-cd-pipeline-kya-hai-hindi",
+        "title": "CI/CD Pipeline Kya Hai? Step-by-Step Setup Guide"
+      }
+    ]
+  },
+  "browser-cache-dns": {
+    "sources": [
+      {
+        "label": "Google Public DNS — using",
+        "url": "https://developers.google.com/speed/public-dns/docs/using"
+      }
+    ],
+    "related": [
+      {
+        "slug": "wi-fi-speed",
+        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें…"
+      },
+      {
+        "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
+        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके…"
+      },
+      {
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
+      }
+    ]
+  },
+  "bsod": {
+    "sources": [
+      {
+        "label": "Windows help & learning",
+        "url": "https://support.microsoft.com/windows"
+      }
+    ],
+    "related": [
+      {
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
+      },
+      {
+        "slug": "basic-computer-fundamentals-in-hindi",
+        "title": "Basic Computer Fundamentals in Hindi – Complete Notes for Beginners"
+      }
+    ]
+  },
+  "chatgpt-ai-image-step-by-step": {
+    "sources": [
+      {
+        "label": "OpenAI news",
+        "url": "https://openai.com/news/"
+      }
+    ],
+    "related": [
+      {
+        "slug": "airtel-perplexity-pro-chatgpt-go-199",
+        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे…"
+      },
+      {
+        "slug": "claude-code-android-phone-free-models-guide",
+        "title": "Phone Pe Claude Code: Free AI Models ke Saath Step-by-Step Setup"
       },
       {
         "slug": "legacy-system-modernization-roadmap-guide",
@@ -845,76 +847,10 @@
       }
     ]
   },
-  "browser-cache-dns": {
-    "sources": [
-      {
-        "label": "Google Public DNS — official page",
-        "url": "https://developers.google.com/speed/public-dns/docs/using"
-      }
-    ],
-    "related": [
-      {
-        "slug": "wi-fi-speed",
-        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने वाई-फाई के ‘चोर’"
-      },
-      {
-        "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
-      },
-      {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      }
-    ]
-  },
-  "bsod": {
-    "sources": [
-      {
-        "label": "Microsoft Windows Support — official page",
-        "url": "https://support.microsoft.com/windows"
-      }
-    ],
-    "related": [
-      {
-        "slug": "ai-vs-gut-feeling-body-font-family",
-        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
-      }
-    ]
-  },
-  "chatgpt-ai-image-step-by-step": {
-    "sources": [
-      {
-        "label": "OpenAI — official page",
-        "url": "https://openai.com/news/"
-      }
-    ],
-    "related": [
-      {
-        "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
-      },
-      {
-        "slug": "windows-10",
-        "title": "Windows Me C Drive Space Kaise Increase Kare | Step by Step Complete Guide"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      }
-    ]
-  },
   "claude-code-android-phone-free-models-guide": {
     "sources": [
       {
-        "label": "Anthropic — official page",
+        "label": "Anthropic news",
         "url": "https://www.anthropic.com/news"
       }
     ],
@@ -928,74 +864,74 @@
         "title": "CI/CD Pipeline Kya Hai? Step-by-Step Setup Guide"
       },
       {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       }
     ]
   },
   "computer-ki-puri-knowledge-kya-hai": {
     "sources": [
       {
-        "label": "PhonePe — official page",
+        "label": "PhonePe support",
         "url": "https://www.phonepe.com/"
       },
       {
-        "label": "Google Pay — official page",
+        "label": "Google Pay (India)",
         "url": "https://pay.google.com/intl/en_in/about/"
       }
     ],
     "related": [
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
         "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       },
       {
         "slug": "best-screen-recording-software-2025-pc",
         "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
+      },
+      {
+        "slug": "top-10-free-games-websites-for-online",
+        "title": "Top 10 Free Games Websites For Online Gaming in 2025"
       }
     ]
   },
   "computer-network-what-is-computer": {
     "sources": [
       {
-        "label": "Microsoft Learn — Windows — official page",
+        "label": "Microsoft Learn — Windows",
         "url": "https://learn.microsoft.com/windows/"
       }
     ],
     "related": [
       {
+        "slug": "basic-computer-fundamentals-in-hindi",
+        "title": "Basic Computer Fundamentals in Hindi – Complete Notes for Beginners"
+      },
+      {
         "slug": "network-device-network-device-in-hindi",
         "title": "Network Device क्या है? (Network Device in Hindi)"
       },
       {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
-      },
-      {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
+        "slug": "neural-network-kya-hai-hindi",
+        "title": "Neural Network Kya Hai? Layer, Weight aur Training Guide"
       }
     ]
   },
   "container-orchestration-kya-hai-guide": {
     "sources": [
       {
-        "label": "Kubernetes Documentation — official page",
-        "url": "https://kubernetes.io/docs/"
+        "label": "Kubernetes concepts",
+        "url": "https://kubernetes.io/docs/concepts/"
       }
     ],
     "related": [
       {
-        "slug": "ci-cd-pipeline-kya-hai-hindi",
-        "title": "CI/CD Pipeline Kya Hai? Step-by-Step Setup Guide"
+        "slug": "kubernetes-architecture-explained-hindi",
+        "title": "Kubernetes Architecture Explained: Control Plane, Nodes aur Pods"
       },
       {
-        "slug": "devops-kya-hai-hindi",
-        "title": "DevOps Kya Hai? Culture, Tools aur 6 Practices"
+        "slug": "docker-kya-hai-hindi",
+        "title": "Docker Kya Hai? Container aur VM ka Farq Aasan Bhasha Me"
       },
       {
         "slug": "server-cluster-kya-hai-guide",
@@ -1006,128 +942,120 @@
   "cybersecurity-basics-hindi": {
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "self-service-apps-kya-hai-guide",
+        "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "terraform-basics-hindi",
+        "title": "Infrastructure as Code: Terraform Basics Hindi Guide"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "system-design-basics-hindi",
+        "title": "System Design Basics: Scalability, Cache aur Load Balancer"
       }
     ]
   },
   "deepseek-deepseek-ai": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
+        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
+        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+      },
+      {
         "slug": "honor",
-        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
       }
     ]
   },
   "digital-signature-kya-hai-guide-hindi": {
     "sources": [
       {
-        "label": "GitHub Docs — official page",
-        "url": "https://docs.github.com/"
+        "label": "GitHub Docs — get started",
+        "url": "https://docs.github.com/en/get-started"
       }
     ],
     "related": [
       {
+        "slug": "proof-of-concept-poc-meaning-process-hindi",
+        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Exam…"
+      },
+      {
+        "slug": "talent-acquisition-kya-hai-guide",
+        "title": "Talent Acquisition Kya Hai? Hiring Process aur 7 Steps"
+      },
+      {
         "slug": "data-cleaning-hindi-guide",
         "title": "Data Cleaning Kya Hai? Ganda Data Saaf Karne ka 7-Step Process"
-      },
-      {
-        "slug": "product-development-process-stages-hindi-guide",
-        "title": "Product Development Kya Hai? Stages, Types aur Best Practices ki Poori Guide"
-      },
-      {
-        "slug": "proof-of-concept-poc-meaning-process-hindi",
-        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Examples"
       }
     ]
   },
   "docker-kya-hai-hindi": {
     "related": [
       {
-        "slug": "api-kya-hai-hindi",
-        "title": "API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me"
+        "slug": "web-hosting-kya-hai-hindi",
+        "title": "Web Hosting Kya Hai? Shared, VPS aur Cloud ka Farq"
       },
       {
-        "slug": "internet-kaise-kaam-karta-hai-hindi",
-        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
+        "slug": "container-orchestration-kya-hai-guide",
+        "title": "Container Orchestration Kya Hai? Kubernetes, Swarm aur Nomad"
       },
       {
-        "slug": "sql-kya-hai-hindi",
-        "title": "SQL Kya Hai? SELECT, JOIN aur GROUP BY Aasan Bhasha Me"
+        "slug": "cloud-computing-kya-hai-hindi",
+        "title": "Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq"
       }
     ]
   },
   "elon-musk-vs-apple-ai": {
     "sources": [
       {
-        "label": "Apple Newsroom — official page",
+        "label": "Apple Newsroom",
         "url": "https://www.apple.com/newsroom/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-vs-gut-feeling-body-font-family",
+        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजें…"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
   "event-driven-architecture-real-time-decisions-hindi": {
     "sources": [
       {
-        "label": "AWS Architecture Center — official page",
+        "label": "AWS Architecture Center",
         "url": "https://docs.aws.amazon.com/architecture/"
       }
     ],
     "related": [
       {
-        "slug": "prompt-engineering-hindi-guide",
-        "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
+        "slug": "proof-of-concept-poc-meaning-process-hindi",
+        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Exam…"
       },
       {
-        "slug": "transformer-attention-hindi",
-        "title": "Transformer Architecture: Attention Kaise Kaam Karta Hai"
+        "slug": "private-llm-enterprise-self-host-guide",
+        "title": "Private LLM for Enterprise: Self-Host AI Without Data Leak"
       },
       {
-        "slug": "application-software-kya-hai-guide",
-        "title": "Application Software Kya Hai? Types, Examples aur Farq"
+        "slug": "kubernetes-architecture-explained-hindi",
+        "title": "Kubernetes Architecture Explained: Control Plane, Nodes aur Pods"
       }
     ]
   },
   "free-productivity-apps-guide": {
     "sources": [
       {
-        "label": "Google Workspace — official page",
-        "url": "https://workspace.google.com/"
+        "label": "Google Workspace products",
+        "url": "https://workspace.google.com/products/"
       }
     ],
     "related": [
@@ -1136,19 +1064,19 @@
         "title": "Excel Formulas: 15 Formulas Jo Office Kaam Aasan Kar Dein"
       },
       {
-        "slug": "ai-agents-kya-hain-hindi-guide",
-        "title": "AI Agents Kya Hain? Kaam, Tools aur Limits ki Guide"
+        "slug": "self-service-apps-kya-hai-guide",
+        "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam"
       },
       {
-        "slug": "ai-automation-zapier-n8n-hindi",
-        "title": "AI Automation: Zapier aur n8n se Roz ke Kaam Aasan Guide"
+        "slug": "ai-agents-kya-hain-hindi-guide",
+        "title": "AI Agents Kya Hain? Kaam, Tools aur Limits ki Guide"
       }
     ]
   },
   "gmail-gmail": {
     "sources": [
       {
-        "label": "Gmail Help — official page",
+        "label": "Gmail Help",
         "url": "https://support.google.com/mail/"
       }
     ],
@@ -1158,67 +1086,59 @@
         "title": "Gmail की स्टोरेज क्लीनअप — मिनटों में फ्री स्पेस वापस पाएं"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "smartphone-slow-charging",
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       },
       {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
+        "slug": "10",
+        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
       }
     ]
   },
   "gmail": {
     "sources": [
       {
-        "label": "Gmail Help — official page",
+        "label": "Gmail Help",
         "url": "https://support.google.com/mail/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "browser-cache-dns",
+        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरन…"
       }
     ]
   },
   "google-ai-risk-ai": {
     "sources": [
       {
-        "label": "UIDAI — official page",
-        "url": "https://uidai.gov.in/"
-      },
-      {
-        "label": "CERT-In — official page",
-        "url": "https://www.cert-in.org.in/"
+        "label": "UIDAI",
+        "url": "https://uidai.gov.in/en/"
       }
     ],
     "related": [
+      {
+        "slug": "made-in-india-apps",
+        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौत…"
+      },
       {
         "slug": "blog-post-4",
         "title": "हैकिंग — परिभाषा, प्रकार, सुरक्षा और जरूरी जानकारी"
       },
       {
-        "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
-      },
-      {
         "slug": "link-voter-id-card-with-aadhaar-card-in",
-        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें"
+        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को…"
       }
     ]
   },
   "google-maps": {
     "sources": [
       {
-        "label": "Google Maps Help — official page",
+        "label": "Google Maps Help",
         "url": "https://support.google.com/maps/"
       }
     ],
@@ -1228,108 +1148,100 @@
         "title": "iPhone 17: क्या अब अपग्रेड करने का सही समय है?"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
   "google-pixel-10-whatsapp": {
     "sources": [
       {
-        "label": "Google Pixel blog — official page",
-        "url": "https://blog.google/products/pixel/"
+        "label": "Google Pixel help",
+        "url": "https://support.google.com/pixelphone/"
       },
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
     "related": [
       {
-        "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
-      },
-      {
-        "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
-      },
-      {
         "slug": "how-to-use-same-whatsapp-number-on-two",
         "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
+      },
+      {
+        "slug": "samsung-galaxy-z-fold-7-discount",
+        "title": "Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सब…"
+      },
+      {
+        "slug": "whatsapp-call",
+        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं…"
       }
     ]
   },
   "google-pixel-9-pro-flipkart-goat": {
     "sources": [
       {
-        "label": "Google Pixel blog — official page",
-        "url": "https://blog.google/products/pixel/"
+        "label": "Google Pixel help",
+        "url": "https://support.google.com/pixelphone/"
       },
       {
-        "label": "Flipkart — official page",
-        "url": "https://www.flipkart.com/"
+        "label": "Flipkart Help Centre",
+        "url": "https://www.flipkart.com/helpcentre"
       }
     ],
     "related": [
       {
-        "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
-      },
-      {
-        "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
-      },
-      {
         "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
+        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल…"
+      },
+      {
+        "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
+        "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
+      },
+      {
+        "slug": "airtel-perplexity-pro-chatgpt-go-199",
+        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे…"
       }
     ]
   },
   "gpay-phonepe-15-upi": {
     "sources": [
       {
-        "label": "PhonePe — official page",
+        "label": "PhonePe support",
         "url": "https://www.phonepe.com/"
       },
       {
-        "label": "Google Pay — official page",
+        "label": "Google Pay (India)",
         "url": "https://pay.google.com/intl/en_in/about/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "upi-autopay-paytm-phonepe-google-pay",
+        "title": "UPI AutoPay : कैसे बंद करें: Paytm, PhonePe और Google Pay में आसान…"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "pf-balance-pf",
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       }
     ]
   },
   "gpu-price-hike-2026-india-guide": {
     "sources": [
       {
-        "label": "NVIDIA GeForce — official page",
-        "url": "https://www.nvidia.com/en-in/geforce/"
+        "label": "Micron memory products",
+        "url": "https://www.micron.com/products/memory"
       }
     ],
     "related": [
       {
         "slug": "amd-radeon-rx-9000-price-hike-2026",
-        "title": "AMD Radeon RX 9000 Price Hike: RX 9070 XT, 9070 aur 9060 XT India Me Kitna Mehnga?"
+        "title": "AMD Radeon RX 9000 Price Hike: RX 9070 XT, 9070 aur 9060 XT India M…"
       },
       {
         "slug": "black-friday-2026-gpu-deals-india",
-        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card Lena Chahiye?"
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       },
       {
         "slug": "low-price-fast-ai-hosting-black-friday-2026",
@@ -1340,7 +1252,7 @@
   "gta-6-pc-requirements-2026-laptop-pc": {
     "sources": [
       {
-        "label": "Rockstar Games Newswire — official page",
+        "label": "Rockstar Games Newswire",
         "url": "https://www.rockstargames.com/newswire"
       }
     ],
@@ -1350,144 +1262,128 @@
         "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "gpu-price-hike-2026-india-guide",
+        "title": "GPU Price Hike 2026: Graphics Card 35% Mehnga, India Me Kya Karein?"
       }
     ]
   },
   "hindi-typing-practice": {
     "sources": [
       {
-        "label": "TypingClub lessons — official page",
-        "url": "https://www.typingclub.com/"
+        "label": "Unicode Devanagari chart",
+        "url": "https://www.unicode.org/charts/PDF/U0900.pdf"
       }
     ],
     "related": [
       {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       },
       {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
-      },
-      {
-        "slug": "blog-post-2",
-        "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में"
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
       }
     ]
   },
   "honor": {
     "sources": [
       {
-        "label": "Honor India — official page",
-        "url": "https://www.honor.com/in/"
+        "label": "Honor support (India)",
+        "url": "https://www.honor.com/in/support/"
       }
     ],
     "related": [
       {
-        "slug": "deepseek-deepseek-ai",
-        "title": "DeepSeek : कैसे चीन की सेना DeepSeek को बना रही अपना हथियार — क्या AI खुद ही टारगेट पहचानकर हमला करेगा?"
+        "slug": "oneplus-15-snapdragon-8-elite-gen-5",
+        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5…"
       },
       {
         "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
         "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
       },
       {
-        "slug": "oneplus-15-snapdragon-8-elite-gen-5",
-        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5 और नया डिजाइन"
+        "slug": "vonr-5g",
+        "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉ…"
       }
     ]
   },
   "how-to-transfer-your-fastag-from-one": {
     "sources": [
       {
-        "label": "NPCI FASTag — official page",
+        "label": "NPCI — NETC FASTag",
         "url": "https://www.npci.org.in/what-we-do/netc-fastag/product-overview"
-      },
-      {
-        "label": "RBI — official page",
-        "url": "https://www.rbi.org.in/"
       }
     ],
     "related": [
       {
-        "slug": "basic-computer-fundamentals-in-hindi",
-        "title": "Basic Computer Fundamentals in Hindi – Complete Notes for Beginners"
+        "slug": "upi-autopay-paytm-phonepe-google-pay",
+        "title": "UPI AutoPay : कैसे बंद करें: Paytm, PhonePe और Google Pay में आसान…"
       },
       {
-        "slug": "windows-10",
-        "title": "Windows Me C Drive Space Kaise Increase Kare | Step by Step Complete Guide"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "pf-balance-pf",
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       }
     ]
   },
   "how-to-use-same-whatsapp-number-on-two": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
     "related": [
       {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
-      },
-      {
-        "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "slug": "best-remote-access-software-two",
+        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
       },
       {
         "slug": "whatsapp-2",
         "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज"
+      },
+      {
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       }
     ]
   },
   "infinix-gt-30-5g": {
     "sources": [
       {
-        "label": "Infinix India — official page",
+        "label": "Infinix support",
         "url": "https://www.infinixmobiles.in/"
       }
     ],
     "related": [
       {
         "slug": "samsung-galaxy-z-fold-7-discount",
-        "title": "Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सबसे पावरफुल फोल्डेबल फोन पर साल की सबसे बड़ी गिरावट"
+        "title": "Samsung Galaxy Z Fold 7 Discount, लग्जरी अब पहुंच में, सैमसंग के सब…"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
       }
     ]
   },
   "iot-examples-india-guide": {
     "sources": [
       {
-        "label": "MeitY — official page",
-        "url": "https://www.meity.gov.in/"
+        "label": "MeitY schemes & projects",
+        "url": "https://www.meity.gov.in/content/schemes-projects"
       }
     ],
     "related": [
       {
         "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       },
       {
         "slug": "proof-of-concept-poc-meaning-process-hindi",
-        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Examples"
+        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Exam…"
       },
       {
         "slug": "windows-11-me-android-kaise-use-kare",
@@ -1498,222 +1394,214 @@
   "iphone-17-iphone-17-pro-iphone-17": {
     "sources": [
       {
-        "label": "Apple Newsroom — official page",
-        "url": "https://www.apple.com/newsroom/"
+        "label": "iPhone और iOS support",
+        "url": "https://support.apple.com/iphone"
       }
     ],
     "related": [
-      {
-        "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
-      },
       {
         "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
         "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
       },
       {
-        "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
+        "slug": "iphone-iphone-16e-6300-ai",
+        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल…"
+      },
+      {
+        "slug": "oneplus-15-snapdragon-8-elite-gen-5",
+        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5…"
       }
     ]
   },
   "iphone-17": {
     "sources": [
       {
-        "label": "Apple Newsroom — official page",
-        "url": "https://www.apple.com/newsroom/"
+        "label": "iPhone और iOS support",
+        "url": "https://support.apple.com/iphone"
       }
     ],
     "related": [
       {
-        "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
-      },
-      {
         "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
+        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल…"
       },
       {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
+        "slug": "google-maps",
+        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सह…"
       }
     ]
   },
   "iphone-iphone-16e-6300-ai": {
     "sources": [
       {
-        "label": "Apple Newsroom — official page",
-        "url": "https://www.apple.com/newsroom/"
+        "label": "iPhone और iOS support",
+        "url": "https://support.apple.com/iphone"
       }
     ],
     "related": [
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
       {
         "slug": "iphone-17",
         "title": "iPhone 17: क्या अब अपग्रेड करने का सही समय है?"
       },
       {
         "slug": "made-in-india-apps",
-        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौती, सुरक्षा और प्राइवेसी पर जोर"
+        "title": "Made-in-India Apps : मेड-इन-इंडिया ऐप्स विदेशी ऐप्स को दे रहे चुनौत…"
+      },
+      {
+        "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
+        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके…"
       }
     ]
   },
   "kubernetes-architecture-explained-hindi": {
     "sources": [
       {
-        "label": "Kubernetes Documentation — official page",
-        "url": "https://kubernetes.io/docs/"
+        "label": "AWS Architecture Center",
+        "url": "https://docs.aws.amazon.com/architecture/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "container-orchestration-kya-hai-guide",
+        "title": "Container Orchestration Kya Hai? Kubernetes, Swarm aur Nomad"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "event-driven-architecture-real-time-decisions-hindi",
+        "title": "Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision…"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "git-github-kya-hai-hindi-guide",
+        "title": "Git aur GitHub Kya Hai? Version Control ki Aasan Guide"
       }
     ]
   },
   "legacy-system-modernization-roadmap-guide": {
     "sources": [
       {
-        "label": "AWS Prescriptive Guidance — official page",
+        "label": "AWS Prescriptive Guidance",
         "url": "https://docs.aws.amazon.com/prescriptive-guidance/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "system-software-kya-hai-guide",
+        "title": "System Software Kya Hai? Types, Examples aur Kaam"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "system-design-basics-hindi",
+        "title": "System Design Basics: Scalability, Cache aur Load Balancer"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "claude-code-android-phone-free-models-guide",
+        "title": "Phone Pe Claude Code: Free AI Models ke Saath Step-by-Step Setup"
       }
     ]
   },
   "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i": {
     "sources": [
       {
-        "label": "Lenovo India — official page",
-        "url": "https://www.lenovo.com/in/en/"
+        "label": "Lenovo support",
+        "url": "https://support.lenovo.com/in/en/"
       }
     ],
     "related": [
       {
         "slug": "oneplus-15-snapdragon-8-elite-gen-5",
-        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5 और नया डिजाइन"
-      },
-      {
-        "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
+        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5…"
       },
       {
         "slug": "honor",
-        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए"
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
+      },
+      {
+        "slug": "vonr-5g",
+        "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉ…"
       }
     ]
   },
   "link-voter-id-card-with-aadhaar-card-in": {
     "sources": [
       {
-        "label": "UIDAI — official page",
-        "url": "https://uidai.gov.in/"
+        "label": "UIDAI",
+        "url": "https://uidai.gov.in/en/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "gpu-price-hike-2026-india-guide",
+        "title": "GPU Price Hike 2026: Graphics Card 35% Mehnga, India Me Kya Karein?"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "black-friday-2026-gpu-deals-india",
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       }
     ]
   },
   "llm-tokens-context-window-hindi-guide": {
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "private-llm-enterprise-self-host-guide",
+        "title": "Private LLM for Enterprise: Self-Host AI Without Data Leak"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "llm-hallucination-hindi",
+        "title": "LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "pandas-llm-data-analysis-hindi",
+        "title": "Pandas + LLM se Data Analysis: Practical Workflow Guide"
       }
     ]
   },
   "low-price-fast-ai-hosting-black-friday-2026": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
         "slug": "black-friday-2026-gpu-deals-india",
-        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card Lena Chahiye?"
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       },
       {
         "slug": "gpu-price-hike-2026-india-guide",
         "title": "GPU Price Hike 2026: Graphics Card 35% Mehnga, India Me Kya Karein?"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "web-hosting-kya-hai-hindi",
+        "title": "Web Hosting Kya Hai? Shared, VPS aur Cloud ka Farq"
       }
     ]
   },
   "made-in-india-apps": {
     "sources": [
       {
-        "label": "CERT-In — official page",
-        "url": "https://www.cert-in.org.in/"
+        "label": "Digital India",
+        "url": "https://www.digitalindia.gov.in/"
       }
     ],
     "related": [
+      {
+        "slug": "iphone-iphone-16e-6300-ai",
+        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल…"
+      },
       {
         "slug": "blog-post-4",
         "title": "हैकिंग — परिभाषा, प्रकार, सुरक्षा और जरूरी जानकारी"
       },
       {
-        "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
-      },
-      {
-        "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
-        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को कर रहे हैं बर्बाद, अभी करें दूर!"
+        "slug": "free-productivity-apps-guide",
+        "title": "Free Productivity Apps: 12 Tools Jo Kaam Aasan Kar Dein"
       }
     ]
   },
   "meesho-founder-business-model-guide": {
     "sources": [
       {
-        "label": "Meesho — official page",
-        "url": "https://www.meesho.com/"
+        "label": "Meesho help",
+        "url": "https://www.meesho.com/help"
       }
     ],
     "related": [
@@ -1722,86 +1610,74 @@
         "title": "Zepto Founder Kaun Hai? 10-Minute Delivery ka Business Model"
       },
       {
-        "slug": "frontend-vs-backend-vs-full-stack-hindi",
-        "title": "Frontend vs Backend vs Full Stack: Kaun Kya Karta Hai"
+        "slug": "ai-readiness-assessment-checklist-25-points",
+        "title": "AI Readiness Assessment: 25-Point Business Checklist Guide"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "frontend-vs-backend-vs-full-stack-hindi",
+        "title": "Frontend vs Backend vs Full Stack: Kaun Kya Karta Hai"
       }
     ]
   },
   "ms-word-how-to-delete-page-in-word": {
     "sources": [
       {
-        "label": "Microsoft Word Support — official page",
+        "label": "Microsoft Word help",
         "url": "https://support.microsoft.com/word"
       }
     ],
     "related": [
       {
         "slug": "new-blog-ko-rank-kaise-kare-15",
-        "title": "New Blog Ko Rank Kaise Kare: ब्लॉग को गूगल के पहले पेज पर लाने के 15 ज़रूरी टिप्"
+        "title": "New Blog Ko Rank Kaise Kare: ब्लॉग को गूगल के पहले पेज पर लाने के 1…"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       }
     ]
   },
   "namecheap-74-com": {
     "sources": [
       {
-        "label": "ICANN — official page",
-        "url": "https://www.icann.org/"
+        "label": "ICANN — about domain names",
+        "url": "https://www.icann.org/en/contracted-parties"
       }
     ],
     "related": [
       {
-        "slug": "ai-vs-gut-feeling-body-font-family",
-        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!"
+        "slug": "upi-autopay-paytm-phonepe-google-pay",
+        "title": "UPI AutoPay : कैसे बंद करें: Paytm, PhonePe और Google Pay में आसान…"
       },
       {
-        "slug": "bsod",
-        "title": "ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "pf-balance-pf",
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       }
     ]
   },
   "network-device-network-device-in-hindi": {
     "sources": [
       {
-        "label": "Cisco Support — official page",
+        "label": "Cisco support",
         "url": "https://www.cisco.com/c/en/us/support/index.html"
       }
     ],
     "related": [
       {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
+        "slug": "neural-network-kya-hai-hindi",
+        "title": "Neural Network Kya Hai? Layer, Weight aur Training Guide"
       },
       {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
-      },
-      {
-        "slug": "blog-post-2",
-        "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में"
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       }
     ]
   },
   "new-blog-ko-rank-kaise-kare-15": {
     "sources": [
       {
-        "label": "Google Search Central — official page",
-        "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"
+        "label": "Google Search Central docs",
+        "url": "https://developers.google.com/search/docs"
       }
     ],
     "related": [
@@ -1810,45 +1686,41 @@
         "title": "MS Word में पेज डिलीट कैसे करें | How to Delete Page in Word"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "seo",
+        "title": "SEO क्या है? पूरी जानकारी हिंदी में"
       }
     ]
   },
   "nvidia-rtx-spark-india-laptops-price-2026": {
     "sources": [
       {
-        "label": "NVIDIA GeForce — official page",
+        "label": "NVIDIA GeForce",
         "url": "https://www.nvidia.com/en-in/geforce/"
       }
     ],
     "related": [
       {
         "slug": "amd-radeon-rx-9000-price-hike-2026",
-        "title": "AMD Radeon RX 9000 Price Hike: RX 9070 XT, 9070 aur 9060 XT India Me Kitna Mehnga?"
+        "title": "AMD Radeon RX 9000 Price Hike: RX 9070 XT, 9070 aur 9060 XT India M…"
       },
       {
         "slug": "gpu-price-hike-2026-india-guide",
         "title": "GPU Price Hike 2026: Graphics Card 35% Mehnga, India Me Kya Karein?"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "black-friday-2026-gpu-deals-india",
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       }
     ]
   },
   "oneplus-15-snapdragon-8-elite-gen-5": {
     "sources": [
       {
-        "label": "OnePlus India — official page",
-        "url": "https://www.oneplus.in/"
+        "label": "OnePlus support",
+        "url": "https://www.oneplus.in/support"
       },
       {
-        "label": "Qualcomm Snapdragon — official page",
+        "label": "Qualcomm Snapdragon",
         "url": "https://www.qualcomm.com/products/mobile/snapdragon"
       }
     ],
@@ -1859,132 +1731,132 @@
       },
       {
         "slug": "honor",
-        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए"
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
       },
       {
         "slug": "vonr-5g",
-        "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉलिंग की सुविधा"
+        "title": "जियो ने देशभर में लॉन्च की VoNR सर्विस, मिलेगी अल्ट्रा-क्लीयर 5G कॉ…"
       }
     ]
   },
   "openai-sora-2-tiktok-youtube-shorts": {
     "sources": [
       {
-        "label": "YouTube Help — official page",
+        "label": "YouTube Help",
         "url": "https://support.google.com/youtube/"
       },
       {
-        "label": "OpenAI — official page",
+        "label": "OpenAI news",
         "url": "https://openai.com/news/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-video-editing-shorts-hindi",
+        "title": "AI se Video Editing aur Shorts: Free Workflow Hindi Guide"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
   "pan-20": {
     "sources": [
       {
-        "label": "Income Tax India — official page",
-        "url": "https://www.incometax.gov.in/"
+        "label": "Gmail Help",
+        "url": "https://support.google.com/mail/"
+      },
+      {
+        "label": "Income Tax e-filing portal",
+        "url": "https://www.incometax.gov.in/iec/foportal/"
       }
     ],
     "related": [
       {
-        "slug": "browser-cache-dns",
-        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड"
+        "slug": "link-voter-id-card-with-aadhaar-card-in",
+        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को…"
       },
       {
-        "slug": "link-voter-id-card-with-aadhaar-card-in",
-        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें"
+        "slug": "blog-post-2",
+        "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में"
       },
       {
         "slug": "wi-fi-speed",
-        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने वाई-फाई के ‘चोर’"
+        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें…"
       }
     ]
   },
   "perplexity-ai-india-comet-browser-ai": {
     "sources": [
       {
-        "label": "Perplexity — official page",
-        "url": "https://www.perplexity.ai/"
+        "label": "Gmail Help",
+        "url": "https://support.google.com/mail/"
+      },
+      {
+        "label": "Perplexity blog",
+        "url": "https://www.perplexity.ai/hub/blog"
       }
     ],
     "related": [
       {
-        "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
-        "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
+        "slug": "browser-cache-dns",
+        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरन…"
       },
       {
         "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
+        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे…"
       },
       {
-        "slug": "browser-cache-dns",
-        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड"
+        "slug": "honor",
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
       }
     ]
   },
   "pf-balance-pf": {
     "sources": [
       {
-        "label": "EPFO — official page",
-        "url": "https://www.epfindia.gov.in/"
+        "label": "EPFO — for employees",
+        "url": "https://www.epfindia.gov.in/site_en/For_Employees.php"
       }
     ],
     "related": [
       {
+        "slug": "wi-fi-speed",
+        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें…"
+      },
+      {
         "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "bahubali-satellite-2026",
+        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजि…"
       }
     ]
   },
   "pixel-10-10": {
     "sources": [
       {
-        "label": "Google Pixel blog — official page",
-        "url": "https://blog.google/products/pixel/"
+        "label": "Google Pixel help",
+        "url": "https://support.google.com/pixelphone/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "internet-kaise-kaam-karta-hai-hindi",
+        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
       }
     ]
   },
   "private-llm-enterprise-self-host-guide": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
@@ -1994,41 +1866,41 @@
         "title": "Pandas + LLM se Data Analysis: Practical Workflow Guide"
       },
       {
-        "slug": "llm-hallucination-hindi",
-        "title": "LLM Hallucination: Kyun Hoti Hai aur Ise Kaise Kam Karein?"
+        "slug": "sovereign-cloud-kya-hai-india-guide",
+        "title": "Sovereign Cloud Kya Hai? India Me Data Residency aur Rules"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "event-driven-architecture-real-time-decisions-hindi",
+        "title": "Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision…"
       }
     ]
   },
   "product-development-process-stages-hindi-guide": {
     "sources": [
       {
-        "label": "Startup India — official page",
-        "url": "https://www.startupindia.gov.in/"
+        "label": "Microsoft Cloud Adoption Framework",
+        "url": "https://learn.microsoft.com/azure/cloud-adoption-framework/"
       }
     ],
     "related": [
       {
-        "slug": "proof-of-concept-poc-meaning-process-hindi",
-        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Examples"
+        "slug": "agile-methodology-complete-guide-hindi",
+        "title": "Agile Methodology in Software Development: Complete Guide"
       },
       {
-        "slug": "self-service-apps-kya-hai-guide",
-        "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam"
+        "slug": "application-software-kya-hai-guide",
+        "title": "Application Software Kya Hai? Types, Examples aur Farq"
       },
       {
-        "slug": "devops-kya-hai-hindi",
-        "title": "DevOps Kya Hai? Culture, Tools aur 6 Practices"
+        "slug": "system-software-kya-hai-guide",
+        "title": "System Software Kya Hai? Types, Examples aur Kaam"
       }
     ]
   },
   "project-management-tools-guide": {
     "sources": [
       {
-        "label": "Atlassian Jira guides — official page",
+        "label": "Atlassian Jira guides",
         "url": "https://www.atlassian.com/software/jira/guides"
       }
     ],
@@ -2038,46 +1910,46 @@
         "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "free-productivity-apps-guide",
+        "title": "Free Productivity Apps: 12 Tools Jo Kaam Aasan Kar Dein"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "devops-kya-hai-hindi",
+        "title": "DevOps Kya Hai? Culture, Tools aur 6 Practices"
       }
     ]
   },
   "proof-of-concept-poc-meaning-process-hindi": {
     "sources": [
       {
-        "label": "Microsoft Cloud Adoption Framework — official page",
+        "label": "Microsoft Cloud Adoption Framework",
         "url": "https://learn.microsoft.com/azure/cloud-adoption-framework/"
       }
     ],
     "related": [
       {
-        "slug": "product-development-process-stages-hindi-guide",
-        "title": "Product Development Kya Hai? Stages, Types aur Best Practices ki Poori Guide"
+        "slug": "iot-examples-india-guide",
+        "title": "IoT Examples India Me: 8 Real Use Cases aur Setup Guide"
       },
       {
-        "slug": "self-service-apps-kya-hai-guide",
-        "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam"
+        "slug": "event-driven-architecture-real-time-decisions-hindi",
+        "title": "Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision…"
       },
       {
-        "slug": "data-cleaning-hindi-guide",
-        "title": "Data Cleaning Kya Hai? Ganda Data Saaf Karne ka 7-Step Process"
+        "slug": "application-software-kya-hai-guide",
+        "title": "Application Software Kya Hai? Types, Examples aur Farq"
       }
     ]
   },
   "rag-vs-fine-tuning-kaunsa-chune-hindi": {
     "related": [
       {
-        "slug": "machine-learning-vs-deep-learning-hindi",
-        "title": "Machine Learning vs Deep Learning: Farq aur Kab Kya Chunein"
-      },
-      {
         "slug": "sql-vs-nosql-database-hindi",
         "title": "SQL vs NoSQL: Kab Kaunsa Database Chunein, 6 Sawaal"
+      },
+      {
+        "slug": "machine-learning-vs-deep-learning-hindi",
+        "title": "Machine Learning vs Deep Learning: Farq aur Kab Kya Chunein"
       },
       {
         "slug": "saas-outsourcing-guide-hindi",
@@ -2088,30 +1960,30 @@
   "ram-ssd-gpu-memory-shortage-2027-pc-build": {
     "sources": [
       {
-        "label": "NVIDIA GeForce — official page",
-        "url": "https://www.nvidia.com/en-in/geforce/"
+        "label": "Micron memory products",
+        "url": "https://www.micron.com/products/memory"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "gpu-price-hike-2026-india-guide",
+        "title": "GPU Price Hike 2026: Graphics Card 35% Mehnga, India Me Kya Karein?"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "black-friday-2026-gpu-deals-india",
+        "title": "Black Friday 2026 GPU Deals: NVIDIA, AMD aur Intel Me Kaunsa Card L…"
       },
       {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "serverless-kya-hai-hindi",
+        "title": "Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai"
       }
     ]
   },
   "realme-15-pro-5g-24-7000mah-80w-ai": {
     "sources": [
       {
-        "label": "Realme India — official page",
-        "url": "https://www.realme.com/in/"
+        "label": "Realme support",
+        "url": "https://www.realme.com/in/support"
       }
     ],
     "related": [
@@ -2121,117 +1993,109 @@
       },
       {
         "slug": "oneplus-15-snapdragon-8-elite-gen-5",
-        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5 और नया डिजाइन"
+        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5…"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
+        "slug": "honor",
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
       }
     ]
   },
   "saas-outsourcing-guide-hindi": {
     "sources": [
       {
-        "label": "Startup India — official page",
+        "label": "Startup India hub",
         "url": "https://www.startupindia.gov.in/"
       }
     ],
     "related": [
       {
-        "slug": "cloud-computing-kya-hai-hindi",
-        "title": "Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq"
+        "slug": "rag-vs-fine-tuning-kaunsa-chune-hindi",
+        "title": "RAG vs Fine-Tuning: AI Me Kaunsa Tarika Kab Chunein"
+      },
+      {
+        "slug": "sql-vs-nosql-database-hindi",
+        "title": "SQL vs NoSQL: Kab Kaunsa Database Chunein, 6 Sawaal"
       },
       {
         "slug": "machine-learning-vs-deep-learning-hindi",
         "title": "Machine Learning vs Deep Learning: Farq aur Kab Kya Chunein"
-      },
-      {
-        "slug": "rag-vs-fine-tuning-kaunsa-chune-hindi",
-        "title": "RAG vs Fine-Tuning: AI Me Kaunsa Tarika Kab Chunein"
       }
     ]
   },
   "samsung-galaxy-z-fold-7-discount": {
     "sources": [
       {
-        "label": "Samsung Newsroom India — official page",
-        "url": "https://news.samsung.com/in/"
+        "label": "Samsung support (India)",
+        "url": "https://www.samsung.com/in/support/"
       }
     ],
     "related": [
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
         "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
+        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे…"
       },
       {
-        "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       }
     ]
   },
   "self-service-apps-kya-hai-guide": {
     "sources": [
       {
-        "label": "Startup India — official page",
+        "label": "Startup India hub",
         "url": "https://www.startupindia.gov.in/"
       }
     ],
     "related": [
       {
-        "slug": "product-development-process-stages-hindi-guide",
-        "title": "Product Development Kya Hai? Stages, Types aur Best Practices ki Poori Guide"
-      },
-      {
-        "slug": "proof-of-concept-poc-meaning-process-hindi",
-        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Examples"
+        "slug": "free-productivity-apps-guide",
+        "title": "Free Productivity Apps: 12 Tools Jo Kaam Aasan Kar Dein"
       },
       {
         "slug": "ai-agents-kya-hain-hindi-guide",
         "title": "AI Agents Kya Hain? Kaam, Tools aur Limits ki Guide"
+      },
+      {
+        "slug": "prompt-engineering-hindi-guide",
+        "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
       }
     ]
   },
   "seo": {
     "sources": [
       {
-        "label": "Google Search Central — official page",
+        "label": "Google Search Central docs",
         "url": "https://developers.google.com/search/docs"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "new-blog-ko-rank-kaise-kare-15",
+        "title": "New Blog Ko Rank Kaise Kare: ब्लॉग को गूगल के पहले पेज पर लाने के 1…"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
-      },
-      {
-        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
-        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+        "slug": "core-web-vitals-hindi",
+        "title": "Core Web Vitals: LCP, INP aur CLS ko Kaise Sudharein"
       }
     ]
   },
   "server-cluster-kya-hai-guide": {
     "sources": [
       {
-        "label": "AWS Architecture Center — official page",
-        "url": "https://docs.aws.amazon.com/architecture/"
+        "label": "AWS overview (docs)",
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html"
       }
     ],
     "related": [
       {
-        "slug": "ci-cd-pipeline-kya-hai-hindi",
-        "title": "CI/CD Pipeline Kya Hai? Step-by-Step Setup Guide"
+        "slug": "system-design-basics-hindi",
+        "title": "System Design Basics: Scalability, Cache aur Load Balancer"
       },
       {
-        "slug": "devops-kya-hai-hindi",
-        "title": "DevOps Kya Hai? Culture, Tools aur 6 Practices"
+        "slug": "self-service-apps-kya-hai-guide",
+        "title": "Self-Service Apps Kya Hain? Users Khud Kaam Karein, Load Kam"
       },
       {
         "slug": "container-orchestration-kya-hai-guide",
@@ -2242,73 +2106,69 @@
   "smart-tv": {
     "sources": [
       {
-        "label": "Samsung TV Support — official page",
+        "label": "Samsung TV support",
         "url": "https://www.samsung.com/in/support/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       },
       {
-        "slug": "ai",
-        "title": "AI में कौन सा देश सबसे आगे? भारत ने लगाई लंबी छलांग, जानिए कैसे कई देशों को छोड़ा पीछे"
-      },
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "whatsapp",
+        "title": "WhatsApp : के फालतू फोटोज से नहीं भरेगी फोन की गैलरी, बस बंद कर दें…"
       }
     ]
   },
   "smartphone-slow-charging": {
     "sources": [
       {
-        "label": "USB-IF — official page",
-        "url": "https://www.usb.org/"
+        "label": "USB-IF — USB charging",
+        "url": "https://www.usb.org/usb-charger-pd"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
-      },
-      {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      },
-      {
         "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
-        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को कर रहे हैं बर्बाद, अभी करें दूर!"
+        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके…"
+      },
+      {
+        "slug": "wi-fi-speed",
+        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें…"
+      },
+      {
+        "slug": "how-to-use-same-whatsapp-number-on-two",
+        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       }
     ]
   },
   "sovereign-cloud-kya-hai-india-guide": {
     "sources": [
       {
-        "label": "MeitY — official page",
-        "url": "https://www.meity.gov.in/"
+        "label": "MeitY schemes & projects",
+        "url": "https://www.meity.gov.in/content/schemes-projects"
       }
     ],
     "related": [
       {
+        "slug": "aws-cloud-kya-hai-guide",
+        "title": "AWS Cloud Kya Hai? Services, Pricing aur Shuruaat ki Guide"
+      },
+      {
+        "slug": "private-llm-enterprise-self-host-guide",
+        "title": "Private LLM for Enterprise: Self-Host AI Without Data Leak"
+      },
+      {
         "slug": "cloud-computing-kya-hai-hindi",
         "title": "Cloud Computing Kya Hai? IaaS, PaaS aur SaaS ka Farq"
-      },
-      {
-        "slug": "serverless-kya-hai-hindi",
-        "title": "Serverless Kya Hai? Lambda, Cold Start aur Kab Sahi Hai"
-      },
-      {
-        "slug": "data-cleaning-hindi-guide",
-        "title": "Data Cleaning Kya Hai? Ganda Data Saaf Karne ka 7-Step Process"
       }
     ]
   },
   "system-software-kya-hai-guide": {
     "sources": [
       {
-        "label": "Microsoft Learn — official page",
+        "label": "Microsoft Learn",
         "url": "https://learn.microsoft.com/"
       }
     ],
@@ -2318,130 +2178,126 @@
         "title": "Application Software Kya Hai? Types, Examples aur Farq"
       },
       {
-        "slug": "internet-kaise-kaam-karta-hai-hindi",
-        "title": "Internet Kaise Kaam Karta Hai: DNS, IP aur HTTP Aasan Bhasha Me"
+        "slug": "free-productivity-apps-guide",
+        "title": "Free Productivity Apps: 12 Tools Jo Kaam Aasan Kar Dein"
       },
       {
-        "slug": "prompt-engineering-hindi-guide",
-        "title": "Prompt Engineering Kya Hai? 12 Techniques Jo Kaam Karte Hain"
+        "slug": "legacy-system-modernization-roadmap-guide",
+        "title": "Legacy System Modernization: Cost, Strategy aur 6-Step Roadmap"
       }
     ]
   },
   "talent-acquisition-kya-hai-guide": {
     "sources": [
       {
-        "label": "Ministry of Labour — official page",
-        "url": "https://labour.gov.in/"
+        "label": "Ministry of Labour — policies",
+        "url": "https://labour.gov.in/labour-policies"
       }
     ],
     "related": [
       {
-        "slug": "data-cleaning-hindi-guide",
-        "title": "Data Cleaning Kya Hai? Ganda Data Saaf Karne ka 7-Step Process"
+        "slug": "proof-of-concept-poc-meaning-process-hindi",
+        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Exam…"
+      },
+      {
+        "slug": "ai-presentation-behtar-kaise-kare-8-steps",
+        "title": "AI se Presentation Behtar Kaise Karein: Planning se Delivery Tak 8…"
       },
       {
         "slug": "digital-signature-kya-hai-guide-hindi",
         "title": "Digital Signature Kya Hai? DSC, eSign aur Process ki Poori Guide"
-      },
-      {
-        "slug": "proof-of-concept-poc-meaning-process-hindi",
-        "title": "Proof of Concept (POC) Kya Hota Hai? Meaning, Process aur Real Examples"
       }
     ]
   },
   "top-10-free-games-websites-for-online": {
     "sources": [
       {
-        "label": "Steam — official page",
-        "url": "https://store.steampowered.com/"
+        "label": "Steam — free to play",
+        "url": "https://store.steampowered.com/genre/Free%20to%20Play/"
       }
     ],
     "related": [
-      {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
-      },
       {
         "slug": "best-screen-recording-software-2025-pc",
         "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "6-deepseek-r1-ai-prompt-to-make-money",
+        "title": "6 DeepSeek R1 AI Prompt to Make Money Online"
+      },
+      {
+        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
+        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Busin…"
       }
     ]
   },
   "top-free-ai-websites-in-hindi-2026": {
     "sources": [
       {
-        "label": "Google AI blog — official page",
+        "label": "Google AI blog",
         "url": "https://blog.google/technology/ai/"
       }
     ],
     "related": [
       {
+        "slug": "2026",
+        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+      },
+      {
         "slug": "best-remote-access-software-two",
         "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
       },
       {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
-      },
-      {
-        "slug": "blog-post-2",
-        "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में"
+        "slug": "bahubali-satellite-2026",
+        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजि…"
       }
     ]
   },
   "tv-remote-broken": {
     "sources": [
       {
-        "label": "Samsung TV Support — official page",
+        "label": "Samsung TV support",
         "url": "https://www.samsung.com/in/support/"
       }
     ],
     "related": [
       {
         "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       },
       {
-        "slug": "wi-fi-speed",
-        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने वाई-फाई के ‘चोर’"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "best-remote-access-software-two",
+        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
       }
     ]
   },
   "tv": {
     "sources": [
       {
-        "label": "Microsoft Windows Support — official page",
+        "label": "Windows help & learning",
         "url": "https://support.microsoft.com/windows"
       }
     ],
     "related": [
       {
-        "slug": "best-screen-recording-software-2025-pc",
-        "title": "Best Screen Recording Software 2025 – PC & Laptop ke liye Top Tools"
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
       },
       {
-        "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "slug": "gta-6-pc-requirements-2026-laptop-pc",
+        "title": "🎮 GTA 6 PC Requirements 2026: क्या आपका Laptop या PC GTA 6 चला पाएग…"
       },
       {
-        "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
-        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को कर रहे हैं बर्बाद, अभी करें दूर!"
+        "slug": "database-indexing-hindi",
+        "title": "Database Indexing Kya Hai? Slow Query ka Asli Karan aur Fix"
       }
     ]
   },
   "unit-testing-kya-hai-guide": {
     "sources": [
       {
-        "label": "pytest Documentation — official page",
-        "url": "https://docs.pytest.org/"
+        "label": "pytest documentation",
+        "url": "https://docs.pytest.org/en/stable/"
       }
     ],
     "related": [
@@ -2450,89 +2306,85 @@
         "title": "API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "product-development-process-stages-hindi-guide",
+        "title": "Product Development Kya Hai? Stages, Types aur Best Practices ki Po…"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "legacy-system-modernization-roadmap-guide",
+        "title": "Legacy System Modernization: Cost, Strategy aur 6-Step Roadmap"
       }
     ]
   },
   "upi-autopay-paytm-phonepe-google-pay": {
     "sources": [
       {
-        "label": "Paytm — official page",
-        "url": "https://paytm.com/"
+        "label": "Paytm help",
+        "url": "https://paytm.com/help"
       },
       {
-        "label": "PhonePe — official page",
+        "label": "PhonePe support",
         "url": "https://www.phonepe.com/"
       }
     ],
     "related": [
       {
         "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       },
       {
         "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
+        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सह…"
+      },
+      {
+        "slug": "smartphone-slow-charging",
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       }
     ]
   },
   "vk-tech-learn-ai-assistant-ai-chatbot": {
     "sources": [
       {
-        "label": "Google DeepMind — official page",
+        "label": "Google DeepMind blog",
         "url": "https://deepmind.google/discover/blog/"
       }
     ],
     "related": [
       {
-        "slug": "ai-vs-gut-feeling-body-font-family",
-        "title": "AI vs Gut Feeling: मशीनें अब आपको देंगी सलाह, आर्टिफिशियल इंटेलिजेंस दिल-दिमाग की जंग में बनेगा रेफरी!"
+        "slug": "ai-chatbot-kaise-banayein-hindi",
+        "title": "AI Chatbot Kaise Banayein: No-Code se API Tak Full Guide"
       },
       {
-        "slug": "bsod",
-        "title": "ब्लू स्क्रीन ऑफ डेथ (BSOD): यह क्या है और इसे हमेशा के लिए कैसे ठीक करें?"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "title": "एआई क्या है? और मानव बुद्धि से कैसे भिन्न है"
       }
     ]
   },
   "vonr-5g": {
     "sources": [
       {
-        "label": "Jio — official page",
-        "url": "https://www.jio.com/"
+        "label": "Jio help",
+        "url": "https://www.jio.com/help"
       }
     ],
     "related": [
       {
-        "slug": "airtel-perplexity-pro-chatgpt-go-199",
-        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे मिलेगी बड़ी वैल्यू (पूर्ण गाइड)"
+        "slug": "oneplus-15-snapdragon-8-elite-gen-5",
+        "title": "OnePlus 15 अक्टूबर में होगा लॉन्च, मिलेगा Snapdragon 8 Elite Gen 5…"
       },
       {
         "slug": "honor",
-        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च कर दिया है। चीन में लॉन्च हुए"
+        "title": "टेक्नोलॉजी की दुनिया में Honor ने एक और नया और ताकतवर डिवाइस लॉन्च…"
       },
       {
-        "slug": "lenovo-legion-gen-10-pro-7i-7i-pro-5i-5i",
-        "title": "Lenovo ने लॉन्च किया Legion Gen 10: Pro 7i, 7i, Pro 5i और 5i"
+        "slug": "airtel-perplexity-pro-chatgpt-go-199",
+        "title": "Airtel, Perplexity Pro और ChatGPT Go — 199 रुपये वाले प्लान से कैसे…"
       }
     ]
   },
   "whatsapp-2": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
@@ -2543,44 +2395,40 @@
       },
       {
         "slug": "whatsapp-call",
-        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका"
-      },
-      {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं…"
       }
     ]
   },
   "whatsapp-aadhaar-whatsapp": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       },
       {
-        "label": "UIDAI — official page",
-        "url": "https://uidai.gov.in/"
+        "label": "UIDAI",
+        "url": "https://uidai.gov.in/en/"
       }
     ],
     "related": [
       {
         "slug": "link-voter-id-card-with-aadhaar-card-in",
-        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को आधार कार्ड से लिंक कैसे करें"
+        "title": "Link Voter ID Card with Aadhaar Card in Hindi | वोटर आईडी कार्ड को…"
       },
       {
-        "slug": "whatsapp-call",
-        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका"
+        "slug": "how-to-use-same-whatsapp-number-on-two",
+        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       },
       {
-        "slug": "blog-post-4",
-        "title": "हैकिंग — परिभाषा, प्रकार, सुरक्षा और जरूरी जानकारी"
+        "slug": "whatsapp-2",
+        "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज"
       }
     ]
   },
   "whatsapp-call": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
@@ -2590,67 +2438,67 @@
         "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       },
       {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      },
-      {
         "slug": "whatsapp-2",
         "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज"
+      },
+      {
+        "slug": "api-kya-hai-hindi",
+        "title": "API Kya Hai? REST, JSON aur Pehla API Call Aasan Bhasha Me"
       }
     ]
   },
   "whatsapp-pnr": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
     "related": [
       {
         "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
+        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरन…"
       },
       {
         "slug": "whatsapp-2",
         "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज"
       },
       {
-        "slug": "whatsapp-call",
-        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका"
+        "slug": "how-to-use-same-whatsapp-number-on-two",
+        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       }
     ]
   },
   "whatsapp-real-time-message-translation": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
     "related": [
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "event-driven-architecture-real-time-decisions-hindi",
+        "title": "Event-Driven Architecture Kya Hai? Enterprise Me Real-Time Decision…"
       },
       {
-        "slug": "ai-tools-ki-wave-2025-top-free-ai-tools",
-        "title": "AI Tools Ki Wave 2025: Top Free AI Tools (Students, Bloggers, Business & Video Creation) – Real Use Cases Ke Saath"
+        "slug": "whatsapp-call",
+        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं…"
       },
       {
-        "slug": "google-maps",
-        "title": "अब नहीं होंगे लेट! Google Maps में छिपा है कमाल का फीचर, कहीं भी सही समय पर पहुंचाएगा"
+        "slug": "how-to-use-same-whatsapp-number-on-two",
+        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       }
     ]
   },
   "whatsapp-windows": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       },
       {
-        "label": "Microsoft Windows Support — official page",
+        "label": "Windows help & learning",
         "url": "https://support.microsoft.com/windows"
       }
     ],
@@ -2660,133 +2508,129 @@
         "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       },
       {
-        "slug": "iphone-iphone-16e-6300-ai",
-        "title": "अब तक का सबसे सस्ता iPhone! iPhone 16e पर ₹6,300 की छूट के साथ मिल रहे हैं AI फीचर्स"
+        "slug": "whatsapp-2",
+        "title": "WhatsApp स्टेटस में अब सीधे फोटो कोलाज"
       },
       {
-        "slug": "tv",
-        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker, Slow Laptop और Printer की पूरी Guide"
+        "slug": "whatsapp-call",
+        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं…"
       }
     ]
   },
   "whatsapp": {
     "sources": [
       {
-        "label": "WhatsApp Help Center — official page",
+        "label": "WhatsApp Help Center",
         "url": "https://faq.whatsapp.com/"
       }
     ],
     "related": [
       {
-        "slug": "pf-balance-pf",
-        "title": "PF Balance : मोबाइल से PF बैलेंस चेक करने का सबसे आसान तरीका, इंटरनेट की भी नहीं पड़ेगी जरूरत"
-      },
-      {
-        "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
+        "slug": "how-to-use-same-whatsapp-number-on-two",
+        "title": "How to Use The Same WhatsApp Number On Two Smartphone in Hindi"
       },
       {
         "slug": "whatsapp-call",
-        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं ये तरीका"
+        "title": "बाएं हाथ का खेल है WhatsApp Call रिकॉर्डिंग! बहुत कम लोग जानते हैं…"
+      },
+      {
+        "slug": "smartphone-slow-charging",
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       }
     ]
   },
   "wi-fi-speed": {
     "sources": [
       {
-        "label": "Microsoft Wi-Fi troubleshooting — official page",
-        "url": "https://support.microsoft.com/windows/fix-wi-fi-connection-issues-in-windows-9424a1f7-6a3b-65a6-4d78-7f07eee84d2c"
+        "label": "Windows Wi-Fi troubleshooting",
+        "url": "https://support.microsoft.com/windows"
       }
     ],
     "related": [
       {
-        "slug": "browser-cache-dns",
-        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरनेट स्पीड"
-      },
-      {
         "slug": "wifi-speed-boost-tips-slow-wi-fi-5",
-        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके इंटरनेट को कर रहे हैं बर्बाद, अभी करें दूर!"
+        "title": "WiFi Speed Boost Tips : Slow Wi-Fi से हैं परेशान? ये 5 डिवाइस आपके…"
       },
       {
-        "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
+        "slug": "browser-cache-dns",
+        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरन…"
+      },
+      {
+        "slug": "smartphone-slow-charging",
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
       }
     ]
   },
   "wifi-speed-boost-tips-slow-wi-fi-5": {
     "sources": [
       {
-        "label": "Microsoft Wi-Fi troubleshooting — official page",
-        "url": "https://support.microsoft.com/windows/fix-wi-fi-connection-issues-in-windows-9424a1f7-6a3b-65a6-4d78-7f07eee84d2c"
+        "label": "Windows Wi-Fi troubleshooting",
+        "url": "https://support.microsoft.com/windows"
       }
     ],
     "related": [
       {
-        "slug": "smartphone-slow-charging",
-        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जानें तेजी से चार्ज करने के ये आसान तरीके"
-      },
-      {
         "slug": "wi-fi-speed",
-        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें अपने वाई-फाई के ‘चोर’"
+        "title": "Wi-Fi Speed : क्या आपका इंटरनेट भी अचानक स्लो हो गया है? ऐसे पकड़ें…"
       },
       {
-        "slug": "bahubali-satellite-2026",
-        "title": "Bahubali Satellite: 2026 में भारत में सैटेलाइट इंटरनेट से आएगी डिजिटल क्रांति"
+        "slug": "smartphone-slow-charging",
+        "title": "Smartphone slow charging : स्मार्टफोन स्लो चार्जिंग से परेशान? जाने…"
+      },
+      {
+        "slug": "browser-cache-dns",
+        "title": "Browser Cache : ब्राउज़र कैश से लेकर DNS तक— ऐसे सुधरेगी आपकी इंटरन…"
       }
     ]
   },
   "win-11": {
     "sources": [
       {
-        "label": "Microsoft print help — official page",
-        "url": "https://support.microsoft.com/windows/fix-printing-problems-in-windows-f5d5b5d7-7f0f-4d0e-3d8a-0f1b4b7c9a11"
+        "label": "Windows printing help",
+        "url": "https://support.microsoft.com/windows"
       }
     ],
     "related": [
-      {
-        "slug": "7",
-        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
-      },
       {
         "slug": "windows-mac",
         "title": "कंप्यूटर को फॉर्मेट कैसे करें (Windows और Mac)"
       },
       {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
+        "slug": "7",
+        "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
       }
     ]
   },
   "windows-10": {
     "sources": [
       {
-        "label": "Microsoft Windows Support — official page",
+        "label": "Windows help & learning",
         "url": "https://support.microsoft.com/windows"
       }
     ],
     "related": [
       {
-        "slug": "basic-computer-fundamentals-in-hindi",
-        "title": "Basic Computer Fundamentals in Hindi – Complete Notes for Beginners"
-      },
-      {
         "slug": "tv",
-        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker, Slow Laptop और Printer की पूरी Guide"
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "windows-mac",
+        "title": "कंप्यूटर को फॉर्मेट कैसे करें (Windows और Mac)"
+      },
+      {
+        "slug": "ci-cd-pipeline-kya-hai-hindi",
+        "title": "CI/CD Pipeline Kya Hai? Step-by-Step Setup Guide"
       }
     ]
   },
   "windows-11-me-android-kaise-use-kare": {
     "sources": [
       {
-        "label": "Android Developers — official page",
+        "label": "Android Developers",
         "url": "https://developer.android.com/"
       },
       {
-        "label": "Microsoft Windows Support — official page",
+        "label": "Windows help & learning",
         "url": "https://support.microsoft.com/windows"
       }
     ],
@@ -2796,42 +2640,42 @@
         "title": "IoT Examples India Me: 8 Real Use Cases aur Setup Guide"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "claude-code-android-phone-free-models-guide",
+        "title": "Phone Pe Claude Code: Free AI Models ke Saath Step-by-Step Setup"
       },
       {
-        "slug": "2026",
-        "title": "2026 माइक्रोसॉफ्ट कोपायलट क्या है और कोपायलट का उपयोग कैसे करें"
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
       }
     ]
   },
   "windows-mac": {
     "sources": [
       {
-        "label": "Microsoft Windows Support — official page",
+        "label": "Windows help & learning",
         "url": "https://support.microsoft.com/windows"
       }
     ],
     "related": [
       {
+        "slug": "tv",
+        "title": "Windows 11 की Common Problems कैसे ठीक करें? Safe Mode, BitLocker…"
+      },
+      {
+        "slug": "windows-11-me-android-kaise-use-kare",
+        "title": "Windows 11 Me Android Kaise Use Kare: 4 Tarike, Full Setup"
+      },
+      {
         "slug": "7",
         "title": "स्टूडेंट्स ज़रूर अपनाएं ये 7 महत्वपूर्ण कंप्यूटर स्किल्स"
-      },
-      {
-        "slug": "best-remote-access-software-two",
-        "title": "Best Remote Access Software & Two PC/Laptop कैसे कनेक्ट करें (2026)"
-      },
-      {
-        "slug": "blog-post-2",
-        "title": "ईमेल क्या है और कैसे काम करता है - पूरी जानकारी हिंदी में"
       }
     ]
   },
   "zepto-founder-business-model-guide": {
     "sources": [
       {
-        "label": "Zepto — official page",
-        "url": "https://www.zeptonow.com/"
+        "label": "Zepto help",
+        "url": "https://www.zeptonow.com/help"
       }
     ],
     "related": [
@@ -2840,12 +2684,12 @@
         "title": "Meesho Founder Kaun Hai? Business Model aur 6 Lessons"
       },
       {
-        "slug": "frontend-vs-backend-vs-full-stack-hindi",
-        "title": "Frontend vs Backend vs Full Stack: Kaun Kya Karta Hai"
+        "slug": "ai-readiness-assessment-checklist-25-points",
+        "title": "AI Readiness Assessment: 25-Point Business Checklist Guide"
       },
       {
-        "slug": "10",
-        "title": "सस्ते फ्लाइट टिकट खरीदने के 10 आसान तरीके"
+        "slug": "ai-presentation-behtar-kaise-kare-8-steps",
+        "title": "AI se Presentation Behtar Kaise Karein: Planning se Delivery Tak 8…"
       }
     ]
   }

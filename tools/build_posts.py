@@ -537,13 +537,43 @@ def update_index(posts):
 
 
 LINKS_PATH = os.path.join(ROOT, "tools", "post_sources.json")
+LINK_BLOCKS = (
+    re.compile(r'\n?[ \t]*<h2 id="post-sources">.*?</ul>\n', re.S),
+    re.compile(r'\n?[ \t]*<p class="post-related">.*?</p>\n', re.S),
+)
+
+
+def _source_blocks(entry):
+    blocks = []
+    if entry.get("sources"):
+        items = "\n".join(
+            '      <li><a href="{}" rel="nofollow noopener" target="_blank">{}</a></li>'.format(
+                html.escape(source["url"], quote=True), html.escape(source["label"])
+            )
+            for source in entry["sources"]
+        )
+        blocks.append(
+            '    <h2 id="post-sources">स्रोत</h2>\n    <ul class="post-sources">\n'
+            + items
+            + "\n    </ul>"
+        )
+    if entry.get("related"):
+        links = [
+            '<a href="/posts/{}.html">{}</a>'.format(
+                html.escape(item["slug"], quote=True), html.escape(item["title"])
+            )
+            for item in entry["related"]
+        ]
+        joined = ", ".join(links[:-1]) + " aur " + links[-1] if len(links) > 1 else links[0]
+        blocks.append(f'    <p class="post-related">Aage padhein: {joined}.</p>')
+    return blocks
 
 
 def apply_post_links(posts_dir=None):
-    """Append official sources and 2-3 internal links to older posts.
+    """Append official sources and 3 internal links to older posts.
 
-    Content is untouched: the block is inserted just before </article> and is
-    skipped when the same marker already exists, so syncs stay idempotent.
+    The article text is never touched: the generated block is replaced in place,
+    so a changed mapping updates the page and re-runs stay idempotent.
     """
     posts_dir = posts_dir or OUT_DIR
     data = _read_json(LINKS_PATH, {})
@@ -552,48 +582,26 @@ def apply_post_links(posts_dir=None):
         if not name.endswith(".html"):
             continue
         slug = name[:-5]
-        entry = data.get(slug) or {}
-        if not entry:
-            continue
         path = os.path.join(posts_dir, name)
         with open(path, encoding="utf-8") as handle:
             page = handle.read()
 
-        blocks = []
-        if entry.get("sources") and 'id="post-sources"' not in page:
-            items = "\n".join(
-                '      <li><a href="{}" rel="nofollow noopener" target="_blank">{}</a></li>'.format(
-                    html.escape(source["url"], quote=True), html.escape(source["label"])
-                )
-                for source in entry["sources"]
-            )
-            blocks.append(
-                '    <h2 id="post-sources">स्रोत</h2>\n'
-                '    <ul class="post-sources">\n' + items + "\n    </ul>"
-            )
-        if entry.get("related") and 'class="post-related"' not in page:
-            links = [
-                '<a href="/posts/{}.html">{}</a>'.format(
-                    html.escape(item["slug"], quote=True), html.escape(item["title"])
-                )
-                for item in entry["related"]
-            ]
-            joined = ", ".join(links[:-1]) + " aur " + links[-1] if len(links) > 1 else links[0]
-            blocks.append(f'    <p class="post-related">Aage padhein: {joined}.</p>')
-
+        stripped = page
+        for pattern in LINK_BLOCKS:
+            stripped = pattern.sub("", stripped)
+        blocks = _source_blocks(data.get(slug) or {})
         if not blocks:
-            continue
-        pos = page.rfind("</article>")
-        if len(blocks) == 1 and blocks[0].lstrip().startswith('<h2 id="post-sources"'):
-            head = page.find('<p class="post-related"')
-            if head != -1:
-                pos = head
-        if pos == -1:
-            continue
-        page = page[:pos] + "\n".join(blocks) + "\n    " + page[pos:]
-        with open(path, "w", encoding="utf-8") as handle:
-            handle.write(page)
-        changed += 1
+            updated = stripped
+        else:
+            pos = stripped.rfind("</article>")
+            if pos == -1:
+                continue
+            head = stripped[:pos].rstrip()
+            updated = head + "\n\n" + "\n".join(blocks) + "\n    " + stripped[pos:]
+        if updated != page:
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write(updated)
+            changed += 1
     return changed
 
 

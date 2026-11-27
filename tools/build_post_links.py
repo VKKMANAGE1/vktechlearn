@@ -1,208 +1,206 @@
 #!/usr/bin/env python3
 """Build tools/post_sources.json: official sources + related posts for older posts.
 
-Blogger-synced posts often ship without outbound sources or internal links. This
-script maps each post to (a) 1-2 official pages for the brand/topic in its title
-and (b) 3 related posts on this site, so tools/build_posts.py can append a
-sources block and an "Aage padhein" line without touching the article itself.
+Each post gets 1-2 official pages for the brand/topic in its title and 3 related
+posts picked by shared topic tags, so tools/build_posts.py can append a sources
+block and an "Aage padhein" line without touching the article itself.
 
-    python3 tools/build_post_links.py            # write tools/post_sources.json
-    python3 tools/build_post_links.py --report   # only print coverage
+    python3 tools/build_post_links.py        # write tools/post_sources.json
+    python3 tools/build_post_links.py --check  # verify every source URL (HTTP 200)
 """
 import glob
 import html
 import json
+import math
 import os
 import re
 import sys
+import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 POSTS = os.path.join(ROOT, "posts")
 OUT = os.path.join(ROOT, "tools", "post_sources.json")
 FLAGS = os.path.join(ROOT, "tools", "content_flags.json")
 
-# brand/keyword -> (label, official url)
+# (title regex, source label, official deep page) -- brands first, then topics.
 BRANDS = [
-    (r"iphone|apple|ios\b|ipad|macbook", "Apple Newsroom", "https://www.apple.com/newsroom/"),
-    (r"samsung|galaxy", "Samsung Newsroom India", "https://news.samsung.com/in/"),
-    (r"pixel|google pixel", "Google Pixel blog", "https://blog.google/products/pixel/"),
-    (r"oneplus", "OnePlus India", "https://www.oneplus.in/"),
-    (r"realme", "Realme India", "https://www.realme.com/in/"),
-    (r"infinix", "Infinix India", "https://www.infinixmobiles.in/"),
-    (r"xiaomi|redmi|poco|\bmi\b", "Xiaomi India", "https://www.mi.com/in/"),
-    (r"vivo", "Vivo India", "https://www.vivo.com/in/"),
-    (r"oppo", "Oppo India", "https://www.oppo.com/in/"),
-    (r"nothing phone|nothing\b", "Nothing", "https://nothing.tech/"),
-    (r"motorola|moto\b", "Motorola India", "https://www.motorola.in/"),
-    (r"lenovo", "Lenovo India", "https://www.lenovo.com/in/en/"),
-    (r"\bhp\b|hp laptop|hp printer", "HP Support", "https://support.hp.com/in-en"),
-    (r"dell", "Dell India", "https://www.dell.com/en-in"),
-    (r"asus", "Asus India", "https://www.asus.com/in/"),
-    (r"acer", "Acer India", "https://www.acer.com/in-en"),
-    (r"nvidia|geforce|\brtx\b", "NVIDIA GeForce", "https://www.nvidia.com/en-in/geforce/"),
-    (r"amd|radeon", "AMD Radeon", "https://www.amd.com/en/products/graphics/radeon.html"),
-    (r"intel", "Intel", "https://www.intel.in/"),
-    (r"qualcomm|snapdragon", "Qualcomm Snapdragon", "https://www.qualcomm.com/products/mobile/snapdragon"),
-    (r"mediatek|dimensity", "MediaTek", "https://www.mediatek.com/"),
-    (r"whatsapp", "WhatsApp Help Center", "https://faq.whatsapp.com/"),
-    (r"gmail", "Gmail Help", "https://support.google.com/mail/"),
-    (r"google maps|maps", "Google Maps Help", "https://support.google.com/maps/"),
-    (r"chrome", "Chrome Help", "https://support.google.com/chrome/"),
-    (r"android", "Android Developers", "https://developer.android.com/"),
-    (r"windows", "Microsoft Windows Support", "https://support.microsoft.com/windows"),
-    (r"ms word|microsoft word|\bword\b", "Microsoft Word Support", "https://support.microsoft.com/word"),
-    (r"excel", "Microsoft Excel Support", "https://support.microsoft.com/excel"),
-    (r"powerpoint", "Microsoft PowerPoint Support", "https://support.microsoft.com/powerpoint"),
-    (r"blogger|blogspot", "Blogger Help", "https://support.google.com/blogger/"),
-    (r"youtube", "YouTube Help", "https://support.google.com/youtube/"),
-    (r"instagram", "Instagram Help Center", "https://help.instagram.com/"),
-    (r"facebook|meta\b", "Meta Newsroom", "https://about.fb.com/news/"),
-    (r"telegram", "Telegram FAQ", "https://telegram.org/faq"),
-    (r"netflix", "Netflix Help Center", "https://help.netflix.com/"),
-    (r"openai|chatgpt|sora", "OpenAI", "https://openai.com/news/"),
-    (r"gemini|deepmind", "Google DeepMind", "https://deepmind.google/discover/blog/"),
-    (r"claude|anthropic", "Anthropic", "https://www.anthropic.com/news"),
-    (r"perplexity", "Perplexity", "https://www.perplexity.ai/"),
-    (r"airtel", "Airtel", "https://www.airtel.in/"),
-    (r"\bjio\b|reliance jio", "Jio", "https://www.jio.com/"),
-    (r"\bvi\b|vodafone|idea", "Vi", "https://www.myvi.in/"),
-    (r"bsnl", "BSNL", "https://www.bsnl.co.in/"),
-    (r"amazon", "Amazon India", "https://www.amazon.in/"),
-    (r"flipkart", "Flipkart", "https://www.flipkart.com/"),
-    (r"meesho", "Meesho", "https://www.meesho.com/"),
-    (r"zepto", "Zepto", "https://www.zeptonow.com/"),
-    (r"swiggy", "Swiggy", "https://www.swiggy.com/"),
-    (r"zomato", "Zomato", "https://www.zomato.com/"),
-    (r"paytm", "Paytm", "https://paytm.com/"),
-    (r"phonepe", "PhonePe", "https://www.phonepe.com/"),
-    (r"gpay|google pay", "Google Pay", "https://pay.google.com/intl/en_in/about/"),
-    (r"upi|npci", "NPCI UPI", "https://www.npci.org.in/what-we-do/upi/product-overview"),
-    (r"fastag", "NPCI FASTag", "https://www.npci.org.in/what-we-do/netc-fastag/product-overview"),
-    (r"aadhaar|uidai", "UIDAI", "https://uidai.gov.in/"),
-    (r"\bpan\b|income tax", "Income Tax India", "https://www.incometax.gov.in/"),
-    (r"gst", "GST Portal", "https://www.gst.gov.in/"),
-    (r"\brbi\b|loan|credit card|bank", "RBI", "https://www.rbi.org.in/"),
-    (r"hack|cyber|phishing|password|security", "CERT-In", "https://www.cert-in.org.in/"),
-    (r"seo|google search|ranking|backlink", "Google Search Central", "https://developers.google.com/search/docs"),
-    (r"blogging|blog\b", "Google Search Central", "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"),
+    (r"iphone|ios\b|ipad|macbook|आईफोन|आईपैड|मैकबुक", "iPhone और iOS support", "https://support.apple.com/iphone"),
+    (r"apple|एप्पल", "Apple Newsroom", "https://www.apple.com/newsroom/"),
+    (r"samsung|galaxy|सैमसंग|गैलेक्सी", "Samsung support (India)", "https://www.samsung.com/in/support/"),
+    (r"pixel|पिक्सल", "Google Pixel help", "https://support.google.com/pixelphone/"),
+    (r"\boneplus\b|वनप्लस", "OnePlus support", "https://www.oneplus.in/support"),
+    (r"\brealme\b|रियलमी", "Realme support", "https://www.realme.com/in/support"),
+    (r"infinix|इनफिनिक्स", "Infinix support", "https://www.infinixmobiles.in/"),
+    (r"xiaomi|redmi|poco|शाओमी|रेडमी|पोको", "Xiaomi support (India)", "https://www.mi.com/in/support/"),
+    (r"\bvivo\b|विवो", "Vivo support", "https://www.vivo.com/in/support"),
+    (r"\boppo\b|ओप्पो", "Oppo support", "https://www.oppo.com/in/support/"),
+    (r"nothing phone|nothing\b", "Nothing support", "https://nothing.tech/pages/support"),
+    (r"motorola|moto\b", "Motorola support", "https://www.motorola.in/support"),
+    (r"\blenovo\b|लेनोवो", "Lenovo support", "https://support.lenovo.com/in/en/"),
+    (r"\bhp\b|hp laptop|एचपी |हेवलेट", "HP support", "https://support.hp.com/in-en"),
+    (r"\bdell\b|डेल", "Dell support", "https://www.dell.com/support/home/en-in"),
+    (r"\basus\b|एसुस", "Asus support", "https://www.asus.com/in/support/"),
+    (r"\bacer\b|एसर", "Acer support", "https://www.acer.com/in-en/support"),
+    (r"honor", "Honor support (India)", "https://www.honor.com/in/support/"),
+    (r"nvidia|geforce|\brtx\b|एनवीडिया|जीफोर्स", "NVIDIA GeForce", "https://www.nvidia.com/en-in/geforce/"),
+    (r"\bamd\b|radeon|एएमडी|रेडियॉन", "AMD Radeon", "https://www.amd.com/en/products/graphics/desktops/radeon.html"),
+    (r"\bintel\b|इंटेल", "Intel support", "https://www.intel.in/content/www/in/en/support.html"),
+    (r"qualcomm|snapdragon|क्वालकॉम|स्नैपड्रैगन", "Qualcomm Snapdragon", "https://www.qualcomm.com/products/mobile/snapdragon"),
+    (r"mediatek|dimensity", "MediaTek smartphones", "https://www.mediatek.com/products/smartphones"),
+    (r"whatsapp|व्हाट्सएप|वाट्सएप", "WhatsApp Help Center", "https://faq.whatsapp.com/"),
+    (r"gmail|जीमेल|ईमेल|email", "Gmail Help", "https://support.google.com/mail/"),
+    (r"google maps|maps|गूगल मैप्स", "Google Maps Help", "https://support.google.com/maps/"),
+    (r"chrome|क्रोम", "Chrome Help", "https://support.google.com/chrome/"),
+    (r"android|एंड्रॉइड", "Android Developers", "https://developer.android.com/"),
+    (r"windows|विंडोज़|विंडोज|bsod|ब्लू स्क्रीन", "Windows help & learning", "https://support.microsoft.com/windows"),
+    (r"ms word|microsoft word|\bword\b|एमएस वर्ड", "Microsoft Word help", "https://support.microsoft.com/word"),
+    (r"excel|एक्सेल", "Microsoft Excel help", "https://support.microsoft.com/excel"),
+    (r"powerpoint", "PowerPoint help", "https://support.microsoft.com/powerpoint"),
+    (r"blogger|blogspot|ब्लॉगर", "Blogger Help", "https://support.google.com/blogger/"),
+    (r"youtube|यूट्यूब", "YouTube Help", "https://support.google.com/youtube/"),
+    (r"instagram|इंस्टाग्राम", "Instagram Help Center", "https://help.instagram.com/"),
+    (r"facebook|meta\b|फेसबुक|मेटा", "Meta Newsroom", "https://about.fb.com/news/"),
+    (r"telegram|टेलीग्राम", "Telegram FAQ", "https://telegram.org/faq"),
+    (r"netflix|नेटफ्लिक्स", "Netflix Help Center", "https://help.netflix.com/"),
+    (r"chatgpt|openai|चैटजीपीटी|ओपनएआई", "OpenAI news", "https://openai.com/news/"),
+    (r"gemini|deepmind|जेमिनी", "Google DeepMind blog", "https://deepmind.google/discover/blog/"),
+    (r"claude|anthropic|क्लॉड", "Anthropic news", "https://www.anthropic.com/news"),
+    (r"perplexity|परप्लेक्सिटी", "Perplexity blog", "https://www.perplexity.ai/hub/blog"),
+    (r"airtel|एयरटेल", "Airtel help & support", "https://www.airtel.in/help-support"),
+    (r"\bjio\b|reliance jio|जियो", "Jio help", "https://www.jio.com/help"),
+    (r"vodafone|वोडाफोन|\bvi\b|बीएसएनएल", "Vi help & support", "https://www.myvi.in/help-support"),
+    (r"amazon|अमेज़न|अमेजन", "Amazon India customer service", "https://www.amazon.in/gp/help/customer/display.html"),
+    (r"flipkart|फ्लिपकार्ट", "Flipkart Help Centre", "https://www.flipkart.com/helpcentre"),
+    (r"meesho|मीशो", "Meesho help", "https://www.meesho.com/help"),
+    (r"zepto|ज़ेप्टो|जेप्टो", "Zepto help", "https://www.zeptonow.com/help"),
+    (r"swiggy|स्विगी", "Swiggy support", "https://www.swiggy.com/support"),
+    (r"zomato|ज़ोमैटो|जोमैटो", "Zomato support", "https://www.zomato.com/support"),
+    (r"paytm|पेटीएम", "Paytm help", "https://paytm.com/help"),
+    (r"phonepe|फोनपे", "PhonePe support", "https://www.phonepe.com/"),
+    (r"gpay|google pay|जीपे|गूगल पे", "Google Pay (India)", "https://pay.google.com/intl/en_in/about/"),
+    (r"upi|npci|यूपीआई|एनपीसीआई", "NPCI — UPI product page", "https://www.npci.org.in/what-we-do/upi/product-overview"),
+    (r"fastag|फास्टैग", "NPCI — NETC FASTag", "https://www.npci.org.in/what-we-do/netc-fastag/product-overview"),
+    (r"aadhaar|uidai|आधार", "UIDAI", "https://uidai.gov.in/en/"),
+    (r"\bpan\b|income tax|पैन कार्ड", "Income Tax e-filing portal", "https://www.incometax.gov.in/iec/foportal/"),
+    (r"gst|जीएसटी", "GST portal help", "https://www.gst.gov.in/help"),
+    (r"\brbi\b|आरबीआई|loan|लोन|credit card|क्रेडिट कार्ड", "RBI FAQs", "https://www.rbi.org.in/Scripts/FAQDisplay.aspx"),
+    (r"hack|cyber|phishing|password|हैकिंग|साइबर|पासवर्ड", "CERT-In advisories", "https://www.cert-in.org.in/"),
+    (r"seo|google search|ranking|backlink|एसईओ", "Google Search Central docs", "https://developers.google.com/search/docs"),
+    (r"blogging|ब्लॉगिंग", "Google — helpful content guidance", "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"),
 ]
 
-# Devanagari titles need their own keywords: the same brands written in Hindi.
-BRANDS.extend([
-    (r"आईफोन|एप्पल|आईपैड|मैकबुक", "Apple Newsroom", "https://www.apple.com/newsroom/"),
-    (r"सैमसंग|गैलेक्सी", "Samsung Newsroom India", "https://news.samsung.com/in/"),
-    (r"गूगल पिक्सल|पिक्सल", "Google Pixel blog", "https://blog.google/products/pixel/"),
-    (r"वनप्लस", "OnePlus India", "https://www.oneplus.in/"),
-    (r"रियलमी", "Realme India", "https://www.realme.com/in/"),
-    (r"इनफिनिक्स", "Infinix India", "https://www.infinixmobiles.in/"),
-    (r"शाओमी|रेडमी|पोको", "Xiaomi India", "https://www.mi.com/in/"),
-    (r"विवो", "Vivo India", "https://www.vivo.com/in/"),
-    (r"ओप्पो", "Oppo India", "https://www.oppo.com/in/"),
-    (r"लेनोवो", "Lenovo India", "https://www.lenovo.com/in/en/"),
-    (r"एचपी |हेवलेट", "HP Support", "https://support.hp.com/in-en"),
-    (r"डेल", "Dell India", "https://www.dell.com/en-in"),
-    (r"एसुस", "Asus India", "https://www.asus.com/in/"),
-    (r"एसर", "Acer India", "https://www.acer.com/in-en"),
-    (r"एनवीडिया|जीफोर्स", "NVIDIA GeForce", "https://www.nvidia.com/en-in/geforce/"),
-    (r"एएमडी|रेडियॉन", "AMD Radeon", "https://www.amd.com/en/products/graphics/radeon.html"),
-    (r"इंटेल", "Intel", "https://www.intel.in/"),
-    (r"क्वालकॉम|स्नैपड्रैगन", "Qualcomm Snapdragon", "https://www.qualcomm.com/products/mobile/snapdragon"),
-    (r"व्हाट्सएप|वाट्सएप", "WhatsApp Help Center", "https://faq.whatsapp.com/"),
-    (r"जीमेल", "Gmail Help", "https://support.google.com/mail/"),
-    (r"गूगल मैप्स|मैप्स", "Google Maps Help", "https://support.google.com/maps/"),
-    (r"क्रोम", "Chrome Help", "https://support.google.com/chrome/"),
-    (r"एंड्रॉइड", "Android Developers", "https://developer.android.com/"),
-    (r"विंडोज़|विंडोज", "Microsoft Windows Support", "https://support.microsoft.com/windows"),
-    (r"माइक्रोसॉफ्ट|कोपायलट", "Microsoft Support", "https://support.microsoft.com/"),
-    (r"एमएस वर्ड|वर्ड", "Microsoft Word Support", "https://support.microsoft.com/word"),
-    (r"एक्सेल", "Microsoft Excel Support", "https://support.microsoft.com/excel"),
-    (r"ब्लॉगर", "Blogger Help", "https://support.google.com/blogger/"),
-    (r"यूट्यूब", "YouTube Help", "https://support.google.com/youtube/"),
-    (r"इंस्टाग्राम", "Instagram Help Center", "https://help.instagram.com/"),
-    (r"फेसबुक|मेटा", "Meta Newsroom", "https://about.fb.com/news/"),
-    (r"टेलीग्राम", "Telegram FAQ", "https://telegram.org/faq"),
-    (r"नेटफ्लिक्स", "Netflix Help Center", "https://help.netflix.com/"),
-    (r"चैटजीपीटी|ओपनएआई", "OpenAI", "https://openai.com/news/"),
-    (r"जेमिनी", "Google DeepMind", "https://deepmind.google/discover/blog/"),
-    (r"क्लॉड", "Anthropic", "https://www.anthropic.com/news"),
-    (r"परप्लेक्सिटी", "Perplexity", "https://www.perplexity.ai/"),
-    (r"एयरटेल", "Airtel", "https://www.airtel.in/"),
-    (r"जियो", "Jio", "https://www.jio.com/"),
-    (r"वोडाफोन|वीआई|बीएसएनएल", "Vi", "https://www.myvi.in/"),
-    (r"अमेज़न|अमेजन", "Amazon India", "https://www.amazon.in/"),
-    (r"फ्लिपकार्ट", "Flipkart", "https://www.flipkart.com/"),
-    (r"मीशो", "Meesho", "https://www.meesho.com/"),
-    (r"ज़ेप्टो|जेप्टो", "Zepto", "https://www.zeptonow.com/"),
-    (r"स्विगी", "Swiggy", "https://www.swiggy.com/"),
-    (r"ज़ोमैटो|जोमैटो", "Zomato", "https://www.zomato.com/"),
-    (r"पेटीएम", "Paytm", "https://paytm.com/"),
-    (r"फोनपे", "PhonePe", "https://www.phonepe.com/"),
-    (r"जीपे|गूगल पे", "Google Pay", "https://pay.google.com/intl/en_in/about/"),
-    (r"यूपीआई|एनपीसीआई", "NPCI UPI", "https://www.npci.org.in/what-we-do/upi/product-overview"),
-    (r"फास्टैग", "NPCI FASTag", "https://www.npci.org.in/what-we-do/netc-fastag/product-overview"),
-    (r"आधार", "UIDAI", "https://uidai.gov.in/"),
-    (r"पैन कार्ड|पैन", "Income Tax India", "https://www.incometax.gov.in/"),
-    (r"जीएसटी|जीएसटी", "GST Portal", "https://www.gst.gov.in/"),
-    (r"आरबीआई|लोन|क्रेडिट कार्ड|बैंक", "RBI", "https://www.rbi.org.in/"),
-    (r"हैकिंग|साइबर|पासवर्ड|सुरक्षा", "CERT-In", "https://www.cert-in.org.in/"),
-    (r"एसईओ|सर्च", "Google Search Central", "https://developers.google.com/search/docs"),
-    (r"ब्लॉगिंग", "Google Search Central", "https://developers.google.com/search/docs/fundamentals/creating-helpful-content"),
-])
-
-# topic keywords for posts without a clear brand
 TOPICS = [
-    (r"wifi|wi-fi|router", "Microsoft Wi-Fi troubleshooting", "https://support.microsoft.com/windows/fix-wi-fi-connection-issues-in-windows-9424a1f7-6a3b-65a6-4d78-7f07eee84d2c"),
-    (r"typing|keyboard", "TypingClub lessons", "https://www.typingclub.com/"),
-    (r"printer|print|प्रिंटर", "Microsoft print help", "https://support.microsoft.com/windows/fix-printing-problems-in-windows-f5d5b5d7-7f0f-4d0e-3d8a-0f1b4b7c9a11"),
+    (r"\bcopilot\b|कोपायलट", "Microsoft 365 Copilot", "https://support.microsoft.com/copilot"),
+    (r"\bsoftware\b|सॉफ्टवेयर|application software|system software", "Microsoft Learn", "https://learn.microsoft.com/"),
+    (r"screen recording|स्क्रीन रिकॉर्डिंग", "OBS Studio", "https://obsproject.com/"),
+    (r"made-in-india|मेड-इन-इंडिया|made in india", "Digital India", "https://www.digitalindia.gov.in/"),
+    (r"\barchitecture\b|event-driven", "AWS Architecture Center", "https://docs.aws.amazon.com/architecture/"),
+    (r"\brank\b|रैंक", "Google Search Central docs", "https://developers.google.com/search/docs"),
+    (r"कम्प्यूटर", "Microsoft Learn — Windows", "https://learn.microsoft.com/windows/"),
+    (r"smart tv|टीवी|remote|रिमोट", "Samsung TV support", "https://www.samsung.com/in/support/"),
+    (r"wifi|wi-fi|router", "Windows Wi-Fi troubleshooting", "https://support.microsoft.com/windows"),
+    (r"printer|print|प्रिंटर", "Windows printing help", "https://support.microsoft.com/windows"),
+    (r"typing|keyboard|टाइपिंग", "Unicode Devanagari chart", "https://www.unicode.org/charts/PDF/U0900.pdf"),
     (r"\bai\b|एआई|आर्टिफिशियल इंटेलिजेंस", "Google AI blog", "https://blog.google/technology/ai/"),
     (r"कंप्यूटर|computer", "Microsoft Learn — Windows", "https://learn.microsoft.com/windows/"),
-    (r"flight|ticket|फ्लाइट|टिकट", "DGCA", "https://www.dgca.gov.in/"),
-    (r"salary|वेतन|पे कमीशन|pay commission", "7th CPC", "https://7cpc.india.gov.in/"),
-    (r"scheme|योजना|सब्सिडी|सरकारी", "India.gov.in", "https://www.india.gov.in/"),
-    (r"semiconductor|सेमीकंडक्टर", "MeitY", "https://www.meity.gov.in/"),
-    (r"satellite|सैटेलाइट|5g|5जी", "Department of Telecom", "https://dot.gov.in/"),
-    (r"aws|cloud computing|क्लाउड", "AWS Documentation", "https://docs.aws.amazon.com/"),
-    (r"agile|scrum|एजाइल", "Scrum Guide", "https://scrumguides.org/"),
-    (r"python|पायथन", "Python Documentation", "https://docs.python.org/3/"),
-    (r"sql|database|डेटाबेस", "PostgreSQL Documentation", "https://www.postgresql.org/docs/"),
-    (r"git|github", "GitHub Docs", "https://docs.github.com/"),
-    (r"docker|container|kubernetes", "Kubernetes Documentation", "https://kubernetes.io/docs/"),
-    (r"linux|लिनक्स", "Linux Kernel Documentation", "https://www.kernel.org/doc/html/latest/"),
-    (r"testing|टेस्टिंग|unit test", "pytest Documentation", "https://docs.pytest.org/"),
+    (r"flight|फ्लाइट", "DGCA — aviation regulator", "https://www.dgca.gov.in/"),
+    (r"salary|वेतन|pay commission|पे कमीशन", "India.gov.in — pay & pension", "https://www.india.gov.in/"),
+    (r"scheme|योजना|सब्सिडी|सरकारी|सरकार", "myScheme — government schemes", "https://www.myscheme.gov.in/"),
+    (r"semiconductor|सेमीकंडक्टर|iot|इंटरनेट ऑफ थिंग्स|sovereign|data residency", "MeitY schemes & projects", "https://www.meity.gov.in/content/schemes-projects"),
+    (r"satellite|सैटेलाइट|5g|5जी", "DoT telecom policies", "https://dot.gov.in/telecom-policies"),
+    (r"aws|cloud|क्लाउड|cluster|server", "AWS overview (docs)", "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html"),
+    (r"agile|scrum|एजाइल", "The Scrum Guide", "https://scrumguides.org/scrum-guide.html"),
+    (r"python|पायथन", "Python tutorial", "https://docs.python.org/3/tutorial/"),
+    (r"sql|database|डेटाबेस", "PostgreSQL documentation", "https://www.postgresql.org/docs/current/"),
+    (r"git|github", "GitHub Docs — get started", "https://docs.github.com/en/get-started"),
+    (r"docker|container|kubernetes", "Kubernetes concepts", "https://kubernetes.io/docs/concepts/"),
+    (r"linux|लिनक्स", "Linux kernel documentation", "https://www.kernel.org/doc/html/latest/"),
+    (r"testing|टेस्टिंग|unit test", "pytest documentation", "https://docs.pytest.org/en/stable/"),
     (r"data science|डेटा साइंस|analytics|एनालिटिक्स", "Google Analytics Help", "https://support.google.com/analytics/"),
-    (r"startup|स्टार्टअप", "Startup India", "https://www.startupindia.gov.in/"),
-    (r"hiring|recruitment|नौकरी|भर्ती", "Ministry of Labour", "https://labour.gov.in/"),
-    (r"software|सॉफ्टवेयर|application", "Microsoft Learn", "https://learn.microsoft.com/"),
-    (r"ईमेल|email", "Gmail Help", "https://support.google.com/mail/"),
-    (r"कम्प्यूटर", "Microsoft Learn — Windows", "https://learn.microsoft.com/windows/"),
-    (r"browser cache|dns|कैश", "Google Public DNS", "https://developers.google.com/speed/public-dns/docs/using"),
-    (r"bsod|ब्लू स्क्रीन", "Microsoft Windows Support", "https://support.microsoft.com/windows"),
-    (r"gpu|graphics card|ग्राफिक्स", "NVIDIA GeForce", "https://www.nvidia.com/en-in/geforce/"),
+    (r"startup|स्टार्टअप|saas|outsourcing|self-service", "Startup India hub", "https://www.startupindia.gov.in/"),
+    (r"hiring|recruitment|नौकरी|भर्ती", "Ministry of Labour — policies", "https://labour.gov.in/labour-policies"),
+    (r"ddos", "CERT-In advisories", "https://www.cert-in.org.in/"),
+    (r"browser cache|dns|कैश", "Google Public DNS — using", "https://developers.google.com/speed/public-dns/docs/using"),
+    (r"gpu|graphics card|ग्राफिक्स|\bram\b|ssd|मेमोरी", "Micron memory products", "https://www.micron.com/products/memory"),
     (r"gta|rockstar", "Rockstar Games Newswire", "https://www.rockstargames.com/newswire"),
-    (r"honor", "Honor India", "https://www.honor.com/in/"),
-    (r"iot|इंटरनेट ऑफ थिंग्स", "MeitY", "https://www.meity.gov.in/"),
     (r"legacy|modernization", "AWS Prescriptive Guidance", "https://docs.aws.amazon.com/prescriptive-guidance/"),
-    (r"domain|डोमेन|namecheap", "ICANN", "https://www.icann.org/"),
-    (r"network device|नेटवर्क", "Cisco Support", "https://www.cisco.com/c/en/us/support/index.html"),
-    (r"\bpf\b|epfo|पीएफ", "EPFO", "https://www.epfindia.gov.in/"),
+    (r"domain|डोमेन|namecheap", "ICANN — about domain names", "https://www.icann.org/en/contracted-parties"),
+    (r"network device|नेटवर्क", "Cisco support", "https://www.cisco.com/c/en/us/support/index.html"),
+    (r"\bpf\b|epfo|पीएफ", "EPFO — for employees", "https://www.epfindia.gov.in/site_en/For_Employees.php"),
     (r"project management|प्रोजेक्ट", "Atlassian Jira guides", "https://www.atlassian.com/software/jira/guides"),
-    (r"ram\b|ssd|मेमोरी", "Micron", "https://www.micron.com/"),
-    (r"cluster|server", "AWS Architecture Center", "https://docs.aws.amazon.com/architecture/"),
-    (r"smart tv|टीवी|remote|रिमोट", "Samsung TV Support", "https://www.samsung.com/in/support/"),
-    (r"charging|चार्जिंग", "USB-IF", "https://www.usb.org/"),
-    (r"sovereign|data residency", "MeitY", "https://www.meity.gov.in/"),
-    (r"games|गेम", "Steam", "https://store.steampowered.com/"),
-    (r"सरकार", "India.gov.in", "https://www.india.gov.in/"),
-    (r"architecture", "AWS Architecture Center", "https://docs.aws.amazon.com/architecture/"),
-    (r"productivity|प्रोडक्टिविटी", "Google Workspace", "https://workspace.google.com/"),
-    (r"product|saas|self-service|outsourcing", "Startup India", "https://www.startupindia.gov.in/"),
-    (r"token|context window|कॉन्टेक्स्ट", "OpenAI Cookbook — tokens", "https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken"),
-    (r"proof of concept|\bpoc\b|\bmvp\b", "Microsoft Cloud Adoption Framework", "https://learn.microsoft.com/azure/cloud-adoption-framework/"),
-    (r"सी ड्राइव|स्टोरेज|storage|disk", "Microsoft storage help", "https://support.microsoft.com/windows/free-up-drive-space-in-windows-10-and-11-85529ccb-7c9b-4f27-a2a1-2b0f9d1c9c5f"),
+    (r"charging|चार्जिंग", "USB-IF — USB charging", "https://www.usb.org/usb-charger-pd"),
+    (r"games|गेम", "Steam — free to play", "https://store.steampowered.com/genre/Free%20to%20Play/"),
+    (r"productivity|प्रोडक्टिविटी", "Google Workspace products", "https://workspace.google.com/products/"),
+    (r"token|context window|कॉन्टेक्स्ट", "OpenAI Cookbook — count tokens", "https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken"),
+    (r"proof of concept|\bpoc\b|\bmvp\b|product", "Microsoft Cloud Adoption Framework", "https://learn.microsoft.com/azure/cloud-adoption-framework/"),
 ]
 
 
-def page_text(path):
+# Curated fallback: when no post is a close match, link a themed evergreen guide.
+PILLARS = {
+    "ai": [
+        "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "prompt-engineering-hindi-guide",
+        "ai-tools-ki-wave-2025-top-free-ai-tools",
+    ],
+    "windows": [
+        "tv",
+        "basic-computer-fundamentals-in-hindi",
+        "application-software-kya-hai-guide",
+    ],
+    "phone": [
+        "windows-11-me-android-kaise-use-kare",
+        "whatsapp",
+        "smartphone-slow-charging",
+    ],
+    "internet": [
+        "internet-kaise-kaam-karta-hai-hindi",
+        "browser-cache-dns",
+        "wi-fi-speed",
+    ],
+    "money": [
+        "upi-autopay-paytm-phonepe-google-pay",
+        "pf-balance-pf",
+        "gst-kya-hai-hindi-guide",
+    ],
+    "dev": ["git-github-kya-hai-hindi-guide", "api-kya-hai-hindi", "sql-kya-hai-hindi"],
+    "seo": ["core-web-vitals-hindi", "domain-dns-records-hindi", "web-hosting-kya-hai-hindi"],
+    "default": [
+        "ai-kya-hai-aur-manav-buddhi-se-kaise-bhin-deti-hai",
+        "internet-kaise-kaam-karta-hai-hindi",
+        "windows-11-me-android-kaise-use-kare",
+    ],
+}
+
+THEMES = [
+    (r"\bai\b|एआई|chatgpt|gemini|llm|prompt|claude|machine learning", "ai"),
+    (r"windows|विंडोज़|कंप्यूटर|computer|laptop|लैपटॉप|bsod", "windows"),
+    (r"whatsapp|android|iphone|स्मार्टफोन|smartphone|charging|चार्जिंग", "phone"),
+    (r"internet|इंटरनेट|wifi|wi-fi|dns|router|network|नेटवर्क|5g", "internet"),
+    (r"upi|paytm|phonepe|bank|बैंक|pf\b|बैलेंस|gst|tax|loan|₹", "money"),
+    (r"python|sql|git|docker|api\b|code|developer|kubernetes", "dev"),
+    (r"seo|blog|adsense|ranking|hosting|domain", "seo"),
+]
+
+STOPWORDS = {
+    "क्या", "कैसे", "करें", "करे", "और", "के", "का", "की", "को", "में", "से", "है", "हैं", "नहीं",
+    "पूरी", "जानकारी", "अच्छा", "बेहतर", "सही", "नया", "नई", "आप", "करेगा", "करता", "करते", "हिंदी",
+    "the", "and", "for", "with", "how", "what", "why", "new", "best", "top", "guide", "tips",
+    "your", "you", "this", "that", "hindi", "kya", "kaise", "karein", "kare", "aur", "ke", "ka", "ki",
+    "poori", "aasan", "complete", "full", "free", "india", "indian",
+    "करने", "करना", "सकते", "सकता", "लिए", "होता", "होती", "होगा", "गया", "गई", "रहा", "रही",
+    "बहुत", "साथ", "भी", "पर", "अब", "यह", "वह", "जो", "कि", "ने", "दिया", "किया", "जाता",
+    "जाती", "जैसे", "वाले", "बाद", "पहले", "सभी", "कुछ", "इस", "उस", "करता", "करते", "हुई",
+    "हुए", "जानें", "जानिए", "बारे", "तरीका", "तरीके", "काम", "करें", "सबसे", "अपने", "अपनी",
+}
+
+GENERATED = (
+    re.compile(r'[ \t]*<h2 id="post-sources">.*?</ul>\n', re.S),
+    re.compile(r'[ \t]*<p class="post-related">.*?</p>\n', re.S),
+)
+
+
+def read(path):
     with open(path, encoding="utf-8") as handle:
         return handle.read()
 
@@ -219,14 +217,7 @@ def label_of(page):
     return html.unescape(re.sub(r"<[^>]+>", "", match.group(1))).strip() if match else "Tech"
 
 
-GENERATED = (
-    re.compile(r'[ \t]*<h2 id="post-sources">.*?</ul>\n', re.S),
-    re.compile(r'[ \t]*<p class="post-related">.*?</p>\n', re.S),
-)
-
-
 def without_generated(page):
-    """Drop the block this tool inserts, so re-runs see the original page."""
     for pattern in GENERATED:
         page = pattern.sub("", page)
     return page
@@ -242,108 +233,160 @@ def has_internal(page):
     return bool(re.search(r'href="/posts/', body))
 
 
-STOPWORDS = {
-    "क्या", "कैसे", "करें", "करे", "और", "के", "का", "की", "को", "में", "से", "है", "हैं", "नहीं",
-    "पूरी", "जानकारी", "अच्छा", "बेहतर", "सही", "नया", "नई", "आप", "करेगा", "करता", "करते", "हिंदी",
-    "the", "and", "for", "with", "how", "what", "why", "new", "best", "top", "guide", "tips",
-    "your", "you", "this", "that", "hindi", "kya", "kaise", "karein", "kare", "aur", "ke", "ka", "ki",
-}
+def short_title(text, limit=68):
+    text = re.sub(r"\s+", " ", text).strip()
+    return text if len(text) <= limit else text[: limit - 1].rstrip(" ,-–—") + "…"
 
 
 def tokens(text):
-    words = re.findall(r"[a-z0-9\u0900-\u097f]{3,}", text.lower())
-    return {w for w in words if w not in STOPWORDS}
+    words = re.findall(r"[a-z0-9\u0900-\u097f]{3,}", re.sub(r"#\S+", " ", text.lower()))
+    return {word for word in words if word not in STOPWORDS}
+
+
+
+def pick_sources(title):
+    """Brand pages first (up to two), else the best matching topic page."""
+    low = title.lower()
+    picked, domains = [], set()
+    for pattern, label, url in BRANDS:
+        domain = url.split("/")[2]
+        if domain in domains or not re.search(pattern, low):
+            continue
+        picked.append({"label": label, "url": url})
+        domains.add(domain)
+        if len(picked) == 2:
+            break
+    if picked:
+        return picked
+    for pattern, label, url in TOPICS:
+        if re.search(pattern, low):
+            return [{"label": label, "url": url}]
+    return []
+
+
+def body_text(page):
+    """Article text only: no generated block, captions, hashtags or markup."""
+    body = without_generated(page).split('<article class="post-body">')[-1].split("</article>")[0]
+    body = re.sub(r"<figcaption>.*?</figcaption>", " ", body, flags=re.S)
+    return re.sub(r"<[^>]+>", " ", body)
+
+
+def similarity(a, b, idf):
+    shared = a & b
+    if not shared:
+        return 0.0
+    numerator = sum(idf[word] for word in shared)
+    denominator = (sum(idf[word] for word in a) * sum(idf[word] for word in b)) ** 0.5
+    return numerator / denominator if denominator else 0.0
+
+
+def related_for(slug, vectors, posts, candidates, idf, title_df):
+    """Require a shared specific title word, or a high body similarity."""
+    def specific(words):
+        return {word for word in words if title_df.get(word, 0) <= 12}
+
+    title_words = specific(tokens(posts[slug]["title"]))
+    scored = []
+    for other in candidates:
+        if other == slug:
+            continue
+        shared = title_words & specific(tokens(posts[other]["title"]))
+        sim = similarity(vectors[slug], vectors[other], idf)
+        if not shared and sim < 0.3:
+            continue
+        scored.append((3 * len(shared) + 4 * sim, other))
+    scored.sort(key=lambda item: (-item[0], item[1]))
+    picked = [other for _, other in scored[:3]]
+    if len(picked) < 3:
+        rest = sorted(
+            ((similarity(vectors[slug], vectors[other], idf), other) for other in candidates if other != slug),
+            key=lambda item: (-item[0], item[1]),
+        )
+        for sim, other in rest:
+            if len(picked) == 3 or sim < 0.24:
+                break
+            if other not in picked:
+                picked.append(other)
+    if len(picked) < 2:
+        text = (posts[slug]["title"] + " " + posts[slug]["text"][:600]).lower()
+        theme = next((key for pattern, key in THEMES if re.search(pattern, text)), "default")
+        for other in PILLARS[theme]:
+            if len(picked) >= 2:
+                break
+            if other != slug and other in posts and other not in picked:
+                picked.append(other)
+    return [{"slug": other, "title": short_title(posts[other]["title"])} for other in picked]
+
+
+def check_urls(mapping):
+    urls = sorted({item["url"] for entry in mapping.values() for item in entry.get("sources", [])})
+    bad = []
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    for url in urls:
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:
+                status = response.status
+        except Exception as error:  # noqa: BLE001 - report every failure the same way
+            status = getattr(error, "code", error)
+        # 403/405/429 means the site blocks bots, not that the page is gone.
+        print(f"{status} {url}")
+        if status not in (200, 403, 405, 429):
+            bad.append((url, status))
+    print(f"\nchecked {len(urls)} source URLs | not OK: {len(bad)}")
+    return bad
 
 
 def main():
-    noindex = set()
-    try:
-        with open(FLAGS, encoding="utf-8") as handle:
-            noindex = set(json.load(handle).get("noindex", []))
-    except (OSError, ValueError):
-        pass
-
+    noindex = set(json.loads(read(FLAGS)).get("noindex", [])) if os.path.exists(FLAGS) else set()
     posts = {}
     for path in sorted(glob.glob(os.path.join(POSTS, "*.html"))):
         slug = os.path.basename(path)[:-5]
-        page = page_text(path)
+        page = read(path)
+        title = title_of(page)
         posts[slug] = {
-            "title": title_of(page),
+            "title": title,
             "label": label_of(page),
-            "tokens": tokens(title_of(page) + " " + label_of(page)),
+            "tokens": tokens(title + " " + label_of(page)),
             "sources": has_sources(page),
             "internal": has_internal(page),
+            "text": body_text(page),
         }
 
-    candidates = [s for s in posts if s not in noindex]
-    mapping, unmatched, no_source, no_internal = {}, [], 0, 0
+    candidates = [slug for slug in posts if slug not in noindex]
+    vectors = {slug: tokens(info["text"] + " " + info["title"]) for slug, info in posts.items()}
+    document_frequency = {}
+    for vector in vectors.values():
+        for word in vector:
+            document_frequency[word] = document_frequency.get(word, 0) + 1
+    total = len(vectors) or 1
+    idf = {word: math.log((1 + total) / (1 + count)) + 1 for word, count in document_frequency.items()}
+    title_df = {}
+    for info in posts.values():
+        for word in tokens(info["title"]):
+            title_df[word] = title_df.get(word, 0) + 1
+    mapping = {}
     for slug, info in posts.items():
-        if info["sources"] and info["internal"]:
-            continue
-        if info["sources"]:
-            no_source += 0
-        else:
-            no_source += 1
-        if not info["internal"]:
-            no_internal += 1
-
-        title_low = info["title"].lower()
-        picked, seen = [], set()
-        for pattern, label, url in BRANDS:
-            if len(picked) >= 2:
-                break
-            if re.search(pattern, title_low) and url not in seen:
-                picked.append({"label": f"{label} — official page", "url": url})
-                seen.add(url)
-        if not picked:
-            for pattern, label, url in TOPICS:
-                if re.search(pattern, title_low):
-                    picked.append({"label": f"{label} — official page", "url": url})
-                    break
-        if not picked:
-            unmatched.append(slug)
-        if info["sources"]:
-            picked = []
-
-        scored = []
-        for other in candidates:
-            if other == slug:
-                continue
-            overlap = len(info["tokens"] & posts[other]["tokens"])
-            same_label = 2 if posts[other]["label"] == info["label"] else 0
-            score = overlap * 2 + same_label + (1 if posts[other]["sources"] else 0)
-            if score >= 4:
-                scored.append((score, other))
-        scored.sort(key=lambda item: (-item[0], item[1]))
-        related = [
-            {"slug": other, "title": posts[other]["title"]}
-            for _, other in scored[:3]
-        ]
-        if len(related) < 3:
-            chosen = {item["slug"] for item in related}
-            for other in candidates:
-                if other == slug or other in chosen:
-                    continue
-                related.append({"slug": other, "title": posts[other]["title"]})
-                if len(related) == 3:
-                    break
-
         entry = {}
-        if picked:
-            entry["sources"] = picked
-        if related and not info["internal"]:
-            entry["related"] = related
+        if not info["sources"]:
+            sources = pick_sources(info["title"])
+            if sources:
+                entry["sources"] = sources
+        if not info["internal"]:
+            related = related_for(slug, vectors, posts, candidates, idf, title_df)
+            if related:
+                entry["related"] = related
         if entry:
             mapping[slug] = entry
 
     with open(OUT, "w", encoding="utf-8") as handle:
         json.dump(mapping, handle, ensure_ascii=False, indent=2)
 
-    with_sources = sum(1 for e in mapping.values() if e.get("sources"))
-    with_related = sum(1 for e in mapping.values() if e.get("related"))
-    print(f"posts needing work: {len(mapping)} | sources: {with_sources} | related: {with_related}")
-    print(f"missing sources before: {no_source} | missing internal links before: {no_internal}")
-    print(f"unmatched (no official page): {len(unmatched)} -> {unmatched[:8]}")
+    sources = sum(1 for entry in mapping.values() if entry.get("sources"))
+    related = sum(1 for entry in mapping.values() if entry.get("related"))
+    print(f"posts touched: {len(mapping)} | with sources: {sources} | with related: {related}")
+    if "--check" in sys.argv[1:]:
+        check_urls(mapping)
 
 
 if __name__ == "__main__":
