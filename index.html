@@ -1168,6 +1168,8 @@
 
     /* ---------- trending / popular ---------- */
     const VIEW_KEY = "vk-post-views";
+    const VIEWS_API = "https://vktechlearn-views-api-ptsde1-preview.freebuff.site";
+    let globalViews = new Map();
     const slugOf = (post) => {
       const match = /posts\/([a-z0-9-]+)\.html$/i.exec((post && post.url) || "");
       return match ? match[1] : "";
@@ -1185,15 +1187,35 @@
         localStorage.setItem(VIEW_KEY, JSON.stringify(counts));
         sessionStorage.setItem(seen, "1");
       } catch (error) { /* storage blocked */ }
+      fetch(VIEWS_API + "/api/view", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: slug }),
+        keepalive: true
+      }).catch(() => { /* offline: local count still stands */ });
     };
     function trendingPicks() {
       const counts = viewCounts();
+      const score = (post) => {
+        const slug = slugOf(post);
+        return Math.max(counts[slug] || 0, globalViews.get(slug) || 0);
+      };
       const base = POSTS.slice(1, 6);
       const ranked = POSTS
-        .filter((post) => (counts[slugOf(post)] || 0) > 0)
-        .sort((a, b) => (counts[slugOf(b)] || 0) - (counts[slugOf(a)] || 0))
+        .filter((post) => score(post) > 0)
+        .sort((a, b) => score(b) - score(a))
         .slice(0, 5);
       return ranked.concat(base.filter((post) => !ranked.includes(post))).slice(0, 5);
+    }
+    async function loadGlobalViews() {
+      try {
+        const response = await fetch(VIEWS_API + "/api/top?limit=40", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!Array.isArray(data.items)) return;
+        globalViews = new Map(data.items.map((item) => [item.slug, Number(item.views) || 0]));
+        renderTrending();
+      } catch (error) { /* blocked or offline: local counts still decide */ }
     }
 
     function renderTrending() {
@@ -1758,6 +1780,7 @@
       renderTrending();
       renderPopular();
       renderGrid();
+      loadGlobalViews();
       loadCrypto();
       window.setInterval(() => { if (!document.hidden) loadCrypto(); }, 90000);
       loadWeather();
