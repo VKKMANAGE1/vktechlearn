@@ -203,7 +203,7 @@ PAGE = """<!doctype html>
 <script>
   (function () {{
     try {{
-      var m = /\/posts\/([a-z0-9-]+)\.html$/i.exec(location.pathname);
+      var m = /[/]posts[/]([a-z0-9-]+)[.]html$/i.exec(location.pathname);
       if (!m) return;
       var slug = m[1];
       var key = "vk-post-views";
@@ -225,6 +225,95 @@ PAGE = """<!doctype html>
 </body>
 </html>
 """
+
+
+FLAGS_PATH = os.path.join(ROOT, "tools", "content_flags.json")
+COVERS_PATH = os.path.join(ROOT, "tools", "cover_specs.json")
+
+
+def _read_json(path, default):
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return json.load(handle)
+    except (OSError, ValueError):
+        return default
+
+
+def audit_noindex():
+    return set(_read_json(FLAGS_PATH, {}).get("noindex", []))
+
+
+def audit_covers():
+    return {item["slug"]: item for item in _read_json(COVERS_PATH, [])}
+
+
+def _swap_cover(page, spec):
+    """Replace images pulled from other sites with the local branded cover."""
+    title = re.sub(r"\s+", " ", html.unescape(spec.get("title") or spec["slug"])).strip()
+    figure = (
+        "<figure>\n"
+        f'<img src="../img/posts/{spec["slug"]}-cover.jpg" alt="{html.escape(title[:110])}" '
+        'width="1392" height="752" loading="lazy" decoding="async">\n'
+        f"<figcaption>{html.escape(title[:120])} — VK Tech Learn cover</figcaption>\n"
+        "</figure>"
+    )
+    page = re.sub(
+        r"[ \t]*<figure[^>]*>(?:(?!</figure>).)*?src=\"https?://(?:(?!</figure>).)*?</figure>\s*",
+        "",
+        page,
+        flags=re.S | re.I,
+    )
+    page = re.sub(r"<a[^>]*>\s*<img[^>]+src=\"https?://[^\"]+\"[^>]*>\s*</a>", "", page, flags=re.I)
+    page = re.sub(r"<img[^>]+src=\"https?://[^\"]+\"[^>]*>", "", page, flags=re.I)
+    start = page.find('<article class="post-body">')
+    if start == -1:
+        return page
+    pos = page.find("</p>", start)
+    if pos == -1:
+        pos = page.find("</article>", start)
+        if pos == -1:
+            return page
+        return page[:pos] + figure + "\n    " + page[pos:]
+    pos += len("</p>")
+    return page[:pos] + "\n\n    " + figure + page[pos:]
+
+
+def apply_audit_flags(posts_dir=None):
+    """Add noindex to thin posts and swap hotlinked photos for local covers."""
+    posts_dir = posts_dir or OUT_DIR
+    noindex = audit_noindex()
+    covers = audit_covers()
+    changed = 0
+    for name in sorted(os.listdir(posts_dir)):
+        if not name.endswith(".html"):
+            continue
+        slug = name[:-5]
+        path = os.path.join(posts_dir, name)
+        with open(path, encoding="utf-8") as handle:
+            page = handle.read()
+        original = page
+        if slug in noindex:
+            if 'name="robots"' in page:
+                page = re.sub(
+                    r'<meta name="robots" content="[^"]*">',
+                    '<meta name="robots" content="noindex, follow">',
+                    page,
+                    count=1,
+                )
+            else:
+                page = page.replace(
+                    '<meta name="description"',
+                    '<meta name="robots" content="noindex, follow">\n<meta name="description"',
+                    1,
+                )
+        spec = covers.get(slug)
+        if spec and "-cover.jpg" not in page:
+            page = _swap_cover(page, spec)
+        if page != original:
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write(page)
+            changed += 1
+    return changed
 
 
 def fetch_feed(path):
@@ -448,6 +537,9 @@ def update_index(posts):
 
 
 def main():
+    if "--apply-flags" in sys.argv[1:]:
+        print("audit flags applied:", apply_audit_flags(), "files")
+        return
     feed_path = None
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if args:
@@ -549,6 +641,8 @@ def main():
             cards.append(summary_for(post, body))
         update_index(cards)
         print("homepage POSTS refreshed:", len(cards))
+
+    print("audit flags applied:", apply_audit_flags(), "files")
 
     total = sum(os.path.getsize(os.path.join(OUT_DIR, f)) for f in os.listdir(OUT_DIR))
     print(f"posts written: {len(prepared)} | html bytes: {total} | css: {os.path.getsize(CSS_PATH)}")

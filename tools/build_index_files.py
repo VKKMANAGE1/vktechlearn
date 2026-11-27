@@ -11,6 +11,7 @@ The sync workflow runs it right after tools/build_posts.py --update-index.
 import os
 import re
 import html
+import json
 import email.utils
 from datetime import datetime, timezone
 from xml.sax.saxutils import escape
@@ -18,6 +19,16 @@ from xml.sax.saxutils import escape
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://vktechlearn.site"
 POSTS = os.path.join(ROOT, "posts")
+FLAGS = os.path.join(ROOT, "tools", "content_flags.json")
+
+
+def noindex_slugs():
+    """Posts kept out of search (thin/reused news pages) also stay out of the sitemap."""
+    try:
+        with open(FLAGS, encoding="utf-8") as handle:
+            return {slug + ".html" for slug in json.load(handle).get("noindex", [])}
+    except (OSError, ValueError):
+        return set()
 
 STATIC_PAGES = [
     ("/", 1.0, "weekly"),
@@ -45,8 +56,9 @@ def first(pattern, text, default=""):
 
 def collect_posts():
     posts = []
+    skip = noindex_slugs()
     for name in sorted(os.listdir(POSTS)):
-        if not name.endswith(".html"):
+        if not name.endswith(".html") or name in skip:
             continue
         path = os.path.join(POSTS, name)
         page = read(path)
