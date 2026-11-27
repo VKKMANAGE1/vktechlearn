@@ -536,7 +536,71 @@ def update_index(posts):
     return len(posts)
 
 
+LINKS_PATH = os.path.join(ROOT, "tools", "post_sources.json")
+
+
+def apply_post_links(posts_dir=None):
+    """Append official sources and 2-3 internal links to older posts.
+
+    Content is untouched: the block is inserted just before </article> and is
+    skipped when the same marker already exists, so syncs stay idempotent.
+    """
+    posts_dir = posts_dir or OUT_DIR
+    data = _read_json(LINKS_PATH, {})
+    changed = 0
+    for name in sorted(os.listdir(posts_dir)):
+        if not name.endswith(".html"):
+            continue
+        slug = name[:-5]
+        entry = data.get(slug) or {}
+        if not entry:
+            continue
+        path = os.path.join(posts_dir, name)
+        with open(path, encoding="utf-8") as handle:
+            page = handle.read()
+
+        blocks = []
+        if entry.get("sources") and 'id="post-sources"' not in page:
+            items = "\n".join(
+                '      <li><a href="{}" rel="nofollow noopener" target="_blank">{}</a></li>'.format(
+                    html.escape(source["url"], quote=True), html.escape(source["label"])
+                )
+                for source in entry["sources"]
+            )
+            blocks.append(
+                '    <h2 id="post-sources">स्रोत</h2>\n'
+                '    <ul class="post-sources">\n' + items + "\n    </ul>"
+            )
+        if entry.get("related") and 'class="post-related"' not in page:
+            links = [
+                '<a href="/posts/{}.html">{}</a>'.format(
+                    html.escape(item["slug"], quote=True), html.escape(item["title"])
+                )
+                for item in entry["related"]
+            ]
+            joined = ", ".join(links[:-1]) + " aur " + links[-1] if len(links) > 1 else links[0]
+            blocks.append(f'    <p class="post-related">Aage padhein: {joined}.</p>')
+
+        if not blocks:
+            continue
+        pos = page.rfind("</article>")
+        if len(blocks) == 1 and blocks[0].lstrip().startswith('<h2 id="post-sources"'):
+            head = page.find('<p class="post-related"')
+            if head != -1:
+                pos = head
+        if pos == -1:
+            continue
+        page = page[:pos] + "\n".join(blocks) + "\n    " + page[pos:]
+        with open(path, "w", encoding="utf-8") as handle:
+            handle.write(page)
+        changed += 1
+    return changed
+
+
 def main():
+    if "--apply-links" in sys.argv[1:]:
+        print("post sources/links applied:", apply_post_links(), "files")
+        return
     if "--apply-flags" in sys.argv[1:]:
         print("audit flags applied:", apply_audit_flags(), "files")
         return
@@ -643,6 +707,7 @@ def main():
         print("homepage POSTS refreshed:", len(cards))
 
     print("audit flags applied:", apply_audit_flags(), "files")
+    print("post sources/links applied:", apply_post_links(), "files")
 
     total = sum(os.path.getsize(os.path.join(OUT_DIR, f)) for f in os.listdir(OUT_DIR))
     print(f"posts written: {len(prepared)} | html bytes: {total} | css: {os.path.getsize(CSS_PATH)}")
