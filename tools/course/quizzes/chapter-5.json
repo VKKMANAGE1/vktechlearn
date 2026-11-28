@@ -1,0 +1,124 @@
+{
+  "questions": [
+    {
+      "q": "MS Office में डॉक्यूमेंट लिखने के लिए कौन सा ऐप है?",
+      "options": ["Excel", "Word", "PowerPoint", "Outlook"],
+      "answer": 1,
+      "why": "Word word processor है — पत्र, रिपोर्ट, रिज़्यूमे यहीं बनते हैं।"
+    },
+    {
+      "q": "Excel फ़ाइल का extension क्या है?",
+      "options": [".docx", ".xlsx", ".pptx", ".pdf"],
+      "answer": 1,
+      "why": ".xlsx Excel की फ़ाइल है; .docx Word, .pptx PowerPoint।"
+    },
+    {
+      "q": "Presentation बनाने के लिए कौन सा ऐप सही है?",
+      "options": ["Word", "Excel", "PowerPoint", "Access"],
+      "answer": 2,
+      "why": "PowerPoint slides वाली presentation बनाने का सॉफ्टवेयर है।"
+    },
+    {
+      "q": "MS Office का नया सब्सक्रिप्शन वाला नाम क्या है?",
+      "options": ["Microsoft 365", "Office 2007", "Windows 11", "Office Online Plus"],
+      "answer": 0,
+      "why": "Microsoft 365 सब्सक्रिप्शन मॉडल है, जिसमें लगातार अपडेट मिलते हैं।"
+    },
+    {
+      "q": "टेबल और हिसाब के लिए कौन सा ऐप सबसे सही है?",
+      "options": ["Word", "Excel", "PowerPoint", "Publisher"],
+      "answer": 1,
+      "why": "संख्याओं और गणना का काम Excel में आसान और सही होता है।"
+    },
+    {
+      "q": "MS Office का मुफ़्त विकल्प कौन सा है?",
+      "options": ["LibreOffice", "Photoshop", "Chrome", "WinRAR"],
+      "answer": 0,
+      "why": "LibreOffice (Writer, Calc, Impress) मुफ़्त है और Office फ़ाइलें खोल-सेव कर सकता है।"
+    },
+    {
+      "q": "Word में नया पेज जोड़ने का शॉर्टकट क्या है?",
+      "options": ["Ctrl + Enter", "Ctrl + P", "Ctrl + S", "Ctrl + F"],
+      "answer": 0,
+      "why": "Ctrl + Enter से page break लगता है और नया पेज शुरू होता है; बार-बार Enter दबाना सही तरीका नहीं।"
+    },
+    {
+      "q": "Word में Bold का शॉर्टकट क्या है?",
+      "options": ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + D"],
+      "answer": 0,
+      "why": "Ctrl + B bold, Ctrl + I italic, Ctrl + U underline करता है।"
+    },
+    {
+      "q": "Word का Ribbon क्या है?",
+      "options": ["टैब और command बटन वाला हिस्सा", "पेज का margin", "फ़ाइल का नाम", "प्रिंटर का नाम"],
+      "answer": 0,
+      "why": "Ribbon में Home, Insert, Layout जैसे टैब और उनके command बटन होते हैं।"
+    },
+    {
+      "q": "Word में शब्द खोजने का शॉर्टकट क्या है?",
+      "options": ["Ctrl + F", "Ctrl + H", "Ctrl + Z", "Ctrl + Y"],
+      "answer": 0,
+      "why": "Ctrl + F से Find खुलता है; Ctrl + H से Replace।"
+    },
+    {
+      "q": "डॉक्यूमेंट को हर डिवाइस पर एक जैसा दिखाने के लिए किसमें सेव करें?",
+      "options": ["PDF", "TXT", "BMP", "EXE"],
+      "answer": 0,
+      "why": "PDF की फ़ॉर्मेटिंग हर डिवाइस पर एक जैसी रहती है, हालाँकि उसे सीधे एडिट नहीं कर सकते।"
+    },
+    {
+      "q": "PowerPoint में नई स्लाइड जोड़ने का शॉर्टकट क्या है?",
+      "options": ["Ctrl + M", "Ctrl + N", "Ctrl + S", "Ctrl + P"],
+      "answer": 0,
+      "why": "Ctrl + M से नई स्लाइड जुड़ती है।"
+    },
+    {
+      "q": "Presentation शुरू से चलाने की key कौन सी है?",
+      "options": ["F5", "F1", "F2", "F12"],
+      "answer": 0,
+      "why": "F5 से शुरू से slideshow चलता है; Shift + F5 से चालू स्लाइड से।"
+    },
+    {
+      "q": "Transition और Animation में क्या फ़र्क़ है?",
+      "options": ["Transition स्लाइड बदलने का असर, Animation अंदर की चीज़ का", "दोनों एक ही हैं", "Transition सिर्फ़ वीडियो में होता है", "Animation सिर्फ़ Excel में होता है"],
+      "answer": 0,
+      "why": "Transition एक स्लाइड से दूसरी पर जाने का असर है, Animation स्लाइड के अंदर किसी चीज़ के दिखने का।"
+    },
+    {
+      "q": "Presentation के दौरान स्क्रीन काली करने की key कौन सी है?",
+      "options": ["B", "E", "S", "Q"],
+      "answer": 0,
+      "why": "Slideshow में B दबाने से स्क्रीन काली हो जाती है, फिर B से वापस आती है।"
+    },
+    {
+      "q": "एक स्लाइड पर कितने बुलेट पॉइंट ठीक माने जाते हैं?",
+      "options": ["10–12", "5–6 से ज़्यादा नहीं", "20", "जितने मन करे"],
+      "answer": 1,
+      "why": "एक स्लाइड, एक विचार — 5–6 से ज़्यादा बुलेट ध्यान भटकाते हैं।"
+    },
+    {
+      "q": "Presenter View का फ़ायदा क्या है?",
+      "options": ["आपको नोट्स और अगली स्लाइड दिखती है", "स्लाइड अपने आप बनती है", "फ़ाइल छोटी हो जाती है", "इंटरनेट तेज़ होता है"],
+      "answer": 0,
+      "why": "Presenter View में वक्ता को नोट्स और अगली स्लाइड दिखती है, दर्शकों को नहीं।"
+    },
+    {
+      "q": "Word में पूरे डॉक्यूमेंट की शुरुआत में Table of Contents किससे आसान बनता है?",
+      "options": ["Heading Styles", "Bold करने से", "रंग भरने से", "माउस से"],
+      "answer": 0,
+      "why": "Heading 1/2 जैसे Styles लगाने पर References → Table of Contents अपने आप बन जाता है।"
+    },
+    {
+      "q": "Word में Save As का शॉर्टकट क्या है?",
+      "options": ["F12", "F5", "F2", "F9"],
+      "answer": 0,
+      "why": "F12 से Save As खुलता है, जिससे नई copy बनाई जा सकती है।"
+    },
+    {
+      "q": "Office में से कौन सा ऐप ईमेल और कैलेंडर के लिए है?",
+      "options": ["Outlook", "Access", "Publisher", "OneNote"],
+      "answer": 0,
+      "why": "Outlook ईमेल, कैलेंडर और कॉन्टैक्ट संभालता है; Access डेटाबेस के लिए है।"
+    }
+  ]
+}

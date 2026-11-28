@@ -11,6 +11,7 @@ lesson. tools/build_index_files.py picks the lesson pages up for the sitemap.
 """
 
 import html
+import json
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -59,6 +60,24 @@ LESSONS = [
 
 CHAPTER_TITLES = {num: title for num, title, _ in CHAPTERS}
 CHAPTER_INTROS = {num: intro for num, _, intro in CHAPTERS}
+
+CHAPTER_IMAGES = {
+    1: ("ch1.jpg", "डेस्कटॉप कंप्यूटर, CPU चिप, RAM और फ़ोल्डर के आइकन"),
+    2: ("ch2.jpg", "कीबोर्ड, माउस, प्रिंटर और पोर्टेबल हार्ड डिस्क के आइकन"),
+    3: ("ch3.jpg", "कई कंप्यूटर router और switch से जुड़े हुए"),
+    4: ("ch4.jpg", "ग्लोब, ब्राउज़र विंडो, ईमेल और सर्च आइकन"),
+    5: ("ch5.jpg", "डॉक्यूमेंट, स्लाइड और स्प्रेडशीट वाले तीन कार्ड"),
+    6: ("ch6.jpg", "स्प्रेडशीट ग्रिड से उठते बार और पाई चार्ट"),
+}
+QUIZ_DIR = os.path.join(ROOT, "tools", "course", "quizzes")
+
+
+def chapter_figure(num, css="fig"):
+    name, alt = CHAPTER_IMAGES[num]
+    return (
+        f'<figure class="{css}"><img src="/img/courses/{name}" alt="{alt}" width="1200" height="648" loading="lazy" decoding="async">'
+        f'<figcaption>{alt} — Chapter {num}: {CHAPTER_TITLES[num]}</figcaption></figure>'
+    )
 
 
 def esc(text):
@@ -206,6 +225,11 @@ def build_hub():
 
 
 def build_course(lessons):
+    tests_nav = "".join(
+        f'<li><a href="/courses/basic-computer/quiz-chapter-{num}.html"><b>Chapter {num}</b>'
+        f'<small>{title} · 20 सवाल</small></a></li>'
+        for num, title, _ in CHAPTERS
+    )
     sections = []
     for num, title, intro in CHAPTERS:
         rows = []
@@ -223,7 +247,9 @@ def build_course(lessons):
             f"""<section class="chapter" id="chapter-{num}">
 <div class="chapter-head"><span class="num">CHAPTER {num}</span><h2>{title}</h2><span class="count">{count} लेसन</span></div>
 <p style="color:var(--muted);margin-top:-.3rem">{intro}</p>
+{chapter_figure(num, "fig")}
 <ul class="lesson-list">{''.join(rows)}</ul>
+<p class="quiz-cta"><a class="cta ghost" href="/courses/basic-computer/quiz-chapter-{num}.html">Chapter {num} टेस्ट — 20 सवाल</a></p>
 </section>"""
         )
 
@@ -235,6 +261,7 @@ def build_course(lessons):
   <p class="lead">कंप्यूटर क्या है, उसके अंदर क्या लगा है, इंटरनेट और ईमेल कैसे चलते हैं, और MS Word, PowerPoint व Excel में काम कैसे करें — सब कुछ 21 छोटे लेसन में। हर लेसन के बाद एक practical टास्क है, इसलिए सिर्फ़ पढ़ना नहीं, करके सीखना होगा।</p>
   <ul class="chips"><li>21 लेसन</li><li>6 चैप्टर</li><li>~2.5 घंटे</li><li>बिल्कुल मुफ़्त</li><li>Hindi + Hinglish</li></ul>
   <a class="cta" href="/courses/basic-computer/{lessons[0][0]}.html">पहला लेसन शुरू करें</a>
+  {chapter_figure(1)}
 </section>
 
 <div class="panel">
@@ -264,6 +291,12 @@ def build_course(lessons):
     <li><b>नोट्स:</b> हर चैप्टर के बाद 5 लाइन का सारांश अपनी भाषा में लिखें।</li>
     <li><b>शॉर्टकट याद करें:</b> Ctrl+C, Ctrl+V, Ctrl+S, Ctrl+Z जैसे 10 शॉर्टकट गति दोगुनी कर देते हैं।</li>
   </ul>
+</div>
+
+<div class="panel">
+  <h2>Chapter टेस्ट — हर चैप्टर के 20 सवाल</h2>
+  <p style="color:var(--muted)">हर चैप्टर के बाद 20 सवालों का टेस्ट है। पहले खुद जवाब दें, फिर अंत में दी उत्तर-कुंजी से जाँचें।</p>
+  <ul class="test-grid">{tests_nav}</ul>
 </div>
 
 <div class="panel">
@@ -322,6 +355,7 @@ def build_lesson(index, lessons):
   <div class="progress" aria-hidden="true"><i style="width:{percent}%"></i></div>
 </header>
 <article class="lesson-body">
+{chapter_figure(chapter)}
 {article}
 <div class="source-note">इस लेसन का विषय <a href="{SOURCE}" rel="nofollow noopener" target="_blank">PTS Jodhpur — Basic Computer Fundamentals, Chapter {chapter}</a> से लिया गया है। भाषा और उदाहरण आसान Hinglish में नए सिरे से लिखे गए हैं।</div>
 </article>
@@ -329,6 +363,58 @@ def build_lesson(index, lessons):
 </main>
 {foot()}"""
     write(f"basic-computer/{slug}.html", page)
+
+
+def build_quiz(num, lessons):
+    path = os.path.join(QUIZ_DIR, f"chapter-{num}.json")
+    with open(path, encoding="utf-8") as handle:
+        questions = json.load(handle)["questions"]
+
+    items = []
+    for question in questions:
+        options = "".join(f"<li>{esc(option)}</li>" for option in question["options"])
+        items.append(f'<li><p>{esc(question["q"])}</p><ol class="q-options">{options}</ol></li>')
+
+    answers = []
+    for index, question in enumerate(questions, 1):
+        letter = "abcd"[question["answer"]]
+        answers.append(
+            f'<li><b>Q{index} — ({letter})</b> {esc(question["options"][question["answer"]])}'
+            f'<br><span style="color:var(--muted)">{esc(question["why"])}</span></li>'
+        )
+
+    prev_link = '<span class="empty"></span>'
+    next_link = '<a class="next" href="/courses/basic-computer/"><small>कोर्स पर वापस</small><b>Basic Computer playlist</b></a>'
+    if num > 1:
+        prev_link = f'<a class="prev" href="/courses/basic-computer/quiz-chapter-{num-1}.html"><small>← पिछला टेस्ट</small><b>Chapter {num-1} टेस्ट</b></a>'
+    if num < len(CHAPTERS):
+        next_link = f'<a class="next" href="/courses/basic-computer/quiz-chapter-{num+1}.html"><small>अगला टेस्ट →</small><b>Chapter {num+1} टेस्ट</b></a>'
+
+    title = f"Chapter {num} टेस्ट — 20 सवाल ({CHAPTER_TITLES[num]})"
+    description = f"{CHAPTER_TITLES[num]} चैप्टर पर 20 MCQs का मुफ़्त टेस्ट, उत्तर और छोटी व्याख्या अंत में। Basic Computer कोर्स, Chapter {num}।"
+    page = head(
+        title,
+        description,
+        f"{SITE}/courses/basic-computer/quiz-chapter-{num}.html",
+    ) + f"""
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/basic-computer/">Basic Computer</a><span>/</span>Chapter {num} टेस्ट</div>
+<header class="lesson-head">
+  <span class="badge">Chapter {num} · {CHAPTER_TITLES[num]}</span>
+  <h1>Chapter {num} टेस्ट — 20 सवाल</h1>
+  <div class="lesson-meta"><span>20 प्रश्न</span><span>·</span><span>हर सवाल 1 अंक</span><span>·</span><span>उत्तर अंत में</span></div>
+</header>
+<p class="quiz-note">हर सवाल के चार विकल्प हैं। पहले सारे 20 के जवाब कागज़ पर लिखें, फिर नीचे <a href="#answers">उत्तर-कुंजी</a> से जाँचें — 16 या ज़्यादा सही मतलब चैप्टर ठीक से समझ आ गया है।</p>
+<ol class="quiz">{''.join(items)}</ol>
+<section id="answers">
+  <h2 style="font-family:Sora,Mukta,sans-serif;color:#fff">उत्तर-कुंजी</h2>
+  <ol class="answer-key">{''.join(answers)}</ol>
+</section>
+<nav class="pager" aria-label="टेस्ट नेविगेशन">{prev_link}{next_link}</nav>
+<p class="quiz-note">इस चैप्टर के लेसन फिर देखने हों तो <a href="/courses/basic-computer/#chapter-{num}">Chapter {num} की playlist</a> खोलें।</p>
+</main>
+{foot()}"""
+    write(f"basic-computer/quiz-chapter-{num}.html", page)
 
 
 def write(relative, content):
@@ -346,7 +432,9 @@ def main():
     build_course(LESSONS)
     for index in range(1, len(LESSONS) + 1):
         build_lesson(index, LESSONS)
-    print(f"courses built: hub + course page + {len(LESSONS)} lessons")
+    for num, _, _ in CHAPTERS:
+        build_quiz(num, LESSONS)
+    print(f"courses built: hub + course page + {len(LESSONS)} lessons + {len(CHAPTERS)} tests")
 
 
 if __name__ == "__main__":
