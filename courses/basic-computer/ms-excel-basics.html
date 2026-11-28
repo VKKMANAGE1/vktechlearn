@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MS Excel Basics — Workbook, Sheet और डेटा एंट्री — VK Tech Learn</title>
+<meta name="description" content="Excel की स्क्रीन, cell, row-column, डेटा टाइप, ऑटोफ़िल और सेव करने का तरीका।">
+<link rel="canonical" href="https://vktechlearn.site/courses/basic-computer/ms-excel-basics.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="MS Excel Basics — Workbook, Sheet और डेटा एंट्री">
+<meta property="og:description" content="Excel की स्क्रीन, cell, row-column, डेटा टाइप, ऑटोफ़िल और सेव करने का तरीका।">
+<meta property="og:url" content="https://vktechlearn.site/courses/basic-computer/ms-excel-basics.html">
+<meta property="og:image" content="https://vktechlearn.site/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MS Excel Basics — Workbook, Sheet और डेटा एंट्री">
+<meta name="twitter:description" content="Excel की स्क्रीन, cell, row-column, डेटा टाइप, ऑटोफ़िल और सेव करने का तरीका।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/og-home.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"MS Excel Basics — Workbook, Sheet और डेटा एंट्री","description":"Excel की स्क्रीन, cell, row-column, डेटा टाइप, ऑटोफ़िल और सेव करने का तरीका।","inLanguage":"hi","url":"https://vktechlearn.site/courses/basic-computer/ms-excel-basics.html","author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/"},"isPartOf":{"@type":"Course","name":"Basic Computer Course in Hindi","url":"https://vktechlearn.site/courses/basic-computer/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Courses","item":"https://vktechlearn.site/courses/"},{"@type":"ListItem","position":3,"name":"Basic Computer","item":"https://vktechlearn.site/courses/basic-computer/"},{"@type":"ListItem","position":4,"name":"MS Excel Basics — Workbook, Sheet और डेटा एंट्री","item":"https://vktechlearn.site/courses/basic-computer/ms-excel-basics.html"}]}]}</script>
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/#word">MS Word</a>
+      <a href="/courses/#excel">MS Excel</a>
+      <a href="/courses/#hacking">Hacking</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/basic-computer/">Basic Computer</a><span>/</span>लेसन 19</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 6 · MS Excel के साथ काम</span>
+  <h1>MS Excel Basics — Workbook, Sheet और डेटा एंट्री</h1>
+  <div class="lesson-meta"><span>लेसन 19 / 21</span><span>·</span><span>~8 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:90%"></i></div>
+</header>
+<article class="lesson-body">
+<p>MS Excel दुनिया की सबसे लोकप्रिय स्प्रेडशीट है। इसमें पंक्तियों और कॉलम के जाल में डेटा भरा जाता है, और Excel उस पर हिसाब, चार्ट और रिपोर्ट बना देता है। बजट, सैलरी, स्टॉक, अंकतालिका — सब यहीं बनते हैं।</p>
+
+<h2>Workbook, Worksheet और Cell</h2>
+
+<ul>
+<li><b>Workbook:</b> पूरी Excel फ़ाइल (<code>.xlsx</code>) — इसमें कई sheets हो सकती हैं।</li>
+<li><b>Worksheet:</b> एक पेज/टैब, जिसमें डेटा भरा जाता है (Sheet1, Sheet2…)।</li>
+<li><b>Cell:</b> एक खाना — पंक्ति और कॉलम का मिलन, जैसे <b>A1</b>। हर cell का अपना पता होता है।</li>
+</ul>
+
+<p>कॉलम अक्षरों में (A, B, C…) और पंक्तियाँ संख्याओं में (1, 2, 3…) होती हैं। A1 का मतलब पहला कॉलम और पहली पंक्ति। एक sheet में 16,384 कॉलम और 10,48,576 पंक्तियाँ होती हैं — यही Excel की ताक़त है।</p>
+
+<h2>Excel की स्क्रीन</h2>
+
+<ul>
+<li><b>Title bar और Quick Access Toolbar</b> — सेव, undo, redo।</li>
+<li><b>Ribbon</b> — Home, Insert, Page Layout, Formulas, Data, Review, View।</li>
+<li><b>Name Box</b> — चुने हुए cell का पता दिखाता है; यहाँ पता लिखकर सीधे उस cell पर जा सकते हैं।</li>
+<li><b>Formula Bar</b> — cell के अंदर का असली डेटा या फ़ॉर्मूला दिखाता है।</li>
+<li><b>Sheet tabs</b> — नीचे, sheets के बीच बदलने के लिए।</li>
+<li><b>Status bar</b> — चुने हुए सेल का sum, average और count दिखाता है।</li>
+</ul>
+
+<h2>डेटा एंट्री के नियम</h2>
+
+<p>किसी cell पर क्लिक करें और सीधे टाइप करें; <b>Enter</b> दबाने पर नीचे वाले cell में चले जाएँगे, <b>Tab</b> से दाईं ओर। Excel खुद पहचान लेता है कि डेटा किस तरह का है:</p>
+
+<ul>
+<li><b>Number:</b> 100, 45.5 — जोड़-घटाव हो सकता है।</li>
+<li><b>Text:</b> नाम, पता — गणना नहीं होती।</li>
+<li><b>Date/Time:</b> 28-11-2026 — तारीख के हिसाब से काम हो सकता है।</li>
+<li><b>Formula:</b> <code>=</code> से शुरू होने वाली चीज़।</li>
+</ul>
+
+<p>अगर लंबा नंबर (जैसे मोबाइल नंबर) टाइप करें और वह <code>9.87E+09</code> जैसा दिखे, तो cell का format General है — उसे Text या Number में बदलें।</p>
+
+<h2>ऑटोफ़िल और कॉपी</h2>
+
+<p>अगर A1 में 1 और A2 में 2 है, तो दोनों चुनकर नीचे दाईं कोने पर छोटा बॉक्स (fill handle) खींचें — Excel 3, 4, 5… अपने आप भर देगा। यही तरीका महीनों के नाम, तारीखों और फ़ॉर्मूला कॉपी करने में काम आता है।</p>
+
+<h2>Formatting</h2>
+
+<table>
+<thead><tr><th>काम</th><th>तरीका</th></tr></thead>
+<tbody>
+<tr><td>Bold / Italic</td><td>Ctrl + B / Ctrl + I</td></tr>
+<tr><td>Number format</td><td>Home → Number group (% , ₹, comma)</td></tr>
+<tr><td>Cell color</td><td>Home → Fill Color</td></tr>
+<tr><td>Borders</td><td>Home → Borders</td></tr>
+<tr><td>Column width</td><td>कॉलम के बीच की लाइन डबल-क्लिक करें</td></tr>
+<tr><td>Merge cells</td><td>Home → Merge &amp; Center</td></tr>
+</tbody>
+</table>
+
+<h2>सेव और प्रिंट</h2>
+
+<p>Ctrl + S से सेव करें। प्रिंट से पहले <b>Page Layout → Print Titles</b> से heading row दोहराएँ, ताकि हर पेज पर कॉलम के नाम दिखें। बड़ी sheet को PDF में निकालना हो तो File → Export → PDF चुनें।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Cell address = कॉलम + पंक्ति (A1)</li>
+<li>= से फ़ॉर्मूला शुरू होता है</li>
+<li>Fill handle से सीरीज़ अपने आप बनती है</li>
+<li>Status bar चुने डेटा का जोड़ दिखा देता है</li>
+</ul>
+</div>
+
+<h2>आगे क्या</h2>
+
+<p>अगला लेसन Excel के फ़ॉर्मूले और functions का है — SUM, AVERAGE, IF, COUNT और cell reference की पूरी समझ।</p>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>एक नई sheet में 10 छात्रों के नाम और तीन विषयों के नंबर भरें। कॉलम की चौड़ाई ठीक करें, heading bold करें और Total कॉलम में जोड़ निकालें। फ़ाइल <code>practice.xlsx</code> नाम से सेव करें।</p></div>
+<div class="source-note">इस लेसन का विषय <a href="https://home.rajasthan.gov.in/content/dam/homeportal/ptsjodhpur/pdf/StudyMaterial/Basic%20Computer%20Fundamentals%20Merged.pdf" rel="nofollow noopener" target="_blank">PTS Jodhpur — Basic Computer Fundamentals, Chapter 6</a> से लिया गया है। भाषा और उदाहरण आसान Hinglish में नए सिरे से लिखे गए हैं।</div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/basic-computer/ms-powerpoint-basics.html"><small>← पिछला लेसन</small><b>MS PowerPoint Basics — Slides, Views और Presentation</b></a><a class="next" href="/courses/basic-computer/excel-formulas-functions.html"><small>अगला लेसन →</small><b>Excel Formulas और Functions — SUM, AVERAGE, IF, COUNT</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

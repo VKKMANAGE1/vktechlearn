@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://vktechlearn.site/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://vktechlearn.site/courses/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://vktechlearn.site/pdf/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://vktechlearn.site/img/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://vktechlearn.site/shavi-ai/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -10,6 +12,27 @@
   <url><loc>https://vktechlearn.site/privacy-policy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://vktechlearn.site/terms-conditions.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://vktechlearn.site/dmca-disclaimer.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/browser-search-engine.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/computer-hardware.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/computer-ka-itihas.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/computer-ke-prakar.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/computer-kya-hai.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/computer-network-kya-hai.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/computer-software.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/email-kya-hai.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/excel-formulas-functions.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/excel-vlookup-pivot-table.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/input-devices.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/internet-kya-hai.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/ip-address-kya-hai.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/ms-excel-basics.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/ms-office-kya-hai.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/ms-powerpoint-basics.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/ms-word-basics.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/network-devices.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/output-devices.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/storage-devices.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vktechlearn.site/courses/basic-computer/windows-desktop.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://vktechlearn.site/posts/ai-automation-zapier-n8n-hindi.html</loc><lastmod>2026-11-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://vktechlearn.site/posts/ai-video-editing-shorts-hindi.html</loc><lastmod>2026-11-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://vktechlearn.site/posts/ai-voice-transcription-tools-hindi.html</loc><lastmod>2026-11-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>

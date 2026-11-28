@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser और Search Engine — URL से सुरक्षित ब्राउज़िंग तक — VK Tech Learn</title>
+<meta name="description" content="ब्राउज़र के हिस्से, URL की बनावट, सर्च टिप्स, cache-cookies और सुरक्षित ब्राउज़िंग।">
+<link rel="canonical" href="https://vktechlearn.site/courses/basic-computer/browser-search-engine.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Browser और Search Engine — URL से सुरक्षित ब्राउज़िंग तक">
+<meta property="og:description" content="ब्राउज़र के हिस्से, URL की बनावट, सर्च टिप्स, cache-cookies और सुरक्षित ब्राउज़िंग।">
+<meta property="og:url" content="https://vktechlearn.site/courses/basic-computer/browser-search-engine.html">
+<meta property="og:image" content="https://vktechlearn.site/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Browser और Search Engine — URL से सुरक्षित ब्राउज़िंग तक">
+<meta name="twitter:description" content="ब्राउज़र के हिस्से, URL की बनावट, सर्च टिप्स, cache-cookies और सुरक्षित ब्राउज़िंग।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/og-home.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Browser और Search Engine — URL से सुरक्षित ब्राउज़िंग तक","description":"ब्राउज़र के हिस्से, URL की बनावट, सर्च टिप्स, cache-cookies और सुरक्षित ब्राउज़िंग।","inLanguage":"hi","url":"https://vktechlearn.site/courses/basic-computer/browser-search-engine.html","author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/"},"isPartOf":{"@type":"Course","name":"Basic Computer Course in Hindi","url":"https://vktechlearn.site/courses/basic-computer/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Courses","item":"https://vktechlearn.site/courses/"},{"@type":"ListItem","position":3,"name":"Basic Computer","item":"https://vktechlearn.site/courses/basic-computer/"},{"@type":"ListItem","position":4,"name":"Browser और Search Engine — URL से सुरक्षित ब्राउज़िंग तक","item":"https://vktechlearn.site/courses/basic-computer/browser-search-engine.html"}]}]}</script>
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/#word">MS Word</a>
+      <a href="/courses/#excel">MS Excel</a>
+      <a href="/courses/#hacking">Hacking</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/basic-computer/">Basic Computer</a><span>/</span>लेसन 15</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 4 · Internet Basics</span>
+  <h1>Browser और Search Engine — URL से सुरक्षित ब्राउज़िंग तक</h1>
+  <div class="lesson-meta"><span>लेसन 15 / 21</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:71%"></i></div>
+</header>
+<article class="lesson-body">
+<p>ब्राउज़र वह सॉफ्टवेयर है जिससे हम इंटरनेट देखते हैं — Chrome, Firefox, Edge, Safari। और सर्च इंजन वह सेवा है जो लाखों वेबसाइटों में से हमारा जवाब ढूँढती है — Google, Bing, DuckDuckGo। दोनों अलग चीज़ें हैं, पर साथ काम करती हैं।</p>
+
+<h2>ब्राउज़र के हिस्से</h2>
+
+<ul>
+<li><b>Address bar:</b> URL लिखने या खोजने की जगह।</li>
+<li><b>Tabs:</b> एक साथ कई पेज खोलना।</li>
+<li><b>Bookmarks:</b> पसंदीदा साइटें सेव करना (Ctrl + D)।</li>
+<li><b>History:</b> पहले देखी गई साइटें (Ctrl + H)।</li>
+<li><b>Extensions:</b> छोटे add-on — ad blocker, password manager, translator।</li>
+</ul>
+
+<h2>URL की बनावट</h2>
+
+<p>URL यानी Uniform Resource Locator — किसी वेब पेज का पूरा पता:</p>
+
+<table>
+<thead><tr><th>हिस्सा</th><th>उदाहरण</th><th>मतलब</th></tr></thead>
+<tbody>
+<tr><td>Protocol</td><td>https://</td><td>सुरक्षित कनेक्शन</td></tr>
+<tr><td>Domain</td><td>vktechlearn.site</td><td>वेबसाइट का नाम</td></tr>
+<tr><td>Path</td><td>/posts/whatsapp.html</td><td>कौन सा पेज</td></tr>
+<tr><td>Query</td><td>?q=test</td><td>अतिरिक्त जानकारी</td></tr>
+</tbody>
+</table>
+
+<p>डोमेन के अंत में आने वाला हिस्सा <b>TLD</b> कहलाता है — <code>.com</code> (कंपनी), <code>.in</code> (भारत), <code>.gov.in</code> (सरकार), <code>.org</code> (संस्था), <code>.edu</code> (शिक्षा)। बैंक या सरकारी साइट की पहचान करते समय TLD और साइट का लॉक (HTTPS) ज़रूर देखें।</p>
+
+<h2>सर्च इंजन कैसे काम करता है</h2>
+
+<p>सर्च इंजन की तीन भूमिकाएँ होती हैं — <b>crawling</b> (वेब पेजों को खोजना), <b>indexing</b> (उनकी जानकारी सूची में रखना) और <b>ranking</b> (जवाब को क्रम में लगाना)। जब आप कुछ टाइप करते हैं, तो वह पहले से बने index में से सबसे relevant पेज दिखाता है — वह हर बार पूरा इंटरनेट नहीं छानता।</p>
+
+<h2>बेहतर सर्च के टिप्स</h2>
+
+<ul>
+<li><b>"..."</b> — exact phrase खोजने के लिए: <code>"basic computer course"</code></li>
+<li><b>site:</b> — किसी साइट के अंदर खोजने के लिए: <code>site:vktechlearn.site excel</code></li>
+<li><b>-</b> — किसी शब्द को हटाने के लिए: <code>python -snake</code></li>
+<li><b>filetype:</b> — खास फ़ाइल: <code>filetype:pdf computer notes</code></li>
+<li>सवाल सीधे लिखें — "How to take screenshot in Windows 11" जैसे लंबे वाक्य भी अच्छा नतीजा देते हैं।</li>
+</ul>
+
+<h2>Cache और Cookies</h2>
+
+<p><b>Cache</b> में वेबसाइट की इमेज और फ़ाइलें सेव रहती हैं, ताकि अगली बार पेज जल्दी खुले। <b>Cookies</b> छोटी फ़ाइलें हैं जो साइट को याद रखने में मदद करती हैं — जैसे आप लॉगिन रहें या भाषा चुनी हुई रहे। कभी-कभी पुराना cache या खराब cookie साइट को गड़बड़ कर देता है; तब ब्राउज़र में cache clear करना (Ctrl + Shift + Delete) काम आता है।</p>
+
+<h2>सुरक्षित ब्राउज़िंग</h2>
+
+<ul>
+<li>HTTPS वाली साइट पर ही पासवर्ड या कार्ड डिटेल डालें।</li>
+<li>पॉप-अप में "आपका कंप्यूटर वायरस से भरा है" जैसे संदेश कभी सच नहीं होते — बंद कर दें।</li>
+<li>ब्राउज़र को अपडेट रखें; पुराने वर्ज़न में सुरक्षा छेद होते हैं।</li>
+<li>साइन-इन करते समय address bar में असली डोमेन जाँचें, ईमेल के लिंक से न पहुँचें।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>ब्राउज़र = इंटरनेट देखने का ऐप; सर्च इंजन = जवाब ढूँढने की सेवा</li>
+<li>URL = protocol + domain + path</li>
+<li>Cache/Cookies से speed और लॉगिन आसान होता है</li>
+<li>HTTPS और सही डोमेन — सुरक्षा की पहली जाँच</li>
+</ul></div>
+
+<h2>आगे क्या</h2>
+
+<p>अब चैप्टर 5 शुरू होता है — MS Office। पहले समझेंगे कि Office suite क्या है और किस काम के लिए Word, Excel या PowerPoint चुनना चाहिए; फिर Word और PowerPoint के basics।</p>
+
+<div class="practice"><b>Practical — 5 मिनट</b>
+<p>सर्च इंजन में अपना नाम लिखकर देखें, फिर <code>filetype:pdf basic computer</code> खोजकर एक PDF खोलें। दोनों नतीजों में क्या फ़र्क़ आया, एक लाइन में लिखें।</p></div>
+<div class="source-note">इस लेसन का विषय <a href="https://home.rajasthan.gov.in/content/dam/homeportal/ptsjodhpur/pdf/StudyMaterial/Basic%20Computer%20Fundamentals%20Merged.pdf" rel="nofollow noopener" target="_blank">PTS Jodhpur — Basic Computer Fundamentals, Chapter 4</a> से लिया गया है। भाषा और उदाहरण आसान Hinglish में नए सिरे से लिखे गए हैं।</div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/basic-computer/email-kya-hai.html"><small>← पिछला लेसन</small><b>Email क्या है? ID, Inbox, CC-BCC और सुरक्षा</b></a><a class="next" href="/courses/basic-computer/ms-office-kya-hai.html"><small>अगला लेसन →</small><b>MS Office क्या है? Word, Excel, PowerPoint का परिचय</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

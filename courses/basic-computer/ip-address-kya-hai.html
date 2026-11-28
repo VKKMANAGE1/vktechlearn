@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IP Address क्या है? IPv4, IPv6, Public और Private IP — VK Tech Learn</title>
+<meta name="description" content="IP address की बनावट, public-private का फ़र्क़, DNS और अपना IP कैसे देखें।">
+<link rel="canonical" href="https://vktechlearn.site/courses/basic-computer/ip-address-kya-hai.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="IP Address क्या है? IPv4, IPv6, Public और Private IP">
+<meta property="og:description" content="IP address की बनावट, public-private का फ़र्क़, DNS और अपना IP कैसे देखें।">
+<meta property="og:url" content="https://vktechlearn.site/courses/basic-computer/ip-address-kya-hai.html">
+<meta property="og:image" content="https://vktechlearn.site/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="IP Address क्या है? IPv4, IPv6, Public और Private IP">
+<meta name="twitter:description" content="IP address की बनावट, public-private का फ़र्क़, DNS और अपना IP कैसे देखें।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/og-home.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"IP Address क्या है? IPv4, IPv6, Public और Private IP","description":"IP address की बनावट, public-private का फ़र्क़, DNS और अपना IP कैसे देखें।","inLanguage":"hi","url":"https://vktechlearn.site/courses/basic-computer/ip-address-kya-hai.html","author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/"},"isPartOf":{"@type":"Course","name":"Basic Computer Course in Hindi","url":"https://vktechlearn.site/courses/basic-computer/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Courses","item":"https://vktechlearn.site/courses/"},{"@type":"ListItem","position":3,"name":"Basic Computer","item":"https://vktechlearn.site/courses/basic-computer/"},{"@type":"ListItem","position":4,"name":"IP Address क्या है? IPv4, IPv6, Public और Private IP","item":"https://vktechlearn.site/courses/basic-computer/ip-address-kya-hai.html"}]}]}</script>
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/#word">MS Word</a>
+      <a href="/courses/#excel">MS Excel</a>
+      <a href="/courses/#hacking">Hacking</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/basic-computer/">Basic Computer</a><span>/</span>लेसन 12</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 3 · Computer Networking</span>
+  <h1>IP Address क्या है? IPv4, IPv6, Public और Private IP</h1>
+  <div class="lesson-meta"><span>लेसन 12 / 21</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:57%"></i></div>
+</header>
+<article class="lesson-body">
+<p>नेटवर्क में हर डिवाइस को एक पता चाहिए, वरना डेटा किसे भेजा जाए यह पता नहीं चलेगा। इसी पते को <b>IP address</b> कहते हैं। यह घर के पते जैसा है — जितना सही पता, उतनी ही तेज़ी से चिट्ठी पहुँचती है।</p>
+
+<h2>IP address क्या है</h2>
+
+<p>IP का पूरा नाम <b>Internet Protocol address</b> है। यह अंकों की एक श्रृंखला होती है जो नेटवर्क में डिवाइस की पहचान बताती है और यह भी तय करती है कि उसका नेटवर्क कौन सा है।</p>
+
+<h2>IPv4 और IPv6</h2>
+
+<ul>
+<li><b>IPv4:</b> 32-bit पता, चार भागों में लिखा जाता है — जैसे <code>192.168.1.10</code>। हर भाग 0 से 255 तक होता है। कुल पते लगभग 4.3 अरब हैं, जो कम पड़ गए।</li>
+<li><b>IPv6:</b> 128-bit पता, आठ भागों में हेक्साडेसिमल रूप में — जैसे <code>2001:0db8:85a3::8a2e:0370:7334</code>। इसमें पते की संख्या इतनी बड़ी है कि लगभग खत्म नहीं हो सकती।</li>
+</ul>
+
+<h2>Public IP और Private IP</h2>
+
+<table>
+<thead><tr><th>Public IP</th><th>Private IP</th></tr></thead>
+<tbody>
+<tr><td>इंटरनेट पर दिखता है, ISP देता है</td><td>घर/दफ़्तर के अंदर इस्तेमाल होता है, router देता है</td></tr>
+<tr><td>पूरी दुनिया में unique</td><td>हर नेटवर्क में दोहराया जा सकता है</td></tr>
+<tr><td>वेबसाइट और सर्वर से सीधे जुड़ता है</td><td>आमतौर पर 192.168.x.x, 10.x.x.x, 172.16–31.x.x</td></tr>
+</tbody>
+</table>
+
+<p>आपके फोन का IP <code>192.168.1.5</code> हो सकता है, पर इंटरनेट पर आप router के public IP से दिखते हैं। इस बदलाव को <b>NAT (Network Address Translation)</b> कहते हैं — router कई private डिवाइस को एक public IP से बाहर भेजता है।</p>
+
+<h2>Static और Dynamic IP</h2>
+
+<p><b>Static IP</b> हर बार वही रहता है — सर्वर, प्रिंटर या CCTV के लिए अच्छा। <b>Dynamic IP</b> router से अपने आप मिलता है और कुछ समय बाद बदल सकता है; घर के डिवाइस आमतौर पर इसी पर चलते हैं। इसे <b>DHCP</b> सेवा संभालती है।</p>
+
+<h2>अपना IP कैसे देखें</h2>
+
+<ul>
+<li><b>Windows:</b> Command Prompt में <code>ipconfig</code> चलाएँ — IPv4 Address दिखेगा।</li>
+<li><b>मोबाइल:</b> Settings → Wi-Fi → जुड़े नेटवर्क पर टैप → IP address।</li>
+<li><b>Public IP:</b> ब्राउज़र में "what is my ip" खोजें, या router के admin page में WAN address देखें।</li>
+</ul>
+
+<h2>IP और DNS का रिश्ता</h2>
+
+<p>इंसान नाम याद रखता है, कंप्यूटर नंबर। जब आप <code>google.com</code> लिखते हैं, तो <b>DNS (Domain Name System)</b> उसे IP address में बदल देता है। DNS इंटरनेट की फ़ोन बुक है। अगर DNS काम न करे, तो इंटरनेट चलते हुए भी साइटें नहीं खुलेंगी — ऐसे में DNS बदलकर (जैसे 8.8.8.8) आज़माना काम आता है।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>IP = नेटवर्क में डिवाइस का पता</li>
+<li>IPv4 = 32-bit, IPv6 = 128-bit</li>
+<li>Private IP घर के अंदर, Public IP इंटरनेट पर</li>
+<li>DNS नाम को IP में बदलता है</li>
+</ul></div>
+
+<h2>आगे क्या</h2>
+
+<p>अब चैप्टर 4 — Internet Basics शुरू। इंटरनेट कैसे बना, ISP क्या करता है, WWW का मतलब क्या है और HTTP, FTP जैसे protocols कैसे काम करते हैं, यह अगले लेसन में देखेंगे।</p>
+
+<div class="practice"><b>Practical — 5 मिनट</b>
+<p>Command Prompt या मोबाइल की सेटिंग में अपना private IP देखें, फिर ब्राउज़र में अपना public IP खोजें। दोनों अलग क्यों हैं — एक लाइन में लिखें।</p></div>
+<div class="source-note">इस लेसन का विषय <a href="https://home.rajasthan.gov.in/content/dam/homeportal/ptsjodhpur/pdf/StudyMaterial/Basic%20Computer%20Fundamentals%20Merged.pdf" rel="nofollow noopener" target="_blank">PTS Jodhpur — Basic Computer Fundamentals, Chapter 3</a> से लिया गया है। भाषा और उदाहरण आसान Hinglish में नए सिरे से लिखे गए हैं।</div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/basic-computer/network-devices.html"><small>← पिछला लेसन</small><b>Network Devices — Hub, Switch, Router, Modem और NIC</b></a><a class="next" href="/courses/basic-computer/internet-kya-hai.html"><small>अगला लेसन →</small><b>Internet क्या है? WWW, ISP और Protocols</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

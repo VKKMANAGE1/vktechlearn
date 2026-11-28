@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internet क्या है? WWW, ISP और Protocols — VK Tech Learn</title>
+<meta name="description" content="इंटरनेट कैसे चलता है, ISP की भूमिका, WWW का मतलब और HTTP, FTP, SMTP जैसे protocols।">
+<link rel="canonical" href="https://vktechlearn.site/courses/basic-computer/internet-kya-hai.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Internet क्या है? WWW, ISP और Protocols">
+<meta property="og:description" content="इंटरनेट कैसे चलता है, ISP की भूमिका, WWW का मतलब और HTTP, FTP, SMTP जैसे protocols।">
+<meta property="og:url" content="https://vktechlearn.site/courses/basic-computer/internet-kya-hai.html">
+<meta property="og:image" content="https://vktechlearn.site/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Internet क्या है? WWW, ISP और Protocols">
+<meta name="twitter:description" content="इंटरनेट कैसे चलता है, ISP की भूमिका, WWW का मतलब और HTTP, FTP, SMTP जैसे protocols।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/og-home.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Internet क्या है? WWW, ISP और Protocols","description":"इंटरनेट कैसे चलता है, ISP की भूमिका, WWW का मतलब और HTTP, FTP, SMTP जैसे protocols।","inLanguage":"hi","url":"https://vktechlearn.site/courses/basic-computer/internet-kya-hai.html","author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/"},"isPartOf":{"@type":"Course","name":"Basic Computer Course in Hindi","url":"https://vktechlearn.site/courses/basic-computer/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Courses","item":"https://vktechlearn.site/courses/"},{"@type":"ListItem","position":3,"name":"Basic Computer","item":"https://vktechlearn.site/courses/basic-computer/"},{"@type":"ListItem","position":4,"name":"Internet क्या है? WWW, ISP और Protocols","item":"https://vktechlearn.site/courses/basic-computer/internet-kya-hai.html"}]}]}</script>
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/#word">MS Word</a>
+      <a href="/courses/#excel">MS Excel</a>
+      <a href="/courses/#hacking">Hacking</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/basic-computer/">Basic Computer</a><span>/</span>लेसन 13</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 4 · Internet Basics</span>
+  <h1>Internet क्या है? WWW, ISP और Protocols</h1>
+  <div class="lesson-meta"><span>लेसन 13 / 21</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:62%"></i></div>
+</header>
+<article class="lesson-body">
+<p>इंटरनेट दुनिया का सबसे बड़ा नेटवर्क है — करोड़ों कंप्यूटर, सर्वर और मोबाइल आपस में जुड़े हुए। जब आप कोई वेबसाइट खोलते हैं, वीडियो देखते हैं या मैसेज भेजते हैं, तब डेटा इसी विशाल नेटवर्क से गुज़रता है। इस लेसन में इंटरनेट के basics, ISP, WWW और protocols को आसान भाषा में समझेंगे।</p>
+
+<h2>इंटरनेट क्या है</h2>
+
+<p>इंटरनेट कई नेटवर्कों का नेटवर्क है। इसे कोई एक व्यक्ति या देश नहीं चलाता; इसे दुनिया भर की कंपनियाँ, सरकारें, विश्वविद्यालय और संस्थाएँ मिलकर चलाती हैं। हर जुड़ा हुआ कंप्यूटर <b>host</b> कहलाता है, और डेटा केबल, टेलीफ़ोन लाइन, सैटेलाइट और मोबाइल नेटवर्क से आता-जाता है।</p>
+
+<p>इंटरनेट की शुरुआत 1969 में अमेरिका के <b>ARPANET</b> प्रोजेक्ट से मानी जाती है। भारत में इंटरनेट 1995 में आम लोगों के लिए खुला, जब VSNL ने सर्विस शुरू की।</p>
+
+<h2>इंटरनेट और WWW में फ़र्क़</h2>
+
+<p>ये दोनों अलग चीज़ें हैं, पर लोग एक ही मान लेते हैं:</p>
+
+<ul>
+<li><b>Internet:</b> वह नेटवर्क जिस पर सब कुछ चलता है — ईमेल, वीडियो कॉल, गेम, वेबसाइट।</li>
+<li><b>WWW (World Wide Web):</b> इंटरनेट पर चलने वाली वह सेवा जिसमें वेब पेज और लिंक होते हैं। इसे टिम बर्नर्स-ली ने 1989 में बनाया।</li>
+</ul>
+
+<p>आसान उदाहरण: इंटरनेट सड़क है, वेब उस पर चलने वाली बस है, और वेबसाइटें अलग-अलग स्टॉप हैं।</p>
+
+<h2>ISP क्या करता है</h2>
+
+<p><b>ISP (Internet Service Provider)</b> वह कंपनी है जो आपको इंटरनेट से जोड़ती है — जैसे Jio, Airtel, BSNL, ACT। आप उसे हर महीने पैसे देते हैं और वह आपके घर तक लाइन या मोबाइल सिग्नल पहुँचाता है। प्लान चुनते समय <b>speed (Mbps)</b>, <b>data limit</b>, <b>FUP</b> और <b>असली अपलोड स्पीड</b> देखें — सिर्फ़ नाम पर भरोसा न करें।</p>
+
+<h2>मुख्य Protocols</h2>
+
+<table>
+<thead><tr><th>Protocol</th><th>काम</th></tr></thead>
+<tbody>
+<tr><td>HTTP / HTTPS</td><td>वेब पेज खोलना; HTTPS में डेटा एन्क्रिप्टेड रहता है</td></tr>
+<tr><td>FTP / SFTP</td><td>सर्वर पर फ़ाइल अपलोड या डाउनलोड करना</td></tr>
+<tr><td>SMTP</td><td>ईमेल भेजना</td></tr>
+<tr><td>POP3 / IMAP</td><td>ईमेल प्राप्त करना</td></tr>
+<tr><td>DNS</td><td>डोमेन नाम को IP address में बदलना</td></tr>
+<tr><td>TCP / IP</td><td>डेटा को टुकड़ों में भेजना और सही क्रम में जोड़ना</td></tr>
+</tbody>
+</table>
+
+<p><b>TCP</b> भरोसेमंद है — अगर पैकेट न पहुँचे तो दोबारा भेजता है; इसलिए वेब, ईमेल और फ़ाइल ट्रांसफ़र में इसका इस्तेमाल होता है। <b>UDP</b> तेज़ है पर भरोसेमंद नहीं — वीडियो कॉल और गेम में देरी कम करने के लिए इसका इस्तेमाल होता है।</p>
+
+<h2>इंटरनेट पर डेटा कैसे पहुँचता है</h2>
+
+<p>जब आप कोई साइट खोलते हैं, तो आपका ब्राउज़र डोमेन नाम का IP ढूँढता है (DNS), सर्वर से कनेक्शन बनाता है (TCP), फिर HTTP request भेजता है। सर्वर जवाब में HTML, CSS, इमेज भेजता है और ब्राउज़र उसे स्क्रीन पर दिखा देता है। यह पूरा काम सेकंड के कुछ हिस्से में हो जाता है।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>इंटरनेट = नेटवर्कों का नेटवर्क; WWW = उस पर वेब सेवा</li>
+<li>ISP इंटरनेट की लाइन देता है</li>
+<li>HTTPS = सुरक्षित वेब; HTTP = बिना एन्क्रिप्शन</li>
+<li>DNS नाम का पता बताता है</li>
+</ul></div>
+
+<h2>आगे क्या</h2>
+
+<p>अगला लेसन ईमेल का है — ईमेल पता कैसे बनता है, मेल भेजने-पढ़ने का तरीका, CC और BCC का फ़र्क़ और phishing से बचने के तरीके।</p>
+
+<div class="practice"><b>Practical — 5 मिनट</b>
+<p>ब्राउज़र में कोई साइट खोलें और address bar में बने लॉक आइकन पर क्लिक करें। देखें कि कनेक्शन "सुरक्षित" है या नहीं और साइट का नाम क्या लिखा है।</p></div>
+<div class="source-note">इस लेसन का विषय <a href="https://home.rajasthan.gov.in/content/dam/homeportal/ptsjodhpur/pdf/StudyMaterial/Basic%20Computer%20Fundamentals%20Merged.pdf" rel="nofollow noopener" target="_blank">PTS Jodhpur — Basic Computer Fundamentals, Chapter 4</a> से लिया गया है। भाषा और उदाहरण आसान Hinglish में नए सिरे से लिखे गए हैं।</div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/basic-computer/ip-address-kya-hai.html"><small>← पिछला लेसन</small><b>IP Address क्या है? IPv4, IPv6, Public और Private IP</b></a><a class="next" href="/courses/basic-computer/email-kya-hai.html"><small>अगला लेसन →</small><b>Email क्या है? ID, Inbox, CC-BCC और सुरक्षा</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

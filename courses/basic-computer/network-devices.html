@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Network Devices — Hub, Switch, Router, Modem और NIC — VK Tech Learn</title>
+<meta name="description" content="हर नेटवर्क डिवाइस का काम, hub और switch का फ़र्क़ और router घर में क्यों ज़रूरी है।">
+<link rel="canonical" href="https://vktechlearn.site/courses/basic-computer/network-devices.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Network Devices — Hub, Switch, Router, Modem और NIC">
+<meta property="og:description" content="हर नेटवर्क डिवाइस का काम, hub और switch का फ़र्क़ और router घर में क्यों ज़रूरी है।">
+<meta property="og:url" content="https://vktechlearn.site/courses/basic-computer/network-devices.html">
+<meta property="og:image" content="https://vktechlearn.site/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Network Devices — Hub, Switch, Router, Modem और NIC">
+<meta name="twitter:description" content="हर नेटवर्क डिवाइस का काम, hub और switch का फ़र्क़ और router घर में क्यों ज़रूरी है।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/og-home.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Network Devices — Hub, Switch, Router, Modem और NIC","description":"हर नेटवर्क डिवाइस का काम, hub और switch का फ़र्क़ और router घर में क्यों ज़रूरी है।","inLanguage":"hi","url":"https://vktechlearn.site/courses/basic-computer/network-devices.html","author":{"@type":"Person","name":"Vïnâý Kúshwâhå","url":"https://vktechlearn.site/about.html"},"publisher":{"@type":"Organization","name":"VK Tech Learn","url":"https://vktechlearn.site/"},"isPartOf":{"@type":"Course","name":"Basic Computer Course in Hindi","url":"https://vktechlearn.site/courses/basic-computer/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vktechlearn.site/"},{"@type":"ListItem","position":2,"name":"Courses","item":"https://vktechlearn.site/courses/"},{"@type":"ListItem","position":3,"name":"Basic Computer","item":"https://vktechlearn.site/courses/basic-computer/"},{"@type":"ListItem","position":4,"name":"Network Devices — Hub, Switch, Router, Modem और NIC","item":"https://vktechlearn.site/courses/basic-computer/network-devices.html"}]}]}</script>
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/#word">MS Word</a>
+      <a href="/courses/#excel">MS Excel</a>
+      <a href="/courses/#hacking">Hacking</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/basic-computer/">Basic Computer</a><span>/</span>लेसन 11</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 3 · Computer Networking</span>
+  <h1>Network Devices — Hub, Switch, Router, Modem और NIC</h1>
+  <div class="lesson-meta"><span>लेसन 11 / 21</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:52%"></i></div>
+</header>
+<article class="lesson-body">
+<p>नेटवर्क सिर्फ़ केबल और कंप्यूटर से नहीं बनता; बीच में कुछ उपकरण लगते हैं जो डेटा को सही जगह पहुँचाते हैं। इन्हीं को <b>network devices</b> कहते हैं। घर के Wi-Fi router से लेकर बड़े दफ़्तर के switch तक, हर डिवाइस का अपना काम है।</p>
+
+<h2>1. NIC (Network Interface Card)</h2>
+
+<p>हर कंप्यूटर में एक नेटवर्क कार्ड होता है जो उसे केबल या Wi-Fi से जोड़ता है। इसका अपना <b>MAC address</b> होता है — 12 अंकों का unique पता, जैसे <code>00:1A:2B:3C:4D:5E</code>। आज ज़्यादातर motherboard में NIC built-in होता है।</p>
+
+<h2>2. Hub</h2>
+
+<p>पुराना डिवाइस जो एक पोर्ट पर आया डेटा <b>सभी पोर्ट्स</b> पर भेज देता है। इससे भीड़ बढ़ती है और सुरक्षा कमज़ोर होती है, क्योंकि हर डिवाइस दूसरों का डेटा देख सकता है। आज hub लगभग बंद हो चुका है।</p>
+
+<h2>3. Switch</h2>
+
+<p>Hub का सुधरा रूप। यह याद रखता है कि कौन सा MAC address किस पोर्ट पर है, इसलिए डेटा सिर्फ़ उसी डिवाइस तक भेजता है जिसके लिए वह है। इससे speed और सुरक्षा दोनों बेहतर होती हैं। स्कूल या दफ़्तर के LAN में switch ही लगा होता है।</p>
+
+<div class="keybox"><b>Hub बनाम Switch</b>
+<ul>
+<li>Hub: सबको भेजता है, धीमा, कम सुरक्षित</li>
+<li>Switch: सिर्फ़ लक्ष्य तक भेजता है, तेज़, बेहतर</li>
+</ul></div>
+
+<h2>4. Router</h2>
+
+<p>दो अलग नेटवर्क को जोड़ता है और डेटा के लिए सबसे अच्छा रास्ता चुनता है। घर का Wi-Fi router आपके local नेटवर्क को इंटरनेट से जोड़ता है, साथ ही NAT और firewall का काम भी करता है। Router के बिना एक ही इंटरनेट लाइन पर कई डिवाइस नहीं चल सकते।</p>
+
+<h2>5. Modem</h2>
+
+<p>इंटरनेट सेवा प्रदाता (ISP) की लाइन के सिग्नल को कंप्यूटर के समझने योग्य डिजिटल सिग्नल में बदलता है। पहले अलग modem और router होते थे; आज अक्सर एक ही डिब्बे में दोनों होते हैं, जिसे <b>ONT/router</b> या broadband modem कहते हैं।</p>
+
+<h2>6. Bridge, Repeater और Gateway</h2>
+
+<ul>
+<li><b>Bridge:</b> दो LAN को जोड़ता है और बीच का ट्रैफ़िक सीमित रखता है।</li>
+<li><b>Repeater:</b> कमज़ोर सिग्नल को दोबारा मज़बूत करता है — लंबी दूरी या बड़े घर में Wi-Fi range बढ़ाने के लिए।</li>
+<li><b>Gateway:</b> दो अलग तरह के नेटवर्क के बीच दरवाज़े का काम करता है, जैसे अलग प्रोटोकॉल वाले नेटवर्क को जोड़ना।</li>
+</ul>
+
+<h2>7. Access Point और Firewall</h2>
+
+<p><b>Access Point (AP)</b> वायरलेस डिवाइस को नेटवर्क से जोड़ता है; बड़े दफ़्तरों में कई AP लगाए जाते हैं ताकि हर जगह Wi-Fi मिले। <b>Firewall</b> नेटवर्क पर आने-जाने वाले ट्रैफ़िक की जाँच करता है और नियम के बाहर की चीज़ें रोकता है — सॉफ्टवेयर firewall Windows में built-in भी होता है।</p>
+
+<h2>घर के नेटवर्क में क्रम</h2>
+
+<p>आम घर में क्रम ऐसा होता है: ISP की लाइन → modem/router → Wi-Fi या LAN केबल → फोन, लैपटॉप, TV। अगर लैंप जल रहा है पर इंटरनेट नहीं है, तो पहले router restart करें, फिर केबल जाँचें, फिर ISP को बताएँ। ज़्यादातर समस्याएँ इन्हीं तीन कदमों में हल हो जाती हैं।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Hub = सबको भेजता; Switch = सही डिवाइस को</li>
+<li>Router = नेटवर्क जोड़ता; Modem = सिग्नल बदलता</li>
+<li>NIC का पता MAC address होता है</li>
+<li>Repeater = range बढ़ाता; Firewall = सुरक्षा</li>
+</ul></div>
+
+<h2>आगे क्या</h2>
+
+<p>अगला लेसन IP address का है — वह पता जिससे हर डिवाइस नेटवर्क में पहचानी जाती है। IPv4, IPv6 और public-private IP का फ़र्क़ वहाँ समझेंगे।</p>
+
+<div class="practice"><b>Practical — 5 मिनट</b>
+<p>अपने router के पीछे लिखा मॉडल और उसके पोर्ट्स देखें। पता लगाएँ कि कौन सा पोर्ट WAN (इंटरनेट) के लिए है और कौन से LAN के लिए।</p></div>
+<div class="source-note">इस लेसन का विषय <a href="https://home.rajasthan.gov.in/content/dam/homeportal/ptsjodhpur/pdf/StudyMaterial/Basic%20Computer%20Fundamentals%20Merged.pdf" rel="nofollow noopener" target="_blank">PTS Jodhpur — Basic Computer Fundamentals, Chapter 3</a> से लिया गया है। भाषा और उदाहरण आसान Hinglish में नए सिरे से लिखे गए हैं।</div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/basic-computer/computer-network-kya-hai.html"><small>← पिछला लेसन</small><b>Computer Network क्या है? LAN, MAN, WAN और Topology</b></a><a class="next" href="/courses/basic-computer/ip-address-kya-hai.html"><small>अगला लेसन →</small><b>IP Address क्या है? IPv4, IPv6, Public और Private IP</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

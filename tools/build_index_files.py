@@ -32,6 +32,8 @@ def noindex_slugs():
 
 STATIC_PAGES = [
     ("/", 1.0, "weekly"),
+    ("/courses/", 0.8, "monthly"),
+    ("/courses/basic-computer/", 0.9, "monthly"),
     ("/pdf/", 0.9, "monthly"),
     ("/img/", 0.9, "monthly"),
     ("/shavi-ai/", 0.8, "monthly"),
@@ -82,6 +84,18 @@ def collect_posts():
     return posts
 
 
+def course_lessons():
+    """Lesson pages of the Basic Computer course, built by tools/build_course.py."""
+    folder = os.path.join(ROOT, "courses", "basic-computer")
+    if not os.path.isdir(folder):
+        return []
+    return [
+        f"{SITE}/courses/basic-computer/{name}"
+        for name in sorted(os.listdir(folder))
+        if name.endswith(".html") and name != "index.html"
+    ]
+
+
 def write_sitemap(posts):
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -91,6 +105,12 @@ def write_sitemap(posts):
         lines.append(
             "  <url><loc>{}</loc><changefreq>{}</changefreq><priority>{}</priority></url>".format(
                 escape(SITE + path), freq, priority
+            )
+        )
+    for url in course_lessons():
+        lines.append(
+            "  <url><loc>{}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>".format(
+                escape(url)
             )
         )
     for post in posts:
