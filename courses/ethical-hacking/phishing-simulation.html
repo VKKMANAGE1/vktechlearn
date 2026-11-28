@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phishing Simulation और Countermeasures — VK Tech Learn</title>
+<meta name="description" content="अनुमति वाले awareness अभियान, ईमेल indicators और Python से detection tool।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/phishing-simulation.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Phishing Simulation और Countermeasures">
+<meta property="og:description" content="अनुमति वाले awareness अभियान, ईमेल indicators और Python से detection tool।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/phishing-simulation.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Phishing Simulation और Countermeasures">
+<meta name="twitter:description" content="अनुमति वाले awareness अभियान, ईमेल indicators और Python से detection tool।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 16</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 8 · Social Engineering और Python</span>
+  <h1>Phishing Simulation और Countermeasures</h1>
+  <div class="lesson-meta"><span>लेसन 16 / 20</span><span>·</span><span>~6 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:80%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack9.jpg" alt="Email envelope को खींचता fish hook और चेतावनी" width="1200" height="648" loading="lazy" decoding="async"><figcaption>Email envelope को खींचता fish hook और चेतावनी — Chapter 8: Social Engineering और Python</figcaption></figure>
+<p>Phishing simulation एक authorized awareness अभियान है, जिसमें संगठन अपने कर्मचारियों को नकली संदेश भेजकर देखता है कि वे कितनी सतर्कता से पहचान करते हैं। यह कोर्स के ethical दायरे में सिर्फ़ तब है जब लिखित अनुमति, साफ़ नीति और training plan हो।</p>
+
+<h2>अभियान की योजना</h2>
+
+<ol>
+<li><b>अनुमति:</b> management और HR की लिखित सहमति।</li>
+<li><b>उद्देश्य:</b> training और सुधार — किसी को फँसाना नहीं।</li>
+<li><b>Scope:</b> कौन से विभाग, कितने लोग, कब तक।</li>
+<li><b>Template:</b> वास्तविक जैसा पर स्पष्ट रूप से सुरक्षित नकली संदेश।</li>
+<li><b>Tracking:</b> कितने लोगों ने खोला, क्लिक किया, report किया।</li>
+<li><b>Debrief:</b> परिणाम साझा करना, दोष नहीं — सीखना।</li>
+</ol>
+
+<h2>नकली संदेश कैसा हो</h2>
+
+<ul>
+<li>असली domain की जगह training domain इस्तेमाल करें।</li>
+<li>नकली login page पर password कभी न लें; सिर्फ़ "आपने क्लिक किया" दर्ज करें।</li>
+<li>संदेश के अंत में साफ़ लिखें कि यह awareness test था।</li>
+<li>संवेदनशील या डराने वाला content न रखें।</li>
+</ul>
+
+<h2>Detection — ईमेल के संकेत</h2>
+
+<table>
+<thead><tr><th>संकेत</th><th>क्या देखें</th></tr></thead>
+<tbody>
+<tr><td>प्रेषक</td><td>domain की स्पेलिंग, reply-to अलग होना</td></tr>
+<tr><td>लिंक</td><td>hover पर असली URL, छोटा किया गया link</td></tr>
+<tr><td>भाषा</td><td>जल्दबाज़ी, धमकी, बहुत बड़ा ऑफ़र</td></tr>
+<tr><td>Attachment</td><td>अनजान .exe, .zip, macro वाली फ़ाइल</td></tr>
+<tr><td>Greeting</td><td>सामान्य "Dear customer" — नाम नहीं</td></tr>
+</tbody>
+</table>
+
+<h2>Python से detection tool</h2>
+
+<p>पहले से मिले suspicious patterns से एक सरल checker बनाया जा सकता है:</p>
+
+<pre><code>import re
+
+def risk_score(subject, body):
+    score = 0
+    if re.search(r"urgent|immediately|verify now", body, re.I):
+        score += 2
+    if re.search(r"https?://\d+\.\d+\.\d+\.\d+", body):
+        score += 3
+    if re.search(r"password|otp|account suspended", body, re.I):
+        score += 1
+    return score
+
+print(risk_score("Account alert", "Verify now at http://192.168.1.5/login"))</code></pre>
+
+<p>यह सिर्फ़ शुरुआती संकेत देता है; असली filters में header analysis, domain reputation और attachment scanning जुड़ता है।</p>
+
+<h2>Countermeasures</h2>
+
+<ul>
+<li>SPF, DKIM, DMARC से नकली sender रोकें।</li>
+<li>ईमेल gateway पर link और attachment scanning।</li>
+<li>2FA — password चोरी होने पर भी सुरक्षा।</li>
+<li>आसान "Report phishing" बटन।</li>
+<li>नियमित, छोटी और सकारात्मक training।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Simulation सिर्फ़ लिखित अनुमति से</li>
+<li>नकली page पर असली password कभी न लें</li>
+<li>Domain, link, भाषा और attachment — चार जाँच</li>
+<li>मक़सद training है, किसी को नीचा दिखाना नहीं</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने संगठन या घर के लिए 5 बिंदुओं की phishing awareness चेकलिस्ट लिखें। हर बिंदु के आगे बताएँ कि कर्मचारी को क्या करना चाहिए — delete, report या verify।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/social-engineering.html"><small>← पिछला लेसन</small><b>Social Engineering — मानवीय कमज़ोरी को समझना</b></a><a class="next" href="/courses/ethical-hacking/pentest-workflow.html"><small>अगला लेसन →</small><b>Penetration Testing Workflow — शुरू से Report तक</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

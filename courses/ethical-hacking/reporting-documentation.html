@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report लिखना, Documentation और Career — VK Tech Learn</title>
+<meta name="description" content="Finding को severity के साथ लिखना, remediation सुझाना और cybersecurity में करियर।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/reporting-documentation.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Report लिखना, Documentation और Career">
+<meta property="og:description" content="Finding को severity के साथ लिखना, remediation सुझाना और cybersecurity में करियर।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/reporting-documentation.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Report लिखना, Documentation और Career">
+<meta name="twitter:description" content="Finding को severity के साथ लिखना, remediation सुझाना और cybersecurity में करियर।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 20</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 10 · Ethics, Law और Reporting</span>
+  <h1>Report लिखना, Documentation और Career</h1>
+  <div class="lesson-meta"><span>लेसन 20 / 20</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:100%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack11.jpg" alt="Laptop के पास न्याय की तराज़ू और checkmark वाला document" width="1200" height="648" loading="lazy" decoding="async"><figcaption>Laptop के पास न्याय की तराज़ू और checkmark वाला document — Chapter 10: Ethics, Law और Reporting</figcaption></figure>
+<p>Penetration test की असली कीमत report में निकलती है। अगर finding साफ़ नहीं लिखी, तो developer उसे ठीक नहीं कर पाएगा और पूरा test बेकार चला जाएगा। अच्छी report वह है जिसे पढ़कर किसी को पूछना न पड़े — "यह कहाँ है और कैसे ठीक करें?"</p>
+
+<h2>Report का ढाँचा</h2>
+
+<ol>
+<li><b>Executive summary:</b> 1 पेज — क्या जोखिम है, कितना गंभीर, क्या पहले ठीक करें।</li>
+<li><b>Scope और methodology:</b> क्या test हुआ, कब, किन tools से।</li>
+<li><b>Findings:</b> severity के क्रम में, हर एक का proof और fix।</li>
+<li><b>Risk ratings:</b> Critical/High/Medium/Low के साथ कारण।</li>
+<li><b>Remediation plan:</b> किस क्रम में सुधार करें।</li>
+<li><b>Appendix:</b> scan output, screenshots, timeline।</li>
+</ol>
+
+<h2>एक Finding का format</h2>
+
+<pre><code>Title        : Public S3 bucket me documents
+Severity     : Critical
+Location     : https://files.example.com/reports/
+Impact       : 12,000 invoices public थे
+Evidence     : screenshot, HTTP 200, listing
+Fix          : bucket private करें, IAM से सीमित करें
+Reference    : CWE-284</code></pre>
+
+<p>यही format developer, manager और auditor — तीनों को समझ आता है। भाषा सरल रखें, blame न करें; समस्या और समाधान पर ध्यान दें।</p>
+
+<h2>Severity कैसे तय करें</h2>
+
+<table>
+<thead><tr><th>Level</th><th>मतलब</th></tr></thead>
+<tbody>
+<tr><td>Critical</td><td>बिना login पूरा system या data खुला</td></tr>
+<tr><td>High</td><td>बड़ा data leak या admin access</td></tr>
+<tr><td>Medium</td><td>सीमित access, कुछ शर्तों के साथ</td></tr>
+<tr><td>Low</td><td>जानकारी लीक, अकेले नुक़सान नहीं</td></tr>
+</tbody>
+</table>
+
+<p>Severity सिर्फ़ technical नहीं — business impact भी देखें। एक low technical issue जिससे customer data खुलता है, business के लिए high हो सकता है।</p>
+
+<h2>Screenshots और evidence</h2>
+
+<ul>
+<li>हर screenshot में समय और URL दिखे।</li>
+<li>Password, token और personal data blur करें।</li>
+<li>Steps दोहराने लायक लिखें — developer खुद verify कर सके।</li>
+<li>Original output को अलग फ़ाइल में रखें।</li>
+</ul>
+
+<h2>करियर की दिशा</h2>
+
+<p>Security में शुरुआत आमतौर पर SOC analyst या junior pentester से होती है। आगे web app security, network pentest, cloud security, malware analysis या red teaming में specialization होती है। मदद करती हैं — TryHackMe/HTB जैसी practice labs, OWASP Top 10 की समझ, एक मज़बूत GitHub portfolio और लिखने की आदत। Certification (जैसे eJPT, OSCP) अच्छे हैं, पर practical knowledge उनसे ज़्यादा मायने रखती है।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Report के बिना pentest अधूरा</li>
+<li>हर finding: title, severity, location, impact, proof, fix</li>
+<li>Severity में business impact भी देखें</li>
+<li>Portfolio + practice labs करियर बनाते हैं</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने lab के किसी एक finding को ऊपर दिए format में लिखें — title, severity, impact और fix के साथ। यही अभ्यास आपकी पहली professional report का नमूना बनेगा।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/legal-boundaries.html"><small>← पिछला लेसन</small><b>कानूनी सीमाएँ — Permission, Scope और IT Act</b></a><span class="empty"></span></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

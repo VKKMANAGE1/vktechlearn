@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "Ethical hacking में सबसे ज़रूरी चीज़ क्या है?", "options": ["लिखित अनुमति", "नया laptop", "तेज़ internet", "बड़ा monitor"], "answer": 0, "why": "अनुमति के बिना testing कानून का उल्लंघन है।"},
+    {"q": "भारत में computer अपराध मुख्य रूप से किस कानून के तहत आते हैं?", "options": ["IT Act, 2000", "Companies Act", "Motor Vehicle Act", "RTI Act"], "answer": 0, "why": "IT Act unauthorized access और data से जुड़े अपराध cover करता है।"},
+    {"q": "Permission letter में क्या शामिल होना चाहिए?", "options": ["Scope, समय, allowed techniques, signature", "सिर्फ़ कंपनी का नाम", "सिर्फ़ फ़ीस", "सिर्फ़ ईमेल"], "answer": 0, "why": "यही document testing की सीमा तय करता है।"},
+    {"q": "Scope से बाहर system मिलने पर क्या करें?", "options": ["न छुएँ और client को बताएँ", "उसे भी test करें", "उसका data लें", "उसे बंद करें"], "answer": 0, "why": "नई अनुमति के बिना scope बढ़ाना ग़लत है।"},
+    {"q": "NDA का मतलब क्या है?", "options": ["Non-Disclosure Agreement", "New Data Access", "Network Defense Application", "National Digital Act"], "answer": 0, "why": "यह मिली जानकारी गोपनीय रखने की शर्त है।"},
+    {"q": "Responsible disclosure का सही तरीका क्या है?", "options": ["पहले कंपनी को सूचित करना", "पहले Twitter पर", "पहले बेचना", "किसी को न बताना"], "answer": 0, "why": "कंपनी को सुधार का मौक़ा मिलना चाहिए।"},
+    {"q": "Bug bounty में क्या मानना ज़रूरी है?", "options": ["Scope और program rules", "सिर्फ़ reward", "कोई नियम नहीं", "सिर्फ़ public disclosure"], "answer": 0, "why": "Scope से बाहर जाना rules तोड़ना है।"},
+    {"q": "DPDP Act किससे संबंधित है?", "options": ["Personal data protection", "Wi-Fi speed", "Printer drivers", "Cable standards"], "answer": 0, "why": "यह भारत का data protection कानून है।"},
+    {"q": "Client का data testing के बाद क्या करें?", "options": ["सुरक्षित तरीके से मिटाएँ", "अपने पास रखें", "बेच दें", "सार्वजनिक करें"], "answer": 0, "why": "Data handling agreement के हिसाब से मिटाना चाहिए।"},
+    {"q": "Report का पहला हिस्सा क्या होना चाहिए?", "options": ["Executive summary", "सारे screenshots", "टूल की सूची", "Appendix"], "answer": 0, "why": "Management को एक पेज में जोखिम समझ आना चाहिए।"},
+    {"q": "Severity तय करते समय क्या देखें?", "options": ["Technical असर और business impact", "सिर्फ़ tool का score", "सिर्फ़ file size", "सिर्फ़ समय"], "answer": 0, "why": "Business impact से असली प्राथमिकता तय होती है।"},
+    {"q": "अच्छी finding में क्या नहीं होना चाहिए?", "options": ["दोषी व्यक्ति पर व्यक्तिगत आरोप", "Proof", "Impact", "Fix"], "answer": 0, "why": "Report समस्या और समाधान पर होनी चाहिए।"},
+    {"q": "Screenshot में क्या छिपाना चाहिए?", "options": ["Password, token और personal data", "सिर्फ़ logo", "सिर्फ़ तारीख", "कुछ नहीं"], "answer": 0, "why": "Sensitive data report में नहीं जाना चाहिए।"},
+    {"q": "Remediation सुझाते समय क्या ध्यान रखें?", "options": ["व्यावहारिक और प्राथमिकता के क्रम में", "सिर्फ़ नया software खरीदना", "कुछ न सुझाना", "सिर्फ़ blame"], "answer": 0, "why": "Team को ऐसा fix चाहिए जो लागू हो सके।"},
+    {"q": "Sign-off का मक़सद क्या है?", "options": ["Testing की समाप्ति की लिखित पुष्टि", "नई फ़ीस", "Report छिपाना", "नया scope"], "answer": 0, "why": "इससे engagement औपचारिक रूप से बंद होता है।"},
+    {"q": "Security में करियर के लिए क्या सबसे ज़्यादा मदद करता है?", "options": ["Practical labs और portfolio", "सिर्फ़ certificates", "सिर्फ़ books", "सिर्फ़ YouTube"], "answer": 0, "why": "Hands-on experience और documented work भरोसा बनाते हैं।"},
+    {"q": "SOC analyst का मुख्य काम क्या है?", "options": ["Alerts monitor और investigate करना", "वेबसाइट डिज़ाइन", "प्रिंटर ठीक करना", "बिल बनाना"], "answer": 0, "why": "SOC team security events पर नज़र रखती है।"},
+    {"q": "OWASP Top 10 क्या है?", "options": ["Web app के आम जोखिमों की सूची", "एक programming language", "एक firewall", "एक certification"], "answer": 0, "why": "यह web security की बुनियादी समझ देता है।"},
+    {"q": "बिना अनुमति किसी के system पर testing का नतीजा क्या हो सकता है?", "options": ["जुर्माना और जेल", "कुछ नहीं", "सिर्फ़ warning", "reward"], "answer": 0, "why": "IT Act के तहत सज़ा हो सकती है।"},
+    {"q": "एक अच्छे ethical hacker की सबसे बड़ी खूबी क्या है?", "options": ["ईमानदारी और ज़िम्मेदारी", "सबसे ज़्यादा tools", "सबसे तेज़ laptop", "सबसे लंबा report"], "answer": 0, "why": "भरोसा ही इस पेशे की नींव है।"}
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "Malware क्या है?", "options": ["नुक़सान या चोरी के लिए बनाया software", "एक firewall", "एक protocol", "एक hardware"], "answer": 0, "why": "Malware बिना अनुमति नुक़सान, चोरी या निगरानी के लिए बनाया जाता है।"},
+    {"q": "Virus कैसे फैलता है?", "options": ["किसी फ़ाइल से जुड़कर, user के चलाने पर", "अपने आप नेटवर्क में", "सिर्फ़ Wi-Fi से", "सिर्फ़ Bluetooth से"], "answer": 0, "why": "Virus को host फ़ाइल और user की क्रिया चाहिए।"},
+    {"q": "Worm की खास बात क्या है?", "options": ["बिना user के अपने आप फैलता है", "सिर्फ़ ईमेल में आता है", "कभी नहीं फैलता", "सिर्फ़ मोबाइल में"], "answer": 0, "why": "Worm नेटवर्क में खुद फैलता है।"},
+    {"q": "Trojan कैसे आता है?", "options": ["उपयोगी program बनकर", "सिर्फ़ USB से", "सिर्फ़ BIOS से", "सिर्फ़ printer से"], "answer": 0, "why": "Trojan अंदर बुरा code छिपाए रहता है।"},
+    {"q": "Ransomware क्या करता है?", "options": ["फ़ाइलें encrypt करके फिरौती माँगता है", "सिर्फ़ धीमा करता है", "Wi-Fi बंद करता है", "प्रिंटर खराब करता है"], "answer": 0, "why": "Ransomware से बचाव का सबसे बड़ा हथियार offline backup है।"},
+    {"q": "Keylogger क्या रिकॉर्ड करता है?", "options": ["Keyboard की keys", "सिर्फ़ फोटो", "सिर्फ़ आवाज़", "सिर्फ़ वीडियो"], "answer": 0, "why": "Keylogger से passwords और संदेश चोरी हो सकते हैं।"},
+    {"q": "Rootkit का मक़सद क्या है?", "options": ["System में छिपकर पकड़ से बचना", "Speed बढ़ाना", "Backup लेना", "Wi-Fi बढ़ाना"], "answer": 0, "why": "Rootkit detection को कठिन बनाता है।"},
+    {"q": "Botnet क्या है?", "options": ["कई infected मशीनों का समूह", "एक antivirus", "एक firewall", "एक protocol"], "answer": 0, "why": "Botnet से बड़े पैमाने पर हमले चलाए जाते हैं।"},
+    {"q": "Malware analysis कहाँ करना चाहिए?", "options": ["Isolated lab VM में", "अपने main laptop पर", "ऑफ़िस के server पर", "किसी दोस्त के फोन पर"], "answer": 0, "why": "Sample कभी host machine पर नहीं चलाना चाहिए।"},
+    {"q": "Static analysis में क्या किया जाता है?", "options": ["Code चलाए बिना पढ़ना", "Sample चलाना", "Network बंद करना", "Backup लेना"], "answer": 0, "why": "Static में strings, imports और file type देखे जाते हैं।"},
+    {"q": "Dynamic analysis में क्या देखा जाता है?", "options": ["चलते समय व्यवहार", "सिर्फ़ file size", "सिर्फ़ नाम", "सिर्फ़ hash"], "answer": 0, "why": "Dynamic में file changes, processes और network connections देखे जाते हैं।"},
+    {"q": "Magic bytes से क्या पता चलता है?", "options": ["असली file type", "Password", "Owner का नाम", "File की उम्र"], "answer": 0, "why": "MZ, PK, %PDF जैसे bytes से format पहचाना जाता है।"},
+    {"q": "Strings निकालने का फ़ायदा क्या है?", "options": ["URLs, paths और commands मिल सकते हैं", "File छोटी हो जाती है", "Virus मर जाता है", "सिर्फ़ रंग बदलता है"], "answer": 0, "why": "Plain text indicators से sample का व्यवहार समझ आता है।"},
+    {"q": "Obfuscation का मक़सद क्या है?", "options": ["Code को समझना कठिन बनाना", "Code तेज़ करना", "File छोटी करना", "Backup लेना"], "answer": 0, "why": "Base64/encoding और बेमतलब नाम analysis को रोकते हैं।"},
+    {"q": "Python script में eval() दिखे तो क्या संकेत है?", "options": ["Dynamic code चलने का खतरा", "सिर्फ़ गणित", "सिर्फ़ print", "कोई संकेत नहीं"], "answer": 0, "why": "eval/exec से छिपाया हुआ code चल सकता है।"},
+    {"q": "Sample चलाने से पहले क्या ज़रूरी है?", "options": ["VM snapshot", "नया antivirus", "Wi-Fi बंद", "प्रिंटर"], "answer": 0, "why": "Snapshot से VM तुरंत पुरानी हालत में लौट सकती है।"},
+    {"q": "Malware के network indicators किस काम आते हैं?", "options": ["Block rules और detection बनाने में", "Password बदलने में", "Wi-Fi तेज़ करने में", "प्रिंटर ठीक करने में"], "answer": 0, "why": "ज्ञात C2 domains/IPs से blocking और alerts बनते हैं।"},
+    {"q": "Ransomware से बचाव का सबसे अच्छा तरीका क्या है?", "options": ["Offline backup", "सिर्फ़ antivirus", "नया laptop", "कम internet"], "answer": 0, "why": "Backup होने पर फ़ाइलें वापस लाई जा सकती हैं।"},
+    {"q": "Pirated software क्यों खतरनाक है?", "options": ["उसमें malware हो सकता है", "वह धीमा होता है", "उसमें रंग नहीं होते", "वह महँगा होता है"], "answer": 0, "why": "Cracked installers में अक्सर malware छिपा होता है।"},
+    {"q": "Malware sample को किसके साथ share करना चाहिए?", "options": ["सुरक्षित, authorized channel से", "सोशल media पर", "सबको ईमेल से", "किसी को नहीं, कभी नहीं"], "answer": 0, "why": "Sample को सिर्फ़ ज़रूरत और सुरक्षित तरीके से share करें।"}
+  ]
+}

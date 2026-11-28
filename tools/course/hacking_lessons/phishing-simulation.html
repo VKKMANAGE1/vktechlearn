@@ -1,0 +1,75 @@
+<p>Phishing simulation एक authorized awareness अभियान है, जिसमें संगठन अपने कर्मचारियों को नकली संदेश भेजकर देखता है कि वे कितनी सतर्कता से पहचान करते हैं। यह कोर्स के ethical दायरे में सिर्फ़ तब है जब लिखित अनुमति, साफ़ नीति और training plan हो।</p>
+
+<h2>अभियान की योजना</h2>
+
+<ol>
+<li><b>अनुमति:</b> management और HR की लिखित सहमति।</li>
+<li><b>उद्देश्य:</b> training और सुधार — किसी को फँसाना नहीं।</li>
+<li><b>Scope:</b> कौन से विभाग, कितने लोग, कब तक।</li>
+<li><b>Template:</b> वास्तविक जैसा पर स्पष्ट रूप से सुरक्षित नकली संदेश।</li>
+<li><b>Tracking:</b> कितने लोगों ने खोला, क्लिक किया, report किया।</li>
+<li><b>Debrief:</b> परिणाम साझा करना, दोष नहीं — सीखना।</li>
+</ol>
+
+<h2>नकली संदेश कैसा हो</h2>
+
+<ul>
+<li>असली domain की जगह training domain इस्तेमाल करें।</li>
+<li>नकली login page पर password कभी न लें; सिर्फ़ "आपने क्लिक किया" दर्ज करें।</li>
+<li>संदेश के अंत में साफ़ लिखें कि यह awareness test था।</li>
+<li>संवेदनशील या डराने वाला content न रखें।</li>
+</ul>
+
+<h2>Detection — ईमेल के संकेत</h2>
+
+<table>
+<thead><tr><th>संकेत</th><th>क्या देखें</th></tr></thead>
+<tbody>
+<tr><td>प्रेषक</td><td>domain की स्पेलिंग, reply-to अलग होना</td></tr>
+<tr><td>लिंक</td><td>hover पर असली URL, छोटा किया गया link</td></tr>
+<tr><td>भाषा</td><td>जल्दबाज़ी, धमकी, बहुत बड़ा ऑफ़र</td></tr>
+<tr><td>Attachment</td><td>अनजान .exe, .zip, macro वाली फ़ाइल</td></tr>
+<tr><td>Greeting</td><td>सामान्य "Dear customer" — नाम नहीं</td></tr>
+</tbody>
+</table>
+
+<h2>Python से detection tool</h2>
+
+<p>पहले से मिले suspicious patterns से एक सरल checker बनाया जा सकता है:</p>
+
+<pre><code>import re
+
+def risk_score(subject, body):
+    score = 0
+    if re.search(r"urgent|immediately|verify now", body, re.I):
+        score += 2
+    if re.search(r"https?://\d+\.\d+\.\d+\.\d+", body):
+        score += 3
+    if re.search(r"password|otp|account suspended", body, re.I):
+        score += 1
+    return score
+
+print(risk_score("Account alert", "Verify now at http://192.168.1.5/login"))</code></pre>
+
+<p>यह सिर्फ़ शुरुआती संकेत देता है; असली filters में header analysis, domain reputation और attachment scanning जुड़ता है।</p>
+
+<h2>Countermeasures</h2>
+
+<ul>
+<li>SPF, DKIM, DMARC से नकली sender रोकें।</li>
+<li>ईमेल gateway पर link और attachment scanning।</li>
+<li>2FA — password चोरी होने पर भी सुरक्षा।</li>
+<li>आसान "Report phishing" बटन।</li>
+<li>नियमित, छोटी और सकारात्मक training।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Simulation सिर्फ़ लिखित अनुमति से</li>
+<li>नकली page पर असली password कभी न लें</li>
+<li>Domain, link, भाषा और attachment — चार जाँच</li>
+<li>मक़सद training है, किसी को नीचा दिखाना नहीं</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने संगठन या घर के लिए 5 बिंदुओं की phishing awareness चेकलिस्ट लिखें। हर बिंदु के आगे बताएँ कि कर्मचारी को क्या करना चाहिए — delete, report या verify।</p></div>

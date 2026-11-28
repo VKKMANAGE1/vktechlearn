@@ -1,0 +1,60 @@
+<p>एक बार जब छोटे scripts बनने लगें, तो अगला कदम है उन्हें एक framework में जोड़ना — जहाँ हर काम का अलग module हो, एक command से चले और output एक जगह सेव हो। यही तरीका बड़े pentest में समय बचाता है।</p>
+
+<h2>Framework का ढाँचा</h2>
+
+<pre><code>recon/
+  __init__.py
+  dns.py
+  ports.py
+report.py
+main.py
+config.json</code></pre>
+
+<p>हर module का एक ही काम हो — <code>dns.py</code> सिर्फ़ DNS, <code>ports.py</code> सिर्फ़ ports। इससे code पढ़ना, test करना और बदलना आसान रहता है।</p>
+
+<h2>Main script</h2>
+
+<pre><code>import argparse
+from recon import dns, ports
+
+parser = argparse.ArgumentParser()
+parser.add_argument("module", choices=["dns", "ports"])
+parser.add_argument("target")
+args = parser.parse_args()
+
+if args.module == "dns":
+    result = dns.run(args.target)
+else:
+    result = ports.run(args.target)
+
+print(result)</code></pre>
+
+<p>यही pattern बढ़ाकर आगे और modules जोड़े जा सकते हैं — headers, subdomain, report।</p>
+
+<h2>Config और logging</h2>
+
+<ul>
+<li><b>config.json:</b> timeout, threads, output folder — code में hardcode न करें।</li>
+<li><b>logging:</b> हर module अपना log लिखे, समय के साथ।</li>
+<li><b>JSON output:</b> हर module एक ही structure में result दे, ताकि report बने।</li>
+<li><b>Error handling:</b> एक module fail हो तो बाकी न रुकें।</li>
+</ul>
+
+<h2>Safe defaults</h2>
+
+<p>Framework का default धीमा और सुरक्षित रखें — कम threads, लंबा timeout और rate limit। तेज़ scanning का option explicit हो, ताकि गलती से production पर भार न पड़े। साथ में हर run से पहले scope की जाँच करने वाला step रखें।</p>
+
+<h2>Version control</h2>
+
+<p>Git से हर बदलाव track करें। Framework बढ़ने पर पुराना काम करने वाला version वापस पाना आसान होता है। README में हर module का उदाहरण लिखें — छह महीने बाद आप खुद भूल जाएँगे।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>एक module, एक काम</li>
+<li>Config, logging और JSON output पहले से तय</li>
+<li>Default settings धीमे और सुरक्षित</li>
+<li>Scope check हर run में</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 15 मिनट</b>
+<p>दो modules वाला छोटा framework बनाएँ — एक DNS lookup, एक port check। दोनों का result एक ही JSON में जोड़ें।</p></div>

@@ -85,15 +85,19 @@ def collect_posts():
 
 
 def course_lessons():
-    """Lesson pages of the Basic Computer course, built by tools/build_course.py."""
-    folder = os.path.join(ROOT, "courses", "basic-computer")
-    if not os.path.isdir(folder):
+    """Lesson and test pages of every course folder under /courses/."""
+    base = os.path.join(ROOT, "courses")
+    if not os.path.isdir(base):
         return []
-    return [
-        f"{SITE}/courses/basic-computer/{name}"
-        for name in sorted(os.listdir(folder))
-        if name.endswith(".html") and name != "index.html"
-    ]
+    urls = []
+    for course in sorted(os.listdir(base)):
+        folder = os.path.join(base, course)
+        if not os.path.isdir(folder):
+            continue
+        for name in sorted(os.listdir(folder)):
+            if name.endswith(".html") and name != "index.html":
+                urls.append(f"{SITE}/courses/{course}/{name}")
+    return urls
 
 
 def write_sitemap(posts):

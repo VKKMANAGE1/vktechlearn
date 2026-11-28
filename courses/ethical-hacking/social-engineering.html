@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social Engineering — मानवीय कमज़ोरी को समझना — VK Tech Learn</title>
+<meta name="description" content="Phishing, pretexting, baiting कैसे काम करते हैं और कर्मचारी कैसे बच सकते हैं।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/social-engineering.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Social Engineering — मानवीय कमज़ोरी को समझना">
+<meta property="og:description" content="Phishing, pretexting, baiting कैसे काम करते हैं और कर्मचारी कैसे बच सकते हैं।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/social-engineering.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Social Engineering — मानवीय कमज़ोरी को समझना">
+<meta name="twitter:description" content="Phishing, pretexting, baiting कैसे काम करते हैं और कर्मचारी कैसे बच सकते हैं।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 15</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 8 · Social Engineering और Python</span>
+  <h1>Social Engineering — मानवीय कमज़ोरी को समझना</h1>
+  <div class="lesson-meta"><span>लेसन 15 / 20</span><span>·</span><span>~6 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:75%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack9.jpg" alt="Email envelope को खींचता fish hook और चेतावनी" width="1200" height="648" loading="lazy" decoding="async"><figcaption>Email envelope को खींचता fish hook और चेतावनी — Chapter 8: Social Engineering और Python</figcaption></figure>
+<p>Social engineering में हमला तकनीक पर नहीं, इंसान पर होता है। हमलावर भरोसा जीतकर या डर पैदा करके बताई हुई जानकारी निकलवा लेता है — password, OTP, या किसी लिंक पर क्लिक। तकनीकी सुरक्षा कितनी भी हो, एक अनजान क्लिक सब बेकार कर सकता है।</p>
+
+<h2>आम तकनीकें</h2>
+
+<table>
+<thead><tr><th>तकनीक</th><th>तरीका</th></tr></thead>
+<tbody>
+<tr><td>Phishing</td><td>नकली ईमेल/साइट से जानकारी माँगना</td></tr>
+<tr><td>Spear phishing</td><td>किसी खास व्यक्ति के लिए तैयार संदेश</td></tr>
+<tr><td>Vishing</td><td>फोन कॉल से धोखा — जैसे बैंक अधिकारी बनकर</td></tr>
+<tr><td>Smishing</td><td>SMS/WhatsApp पर नकली लिंक</td></tr>
+<tr><td>Pretexting</td><td>नकली कहानी बनाकर जानकारी माँगना</td></tr>
+<tr><td>Baiting</td><td>मुफ़्त ऑफ़र या USB छोड़कर ललचाना</td></tr>
+<tr><td>Tailgating</td><td>किसी के पीछे-पीछे restricted जगह में घुसना</td></tr>
+</tbody>
+</table>
+
+<h2>हमला क्यों काम करता है</h2>
+
+<ul>
+<li><b>Authority:</b> "मैं IT विभाग से बोल रहा हूँ" — अधिकार का डर।</li>
+<li><b>Urgency:</b> "आपका खाता 10 मिनट में बंद हो जाएगा" — जल्दी में सोचना बंद।</li>
+<li><b>Trust:</b> जाना-पहचाना नाम, logo और ईमेल पता।</li>
+<li><b>Curiosity/Greed:</b> "आपको इनाम मिला है" या "यह फोटो देखें"।</li>
+</ul>
+
+<p>इन भावनाओं को पहचानना ही बचाव की शुरुआत है। जब भी संदेश जल्दी करने पर मजबूर करे, वहीं रुककर जाँचें।</p>
+
+<h2>Ethical side — awareness test</h2>
+
+<p>कंपनियाँ कर्मचारियों को जागरूक करने के लिए नकली phishing अभियान चलाती हैं — <b>लेकिन लिखित अनुमति, HR की जानकारी और साफ़ नीति के साथ</b>। ऐसे अभियान का मक़सद किसी को शर्मिंदा करना नहीं, training और सुधार होता है।</p>
+
+<p>बिना अनुमति किसी की ईमेल या नाम इस्तेमाल करके phishing भेजना अपराध है — चाहे इरादा सीखने का हो।</p>
+
+<h2>कर्मचारी कैसे बचें</h2>
+
+<ol>
+<li>प्रेषक का पूरा ईमेल पता जाँचें, सिर्फ़ दिखने वाला नाम नहीं।</li>
+<li>लिंक पर क्लिक करने से पहले hover करके URL देखें।</li>
+<li>OTP या password कभी किसी को न बताएँ — बैंक/IT भी नहीं माँगते।</li>
+<li>जल्दबाज़ी वाले संदेश पर अलग channel से पुष्टि करें।</li>
+<li>संदिग्ध मेल को report करें, आगे forward न करें।</li>
+</ol>
+
+<h2>संगठन के लिए</h2>
+
+<ul>
+<li>नियमित awareness training और नकली phishing अभियान (अनुमति सहित)।</li>
+<li>SPF, DKIM और DMARC से ईमेल spoofing रोकें।</li>
+<li>2FA लागू करें, खासकर email और admin accounts पर।</li>
+<li>साफ़ reporting process — कर्मचारी बिना डर के बताएँ।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Social engineering इंसान को target करता है</li>
+<li>Authority, urgency और greed सबसे आम हथियार</li>
+<li>OTP/password कभी न माँगें, न बताएँ</li>
+<li>Awareness test सिर्फ़ लिखित अनुमति से</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने inbox में हाल के तीन मेल चुनें और जाँचें: असली प्रेषक पता, लिंक का URL, और भाषा में जल्दबाज़ी है या नहीं। कौन सा संदेश संदिग्ध लगता है और क्यों — लिखें।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/network-hardening.html"><small>← पिछला लेसन</small><b>Network Hardening और Incident Response</b></a><a class="next" href="/courses/ethical-hacking/phishing-simulation.html"><small>अगला लेसन →</small><b>Phishing Simulation और Countermeasures</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

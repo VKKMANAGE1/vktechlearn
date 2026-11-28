@@ -1,0 +1,58 @@
+<p>Hacking सीखने का सबसे सुरक्षित तरीका है अपना अलग lab — एक virtual machine जिसमें आप जो चाहें try करें, और ग़लती होने पर सिर्फ़ वही VM खराब हो, आपका असली कंप्यूटर नहीं। इस लेसन में lab के हिस्से, Kali Linux और एक vulnerable target machine को सेट करने का तरीका देखेंगे।</p>
+
+<h2>Lab में क्या-क्या चाहिए</h2>
+
+<table>
+<thead><tr><th>हिस्सा</th><th>काम</th></tr></thead>
+<tbody>
+<tr><td>Host machine</td><td>आपका असली लैपटॉप — यहाँ कुछ भी test नहीं करना</td></tr>
+<tr><td>VirtualBox / VMware</td><td>VM चलाने का सॉफ्टवेयर</td></tr>
+<tr><td>Kali Linux VM</td><td>security tools वाला Linux, attacker की जगह</td></tr>
+<tr><td>Target VM</td><td>जान-बूझकर कमज़ोर बनाई गई मशीन, practice के लिए</td></tr>
+<tr><td>Host-only नेटवर्क</td><td>दोनों VM आपस में जुड़ें, बाहर न जाएँ</td></tr>
+</tbody>
+</table>
+
+<h2>1. VirtualBox install करें</h2>
+
+<p>VirtualBox मुफ़्त है और Windows, Linux व macOS पर चलता है। install के बाद एक नई VM बनाएँ: type Linux, version Debian (64-bit), memory कम से कम 4 GB और disk 25 GB. अगर लैपटॉप में 8 GB RAM है तो Kali को 3 GB दें और target को 1–2 GB — दोनों एक साथ चलेंगे।</p>
+
+<h2>2. Kali Linux सेट करें</h2>
+
+<ol>
+<li>kali.org से VirtualBox के लिए बनी image डाउनलोड करें।</li>
+<li>VirtualBox में Import Appliance से फ़ाइल खोलें।</li>
+<li>चलने के बाद default username/password बदल दें।</li>
+<li>Terminal खोलकर <code>python3 --version</code> और <code>pip3 --version</code> से Python जाँचें।</li>
+<li><code>sudo apt update</code> चलाकर packages अपडेट करें।</li>
+</ol>
+
+<p>Kali में बहुत से tools पहले से होते हैं, पर शुरुआत में सिर्फ़ Python, browser और network tools ही काफ़ी हैं। हर tool install करने की ज़रूरत नहीं — पहले concept साफ़ करें।</p>
+
+<h2>3. Practice के लिए Target VM</h2>
+
+<p>अपने ही lab में attack करने के लिए कुछ मुफ़्त vulnerable machines उपलब्ध हैं, जिन्हें जान-बूझकर कमज़ोर बनाया गया है — जैसे Metasploitable और OWASP से जुड़ी practice machines। इन्हें सिर्फ़ host-only नेटवर्क में चलाएँ, इंटरनेट से जोड़ें ही नहीं।</p>
+
+<h2>4. नेटवर्क अलग रखें</h2>
+
+<p>VirtualBox की सेटिंग में Network → Adapter को <b>Host-only Adapter</b> चुनें। इससे VM आपस में बात कर सकती हैं, पर आपके घर का बाकी नेटवर्क और इंटरनेट सुरक्षित रहता है। NAT मोड सिर्फ़ तब इस्तेमाल करें जब VM में updates डाउनलोड करने हों।</p>
+
+<div class="keybox"><b>Lab के सुनहरे नियम</b>
+<ul>
+<li>Practice सिर्फ़ अपनी VM पर — कभी असली नेटवर्क या दूसरों के डिवाइस पर नहीं</li>
+<li>Host-only नेटवर्क रखें, target को इंटरनेट से न जोड़ें</li>
+<li>हर practice के बाद VM snapshot लें, ताकि गड़बड़ होने पर वापस जा सकें</li>
+</ul></div>
+
+<h2>5. Snapshot और Reset</h2>
+
+<p>कुछ भी बदलने से पहले VM का snapshot बना लें। अगर कोई test VM को खराब कर दे, तो कुछ सेकंड में पुरानी हालत में लौट सकते हैं। यही आदत असली pentest में भी काम आती है — बदलाव से पहले backup।</p>
+
+<h2>6. पहला safe check</h2>
+
+<p>Kali में terminal खोलकर <code>ip a</code> चलाएँ — अपनी VM का IP दिखेगा, जैसे 192.168.56.101। फिर target VM का IP देखें। दोनों अलग हों और एक-दूसरे को ping कर सकें, तो lab तैयार है।</p>
+
+<p>याद रखें: lab का मक़सद सिर्फ़ सीखना है। जो तकनीक यहाँ सीखेंगे, वह असली दुनिया में सिर्फ़ लिखित अनुमति वाले systems पर ही लागू करें।</p>
+
+<div class="practice"><b>Practical — 20 मिनट</b>
+<p>VirtualBox में Kali VM import करें, host-only नेटवर्क सेट करें और <code>ip a</code> चलाकर अपना IP नोट करें। एक snapshot बनाएँ और उसका नाम "clean-install" रखें।</p></div>

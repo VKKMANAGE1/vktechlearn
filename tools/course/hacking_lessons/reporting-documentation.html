@@ -1,0 +1,62 @@
+<p>Penetration test की असली कीमत report में निकलती है। अगर finding साफ़ नहीं लिखी, तो developer उसे ठीक नहीं कर पाएगा और पूरा test बेकार चला जाएगा। अच्छी report वह है जिसे पढ़कर किसी को पूछना न पड़े — "यह कहाँ है और कैसे ठीक करें?"</p>
+
+<h2>Report का ढाँचा</h2>
+
+<ol>
+<li><b>Executive summary:</b> 1 पेज — क्या जोखिम है, कितना गंभीर, क्या पहले ठीक करें।</li>
+<li><b>Scope और methodology:</b> क्या test हुआ, कब, किन tools से।</li>
+<li><b>Findings:</b> severity के क्रम में, हर एक का proof और fix।</li>
+<li><b>Risk ratings:</b> Critical/High/Medium/Low के साथ कारण।</li>
+<li><b>Remediation plan:</b> किस क्रम में सुधार करें।</li>
+<li><b>Appendix:</b> scan output, screenshots, timeline।</li>
+</ol>
+
+<h2>एक Finding का format</h2>
+
+<pre><code>Title        : Public S3 bucket me documents
+Severity     : Critical
+Location     : https://files.example.com/reports/
+Impact       : 12,000 invoices public थे
+Evidence     : screenshot, HTTP 200, listing
+Fix          : bucket private करें, IAM से सीमित करें
+Reference    : CWE-284</code></pre>
+
+<p>यही format developer, manager और auditor — तीनों को समझ आता है। भाषा सरल रखें, blame न करें; समस्या और समाधान पर ध्यान दें।</p>
+
+<h2>Severity कैसे तय करें</h2>
+
+<table>
+<thead><tr><th>Level</th><th>मतलब</th></tr></thead>
+<tbody>
+<tr><td>Critical</td><td>बिना login पूरा system या data खुला</td></tr>
+<tr><td>High</td><td>बड़ा data leak या admin access</td></tr>
+<tr><td>Medium</td><td>सीमित access, कुछ शर्तों के साथ</td></tr>
+<tr><td>Low</td><td>जानकारी लीक, अकेले नुक़सान नहीं</td></tr>
+</tbody>
+</table>
+
+<p>Severity सिर्फ़ technical नहीं — business impact भी देखें। एक low technical issue जिससे customer data खुलता है, business के लिए high हो सकता है।</p>
+
+<h2>Screenshots और evidence</h2>
+
+<ul>
+<li>हर screenshot में समय और URL दिखे।</li>
+<li>Password, token और personal data blur करें।</li>
+<li>Steps दोहराने लायक लिखें — developer खुद verify कर सके।</li>
+<li>Original output को अलग फ़ाइल में रखें।</li>
+</ul>
+
+<h2>करियर की दिशा</h2>
+
+<p>Security में शुरुआत आमतौर पर SOC analyst या junior pentester से होती है। आगे web app security, network pentest, cloud security, malware analysis या red teaming में specialization होती है। मदद करती हैं — TryHackMe/HTB जैसी practice labs, OWASP Top 10 की समझ, एक मज़बूत GitHub portfolio और लिखने की आदत। Certification (जैसे eJPT, OSCP) अच्छे हैं, पर practical knowledge उनसे ज़्यादा मायने रखती है।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Report के बिना pentest अधूरा</li>
+<li>हर finding: title, severity, location, impact, proof, fix</li>
+<li>Severity में business impact भी देखें</li>
+<li>Portfolio + practice labs करियर बनाते हैं</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने lab के किसी एक finding को ऊपर दिए format में लिखें — title, severity, impact और fix के साथ। यही अभ्यास आपकी पहली professional report का नमूना बनेगा।</p></div>

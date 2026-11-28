@@ -1,0 +1,81 @@
+<p>Intrusion Detection System (IDS) नेटवर्क या system पर नज़र रखता है और संदिग्ध गतिविधि पर alert देता है। यह हमला रोकता नहीं (वह IPS का काम है), पर समय पर चेतावनी देता है। Python से एक basic host-based IDS बनाया जा सकता है।</p>
+
+<h2>IDS के प्रकार</h2>
+
+<ul>
+<li><b>NIDS (Network IDS):</b> नेटवर्क traffic देखता है — Snort, Suricata, Zeek।</li>
+<li><b>HIDS (Host IDS):</b> एक मशीन की files, processes और logs देखता है — OSSEC, Wazuh।</li>
+<li><b>Signature-based:</b> ज्ञात attack patterns से मिलाता है — तेज़, पर नए हमले छूट सकते हैं।</li>
+<li><b>Anomaly-based:</b> सामान्य व्यवहार से हटने पर alert देता है — नए हमले पकड़ सकता है, पर false positive ज़्यादा।</li>
+</ul>
+
+<h2>1. Log monitoring</h2>
+
+<p>Linux में authentication की जानकारी <code>/var/log/auth.log</code> में रहती है। बार-बार fail हो रहे logins attack का संकेत हो सकते हैं:</p>
+
+<pre><code>from collections import Counter
+import re
+
+fails = Counter()
+with open("/var/log/auth.log", errors="ignore") as f:
+    for line in f:
+        if "Failed password" in line:
+            ip = re.search(r"from (\d+\.\d+\.\d+\.\d+)", line)
+            if ip:
+                fails[ip.group(1)] += 1
+
+for ip, count in fails.most_common(5):
+    print(ip, count)</code></pre>
+
+<p>अगर किसी एक IP से 10 से ज़्यादा failures हैं, तो वह brute force की कोशिश हो सकती है।</p>
+
+<h2>2. File integrity monitoring</h2>
+
+<p>अहम फ़ाइलों का hash याद रखें; बदल जाए तो alert:</p>
+
+<pre><code>import hashlib, os
+
+def digest(path):
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+watch = ["/etc/passwd", "/etc/hosts"]
+for p in watch:
+    if os.path.exists(p):
+        print(p, digest(p)[:16])</code></pre>
+
+<p>असली IDS इस baseline को सेव करके नियमित रूप से तुलना करता है — जैसे AIDE या Tripwire करते हैं।</p>
+
+<h2>3. Simple network alert</h2>
+
+<p>Scapy से packets पढ़कर असामान्य ports या बहुत ज़्यादा connections पकड़े जा सकते हैं:</p>
+
+<pre><code>from scapy.all import sniff
+
+def check(pkt):
+    if pkt.haslayer("TCP") and pkt["TCP"].dport == 23:
+        print("Telnet attempt from", pkt["IP"].src)
+
+sniff(prn=check, store=0, count=20)</code></pre>
+
+<p>यह छोटा उदाहरण बताता है कि IDS का core क्या है — packet पढ़ना, नियम लगाना और alert देना। Production में signature rules और rate limiting ज़रूरी होती है।</p>
+
+<h2>False positive कम करने के तरीके</h2>
+
+<ul>
+<li>Threshold तय करें — एक-दो बार नहीं, बार-बार होने पर alert।</li>
+<li>Known अच्छे IP (backup server, monitoring) को allowlist करें।</li>
+<li>Alert को severity में बाँटें — सब कुछ critical नहीं होता।</li>
+<li>हर alert में समय, source, destination और rule लिखें।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>IDS alert देता है, block नहीं करता</li>
+<li>HIDS host की files/logs, NIDS network traffic देखता है</li>
+<li>Signature तेज़, anomaly नए हमलों के लिए</li>
+<li>Threshold और allowlist से false positive कम होते हैं</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपनी lab VM में auth.log पढ़कर "Failed password" वाली पंक्तियाँ गिनें और top 3 IP लिखें। अगर लॉग खाली है, तो जान-बूझकर एक गलत SSH login करके देखें।</p></div>

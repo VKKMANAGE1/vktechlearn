@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "IDS का मुख्य काम क्या है?", "options": ["संदिग्ध गतिविधि पर alert देना", "हमला रोकना", "Password बदलना", "Backup लेना"], "answer": 0, "why": "IDS detect करता है; रोकना IPS का काम है।"},
+    {"q": "HIDS क्या देखता है?", "options": ["एक host की files, logs और processes", "सिर्फ़ network traffic", "सिर्फ़ Wi-Fi", "सिर्फ़ printers"], "answer": 0, "why": "Host-based IDS एक मशीन की गतिविधि पर नज़र रखता है।"},
+    {"q": "Signature-based detection की कमी क्या है?", "options": ["नए अनजान हमले छूट सकते हैं", "बहुत धीमा", "कभी काम नहीं करता", "सिर्फ़ Linux में चलता है"], "answer": 0, "why": "ज्ञात patterns से मिलान होता है, इसलिए नए हमले बच सकते हैं।"},
+    {"q": "Anomaly-based detection किस पर आधारित है?", "options": ["सामान्य व्यवहार से हटने पर", "ज्ञात signature पर", "File size पर", "Password length पर"], "answer": 0, "why": "Baseline से अलग गतिविधि पर alert आता है।"},
+    {"q": "False positive कम करने का तरीका क्या है?", "options": ["Threshold और allowlist", "सारे alerts बंद", "IDS हटाना", "Logging बंद"], "answer": 0, "why": "बार-बार होने पर alert और ज्ञात अच्छे IP allowlist करने से शोर कम होता है।"},
+    {"q": "Linux में failed logins किस log में मिलते हैं?", "options": ["/var/log/auth.log", "/etc/passwd", "/var/www", "/home"], "answer": 0, "why": "auth.log में authentication की घटनाएँ दर्ज होती हैं।"},
+    {"q": "File integrity monitoring में क्या तुलना होती है?", "options": ["फ़ाइल के hash की", "फ़ाइल के रंग की", "फ़ाइल के नाम की", "फ़ोल्डर के आइकन की"], "answer": 0, "why": "Hash बदलने का मतलब फ़ाइल बदली गई।"},
+    {"q": "Hardening का मतलब क्या है?", "options": ["Attack surface छोटा करना", "सारे ports खोलना", "Antivirus हटाना", "Password साझा करना"], "answer": 0, "why": "कम services, updates और least privilege से हमला कठिन होता है।"},
+    {"q": "Least privilege का सिद्धांत क्या है?", "options": ["सिर्फ़ ज़रूरी अधिकार देना", "सबको admin बनाना", "कोई अधिकार न देना", "सबको एक password"], "answer": 0, "why": "कम अधिकार से गलती या हमले का असर सीमित रहता है।"},
+    {"q": "Firewall की सही नीति क्या है?", "options": ["Default deny, ज़रूरी ही allow", "Default allow", "सब खुला", "Firewall बंद"], "answer": 0, "why": "जो ज़रूरी नहीं, उसे बंद रखना सबसे सुरक्षित है।"},
+    {"q": "3-2-1 backup नियम क्या है?", "options": ["3 copy, 2 माध्यम, 1 offline", "3 servers, 2 users, 1 password", "3 दिन, 2 घंटे, 1 फ़ाइल", "3 antivirus, 2 firewall, 1 VPN"], "answer": 0, "why": "यह नियम ransomware और hardware failure दोनों से बचाता है।"},
+    {"q": "Incident response का पहला चरण क्या है?", "options": ["Preparation", "Containment", "Eradication", "Recovery"], "answer": 0, "why": "Plan, contacts और tools पहले से तैयार होने चाहिए।"},
+    {"q": "Containment में क्या किया जाता है?", "options": ["असर फैलने से रोकना", "Malware हटाना", "Report लिखना", "Backup बनाना"], "answer": 0, "why": "संक्रमित system को अलग करके फैलाव रोका जाता है।"},
+    {"q": "Forensic evidence में सबसे पहले क्या सुरक्षित करें?", "options": ["Volatile data — processes, connections", "Disk की सारी files", "Printer", "Keyboard"], "answer": 0, "why": "Memory और connections बंद करने पर खो जाते हैं।"},
+    {"q": "psutil library किसके लिए है?", "options": ["Processes और system जानकारी", "PDF बनाना", "Image edit", "Video"], "answer": 0, "why": "psutil से चल रहे processes और resources देखे जाते हैं।"},
+    {"q": "Logging का फ़ायदा क्या है?", "options": ["घटनाओं का रिकॉर्ड और investigation", "Speed बढ़ती है", "Password बदलता है", "Wi-Fi बढ़ता है"], "answer": 0, "why": "Logs से समय के साथ घटनाएँ जोड़ी जा सकती हैं।"},
+    {"q": "Patch management क्यों ज़रूरी है?", "options": ["Known कमज़ोरियाँ बंद होती हैं", "रंग बदलते हैं", "File छोटी होती है", "Printer चलता है"], "answer": 0, "why": "पुराने software की known कमज़ोरियाँ सबसे आम रास्ता हैं।"},
+    {"q": "Incident के बाद lessons learned का मक़सद क्या है?", "options": ["दोबारा न हो, इसके लिए सुधार", "दोषी ढूँढना", "Report छिपाना", "Backup मिटाना"], "answer": 0, "why": "इससे process और controls बेहतर होते हैं।"},
+    {"q": "अनचाहा खुला port क्या दर्शाता है?", "options": ["अनजाना attack surface", "अच्छी सुरक्षा", "तेज़ internet", "कोई मतलब नहीं"], "answer": 0, "why": "हर खुला port एक संभावित entry point है।"},
+    {"q": "Defense में सबसे कमज़ोर कड़ी अक्सर क्या होती है?", "options": ["इंसान और process", "Hardware", "Cable", "Monitor"], "answer": 0, "why": "Training, process और awareness के बिना tools अधूरे हैं।"}
+  ]
+}

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>कानूनी सीमाएँ — Permission, Scope और IT Act — VK Tech Learn</title>
+<meta name="description" content="लिखित अनुमति, scope definition, India का IT Act और ग़लत scope के नतीजे।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/legal-boundaries.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="कानूनी सीमाएँ — Permission, Scope और IT Act">
+<meta property="og:description" content="लिखित अनुमति, scope definition, India का IT Act और ग़लत scope के नतीजे।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/legal-boundaries.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="कानूनी सीमाएँ — Permission, Scope और IT Act">
+<meta name="twitter:description" content="लिखित अनुमति, scope definition, India का IT Act और ग़लत scope के नतीजे।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 19</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 10 · Ethics, Law और Reporting</span>
+  <h1>कानूनी सीमाएँ — Permission, Scope और IT Act</h1>
+  <div class="lesson-meta"><span>लेसन 19 / 20</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:95%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack11.jpg" alt="Laptop के पास न्याय की तराज़ू और checkmark वाला document" width="1200" height="648" loading="lazy" decoding="async"><figcaption>Laptop के पास न्याय की तराज़ू और checkmark वाला document — Chapter 10: Ethics, Law और Reporting</figcaption></figure>
+<p>Hacking सीखने के साथ कानून की समझ ज़रूरी है, वरना एक ग़लत कदम करियर खत्म कर सकता है। भारत में कंप्यूटर से जुड़े अपराध मुख्य रूप से <b>Information Technology Act, 2000</b> के तहत आते हैं — बिना अनुमति किसी के computer, network या data का इस्तेमाल दंडनीय है।</p>
+
+<h2>अनुमति के बिना क्या न करें</h2>
+
+<ul>
+<li>किसी दूसरे के Wi-Fi, वेबसाइट या सर्वर पर scan या login की कोशिश।</li>
+<li>बिना बताए किसी system पर कोई भी test या tool चलाना।</li>
+<li>दूसरों का data देखना, copy करना या बदलना।</li>
+<li>किसी भी कीमत पर "सिर्फ़ देखने के लिए" access करना — नीयत मायने नहीं रखती।</li>
+</ul>
+
+<h2>Permission में क्या लिखा हो</h2>
+
+<table>
+<thead><tr><th>बिंदु</th><th>उदाहरण</th></tr></thead>
+<tbody>
+<tr><td>Authorized by</td><td>कंपनी का नाम और अधिकारी का पद</td></tr>
+<tr><td>Scope</td><td>कौन से domains/IP/apps</td></tr>
+<tr><td>Time window</td><td>कब से कब तक</td></tr>
+<tr><td>Allowed techniques</td><td>scan, web testing — DoS नहीं</td></tr>
+<tr><td>Data handling</td><td>कहाँ रखेंगे, कब मिटाएँगे</td></tr>
+<tr><td>Signature</td><td>दोनों पक्षों के हस्ताक्षर</td></tr>
+</tbody>
+</table>
+
+<h2>भारत में कानूनी जोखिम</h2>
+
+<p>IT Act की धाराएँ unauthorized access, data theft, system damage और identity misuse को cover करती हैं, और सज़ा जुर्माने से लेकर जेल तक हो सकती है। इसके अलावा DPDP Act जैसे नए नियम personal data के इस्तेमाल पर लागू होते हैं। किसी और देश के system पर उस देश का कानून भी लागू हो सकता है — इसलिए सिर्फ़ "मैं भारत में हूँ" बचाव नहीं है।</p>
+
+<h2>Bug bounty और responsible disclosure</h2>
+
+<p>कई कंपनियाँ bug bounty program चलाती हैं, जहाँ तय scope और नियमों में कमज़ोरी बताने पर reward मिलता है। यहाँ भी scope से बाहर जाना नियम तोड़ना है। कमज़ोरी मिलने पर सीधे public न करें — पहले कंपनी को सूचित करें और उनके timeline का सम्मान करें।</p>
+
+<h2>अच्छे professional की आदतें</h2>
+
+<ol>
+<li>हर engagement से पहले लिखित contract और NDA।</li>
+<li>Scope बदलना हो तो नई लिखित अनुमति।</li>
+<li>मिले data को encrypted रखें और काम के बाद मिटाएँ।</li>
+<li>Test के दौरान मिली किसी भी व्यक्तिगत जानकारी को न देखें, न रखें।</li>
+<li>संदेह हो तो रुककर पूछें — बाद में माफ़ी नहीं।</li>
+</ol>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>बिना अनुमति कोई test नहीं — नीयत से फ़र्क़ नहीं पड़ता</li>
+<li>Permission में scope, समय और techniques साफ़ हों</li>
+<li>India में IT Act लागू; DPDP भी ध्यान में रखें</li>
+<li>Bug bounty में भी scope और disclosure नियम मानें</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>एक नमूना authorization letter लिखें (काल्पनिक कंपनी के लिए) जिसमें scope, समय, allowed techniques और data handling साफ़ हो। यही आपके पहले engagement का आधार बनेगा।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/custom-hacking-framework.html"><small>← पिछला लेसन</small><b>Python से अपना Hacking Framework बनाना</b></a><a class="next" href="/courses/ethical-hacking/reporting-documentation.html"><small>अगला लेसन →</small><b>Report लिखना, Documentation और Career</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

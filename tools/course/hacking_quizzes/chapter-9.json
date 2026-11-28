@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "Pentest का पहला कदम क्या है?", "options": ["Scoping और लिखित अनुमति", "Port scan", "Exploit", "Report"], "answer": 0, "why": "बिना scope और अनुमति testing शुरू नहीं होती।"},
+    {"q": "Rules of Engagement में क्या तय होता है?", "options": ["कौन सी techniques allowed हैं और कब", "सिर्फ़ फ़ीस", "सिर्फ़ report का रंग", "सिर्फ़ टीम का नाम"], "answer": 0, "why": "इसमें समय, banned techniques और communication तय होते हैं।"},
+    {"q": "PoC कितना होना चाहिए?", "options": ["सिर्फ़ ज़रूरी proof", "पूरा database dump", "सारे passwords", "server बंद"], "answer": 0, "why": "कम से कम असर वाला proof पर्याप्त और सुरक्षित है।"},
+    {"q": "Finding लिखते समय क्या शामिल करें?", "options": ["Title, severity, location, impact, fix", "सिर्फ़ screenshot", "सिर्फ़ नाम", "सिर्फ़ tool"], "answer": 0, "why": "यही format developer के लिए सबसे उपयोगी है।"},
+    {"q": "Cleanup में क्या किया जाता है?", "options": ["बनाई फ़ाइलें, accounts और settings हटाना", "नए users जोड़ना", "Server बंद करना", "Data कॉपी करना"], "answer": 0, "why": "Testing के बाद system सामान्य हालत में लौटाना ज़रूरी है।"},
+    {"q": "Sign-off क्यों ज़रूरी है?", "options": ["Client से पुष्टि कि testing पूरी और system सामान्य", "बिल भेजने के लिए", "Report छिपाने के लिए", "नई फ़ीस के लिए"], "answer": 0, "why": "यह engagement बंद करने का औपचारिक हिस्सा है।"},
+    {"q": "Framework में module का सिद्धांत क्या है?", "options": ["एक module, एक काम", "सब कुछ एक file में", "कोई function नहीं", "सिर्फ़ GUI"], "answer": 0, "why": "अलग modules पढ़ने, test करने और बदलने में आसान होते हैं।"},
+    {"q": "argparse framework में किस काम आता है?", "options": ["Command-line options", "Hashing", "Chart", "PDF"], "answer": 0, "why": "इससे module और target command line से चुने जाते हैं।"},
+    {"q": "Config file का फ़ायदा क्या है?", "options": ["Settings बिना code बदले बदलना", "Code तेज़ करना", "Report बनाना", "Wi-Fi जोड़ना"], "answer": 0, "why": "timeout, threads और output path config में रखें।"},
+    {"q": "JSON output क्यों रखें?", "options": ["Report और analysis आसान", "File बड़ी करने के लिए", "Code छिपाने के लिए", "सिर्फ़ सुंदरता"], "answer": 0, "why": "एक ही structure से आगे processing होती है।"},
+    {"q": "Framework के safe default क्या होने चाहिए?", "options": ["धीमे, सीमित threads और rate limit", "तेज़, unlimited threads", "कोई timeout नहीं", "सारे targets"], "answer": 0, "why": "गलती से production पर भार न पड़े।"},
+    {"q": "Scope check हर run में क्यों?", "options": ["गलत target पर testing रोकने के लिए", "Speed के लिए", "Report के लिए", "कुछ नहीं"], "answer": 0, "why": "यह एक बुनियादी safety control है।"},
+    {"q": "Logging framework में क्यों रखें?", "options": ["क्या हुआ, कब हुआ — रिकॉर्ड के लिए", "File छोटी करने के लिए", "Speed के लिए", "GUI के लिए"], "answer": 0, "why": "बाद में समस्या या सबूत समझने में मदद मिलती है।"},
+    {"q": "Version control का फ़ायदा क्या है?", "options": ["पुराना काम करने वाला version वापस पाना", "Report अपने आप बनना", "Speed बढ़ना", "Wi-Fi जुड़ना"], "answer": 0, "why": "Git से बदलाव track और rollback होते हैं।"},
+    {"q": "Automation में rate limit क्यों?", "options": ["Target पर अनचाहा भार न पड़े", "Tool तेज़ हो", "Report छोटी हो", "कोई कारण नहीं"], "answer": 0, "why": "तेज़ requests से service धीमी या बंद हो सकती है।"},
+    {"q": "End-to-end pentest में अंतिम चरण क्या है?", "options": ["Report और sign-off", "Recon", "Scanning", "Exploitation"], "answer": 0, "why": "काम report और client की पुष्टि पर पूरा होता है।"},
+    {"q": "Tool का output बिना verify भेजना क्यों ग़लत है?", "options": ["False positive report में जा सकते हैं", "Report लंबी होती है", "Tool धीमा होता है", "कोई कारण नहीं"], "answer": 0, "why": "हर finding हाथ से जाँची जानी चाहिए।"},
+    {"q": "Cleanup के बाद क्या जाँचें?", "options": ["System पहले जैसा है या नहीं", "नए ports", "Wi-Fi password", "Logo"], "answer": 0, "why": "Client के systems में कोई बदलाव न छूटे।"},
+    {"q": "Testing के दौरान critical finding मिले तो?", "options": ["तुरंत तय contact को बताएँ", "Report के अंत तक रोकें", "किसी को न बताएँ", "सोशल मीडिया पर डालें"], "answer": 0, "why": "Rules of Engagement में emergency contact तय होता है।"},
+    {"q": "Professional pentest की सबसे बड़ी पहचान क्या है?", "options": ["अनुशासित process और साफ़ report", "सबसे ज़्यादा tools", "सबसे तेज़ scan", "सबसे लंबा report"], "answer": 0, "why": "Process और documentation ही असली मूल्य हैं।"}
+  ]
+}

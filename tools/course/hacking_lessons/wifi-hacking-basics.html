@@ -1,0 +1,63 @@
+<p>Wi-Fi हर घर और दफ़्तर की रीढ़ है, और इसीलिए हमलावरों की पहली पसंद। इस लेसन में wireless सुरक्षा के प्रकार, handshake का मतलब और अपने ही नेटवर्क की जाँच करने का तरीका समझेंगे — दूसरों के Wi-Fi पर कोई test बिना अनुमति नहीं।</p>
+
+<h2>Wi-Fi सुरक्षा के प्रकार</h2>
+
+<table>
+<thead><tr><th>प्रकार</th><th>स्थिति</th><th>टिप्पणी</th></tr></thead>
+<tbody>
+<tr><td>Open</td><td>बिना password</td><td>कभी इस्तेमाल न करें; data खुला</td></tr>
+<tr><td>WEP</td><td>पुराना, टूट चुका</td><td>कुछ ही मिनटों में तोड़ा जा सकता है</td></tr>
+<tr><td>WPA</td><td>पुराना</td><td>आज इस्तेमाल न करें</td></tr>
+<tr><td>WPA2</td><td>आज सबसे आम</td><td>मज़बूत password के साथ ठीक</td></tr>
+<tr><td>WPA3</td><td>नया और सबसे सुरक्षित</td><td>Router support करे तो चुनें</td></tr>
+</tbody>
+</table>
+
+<h2>WPA2 में handshake क्या है</h2>
+
+<p>जब कोई device Wi-Fi से जुड़ता है, तो router और device के बीच एक <b>4-way handshake</b> होता है, जिसमें password से बनी key verify होती है। अगर कोई हमलावर handshake पकड़ ले, तो वह offline तरीके से password guesses आज़मा सकता है। इसीलिए मज़बूत, लंबा Wi-Fi password ज़रूरी है — 8 अक्षरों का आसान password ऑफ़लाइन जल्दी टूट सकता है।</p>
+
+<p>ध्यान दें: handshake पकड़ने के लिए हमलावर को पास होना और अक्सर victim को disconnect करना पड़ता है — यह बिना अनुमति अपराध है। यहाँ हम सिर्फ़ यह समझ रहे हैं कि सुरक्षा कैसे काम करती है।</p>
+
+<h2>Wi-Fi पर आम कमज़ोरियाँ</h2>
+
+<ul>
+<li><b>कमज़ोर password:</b> नाम, मोबाइल नंबर या "12345678"।</li>
+<li><b>WPS चालू:</b> WPS PIN के ज़रिए जुड़ना आसान हो जाता है — इसे बंद रखें।</li>
+<li><b>पुराना firmware:</b> router में known bugs रहते हैं।</li>
+<li><b>Default admin password:</b> router के admin panel का password न बदलना।</li>
+<li><b>Guest network का ग़लत setup:</b> guest को internal network तक पहुँच मिल जाना।</li>
+</ul>
+
+<h2>अपना नेटवर्क सुरक्षित करने के कदम</h2>
+
+<ol>
+<li>Router पर WPA2/WPA3 और 16+ अक्षरों का random password रखें।</li>
+<li>Router का admin password बदलें और remote management बंद करें।</li>
+<li>WPS बंद करें और firmware अपडेट रखें।</li>
+<li>मेहमानों के लिए अलग guest network बनाएँ।</li>
+<li>पुराने devices को network से हटाएँ और devices की सूची देखते रहें।</li>
+</ol>
+
+<h2>Python से Wi-Fi की जानकारी</h2>
+
+<p>Linux में आस-पास के networks की सूची देखने के लिए command-line tools होते हैं। Python से उनका output पढ़ा जा सकता है:</p>
+
+<pre><code>import subprocess
+
+out = subprocess.check_output(["nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "dev", "wifi"])
+for line in out.decode().splitlines():
+    print(line)</code></pre>
+
+<p>यह सिर्फ़ अपने आस-पास के networks की signal और security जानकारी दिखाता है — कोई हमला नहीं। scan करते समय भी यह याद रखें कि किसी के नेटवर्क पर जुड़ना या test करना अनुमति के बिना ग़लत है।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>WEP/WPA पुराने, WPA2 आम, WPA3 सबसे सुरक्षित</li>
+<li>Handshake offline password guessing का आधार बन सकता है</li>
+<li>WPS बंद, firmware अपडेट, लंबा Wi-Fi password</li>
+<li>दूसरों के Wi-Fi पर test सिर्फ़ अनुमति से</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने router का admin page खोलें और जाँचें: security mode क्या है, WPS बंद है या नहीं, firmware version कौन सा है। जो भी कमज़ोर मिले, उसे बदलने की सूची बनाएँ।</p></div>

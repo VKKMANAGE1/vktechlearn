@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "Python में string क्या है?", "options": ["Text वाली value", "सिर्फ़ संख्या", "एक loop", "एक file"], "answer": 0, "why": "IP, URL और नाम string में रखे जाते हैं।"},
+    {"q": "Python में integer type किसके लिए है?", "options": ["पूर्ण संख्या", "दशमलव संख्या", "text", "boolean"], "answer": 0, "why": "Port और count जैसी पूर्ण संख्याएँ integer होती हैं।"},
+    {"q": "Python में if का काम क्या है?", "options": ["शर्त के हिसाब से code चलाना", "loop चलाना", "file सेव करना", "error दिखाना"], "answer": 0, "why": "if/elif/else से शर्त के अनुसार अलग code चलता है।"},
+    {"q": "for loop किस पर चलता है?", "options": ["सूची या range पर", "सिर्फ़ संख्या पर", "सिर्फ़ file पर", "सिर्फ़ string पर"], "answer": 0, "why": "for loop list, string, range जैसी चीज़ों पर एक-एक करके चलता है।"},
+    {"q": "function बनाने का सही तरीका कौन सा है?", "options": ["def check():", "function check():", "func check():", "def check[]"], "answer": 0, "why": "Python में function def से बनता है।"},
+    {"q": "function का फ़ायदा क्या है?", "options": ["Code दोबारा लिखने से बचता है", "Script धीमी होती है", "Error बढ़ते हैं", "फ़ाइल बड़ी होती है"], "answer": 0, "why": "एक बार लिखा function कई जगह बुलाया जा सकता है।"},
+    {"q": "dictionary किस तरह का data रखती है?", "options": ["key-value जोड़े", "सिर्फ़ संख्याएँ", "सिर्फ़ अक्षर", "सिर्फ़ फ़ाइलें"], "answer": 0, "why": "Result को {\"host\": ..., \"port\": ...} जैसे जोड़ों में रखा जाता है।"},
+    {"q": "try/except का मक़सद क्या है?", "options": ["Error आने पर script को संभालना", "Loop रोकना", "फ़ाइल बनाना", "Print करना"], "answer": 0, "why": "एक host fail होने पर पूरा script नहीं रुकता।"},
+    {"q": "socket library किसके लिए इस्तेमाल होती है?", "options": ["Network connection बनाना", "Image बनाना", "Excel खोलना", "PDF पढ़ना"], "answer": 0, "why": "socket से TCP connection और port check होता है।"},
+    {"q": "requests library क्या करती है?", "options": ["HTTP request भेजना", "File delete करना", "Video चलाना", "Password बनाना"], "answer": 0, "why": "requests से GET/POST भेजकर response देखा जाता है।"},
+    {"q": "hashlib किसके लिए है?", "options": ["Hash बनाना", "Loop चलाना", "File खोलना", "Chart बनाना"], "answer": 0, "why": "hashlib से MD5/SHA-256 जैसे hash बनते हैं।"},
+    {"q": "Python में टिप्पणी (comment) कैसे लिखते हैं?", "options": ["# से", "// से", "/* */ से", "-- से"], "answer": 0, "why": "Python में # के बाद की पंक्ति comment होती है।"},
+    {"q": "print() का काम क्या है?", "options": ["Output दिखाना", "Input लेना", "File सेव करना", "Error देना"], "answer": 0, "why": "print से terminal पर result दिखता है।"},
+    {"q": "Port list पर loop चलाकर हम क्या कर सकते हैं?", "options": ["हर port की जाँच", "हर port को बंद", "हर port को प्रिंट", "हर port को बेचना"], "answer": 0, "why": "Loop से एक-एक port check होता है।"},
+    {"q": "list में तीसरा element किस index पर होता है?", "options": ["2", "3", "1", "0"], "answer": 0, "why": "Python में index 0 से शुरू होता है, इसलिए तीसरा element index 2 पर है।"},
+    {"q": "len() function क्या बताता है?", "options": ["लंबाई या तत्वों की संख्या", "प्रकार", "पहला अक्षर", "अंतिम अक्षर"], "answer": 0, "why": "len() string या list का आकार बताता है।"},
+    {"q": "argparse किस काम आता है?", "options": ["Command-line arguments पढ़ने के लिए", "File compress करने", "Hash बनाने", "Chart बनाने"], "answer": 0, "why": "argparse से script को options दिए जाते हैं।"},
+    {"q": "Python में indentation क्यों ज़रूरी है?", "options": ["Code block की पहचान के लिए", "सिर्फ़ सुंदरता के लिए", "Speed बढ़ाने के लिए", "Color के लिए"], "answer": 0, "why": "Python में spaces से ही block तय होता है।"},
+    {"q": "किसी function को कॉल कैसे करते हैं?", "options": ["check_host()", "call check_host", "check_host:", "run check_host"], "answer": 0, "why": "नाम के बाद कोष्ठक लगाकर function चलता है।"},
+    {"q": "Script में result सेव करने का सबसे अच्छा तरीका क्या है?", "options": ["JSON या CSV में", "Terminal में छोड़ देना", "Screenshot लेना", "कुछ नहीं"], "answer": 0, "why": "JSON/CSV से बाद में report और analysis आसान होता है।"}
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "Passive reconnaissance में क्या नहीं होता?", "options": ["Target से सीधा संपर्क", "Search engine का इस्तेमाल", "WHOIS lookup", "Public documents पढ़ना"], "answer": 0, "why": "Passive में target को request नहीं जाती; active में सीधा संपर्क होता है।"},
+    {"q": "WHOIS से क्या पता चलता है?", "options": ["Domain का registration data", "सर्वर का पासवर्ड", "User का ईमेल inbox", "Wi-Fi का password"], "answer": 0, "why": "WHOIS में registrar, creation date और name servers मिलते हैं।"},
+    {"q": "DNS का A record क्या बताता है?", "options": ["Domain का IP address", "Mail server", "नाम server", "Text verification"], "answer": 0, "why": "A record domain को IPv4 address से जोड़ता है।"},
+    {"q": "MX record किसके लिए होता है?", "options": ["Mail server", "Web server", "DNS server", "Proxy"], "answer": 0, "why": "MX record बताता है कि domain के ईमेल किस server पर जाते हैं।"},
+    {"q": "Certificate transparency logs से क्या मिलता है?", "options": ["Subdomains की सूची", "पासवर्ड", "Source code", "Firewall rules"], "answer": 0, "why": "SSL certificates में subdomain नाम सार्वजनिक होते हैं।"},
+    {"q": "Job listings से recon में क्या पता चलता है?", "options": ["Tech stack का अंदाज़ा", "कर्मचारियों का पासवर्ड", "Server का IP", "Firewall का model"], "answer": 0, "why": "माँगी गई technologies से organization का stack समझ आता है।"},
+    {"q": "Active recon का उदाहरण कौन सा है?", "options": ["Port scan", "WHOIS lookup", "Search engine search", "Archive.org"], "answer": 0, "why": "Port scan में target से सीधा संपर्क होता है।"},
+    {"q": "Recon का नतीजा कहाँ रखना चाहिए?", "options": ["व्यवस्थित notes और files में", "ज़ुबानी याद", "किसी को भेजकर", "कागज़ पर कहीं"], "answer": 0, "why": "notes.md, hosts.txt जैसी files से आगे का काम आसान होता है।"},
+    {"q": "OSINT का पूरा नाम क्या है?", "options": ["Open Source Intelligence", "Online System Info Tool", "Open Security Internet", "Operational Source Info"], "answer": 0, "why": "OSINT सार्वजनिक जानकारी से analysis है।"},
+    {"q": "site: operator का काम क्या है?", "options": ["एक साइट के अंदर खोजना", "फ़ाइल प्रकार तय करना", "साइट बनाना", "ईमेल भेजना"], "answer": 0, "why": "site:example.com से उसी domain के नतीजे मिलते हैं।"},
+    {"q": "Recon में scope का महत्व क्या है?", "options": ["सिर्फ़ अनुमति वाले targets पर रहना", "सब कुछ scan करना", "कोई सीमा नहीं", "सिर्फ़ passive करना"], "answer": 0, "why": "Scope से बाहर का subdomain भी नहीं छूना चाहिए।"},
+    {"q": "Subdomain क्या होता है?", "options": ["मुख्य domain का उप-भाग, जैसे mail.example.com", "एक प्रकार का वायरस", "IP range", "Firewall"], "answer": 0, "why": "mail, vpn, test जैसे subdomains attack surface बढ़ाते हैं।"},
+    {"q": "Python में WHOIS के लिए कौन सी library है?", "options": ["python-whois", "requests-html", "numpy", "matplotlib"], "answer": 0, "why": "python-whois से domain का registration data पढ़ा जाता है।"},
+    {"q": "dnspython library किसके लिए है?", "options": ["DNS records पढ़ने के लिए", "PDF बनाने के लिए", "Image edit के लिए", "Video के लिए"], "answer": 0, "why": "dnspython से A, MX, TXT और NS records मिलते हैं।"},
+    {"q": "Certificate logs से subdomains पढ़ने का तरीका क्या है?", "options": ["crt.sh की JSON API से", "किसी के फोन से", "Firewall से", "Wi-Fi से"], "answer": 0, "why": "crt.sh पर query करके name_value पढ़े जाते हैं।"},
+    {"q": "Active scanning से पहले क्या ज़रूरी है?", "options": ["लिखित अनुमति", "तेज़ internet", "नया लैपटॉप", "कोई नहीं"], "answer": 0, "why": "बिना अनुमति scan करना कानून का उल्लंघन है।"},
+    {"q": "Recon का मुख्य फ़ायदा क्या है?", "options": ["हमले की सतह समझना", "पासवर्ड मिलना", "Data बेचना", "Server बंद करना"], "answer": 0, "why": "attack surface समझने से testing के लिए सही दिशा मिलती है।"},
+    {"q": "Tool के output को क्या करना चाहिए?", "options": ["verify करके notes में जोड़ना", "बिना देखे भेजना", "डिलीट करना", "छिपाना"], "answer": 0, "why": "हर जानकारी verify करके source के साथ रखें।"},
+    {"q": "किसी दूसरे के नेटवर्क पर active scan करने से क्या होता है?", "options": ["कानूनी जोखिम और logs में entry", "कुछ नहीं", "सिर्फ़ speed बढ़ती है", "Wi-Fi तेज़ होता है"], "answer": 0, "why": "बिना अनुमति scan अपराध है और target के logs में दर्ज होता है।"},
+    {"q": "Recon में public documents से क्या मिल सकता है?", "options": ["Metadata और versions", "पासवर्ड", "Bank details", "कुछ नहीं"], "answer": 0, "why": "PDF/Word metadata से software versions और paths का अंदाज़ा मिलता है।"}
+  ]
+}

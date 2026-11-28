@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {"q": "Vulnerability क्या है?", "options": ["System में कमज़ोरी", "एक tool", "एक protocol", "एक firewall"], "answer": 0, "why": "कमज़ोरी से system का सुरक्षा-ढाँचा कमज़ोर पड़ता है।"},
+    {"q": "CVE क्या होता है?", "options": ["कमज़ोरी का unique पहचान नंबर", "एक प्रकार का वायरस", "Firewall rule", "Port नंबर"], "answer": 0, "why": "हर publicly disclosed कमज़ोरी को CVE ID मिलती है।"},
+    {"q": "CVSS score किसके लिए होता है?", "options": ["Severity मापने के लिए", "File size के लिए", "Network speed के लिए", "Password length के लिए"], "answer": 0, "why": "CVSS 0 से 10 तक गंभीरता बताता है।"},
+    {"q": "Buffer overflow कब होता है?", "options": ["Program तय जगह से ज़्यादा data ले ले", "Internet बंद हो", "Password लंबा हो", "फ़ाइल खुल न पाए"], "answer": 0, "why": "ज़्यादा data आस-पास की memory में लिख दिया जाता है।"},
+    {"q": "SQL Injection का मुख्य कारण क्या है?", "options": ["User input सीधे query में जोड़ना", "Firewall बंद होना", "Wi-Fi कमज़ोर होना", "Password छोटा होना"], "answer": 0, "why": "बिना जाँच input query का मतलब बदल देता है।"},
+    {"q": "SQL Injection से बचाव का सही तरीका कौन सा है?", "options": ["Parameterized queries", "लंबा password", "नया antivirus", "Wi-Fi बंद करना"], "answer": 0, "why": "Prepared statements से input code नहीं बन पाता।"},
+    {"q": "XSS में हमला किस पर होता है?", "options": ["दूसरे users के browser पर", "सिर्फ़ server पर", "Router पर", "प्रिंटर पर"], "answer": 0, "why": "दूसरों को दिखाया गया script उनके browser में चलता है।"},
+    {"q": "XSS का बचाव क्या है?", "options": ["Output encoding और CSP", "सिर्फ़ HTTPS", "लंबा username", "डेटा डिलीट"], "answer": 0, "why": "Encoding से script text बन जाता है और CSP उसे रोकती है।"},
+    {"q": "CSRF में attacker क्या करवाता है?", "options": ["User के browser से बिना जाने request भेजवाता है", "Server बंद करवाता है", "Wi-Fi बदलवाता है", "Printer चलवाता है"], "answer": 0, "why": "Logged-in user के session का फ़ायदा उठाकर action करवाया जाता है।"},
+    {"q": "CSRF से बचाव कौन सा है?", "options": ["CSRF token और SameSite cookies", "सिर्फ़ लंबा password", "एंटीवायरस", "Backup"], "answer": 0, "why": "Token से request की वैधता जाँची जाती है।"},
+    {"q": "Stored XSS कहाँ सेव होता है?", "options": ["Database में", "केवल URL में", "Browser cache में", "Firewall में"], "answer": 0, "why": "Stored XSS database में रहता है और हर visitor को दिखता है।"},
+    {"q": "Reflected XSS कहाँ से आता है?", "options": ["URL या request के input से", "Database से", "Server के BIOS से", "Printer से"], "answer": 0, "why": "Reflected XSS उसी request में तुरंत लौटता है।"},
+    {"q": "Vulnerability scan के false positive का मतलब क्या है?", "options": ["Tool ने कमज़ोरी बताई जो असल में नहीं है", "कमज़ोरी छूट गई", "Tool crash हो गया", "Scan पूरा नहीं हुआ"], "answer": 0, "why": "इससे समय बर्बाद होता है, इसलिए verify करें।"},
+    {"q": "False negative क्यों ज़्यादा खतरनाक है?", "options": ["कमज़ोरी है पर पकड़ी नहीं गई", "कमज़ोरी नहीं है", "Tool धीमा है", "Report लंबी है"], "answer": 0, "why": "organization सोचता है सब ठीक है, जबकि जोखिम बना रहता है।"},
+    {"q": "किस tool से known exploits खोजे जाते हैं?", "options": ["searchsploit", "WinRAR", "Notepad", "VLC"], "answer": 0, "why": "searchsploit exploit database में खोजता है।"},
+    {"q": "Web app testing के लिए कौन सा tool आम है?", "options": ["Burp Suite", "Excel", "Photoshop", "PowerPoint"], "answer": 0, "why": "Burp/ZAP से requests जाँची और बदली जा सकती हैं।"},
+    {"q": "Exploitation में PoC कितना होना चाहिए?", "options": ["सिर्फ़ ज़रूरी proof", "पूरा data dump", "सारे users के passwords", "server बंद"], "answer": 0, "why": "कम से कम असर वाला proof पर्याप्त है।"},
+    {"q": "Input validation किस काम आती है?", "options": ["गलत या खतरनाक input रोकना", "Speed बढ़ाना", "रंग बदलना", "प्रिंट करना"], "answer": 0, "why": "लंबाई, type और format की जाँच से injection रुकती है।"},
+    {"q": "Default credentials क्यों खतरनाक हैं?", "options": ["सबको पता होते हैं", "बहुत लंबे होते हैं", "सिर्फ़ Linux में होते हैं", "महँगे होते हैं"], "answer": 0, "why": "admin/admin जैसे default login तुरंत बदलने चाहिए।"},
+    {"q": "किसी वेबसाइट पर बिना अनुमति SQL injection test करना क्या है?", "options": ["अपराध", "Bug bounty", "Research", "सामान्य जाँच"], "answer": 0, "why": "बिना अनुमति attack करना कानून का उल्लंघन है।"}
+  ]
+}

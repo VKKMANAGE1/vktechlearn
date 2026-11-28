@@ -1,0 +1,75 @@
+<p>एक बार Python की बुनियाद आ जाए, तो असली फ़ायदा scripts से मिलता है — बार-बार होने वाला काम अपने आप। Recon की सूची बनाना हो, files में से IP निकालने हों या किसी target के headers देखने हों, छोटा script मिनटों का काम सेकंडों में कर देता है। इस लेसन में script लिखने, चलाने और उसे reusable बनाने का तरीका देखेंगे।</p>
+
+<h2>Script बनाना और चलाना</h2>
+
+<ol>
+<li>Kali में terminal खोलें और <code>nano scan.py</code> से फ़ाइल बनाएँ।</li>
+<li>कोड लिखें और Ctrl+O, Enter, Ctrl+X से सेव करें।</li>
+<li><code>python3 scan.py</code> से चलाएँ।</li>
+<li>चलाने की अनुमति चाहिए तो <code>chmod +x scan.py</code> दें और पहली पंक्ति में <code>#!/usr/bin/env python3</code> लिखें।</li>
+</ol>
+
+<h2>Command-line arguments</h2>
+
+<p>हर बार code में target बदलना ठीक नहीं। <code>argparse</code> से script को options दें:</p>
+
+<pre><code>import argparse
+
+parser = argparse.ArgumentParser(description="Host checker")
+parser.add_argument("host", help="target IP")
+parser.add_argument("-p", "--port", type=int, default=80)
+args = parser.parse_args()
+
+print(args.host, args.port)</code></pre>
+
+<p>अब <code>python3 check.py 192.168.56.101 -p 22</code> चलेगा। Arguments से script दोबारा लिखे बिना अलग-अलग target पर चल सकती है।</p>
+
+<h2>File से सूची पढ़ना</h2>
+
+<pre><code>with open("hosts.txt") as f:
+    hosts = [line.strip() for line in f if line.strip()]
+
+for host in hosts:
+    print("checking", host)</code></pre>
+
+<p>Recon में अक्सर सैकड़ों subdomain या IP होते हैं। उन्हें फ़ाइल में रखकर loop चलाना सबसे साफ़ तरीका है। हर request के बीच छोटा pause रखें, ताकि target पर अनचाहा load न पड़े।</p>
+
+<h2>HTTP Headers देखना</h2>
+
+<pre><code>import requests
+
+r = requests.get("http://192.168.56.101", timeout=5)
+print(r.status_code)
+print(r.headers.get("Server"))</code></pre>
+
+<p>Headers से पता चलता है कि कौन सा server चल रहा है और कुछ security headers मौजूद हैं या नहीं। यह जानकारी authorized testing में configuration समझने के लिए काम आती है।</p>
+
+<h2>Result सेव करना</h2>
+
+<p>Terminal पर छपा result खो जाता है। उसे JSON में सेव करें, ताकि बाद में report बने:</p>
+
+<pre><code>import json
+
+report = {"host": "192.168.56.101", "open_ports": [22, 80]}
+with open("result.json", "w") as f:
+    json.dump(report, f, indent=2)</code></pre>
+
+<h2>Automation के नियम</h2>
+
+<ul>
+<li><b>Rate limit:</b> बहुत तेज़ requests से target धीमा या बंद हो सकता है — अनुमति वाली सीमा में रहें।</li>
+<li><b>Logging:</b> script क्या-क्या कर रही है, फ़ाइल में लिखें — बाद में सबूत काम आता है।</li>
+<li><b>Dry run:</b> पहले बिना असर वाले mode में चलाएँ, फिर असली।</li>
+<li><b>Cleanup:</b> जो फ़ाइलें या changes बनाएँ, अंत में हटाएँ।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>argparse से script reusable बनती है</li>
+<li>सूची फ़ाइल से पढ़कर loop चलाना आम तरीका है</li>
+<li>Result हमेशा JSON/CSV में सेव करें</li>
+<li>Automation में धीमी गति और logging ज़रूरी</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 15 मिनट</b>
+<p>एक script बनाएँ जो hosts.txt से IP पढ़े और हर एक के लिए status code print करे। Result को result.json में सेव करें। सिर्फ़ अपनी lab VM के IP इस्तेमाल करें।</p></div>

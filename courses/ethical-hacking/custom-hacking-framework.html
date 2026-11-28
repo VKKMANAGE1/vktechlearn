@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python से अपना Hacking Framework बनाना — VK Tech Learn</title>
+<meta name="description" content="Modules, CLI, logging और safe defaults वाला reusable framework का ढाँचा।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/custom-hacking-framework.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Python से अपना Hacking Framework बनाना">
+<meta property="og:description" content="Modules, CLI, logging और safe defaults वाला reusable framework का ढाँचा।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/custom-hacking-framework.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Python से अपना Hacking Framework बनाना">
+<meta name="twitter:description" content="Modules, CLI, logging और safe defaults वाला reusable framework का ढाँचा।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 18</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 9 · Advanced Python Techniques</span>
+  <h1>Python से अपना Hacking Framework बनाना</h1>
+  <div class="lesson-meta"><span>लेसन 18 / 20</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:90%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack10.jpg" alt="Terminal के चारों ओर जुड़े modular blocks और gears" width="1200" height="648" loading="lazy" decoding="async"><figcaption>Terminal के चारों ओर जुड़े modular blocks और gears — Chapter 9: Advanced Python Techniques</figcaption></figure>
+<p>एक बार जब छोटे scripts बनने लगें, तो अगला कदम है उन्हें एक framework में जोड़ना — जहाँ हर काम का अलग module हो, एक command से चले और output एक जगह सेव हो। यही तरीका बड़े pentest में समय बचाता है।</p>
+
+<h2>Framework का ढाँचा</h2>
+
+<pre><code>recon/
+  __init__.py
+  dns.py
+  ports.py
+report.py
+main.py
+config.json</code></pre>
+
+<p>हर module का एक ही काम हो — <code>dns.py</code> सिर्फ़ DNS, <code>ports.py</code> सिर्फ़ ports। इससे code पढ़ना, test करना और बदलना आसान रहता है।</p>
+
+<h2>Main script</h2>
+
+<pre><code>import argparse
+from recon import dns, ports
+
+parser = argparse.ArgumentParser()
+parser.add_argument("module", choices=["dns", "ports"])
+parser.add_argument("target")
+args = parser.parse_args()
+
+if args.module == "dns":
+    result = dns.run(args.target)
+else:
+    result = ports.run(args.target)
+
+print(result)</code></pre>
+
+<p>यही pattern बढ़ाकर आगे और modules जोड़े जा सकते हैं — headers, subdomain, report।</p>
+
+<h2>Config और logging</h2>
+
+<ul>
+<li><b>config.json:</b> timeout, threads, output folder — code में hardcode न करें।</li>
+<li><b>logging:</b> हर module अपना log लिखे, समय के साथ।</li>
+<li><b>JSON output:</b> हर module एक ही structure में result दे, ताकि report बने।</li>
+<li><b>Error handling:</b> एक module fail हो तो बाकी न रुकें।</li>
+</ul>
+
+<h2>Safe defaults</h2>
+
+<p>Framework का default धीमा और सुरक्षित रखें — कम threads, लंबा timeout और rate limit। तेज़ scanning का option explicit हो, ताकि गलती से production पर भार न पड़े। साथ में हर run से पहले scope की जाँच करने वाला step रखें।</p>
+
+<h2>Version control</h2>
+
+<p>Git से हर बदलाव track करें। Framework बढ़ने पर पुराना काम करने वाला version वापस पाना आसान होता है। README में हर module का उदाहरण लिखें — छह महीने बाद आप खुद भूल जाएँगे।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>एक module, एक काम</li>
+<li>Config, logging और JSON output पहले से तय</li>
+<li>Default settings धीमे और सुरक्षित</li>
+<li>Scope check हर run में</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 15 मिनट</b>
+<p>दो modules वाला छोटा framework बनाएँ — एक DNS lookup, एक port check। दोनों का result एक ही JSON में जोड़ें।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/pentest-workflow.html"><small>← पिछला लेसन</small><b>Penetration Testing Workflow — शुरू से Report तक</b></a><a class="next" href="/courses/ethical-hacking/legal-boundaries.html"><small>अगला लेसन →</small><b>कानूनी सीमाएँ — Permission, Scope और IT Act</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<p>हमला पकड़ना आधा काम है; उसे रोकना और असर कम करना बाकी आधा। Network hardening का मतलब है attack surface छोटा करना — कम खुले ports, मज़बूत configuration, अपडेटेड software और साफ़ logging।</p>
+
+<h2>Hardening के मुख्य कदम</h2>
+
+<ol>
+<li><b>Inventory:</b> कौन से devices और services नेटवर्क पर हैं — बिना सूची के सुरक्षा संभव नहीं।</li>
+<li><b>Patch management:</b> OS, firmware और applications के updates समय पर लगाएँ।</li>
+<li><b>Least privilege:</b> हर user और service को सिर्फ़ ज़रूरी अधिकार दें।</li>
+<li><b>Firewall rules:</b> जो चाहिए वही allow करें, बाकी बंद — default deny।</li>
+<li><b>Logging:</b> login, firewall और application logs केंद्र में इकट्ठे करें।</li>
+<li><b>Backups:</b> 3-2-1 नियम — तीन copy, दो माध्यम, एक offline।</li>
+</ol>
+
+<h2>Python से configuration जाँच</h2>
+
+<p>कई devices का configuration बार-बार जाँचना पड़ता है। छोटा script इसे आसान बनाता है:</p>
+
+<pre><code>import subprocess
+
+checks = {
+    "firewall": ["ufw", "status"],
+    "listening": ["ss", "-tuln"],
+}
+
+for name, cmd in checks.items():
+    print("==", name)
+    print(subprocess.run(cmd, capture_output=True, text=True).stdout)</code></pre>
+
+<p>इसी तरह यह भी जाँचा जा सकता है कि कोई अनचाहा port तो नहीं खुला, या firewall चालू है या नहीं। Automation से मानवीय भूल कम होती है।</p>
+
+<h2>Incident Response के चरण</h2>
+
+<table>
+<thead><tr><th>चरण</th><th>काम</th></tr></thead>
+<tbody>
+<tr><td>Preparation</td><td>plan, contacts, tools पहले से तैयार</td></tr>
+<tr><td>Identification</td><td>क्या हुआ, कब हुआ, कौन से systems प्रभावित</td></tr>
+<tr><td>Containment</td><td>असर फैलने से रोकना — network से अलग करना</td></tr>
+<tr><td>Eradication</td><td>malware हटाना, कमज़ोरी ठीक करना</td></tr>
+<tr><td>Recovery</td><td>साफ़ backup से बहाली, निगरानी</td></tr>
+<tr><td>Lessons learned</td><td>report और सुधार के कदम</td></tr>
+</tbody>
+</table>
+
+<p>Containment में जल्दबाज़ी न करें — पहले सबूत सुरक्षित करें, फिर मशीन बंद या अलग करें। वरना memory में मौजूद जानकारी खो सकती है।</p>
+
+<h2>Forensic data जुटाना</h2>
+
+<ul>
+<li><b>Volatile:</b> चल रहे processes, network connections, logged-in users — पहले यही लें।</li>
+<li><b>Disk:</b> log files, recently modified files, scheduled tasks।</li>
+<li><b>Timeline:</b> घटनाओं का क्रम — कौन सी फ़ाइल कब बनी।</li>
+<li><b>Hashes:</b> सबूत की अखंडता साबित करने के लिए।</li>
+</ul>
+
+<pre><code>import psutil
+
+for p in psutil.process_iter(["pid", "name", "username"]):
+    print(p.info)</code></pre>
+
+<p>यह snapshot बताता है कि उस समय कौन से programs चल रहे थे — incident report का ज़रूरी हिस्सा।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Hardening = कम surface, updates, least privilege, logging</li>
+<li>Firewall में default deny</li>
+<li>Incident response: contain पहले, फिर eradicate और recover</li>
+<li>सबूत पहले सुरक्षित करें, फिर मशीन अलग करें</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने लैपटॉप पर खुले ports की सूची देखें और लिखें कि कौन सा ज़रूरी है। जो भी ज़रूरी नहीं, उसे बंद करने का तरीका नोट करें।</p></div>

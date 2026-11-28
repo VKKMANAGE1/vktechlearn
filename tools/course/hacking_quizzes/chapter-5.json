@@ -1,0 +1,224 @@
+{
+  "questions": [
+    {
+      "q": "अच्छी वेबसाइट password कैसे रखती है?",
+      "options": [
+        "Hash के रूप में",
+        "Plain text में",
+        "Screenshot में",
+        "Email में"
+      ],
+      "answer": 0,
+      "why": "Hash one-way होता है, इसलिए password सीधे पढ़ा नहीं जा सकता।"
+    },
+    {
+      "q": "Hash function की खास बात क्या है?",
+      "options": [
+        "एक तरफ़ा — वापस नहीं खुलता",
+        "दोनों तरफ़ खुलता है",
+        "सिर्फ़ images पर चलता है",
+        "इससे password बढ़ता है"
+      ],
+      "answer": 0,
+      "why": "Hash से original value वापस नहीं निकाली जा सकती।"
+    },
+    {
+      "q": "Password के लिए कौन सा hash सबसे उपयुक्त है?",
+      "options": [
+        "bcrypt/Argon2",
+        "MD5",
+        "SHA-1",
+        "ROT13"
+      ],
+      "answer": 0,
+      "why": "bcrypt/Argon2 जान-बूझकर धीमे होते हैं, जिससे guessing महँगी पड़ती है।"
+    },
+    {
+      "q": "Salt क्या करता है?",
+      "options": [
+        "हर hash को unique बनाता है",
+        "Password छोटा करता है",
+        "Server तेज़ करता है",
+        "Wi-Fi बढ़ाता है"
+      ],
+      "answer": 0,
+      "why": "Salt से rainbow tables बेकार हो जाती हैं।"
+    },
+    {
+      "q": "Brute force attack क्या है?",
+      "options": [
+        "हर संभव combination आज़माना",
+        "सिर्फ़ एक password आज़माना",
+        "Wi-Fi बंद करना",
+        "ईमेल भेजना"
+      ],
+      "answer": 0,
+      "why": "छोटे password पर brute force जल्दी सफल हो सकता है।"
+    },
+    {
+      "q": "Dictionary attack किस पर आधारित है?",
+      "options": [
+        "आम passwords की सूची",
+        "Hardware की गति",
+        "Wi-Fi signal",
+        "Firewall rules"
+      ],
+      "answer": 0,
+      "why": "आम शब्द और leaked passwords की सूची आज़माई जाती है।"
+    },
+    {
+      "q": "Credential stuffing क्या है?",
+      "options": [
+        "किसी और breach के leaked जोड़े दूसरी साइट पर आज़माना",
+        "नया password बनाना",
+        "2FA चालू करना",
+        "Password manager"
+      ],
+      "answer": 0,
+      "why": "इसलिए हर साइट पर अलग password ज़रूरी है।"
+    },
+    {
+      "q": "मज़बूत password की सबसे बड़ी खासियत क्या है?",
+      "options": [
+        "लंबाई",
+        "सिर्फ़ symbol",
+        "नाम + साल",
+        "छोटा और याद रखने लायक"
+      ],
+      "answer": 0,
+      "why": "लंबा random passphrase सबसे ज़्यादा सुरक्षा देता है।"
+    },
+    {
+      "q": "2FA क्या है?",
+      "options": [
+        "दो तरीक़ों से पहचान की जाँच",
+        "दो passwords",
+        "दो ईमेल",
+        "दो antivirus"
+      ],
+      "answer": 0,
+      "why": "Password के अलावा OTP/app से दूसरी पुष्टि होती है।"
+    },
+    {
+      "q": "Password manager का फ़ायदा क्या है?",
+      "options": [
+        "हर साइट के लिए अलग मज़बूत password",
+        "password सबको बताना",
+        "कम सुरक्षा",
+        "Wi-Fi तेज़ करना"
+      ],
+      "answer": 0,
+      "why": "एक master password से बाकी सब सुरक्षित रहते हैं।"
+    },
+    {
+      "q": "WEP की स्थिति क्या है?",
+      "options": [
+        "पुराना और टूट चुका",
+        "सबसे सुरक्षित",
+        "नया standard",
+        "सिर्फ़ 5G के लिए"
+      ],
+      "answer": 0,
+      "why": "WEP कुछ ही मिनटों में तोड़ा जा सकता है।"
+    },
+    {
+      "q": "आज Wi-Fi के लिए सबसे अच्छा विकल्प कौन सा है?",
+      "options": [
+        "WPA3 (या WPA2)",
+        "WEP",
+        "Open",
+        "WPA"
+      ],
+      "answer": 0,
+      "why": "WPA3 सबसे नया और सुरक्षित है; router support न हो तो WPA2।"
+    },
+    {
+      "q": "WPA2 में handshake क्या है?",
+      "options": [
+        "Router और device के बीच key verify करने की प्रक्रिया",
+        "एक वायरस",
+        "एक cable",
+        "एक firewall"
+      ],
+      "answer": 0,
+      "why": "4-way handshake में password से बनी key जाँची जाती है।"
+    },
+    {
+      "q": "Handshake पकड़ने पर हमलावर क्या कर सकता है?",
+      "options": [
+        "Offline password guessing",
+        "Server बंद",
+        "Wi-Fi तेज़",
+        "कोई नहीं"
+      ],
+      "answer": 0,
+      "why": "इसीलिए लंबा और random Wi-Fi password ज़रूरी है।"
+    },
+    {
+      "q": "WPS के बारे में सही बात क्या है?",
+      "options": [
+        "इसे बंद रखना चाहिए",
+        "इसे हमेशा चालू रखें",
+        "यह password बदलता है",
+        "यह firewall है"
+      ],
+      "answer": 0,
+      "why": "WPS PIN से जुड़ना आसान हो जाता है, इसलिए बंद रखें।"
+    },
+    {
+      "q": "Guest network का सही इस्तेमाल क्या है?",
+      "options": [
+        "मेहमानों को internal network से अलग रखना",
+        "Admin access देना",
+        "सबको एक ही password",
+        "Firewall बंद करना"
+      ],
+      "answer": 0,
+      "why": "Guest network अलग रहता है, जिससे internal systems सुरक्षित रहते हैं।"
+    },
+    {
+      "q": "Router की सुरक्षा के लिए क्या करें?",
+      "options": [
+        "Admin password बदलें और firmware अपडेट रखें",
+        "Default password रखें",
+        "Remote management चालू रखें",
+        "WPS चालू रखें"
+      ],
+      "answer": 0,
+      "why": "Default admin login सबसे आम कमज़ोरी है।"
+    },
+    {
+      "q": "किसी दूसरे के Wi-Fi पर test करने के लिए क्या चाहिए?",
+      "options": [
+        "लिखित अनुमति",
+        "सिर्फ़ लैपटॉप",
+        "नया router",
+        "कुछ नहीं"
+      ],
+      "answer": 0,
+      "why": "बिना अनुमति wireless testing अपराध है।"
+    },
+    {
+      "q": "Wi-Fi password कितना लंबा होना चाहिए?",
+      "options": [
+        "16+ random अक्षर",
+        "8 अक्षर",
+        "4 अंक",
+        "मोबाइल नंबर"
+      ],
+      "answer": 0,
+      "why": "लंबा random password offline guessing को बहुत कठिन बनाता है।"
+    },
+    {
+      "q": "Open Wi-Fi नेटवर्क पर क्या जोखिम है?",
+      "options": [
+        "Data बिना encryption के जाता है",
+        "कोई जोखिम नहीं",
+        "सिर्फ़ speed कम होती है",
+        "बैटरी खत्म होती है"
+      ],
+      "answer": 0,
+      "why": "बिना encryption के data दूसरे पढ़ सकते हैं; सार्वजनिक Wi-Fi पर संवेदनशील काम न करें।"
+    }
+  ]
+}

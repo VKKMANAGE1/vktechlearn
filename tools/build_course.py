@@ -119,9 +119,9 @@ def head(title, description, canonical, extra=""):
       <a href="/">Home</a>
       <a href="/courses/" aria-current="page">Courses</a>
       <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
       <a href="/courses/#word">MS Word</a>
       <a href="/courses/#excel">MS Excel</a>
-      <a href="/courses/#hacking">Hacking</a>
     </nav>
   </div>
 </header>
@@ -172,13 +172,18 @@ def build_hub():
 <span><b>Basic Computer Course</b><small>21 लेसन · 6 चैप्टर · Computer Basics से Excel तक</small></span>
 <span class="mins">शुरू करें</span></a>"""
     )
+    cards.append(
+        """<a class="lesson-row" href="/courses/ethical-hacking/" style="border-radius:14px;border:1px solid var(--line);background:var(--panel)">
+<span class="idx">2</span>
+<span><b>Ethical Hacking with Python</b><small>20 लेसन · 10 चैप्टर · Recon से Report तक</small></span>
+<span class="mins">शुरू करें</span></a>"""
+    )
     for index, (anchor, name, desc) in enumerate(
         [
             ("word", "MS Word Course", "डॉक्यूमेंट, रिज़्यूमे, लेटर और रिपोर्ट बनाना — स्टेप-बाय-स्टेप।"),
             ("excel", "MS Excel Course", "स्प्रेडशीट, फ़ॉर्मूले, चार्ट और डेटा रिपोर्टिंग।"),
-            ("hacking", "Ethical Hacking Course", "सुरक्षा की बुनियाद, phishing, password और safe testing।"),
         ],
-        start=2,
+        start=3,
     ):
         cards.append(
             f"""<div class="lesson-row soon" id="{anchor}" style="border-radius:14px;border:1px solid var(--line);background:var(--panel)">
@@ -192,7 +197,7 @@ def build_hub():
 <section class="c-hero">
   <span class="eyebrow">Free Courses</span>
   <h1>Courses — शुरुआत से सीखें, अपनी भाषा में</h1>
-  <p class="lead">हर कोर्स छोटे-छोटे लेसन में बँटा है, जिसे आप क्रम से पढ़ सकते हैं — बिल्कुल playlist की तरह। पहला कोर्स <b>Basic Computer</b> पूरी तरह तैयार है, बाकी कोर्स पर काम चल रहा है।</p>
+  <p class="lead">हर कोर्स छोटे-छोटे लेसन में बँटा है, जिसे आप क्रम से पढ़ सकते हैं — बिल्कुल playlist की तरह। दो कोर्स पूरी तरह तैयार हैं — <b>Basic Computer</b> और <b>Ethical Hacking with Python</b>; Word और Excel पर काम चल रहा है।</p>
 </section>
 
 <div class="panel">

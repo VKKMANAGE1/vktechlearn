@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Network Hardening और Incident Response — VK Tech Learn</title>
+<meta name="description" content="Firewall नियम, patch management, logging और incident के बाद forensic data जुटाना।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/network-hardening.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Network Hardening और Incident Response">
+<meta property="og:description" content="Firewall नियम, patch management, logging और incident के बाद forensic data जुटाना।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/network-hardening.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Network Hardening और Incident Response">
+<meta name="twitter:description" content="Firewall नियम, patch management, logging और incident के बाद forensic data जुटाना।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 14</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 7 · Network Security और Defense</span>
+  <h1>Network Hardening और Incident Response</h1>
+  <div class="lesson-meta"><span>लेसन 14 / 20</span><span>·</span><span>~7 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:70%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack8.jpg" alt="Network diagram के ऊपर shield और monitoring graph" width="1200" height="648" loading="lazy" decoding="async"><figcaption>Network diagram के ऊपर shield और monitoring graph — Chapter 7: Network Security और Defense</figcaption></figure>
+<p>हमला पकड़ना आधा काम है; उसे रोकना और असर कम करना बाकी आधा। Network hardening का मतलब है attack surface छोटा करना — कम खुले ports, मज़बूत configuration, अपडेटेड software और साफ़ logging।</p>
+
+<h2>Hardening के मुख्य कदम</h2>
+
+<ol>
+<li><b>Inventory:</b> कौन से devices और services नेटवर्क पर हैं — बिना सूची के सुरक्षा संभव नहीं।</li>
+<li><b>Patch management:</b> OS, firmware और applications के updates समय पर लगाएँ।</li>
+<li><b>Least privilege:</b> हर user और service को सिर्फ़ ज़रूरी अधिकार दें।</li>
+<li><b>Firewall rules:</b> जो चाहिए वही allow करें, बाकी बंद — default deny।</li>
+<li><b>Logging:</b> login, firewall और application logs केंद्र में इकट्ठे करें।</li>
+<li><b>Backups:</b> 3-2-1 नियम — तीन copy, दो माध्यम, एक offline।</li>
+</ol>
+
+<h2>Python से configuration जाँच</h2>
+
+<p>कई devices का configuration बार-बार जाँचना पड़ता है। छोटा script इसे आसान बनाता है:</p>
+
+<pre><code>import subprocess
+
+checks = {
+    "firewall": ["ufw", "status"],
+    "listening": ["ss", "-tuln"],
+}
+
+for name, cmd in checks.items():
+    print("==", name)
+    print(subprocess.run(cmd, capture_output=True, text=True).stdout)</code></pre>
+
+<p>इसी तरह यह भी जाँचा जा सकता है कि कोई अनचाहा port तो नहीं खुला, या firewall चालू है या नहीं। Automation से मानवीय भूल कम होती है।</p>
+
+<h2>Incident Response के चरण</h2>
+
+<table>
+<thead><tr><th>चरण</th><th>काम</th></tr></thead>
+<tbody>
+<tr><td>Preparation</td><td>plan, contacts, tools पहले से तैयार</td></tr>
+<tr><td>Identification</td><td>क्या हुआ, कब हुआ, कौन से systems प्रभावित</td></tr>
+<tr><td>Containment</td><td>असर फैलने से रोकना — network से अलग करना</td></tr>
+<tr><td>Eradication</td><td>malware हटाना, कमज़ोरी ठीक करना</td></tr>
+<tr><td>Recovery</td><td>साफ़ backup से बहाली, निगरानी</td></tr>
+<tr><td>Lessons learned</td><td>report और सुधार के कदम</td></tr>
+</tbody>
+</table>
+
+<p>Containment में जल्दबाज़ी न करें — पहले सबूत सुरक्षित करें, फिर मशीन बंद या अलग करें। वरना memory में मौजूद जानकारी खो सकती है।</p>
+
+<h2>Forensic data जुटाना</h2>
+
+<ul>
+<li><b>Volatile:</b> चल रहे processes, network connections, logged-in users — पहले यही लें।</li>
+<li><b>Disk:</b> log files, recently modified files, scheduled tasks।</li>
+<li><b>Timeline:</b> घटनाओं का क्रम — कौन सी फ़ाइल कब बनी।</li>
+<li><b>Hashes:</b> सबूत की अखंडता साबित करने के लिए।</li>
+</ul>
+
+<pre><code>import psutil
+
+for p in psutil.process_iter(["pid", "name", "username"]):
+    print(p.info)</code></pre>
+
+<p>यह snapshot बताता है कि उस समय कौन से programs चल रहे थे — incident report का ज़रूरी हिस्सा।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Hardening = कम surface, updates, least privilege, logging</li>
+<li>Firewall में default deny</li>
+<li>Incident response: contain पहले, फिर eradicate और recover</li>
+<li>सबूत पहले सुरक्षित करें, फिर मशीन अलग करें</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपने लैपटॉप पर खुले ports की सूची देखें और लिखें कि कौन सा ज़रूरी है। जो भी ज़रूरी नहीं, उसे बंद करने का तरीका नोट करें।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/ids-python.html"><small>← पिछला लेसन</small><b>Python से Intrusion Detection System (IDS) बनाना</b></a><a class="next" href="/courses/ethical-hacking/social-engineering.html"><small>अगला लेसन →</small><b>Social Engineering — मानवीय कमज़ोरी को समझना</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

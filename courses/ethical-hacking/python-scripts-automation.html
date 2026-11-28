@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Scripts लिखना और काम Automate करना — VK Tech Learn</title>
+<meta name="description" content="Script चलाने का तरीका, files पढ़ना, requests से data लेना और छोटे tools बनाना।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/python-scripts-automation.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Python Scripts लिखना और काम Automate करना">
+<meta property="og:description" content="Script चलाने का तरीका, files पढ़ना, requests से data लेना और छोटे tools बनाना।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/python-scripts-automation.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Python Scripts लिखना और काम Automate करना">
+<meta name="twitter:description" content="Script चलाने का तरीका, files पढ़ना, requests से data लेना और छोटे tools बनाना।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 4</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 2 · Python Basics for Hacking</span>
+  <h1>Python Scripts लिखना और काम Automate करना</h1>
+  <div class="lesson-meta"><span>लेसन 4 / 20</span><span>·</span><span>~6 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:20%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack2.jpg" alt="कोड और terminal दिखाता लैपटॉप, Python जैसा curve और gears" width="1200" height="648" loading="lazy" decoding="async"><figcaption>कोड और terminal दिखाता लैपटॉप, Python जैसा curve और gears — Chapter 2: Python Basics for Hacking</figcaption></figure>
+<p>एक बार Python की बुनियाद आ जाए, तो असली फ़ायदा scripts से मिलता है — बार-बार होने वाला काम अपने आप। Recon की सूची बनाना हो, files में से IP निकालने हों या किसी target के headers देखने हों, छोटा script मिनटों का काम सेकंडों में कर देता है। इस लेसन में script लिखने, चलाने और उसे reusable बनाने का तरीका देखेंगे।</p>
+
+<h2>Script बनाना और चलाना</h2>
+
+<ol>
+<li>Kali में terminal खोलें और <code>nano scan.py</code> से फ़ाइल बनाएँ।</li>
+<li>कोड लिखें और Ctrl+O, Enter, Ctrl+X से सेव करें।</li>
+<li><code>python3 scan.py</code> से चलाएँ।</li>
+<li>चलाने की अनुमति चाहिए तो <code>chmod +x scan.py</code> दें और पहली पंक्ति में <code>#!/usr/bin/env python3</code> लिखें।</li>
+</ol>
+
+<h2>Command-line arguments</h2>
+
+<p>हर बार code में target बदलना ठीक नहीं। <code>argparse</code> से script को options दें:</p>
+
+<pre><code>import argparse
+
+parser = argparse.ArgumentParser(description="Host checker")
+parser.add_argument("host", help="target IP")
+parser.add_argument("-p", "--port", type=int, default=80)
+args = parser.parse_args()
+
+print(args.host, args.port)</code></pre>
+
+<p>अब <code>python3 check.py 192.168.56.101 -p 22</code> चलेगा। Arguments से script दोबारा लिखे बिना अलग-अलग target पर चल सकती है।</p>
+
+<h2>File से सूची पढ़ना</h2>
+
+<pre><code>with open("hosts.txt") as f:
+    hosts = [line.strip() for line in f if line.strip()]
+
+for host in hosts:
+    print("checking", host)</code></pre>
+
+<p>Recon में अक्सर सैकड़ों subdomain या IP होते हैं। उन्हें फ़ाइल में रखकर loop चलाना सबसे साफ़ तरीका है। हर request के बीच छोटा pause रखें, ताकि target पर अनचाहा load न पड़े।</p>
+
+<h2>HTTP Headers देखना</h2>
+
+<pre><code>import requests
+
+r = requests.get("http://192.168.56.101", timeout=5)
+print(r.status_code)
+print(r.headers.get("Server"))</code></pre>
+
+<p>Headers से पता चलता है कि कौन सा server चल रहा है और कुछ security headers मौजूद हैं या नहीं। यह जानकारी authorized testing में configuration समझने के लिए काम आती है।</p>
+
+<h2>Result सेव करना</h2>
+
+<p>Terminal पर छपा result खो जाता है। उसे JSON में सेव करें, ताकि बाद में report बने:</p>
+
+<pre><code>import json
+
+report = {"host": "192.168.56.101", "open_ports": [22, 80]}
+with open("result.json", "w") as f:
+    json.dump(report, f, indent=2)</code></pre>
+
+<h2>Automation के नियम</h2>
+
+<ul>
+<li><b>Rate limit:</b> बहुत तेज़ requests से target धीमा या बंद हो सकता है — अनुमति वाली सीमा में रहें।</li>
+<li><b>Logging:</b> script क्या-क्या कर रही है, फ़ाइल में लिखें — बाद में सबूत काम आता है।</li>
+<li><b>Dry run:</b> पहले बिना असर वाले mode में चलाएँ, फिर असली।</li>
+<li><b>Cleanup:</b> जो फ़ाइलें या changes बनाएँ, अंत में हटाएँ।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>argparse से script reusable बनती है</li>
+<li>सूची फ़ाइल से पढ़कर loop चलाना आम तरीका है</li>
+<li>Result हमेशा JSON/CSV में सेव करें</li>
+<li>Automation में धीमी गति और logging ज़रूरी</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 15 मिनट</b>
+<p>एक script बनाएँ जो hosts.txt से IP पढ़े और हर एक के लिए status code print करे। Result को result.json में सेव करें। सिर्फ़ अपनी lab VM के IP इस्तेमाल करें।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><a class="prev" href="/courses/ethical-hacking/python-basics-hacking.html"><small>← पिछला लेसन</small><b>Hacking के लिए Python Basics — Data Types से Functions तक</b></a><a class="next" href="/courses/ethical-hacking/reconnaissance-kya-hai.html"><small>अगला लेसन →</small><b>Reconnaissance क्या है? Passive और Active जानकारी जुटाना</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

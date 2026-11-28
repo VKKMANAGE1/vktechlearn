@@ -1,0 +1,57 @@
+<p>Reconnaissance hacking lifecycle का पहला और सबसे ज़रूरी चरण है — target के बारे में जितनी ज़्यादा जानकारी, उतना साफ़ रास्ता। यह जानकारी अक्सर सार्वजनिक होती है: domain records, website, job posts, social media और search engines।</p>
+
+<p>Recon दो तरह का होता है — passive, जिसमें target को छुए बिना जानकारी जुटाई जाती है, और active, जिसमें सीधे उसके सिस्टम से बात की जाती है। Passive सुरक्षित है; active सिर्फ़ अनुमति के साथ।</p>
+
+<h2>Passive Recon — बिना छुए जानकारी</h2>
+
+<ul>
+<li><b>WHOIS:</b> domain किसके नाम पर है, कब बना, कौन सा registrar और name server।</li>
+<li><b>DNS records:</b> A, MX, TXT, NS — कौन सी services और मेल servers जुड़े हैं।</li>
+<li><b>Search engines:</b> site: और filetype: से सार्वजनिक pages और documents।</li>
+<li><b>Social media:</b> कर्मचारियों के public posts से technology और structure का अंदाज़ा।</li>
+<li><b>Job listings:</b> "AWS, Jenkins, WordPress" जैसी requirements से tech stack पता चलता है।</li>
+<li><b>Certificate transparency:</b> subdomains की सूची, जो SSL certificates से सार्वजनिक होती है।</li>
+</ul>
+
+<p>इन सब में target को कोई request नहीं जाती — इसलिए यह कानूनी और सुरक्षित है। कई pentest इसी चरण में आधी जानकारी इकट्ठी कर लेते हैं।</p>
+
+<h2>Active Recon — सीधा संपर्क</h2>
+
+<p>इसमें target के server या नेटवर्क से सीधे बात होती है — ping, DNS query, port scan, header check। यह जानकारी ज़्यादा सटीक होती है, पर target के logs में दर्ज होती है। इसलिए यह सिर्फ़ लिखित अनुमति वाले scope में करें।</p>
+
+<h2>Recon से क्या निकलता है</h2>
+
+<table>
+<thead><tr><th>जानकारी</th><th>किस काम की</th></tr></thead>
+<tbody>
+<tr><td>Domain और subdomains</td><td>पूरा attack surface समझना</td></tr>
+<tr><td>IP ranges</td><td>कौन से hosts scope में हैं</td></tr>
+<tr><td>Tech stack</td><td>कौन से known vulnerabilities लागू हो सकते हैं</td></tr>
+<tr><td>Email format</td><td>awareness testing में (अनुमति के साथ)</td></tr>
+<tr><td>Public documents</td><td>metadata, leaked paths, versions</td></tr>
+</tbody>
+</table>
+
+<h2>OSINT के स्रोत</h2>
+
+<p>OSINT यानी Open Source Intelligence — सार्वजनिक जानकारी से analysis। इसमें search engine dorks, WHOIS, DNS, certificate logs, archive.org के पुराने pages और सरकारी records आते हैं। एक अच्छा recon करने वाला सिर्फ़ tools नहीं चलाता; वह जानकारी को जोड़कर कहानी बनाता है — "इस subdomain पर पुराना WordPress है, जिसका version पुराना है"।</p>
+
+<h2>Recon में अनुशासन</h2>
+
+<ul>
+<li>हर जानकारी का source नोट करें — बाद में report में काम आएगा।</li>
+<li>अनुमति का scope याद रखें; scope से बाहर का subdomain भी न छुएँ।</li>
+<li>Public जानकारी होने का मतलब यह नहीं कि उसे दुरुपयोग कर सकते हैं।</li>
+<li>जो मिला है उसे साफ़ फ़ाइलों में रखें — hosts.txt, notes.md, screenshots।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Passive recon = बिना संपर्क, active = सीधा संपर्क</li>
+<li>WHOIS, DNS, certificate logs और search engines मुख्य स्रोत</li>
+<li>Recon का नतीजा scope और tech stack की साफ़ तस्वीर है</li>
+<li>हर जानकारी का source नोट करें</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 10 मिनट</b>
+<p>अपनी खुद की वेबसाइट या कोई सार्वजनिक site चुनें और WHOIS + DNS records देखें। नोट करें: registrar, name servers और MX records। किसी दूसरे के सिस्टम पर active scan न करें।</p></div>

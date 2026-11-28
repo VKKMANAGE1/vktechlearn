@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ethical Hacking क्या है? White Hat, Black Hat और Grey Hat — VK Tech Learn</title>
+<meta name="description" content="Ethical hacking की परिभाषा, इसके फ़ायदे और white, black, grey hat hackers में फ़र्क़।">
+<link rel="canonical" href="https://vktechlearn.site/courses/ethical-hacking/ethical-hacking-kya-hai.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VK Tech Learn">
+<meta property="og:locale" content="hi_IN">
+<meta property="og:title" content="Ethical Hacking क्या है? White Hat, Black Hat और Grey Hat">
+<meta property="og:description" content="Ethical hacking की परिभाषा, इसके फ़ायदे और white, black, grey hat hackers में फ़र्क़।">
+<meta property="og:url" content="https://vktechlearn.site/courses/ethical-hacking/ethical-hacking-kya-hai.html">
+<meta property="og:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ethical Hacking क्या है? White Hat, Black Hat और Grey Hat">
+<meta name="twitter:description" content="Ethical hacking की परिभाषा, इसके फ़ायदे और white, black, grey hat hackers में फ़र्क़।">
+<meta name="twitter:image" content="https://vktechlearn.site/img/courses/hack1.jpg">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/course.css">
+</head>
+<body>
+<header class="c-head">
+  <div class="wrap">
+    <a class="brand" href="/">VK <span>TECH</span> LEARN</a>
+    <nav aria-label="मुख्य लिंक">
+      <a href="/">Home</a>
+      <a href="/courses/" aria-current="page">Courses</a>
+      <a href="/courses/basic-computer/">Basic Computer</a>
+      <a href="/courses/ethical-hacking/">Ethical Hacking</a>
+      <a href="/courses/#excel">MS Excel</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a><span>/</span><a href="/courses/">Courses</a><span>/</span><a href="/courses/ethical-hacking/">Ethical Hacking</a><span>/</span>लेसन 1</div>
+<header class="lesson-head">
+  <span class="badge">Chapter 1 · Ethical Hacking का परिचय</span>
+  <h1>Ethical Hacking क्या है? White Hat, Black Hat और Grey Hat</h1>
+  <div class="lesson-meta"><span>लेसन 1 / 20</span><span>·</span><span>~6 मिनट</span><span>·</span><span>by Vïnâý Kúshwâhå</span></div>
+  <div class="progress" aria-hidden="true"><i style="width:5%"></i></div>
+</header>
+<article class="lesson-body">
+<figure class="fig"><img src="/img/courses/hack1.jpg" alt="लैपटॉप पर काम करता hacker, ऊपर shield और padlock" width="1200" height="648" loading="lazy" decoding="async"><figcaption>लैपटॉप पर काम करता hacker, ऊपर shield और padlock — Chapter 1: Ethical Hacking का परिचय</figcaption></figure>
+<p>Ethical hacking यानी white hat hacking — किसी सिस्टम, नेटवर्क या वेबसाइट की सुरक्षा जाँचना, <b>मालिक की लिखित अनुमति लेकर</b>, ताकि कमज़ोरियाँ हमलावरों से पहले पकड़ी जा सकें। इसमें तकनीक वही होती है जो attackers इस्तेमाल करते हैं, पर इरादा सुधार का होता है और दायरा तय होता है।</p>
+
+<p>इस लेसन में हम देखेंगे कि ethical hacking क्यों ज़रूरी है, white, black और grey hat में क्या फ़र्क़ है, और एक penetration test की ज़िंदगी कैसे चलती है। आगे के सारे लेसन इसी नींव पर बनेंगे।</p>
+
+<h2>Ethical hacking क्यों ज़रूरी है</h2>
+
+<ul>
+<li><b>हमले से पहले सुधार:</b> एक छोटी कमज़ोरी — पुराना plugin, कमज़ोर पासवर्ड, खुला port — बड़े नुक़सान का दरवाज़ा बन सकती है।</li>
+<li><b>Compliance:</b> बैंक, बीमा और स्वास्थ्य जैसे क्षेत्रों में नियमित security assessment नियमों की माँग है।</li>
+<li><b>भरोसा:</b> ग्राहक अपना डेटा उसी कंपनी को देता है जो सुरक्षा को गंभीरता से लेती है।</li>
+<li><b>लागत:</b> बाद में breach ठीक करना, शुरुआत में testing कराने से कहीं महँगा पड़ता है।</li>
+</ul>
+
+<h2>White, Black और Grey Hat</h2>
+
+<table>
+<thead><tr><th>प्रकार</th><th>अनुमति</th><th>इरादा</th><th>नतीजा</th></tr></thead>
+<tbody>
+<tr><td>White hat</td><td>लिखित अनुमति</td><td>कमज़ोरी ढूँढकर ठीक कराना</td><td>कानूनी, प्रोफेशनल</td></tr>
+<tr><td>Black hat</td><td>नहीं</td><td>चोरी, नुक़सान, फ़ायदा</td><td>अपराध</td></tr>
+<tr><td>Grey hat</td><td>नहीं, पर नुक़सान का इरादा नहीं</td><td>कमज़ोरी बताना</td><td>फिर भी ग़ैरकानूनी</td></tr>
+</tbody>
+</table>
+
+<p>Grey hat लोग अक्सर कहते हैं "मैंने तो सिर्फ़ बताया था", पर बिना अनुमति system में घुसना या data देखना कानूनी रूप से वही ग़लत है। अच्छे इरादे से ग़ैरकानूनी काम कानूनी नहीं हो जाता।</p>
+
+<h2>एक Penetration Test के चरण</h2>
+
+<ol>
+<li><b>Scoping और permission:</b> कौन से system, कौन सी तकनीक, कब तक — सब लिखित।</li>
+<li><b>Reconnaissance:</b> सार्वजनिक जानकारी इकट्ठी करना।</li>
+<li><b>Scanning:</b> खुले port, services और version पहचानना।</li>
+<li><b>Vulnerability analysis:</b> कमज़ोरियों की सूची और उनकी severity।</li>
+<li><b>Exploitation (नियंत्रित):</b> सिर्फ़ तय दायरे में, सबसे कम नुक़सान वाला proof।</li>
+<li><b>Post-exploitation और cleanup:</b> असर जाँचना, बनाई गई फ़ाइलें हटाना।</li>
+<li><b>Reporting:</b> finding, proof, असर और सुधार का सुझाव।</li>
+</ol>
+
+<h2>किन बातों का हमेशा ध्यान रखें</h2>
+
+<ul>
+<li>अनुमति <b>लिखित</b> हो — ईमेल या contract में scope साफ़ लिखा हो।</li>
+<li>Scope से बाहर एक भी request न भेजें, चाहे कितना भी आसान लगे।</li>
+<li>मिले डेटा को गोपनीय रखें; असली user data कभी बाहर न ले जाएँ।</li>
+<li>Production system पर भारी scan या crash करने वाला test बिना अनुमति न करें।</li>
+<li>कमज़ोरी मिलने पर responsible disclosure — पहले मालिक को बताएँ, सार्वजनिक न करें।</li>
+</ul>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>Ethical hacking = अनुमति + तय scope + सुधार का इरादा</li>
+<li>White hat कानूनी, black hat अपराध, grey hat भी ग़ैरकानूनी</li>
+<li>हर test की शुरुआत permission और scope से होती है</li>
+<li>Report के बिना test अधूरा है</li>
+</ul></div>
+
+<h2>आगे क्या</h2>
+
+<p>अगला लेसन lab setup का है — Kali Linux, virtual machine और एक अलग नेटवर्क, जहाँ बिना किसी नुक़सान के practice कर सकें।</p>
+
+<div class="practice"><b>Practical — 5 मिनट</b>
+<p>एक कागज़ पर लिखें: आपके घर में कौन से डिवाइस आपके हैं (router, लैपटॉप, फोन) और कौन से किसी और के। अगले लेसन में हम सिर्फ़ पहले समूह पर practice करेंगे।</p></div>
+</article>
+<nav class="pager" aria-label="लेसन नेविगेशन"><span class="empty"></span><a class="next" href="/courses/ethical-hacking/hacking-lab-setup.html"><small>अगला लेसन →</small><b>अपना Hacking Lab सेट करना — Kali Linux और Virtual Machine</b></a></nav>
+</main>
+
+<footer class="c-foot">
+  <div class="wrap">
+    <span>&copy; 2026 VK Tech Learn &middot; by Vïnâý Kúshwâhå</span>
+    <span><a href="/courses/">Courses</a> &middot; <a href="/about.html">About</a> &middot; <a href="/privacy-policy.html">Privacy</a></span>
+  </div>
+</footer>
+</body>
+</html>

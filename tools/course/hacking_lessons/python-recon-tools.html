@@ -1,0 +1,87 @@
+<p>Recon की जानकारी हाथ से इकट्ठी करना धीमा है। Python में छोटे scripts इसे तेज़ और दोहराने लायक बना देते हैं — WHOIS lookup, DNS records, subdomain सूची और port check। इस लेसन में वही tools बनाने का तरीका, सिर्फ़ अपने lab या अनुमति वाले target के लिए।</p>
+
+<h2>WHOIS lookup</h2>
+
+<p>WHOIS में domain का registration data होता है। Python में <code>whois</code> library से:</p>
+
+<pre><code>import whois
+
+data = whois.whois("example.com")
+print(data.registrar)
+print(data.creation_date)
+print(data.name_servers)</code></pre>
+
+<p>Install न हो तो <code>pip3 install python-whois</code> चलाएँ। कई domains पर privacy protection होता है, इसलिए owner का नाम नहीं मिलेगा — यह सामान्य है।</p>
+
+<h2>DNS records</h2>
+
+<pre><code>import dns.resolver
+
+for rtype in ["A", "MX", "TXT", "NS"]:
+    try:
+        answers = dns.resolver.resolve("example.com", rtype)
+        for r in answers:
+            print(rtype, r.to_text())
+    except Exception as e:
+        print(rtype, "not found")</code></pre>
+
+<p><code>dnspython</code> library से A (IP), MX (mail server), TXT (verification/SPF) और NS (name server) मिलते हैं। यही जानकारी बताती है कि domain किस infrastructure पर है।</p>
+
+<h2>Subdomain सूची</h2>
+
+<p>Certificate transparency logs से subdomains सार्वजनिक होते हैं। <code>requests</code> से उन्हें पढ़ा जा सकता है:</p>
+
+<pre><code>import requests
+
+url = "https://crt.sh/?q=%25.example.com&output=json"
+r = requests.get(url, timeout=15)
+names = {row["name_value"] for row in r.json()}
+for n in sorted(names):
+    print(n)</code></pre>
+
+<p>इससे पता चलता है कि organization के कौन-कौन से subdomains सार्वजनिक हैं — जैसे mail, vpn, test। यह passive जानकारी है, target को request नहीं जाती।</p>
+
+<h2>Port check — socket से</h2>
+
+<pre><code>import socket
+
+def is_open(host, port):
+    s = socket.socket()
+    s.settimeout(1)
+    try:
+        s.connect((host, port))
+        return True
+    except Exception:
+        return False
+    finally:
+        s.close()
+
+for p in [21, 22, 80, 443]:
+    print(p, is_open("192.168.56.101", p))</code></pre>
+
+<p>यह छोटा check बताता है कि lab VM पर कौन से port खुले हैं। असली scanning में nmap जैसे tools ज़्यादा जानकारी देते हैं, पर socket से मूल बात समझ आ जाती है — TCP connection कैसे बनता है।</p>
+
+<h2>Result को एक जगह जोड़ना</h2>
+
+<p>Tools अलग-अलग चलाने के बजाय एक script में सब जोड़ें:</p>
+
+<pre><code>result = {
+    "domain": "example.com",
+    "ips": ["93.184.216.34"],
+    "open_ports": [80, 443],
+}
+with open("recon.json", "w") as f:
+    json.dump(result, f, indent=2)</code></pre>
+
+<p>इसी JSON से आगे report बनती है। Recon का असली मूल्य अलग-अलग टुकड़ों को जोड़ने में है।</p>
+
+<div class="keybox"><b>याद रखें</b>
+<ul>
+<li>WHOIS → registration, DNS → records, crt.sh → subdomains</li>
+<li>socket से port check की मूल बात समझें</li>
+<li>सब result एक JSON में जोड़ें</li>
+<li>Scan सिर्फ़ अपने lab या अनुमति वाले target पर</li>
+</ul></div>
+
+<div class="practice"><b>Practical — 15 मिनट</b>
+<p>अपनी lab VM के IP पर socket वाला port check चलाएँ और result.json में सेव करें। फिर किसी सार्वजनिक domain के DNS records देखें और नोट करें कि mail server कौन सा है।</p></div>
