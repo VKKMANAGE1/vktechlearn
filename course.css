@@ -144,3 +144,25 @@ a:hover { text-decoration: underline; }
 .quiz-note { font-size: .85rem; color: var(--muted); }
 .lesson-body pre { background: #0a1220; border: 1px solid var(--line); border-radius: 10px; padding: .85rem 1rem; overflow-x: auto; margin: 0 0 1.2rem; }
 .lesson-body pre code { background: none; padding: 0; color: #b8ffe9; font-size: .86rem; line-height: 1.6; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* ---------- interactive tests ---------- */
+.q-options li::before { content: none; }
+.q-options label { display: flex; gap: .55rem; align-items: flex-start; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.q-options label:hover { border-color: rgba(0, 229, 255, .4); background: rgba(255, 255, 255, .03); }
+.q-options input { margin: .32rem 0 0; accent-color: #00e5ff; flex: none; }
+.opt-key { color: var(--muted); font-weight: 600; flex: none; }
+.quiz > li.is-correct { border-color: rgba(94, 242, 192, .55); background: rgba(94, 242, 192, .06); }
+.quiz > li.is-wrong { border-color: rgba(255, 107, 107, .55); background: rgba(255, 107, 107, .06); }
+.quiz > li.is-missing { border-color: rgba(255, 209, 102, .65); }
+.quiz-explain { margin-top: .7rem; padding-top: .6rem; border-top: 1px dashed var(--line); font-size: .88rem; color: var(--muted); }
+.quiz-explain b { color: var(--neon); }
+.quiz-actions { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: 1rem 0 1.6rem; }
+.quiz-actions .cta { border: 0; cursor: pointer; font: inherit; font-weight: 700; }
+.quiz-actions .cta:disabled { opacity: .55; cursor: default; }
+.quiz-count { color: var(--muted); font-size: .85rem; }
+.quiz-result { background: var(--panel); border: 1px solid rgba(0, 229, 255, .35); border-radius: 12px; padding: 1rem 1.2rem; margin: 0 0 1.6rem; }
+.quiz-result b { color: #fff; font-size: 1.15rem; }
+.quiz-result p { margin: .35rem 0 0; color: var(--muted); }
+.quiz-result.is-warn { border-color: rgba(255, 209, 102, .55); color: var(--warm); }
+.answer-key-box { margin: 2rem 0 1.5rem; padding: .8rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.answer-key-box summary { cursor: pointer; color: var(--neon); font-weight: 600; }

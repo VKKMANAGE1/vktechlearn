@@ -274,9 +274,19 @@ def build_quiz(num):
         questions = json.load(handle)["questions"]
 
     items, answers = [], []
-    for question in questions:
-        options = "".join(f"<li>{esc(option)}</li>" for option in question["options"])
-        items.append(f'<li><p>{esc(question["q"])}</p><ol class="q-options">{options}</ol></li>')
+    for index, question in enumerate(questions, 1):
+        options = "".join(
+            '<li><label><input type="radio" name="q{}:{}" value="{}"><span class="opt-key">{})</span> {}</label></li>'.format(
+                num, index, i, "abcd"[i], esc(option)
+            )
+            for i, option in enumerate(question["options"])
+        )
+        correct = esc(question["options"][question["answer"]])
+        items.append(
+            f'<li data-answer="{question["answer"]}"><p>{esc(question["q"])}</p>'
+            f'<ol class="q-options">{options}</ol>'
+            f'<div class="quiz-explain" hidden><b>सही उत्तर: {correct}</b> — {esc(question["why"])}</div></li>'
+        )
     for index, question in enumerate(questions, 1):
         letter = "abcd"[question["answer"]]
         answers.append(
@@ -303,14 +313,23 @@ def build_quiz(num):
   <h1>Chapter {num} टेस्ट — 20 सवाल</h1>
   <div class="lesson-meta"><span>20 प्रश्न</span><span>·</span><span>हर सवाल 1 अंक</span><span>·</span><span>उत्तर अंत में</span></div>
 </header>
-<p class="quiz-note">पहले सारे 20 के जवाब कागज़ पर लिखें, फिर नीचे <a href="#answers">उत्तर-कुंजी</a> से जाँचें — 16 या ज़्यादा सही मतलब चैप्टर ठीक से समझ आ गया है।</p>
+<p class="quiz-note">हर सवाल का एक विकल्प चुनें और नीचे <b>जवाब जमा करें</b> दबाएँ — स्कोर और हर सवाल की व्याख्या तुरंत दिखेगी। 16 या ज़्यादा सही मतलब चैप्टर ठीक से समझ आ गया है।</p>
+<form class="quiz-form" novalidate>
 <ol class="quiz">{''.join(items)}</ol>
-<section id="answers">
-  <h2 style="font-family:Sora,Mukta,sans-serif;color:#fff">उत्तर-कुंजी</h2>
+<div class="quiz-actions">
+  <button class="cta" type="submit">जवाब जमा करें</button>
+  <button class="cta ghost" type="reset" hidden>फिर से करें</button>
+  <span class="quiz-count" aria-live="polite">0 / {len(questions)} चुने</span>
+</div>
+<div class="quiz-result" hidden tabindex="-1"></div>
+</form>
+<details class="answer-key-box" id="answers">
+  <summary>उत्तर-कुंजी — सभी {len(questions)}</summary>
   <ol class="answer-key">{''.join(answers)}</ol>
-</section>
+</details>
 <nav class="pager" aria-label="टेस्ट नेविगेशन">{prev_link}{next_link}</nav>
 <p class="quiz-note">इस चैप्टर के लेसन फिर देखने हों तो <a href="/courses/ethical-hacking/#chapter-{num}">Chapter {num} की playlist</a> खोलें।</p>
+<script src="/quiz.js" defer></script>
 </main>
 {foot()}"""
     write(f"quiz-chapter-{num}.html", page)
